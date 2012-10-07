@@ -19,6 +19,7 @@ cat .git/config
 
 
 #How to merge (local master) and push changes back to GitHub (origin/master)
+git remote update
 
 #fetch and merge from remote origin/master to local master
 git pull git@github.com:saetre/biocreative_data.git   #or "git pull origin master"
