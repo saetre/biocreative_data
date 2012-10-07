@@ -19,9 +19,11 @@ cat .git/config
 
 
 #How to merge (local master) and push changes back to GitHub (origin/master)
-git pull git@github.com:saetre/biocreative_data.git (fetch and merge from remote origin/master to local master
 
-#Then (after "git remote update"  #updates from remote GitHub)
+#fetch and merge from remote origin/master to local master
+git pull git@github.com:saetre/biocreative_data.git   #or "git pull origin master"
+
+#Then (after changing some local files)
 git commit
 git merge origin/master
 git push origin master
