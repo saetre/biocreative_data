@@ -1,4 +1,4 @@
-#BioCreative III Interactive Annotation Task, 3GB data with species and entrezgenes
+#BioCreative III Interactive Annotation Task, 3-4GB worth of data with species and entrezgenes annotated
 
 #NEW
 GitHub way of doing things, after you have added your ssh key in .git/config
