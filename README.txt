@@ -18,13 +18,11 @@ cat .git/config
 
 #How to merge (local master) and push changes back to GitHub (origin/master)
 git fetch git@github.com:saetre/biocreative_data.git
+git remote update  #updates from remote GitHub
+#Then
 git commit
 git merge origin/master
 git push origin master
-
-
-#How to get updates from remote GitHub
-git remote update
 
 #######################################################################
 
