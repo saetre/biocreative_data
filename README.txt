@@ -6,20 +6,22 @@ GitHub way of doing things, after you have added your ssh key in .git/config
 #First, check out the main code repository
 git clone git@github.com:saetre/biocreative.git
 
-#Check out 4GB of data (put it in your biocreative folder)
+#Check out 4GB of data (link it as "data" from your biocreative folder)
 git clone git@github.com:saetre/biocreative_data.git
+cd biocreative
+ln -s ../biocreative_data data
 
 #In order to be able to sync changes
 git remote add origin git@github.com:saetre/biocreative_data.git
 
-#How to check if the config looks ok
+#Check if the config looks ok
 cat .git/config
 
 
 #How to merge (local master) and push changes back to GitHub (origin/master)
-git fetch git@github.com:saetre/biocreative_data.git
-git remote update  #updates from remote GitHub
-#Then
+git pull git@github.com:saetre/biocreative_data.git (fetch and merge from remote origin/master to local master
+
+#Then (after "git remote update"  #updates from remote GitHub)
 git commit
 git merge origin/master
 git push origin master
