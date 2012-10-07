@@ -12,6 +12,10 @@ git clone git@github.com:saetre/biocreative_data.git
 #In order to be able to sync changes
 git remote add origin git@github.com:saetre/biocreative_data.git
 
+#How to check if the config looks ok
+cat .git/config
+
+
 #######################################################################
 
 #OLD Tsujiilab SVN way of doing things...
