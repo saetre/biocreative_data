@@ -15,8 +15,13 @@ git remote add origin git@github.com:saetre/biocreative_data.git
 #How to check if the config looks ok
 cat .git/config
 
+
 #How to merge (local master) and push changes back to GitHub (origin/master)
-git push origin master
+git fetch git@github.com:saetre/biocreative_data.git
+git merge origin/master
+(or?
+ git push origin master
+)
 
 #How to get updates from remote GitHub
 git remote update
