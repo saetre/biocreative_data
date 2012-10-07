@@ -1,0 +1,678 @@
+###begin article-title 0
+Engineering transcription factors with novel DNA-binding specificity using comparative genomics
+###end article-title 0
+###begin p 1
+###xml 0 16 0 16 <!--CREATIVE COMMONS-->
+CREATIVE COMMONSThis is an Open Access article distributed under the terms of the Creative Commons Attribution Non-Commercial License () which permits unrestricted non-commercial use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin p 2
+###xml 1155 1171 1155 1171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 1155 1171 <span type="species:ncbi:562">Escherichia coli</span>
+The transcriptional program for a gene consists of the promoter necessary for recruiting RNA polymerase along with neighboring operator sites that bind different activators and repressors. From a synthetic biology perspective, if the DNA-binding specificity of these proteins can be changed, then they can be used to reprogram gene expression in cells. While many experimental methods exist for generating such specificity-altering mutations, few computational approaches are available, particularly in the case of bacterial transcription factors. In a previously published computational study of nitrogen oxide metabolism in bacteria, a small number of amino-acid residues were found to determine the specificity within the CRP (cAMP receptor protein)/FNR (fumarate and nitrate reductase regulatory protein) family of transcription factors. By analyzing how these amino acids vary in different regulators, a simple relationship between the identity of these residues and their target DNA-binding sequence was constructed. In this article, we experimentally tested whether this relationship could be used to engineer novel DNA-protein interactions. Using Escherichia coli CRP as a template, we tested eight designs based on this relationship and found that four worked as predicted. Collectively, these results in this work demonstrate that comparative genomics can inform the design of bacterial transcription factors.
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin p 4
+###xml 207 210 207 210 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cis</italic>
+###xml 298 299 298 299 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B1">1</xref>
+###xml 849 852 849 852 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B2 B3 B4">2&#8211;4</xref>
+###xml 1096 1100 1096 1100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B5 B6 B7 B8 B9 B10 B11">5&#8211;11</xref>
+###xml 1256 1258 1256 1258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B12">12</xref>
+###xml 1358 1363 1358 1363 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B13 B14 B15 B16 B17">13&#8211;17</xref>
+DNA encodes not just the gene but also the program for expression. At the level of transcription, a given gene's program consists of the promoter sequences necessary for recruiting RNA polymerase along with cis-regulatory sequences specific for different transcriptional activators and repressors (1). In bacteria, these regulatory proteins bind specific DNA sequences, also known as operator sites, typically proximal to the promoter. The sequence of the operator site determines which activators and repressors regulate the activity of the promoter. In order for this regulation to work, the proteins regulating a given promoter must bind specifically to the associated operator sites, otherwise aberrant regulation will occur. Understanding the molecular basis for this recognition and specificity has been the focus of innumerable studies [cf. (2-4)]. This information can potentially be used to change the DNA-binding specificity of transcription factors, enabling the reprogramming of gene expression in cells with applications, for example, in synthetic biology and metabolic engineering (5-11). As a result, an active area of protein engineering has been to identify mutations that alter the DNA-binding specificity of these transcription factors (12). While a number of experimental methods exist for generating such specificity-altering mutations (13-17), few computational approaches exist, particularly in the case of bacterial transcription factors. One approach is the use of comparative genomics as a tool for altering the DNA-binding specificity of transcription factors in bacteria.
+###end p 4
+###begin p 5
+###xml 109 111 109 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B18">18</xref>
+###xml 626 628 626 628 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B19">19</xref>
+###xml 724 726 724 726 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+###xml 949 951 949 951 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B21">21</xref>
+###xml 1019 1035 1019 1035 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 1213 1215 1213 1215 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B22">22</xref>
+###xml 1649 1650 1649 1650 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B2">2</xref>
+###xml 1651 1653 1651 1653 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B23">23</xref>
+###xml 1842 1844 1842 1844 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B24">24</xref>
+###xml 1896 1903 1896 1903 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 1934 1936 1934 1936 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B25">25</xref>
+###xml 1019 1035 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 1896 1903 <span type="species:ncbi:562">E. coli</span>
+There are currently over 700 sequenced bacterial genomes, and thousands more are in the sequencing pipeline (18). Through the use of comparative genomics, we can inform transcription factor design using the large pool of genetic diversity contained within these data sets. In particular, by studying the co-variation of transcription factors with their target DNA-binding sites, we may be able to correlate how certain amino-acid sequences determine which DNA sequences the protein binds within a family of regulators, despite the fact that there is no general 'recognition code' for protein-DNA interactions across families (19). Along these lines, in a previous comparative study of nitrogen oxide metabolism in bacteria (20), we found that a small number of amino-acid residues determine the specificity of regulators within the CRP (cAMP receptor protein)/FNR (fumarate and nitrate reductase regulatory protein) family of transcription factors (21). Specifically, we predicted that the three amino-acid residues in Escherichia coli CRP (Arg180/Glu181/Arg185) making direct contact with DNA bases in the major groove are sufficient for determining the specificity of regulators within this family of proteins (22). By analyzing how these amino acids vary in different regulators, a simple correlation between the identity of these residues and their target DNA-binding sequence was constructed. These correlations were interesting because they suggested similarity in the binding mode among the different regulators within the abundant CRP/FNR family. The idea of a family-specific binding mode is consistent with theoretical and empirical work (2,23), including a recently described method that successfully predicted transcription factor specificities across families of regulators using structural data from a small number of homologs (24) and a method that identified CRP-binding sites in E. coli using structural information (25). From a protein-engineering viewpoint, the correlations suggested that designs focused on only these three residues may be sufficient for altering DNA-binding specificity.
+###end p 5
+###begin p 6
+###xml 115 117 115 117 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+###xml 403 410 403 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 789 793 789 793 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+###xml 403 410 <span type="species:ncbi:562">E. coli</span>
+In this study, we experimentally tested these correlations from our previous, purely computational genomics study (20) in order to see whether such an approach would be effective for bacterial transcription factor engineering. As only a few amino acids were predicted to determine specificity and the CRP/FNR family is quite large, it was not immediately obvious that such an approach would work. Using E. coli CRP as a template, we generated eight different variants based on these correlations and then determined whether these variants could bind their cognate operator sequence and regulate transcription. In all cases, the variants involved substitutions within the Arg180/Glu181/Arg185 amino-acid triad of CRP along with the corresponding changes to the CRP operator sequence in the lacZ promoter. Of the eight, four CRP variants were able to bind their new operator sequences and activate transcription. Furthermore, to the best of our knowledge, none of these four mutations had previously been isolated despite extensive work over the years on the binding mechanism of CRP. In addition, these results appear to be the first where results from computational analysis have been used to design bacterial transcription factors. Collectively, these results suggest that comparative genomics can inform the design of proteins, transcription factors in particular.
+###end p 6
+###begin title 7
+MATERIALS AND METHODS
+###end title 7
+###begin title 8
+Bacterial strains, media and growth conditions
+###end title 8
+###begin p 9
+###xml 47 54 47 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 172 179 168 175 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 230 233 226 229 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 261 264 253 256 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 278 281 266 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 590 592 578 580 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B26">26</xref>
+###xml 724 727 712 715 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">vir</italic>
+###xml 833 840 821 828 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 47 54 <span type="species:ncbi:562">E. coli</span>
+###xml 172 179 <span type="species:ncbi:562">E. coli</span>
+###xml 833 840 <span type="species:ncbi:562">E. coli</span>
+All cloning steps were performed either in the E. coli strains DH5alpha or XL1-Blue supercompetent cells (Stratagene). Gene expression experiments were performed either in E. coli strain MG1655 or an isogenic derivative where the crp gene was deleted. The Deltacrp strain (Deltacrp::FRT) was made using the gene inactivation method of Datsenko and Wanner with pKD4 as the template and the primers CRP_F (5'-ATT CAT AAG TAC CCA TCC AAG AGC ACG CTT ATT CAC CAG GGT GTA GGC TGG AGC TGC TTC-3') and CRP_R (5'-CAG CAT CTT CAG AAT GCG TCC CAC GGT TTC ACG AGA ACA GCA TAT GAA TAT CCT CCT TAG-3') (26). Prior to removal of the antibiotic resistance marker, the constructs were moved into a clean, wild-type background (MG1655) by P1vir transduction. Removal of the kanamycin resistance gene was achieved by passing pCP20 through the strain. E. coli was grown in Luria-Bertani (LB) broth at 37degreesC. Antibiotics were used at the following concentrations: ampicillin, 100 mug/ml; chloramphenicol, 17 mug/ml; and kanamycin, 40 mug/ml. All enzymes were obtained from New England Biolabs or Stratagene. The inducer atc was used at a concentration of 20 ng/ml.
+###end p 9
+###begin title 10
+###xml 16 19 16 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+Construction of crp mutants
+###end title 10
+###begin p 11
+###xml 4 7 4 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 48 55 48 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 397 400 393 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 435 438 431 434 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 456 459 452 455 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 535 537 531 533 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B27">27</xref>
+###xml 829 833 823 827 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+###xml 1023 1026 1017 1020 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 48 55 <span type="species:ncbi:562">E. coli</span>
+The crp gene was amplified by PCR using genomic E. coli MG1655 DNA as the template with primers 5'-CCA CAT CCT GAC GCC CTT TT-3' and 5'-CCG TAC CAG AGA GTG CCC AA-3' (genomic region 3483651-3485261). The resulting PCR fragment was then inserted into the pCR(R)2-TOPO(R) plasmid using the TOPO cloning procedure as described by the manufacturer's protocols (Invitrogen), yielding the plasmid pTOPO-crp. Site-directed mutagenesis of the crp gene using pTOPO-crp as a template was accomplished using either enzymatic inverse PCR (EIPCR) (27) or QuikChange(R) Site-Directed Mutagenesis Method Kit (Stratagene). For construction of the operator mutations, the plasmid, pd2EGFP (BD Biosciences Clontech), was used as the template. This plasmid contains the d2EGFP variant of the green fluorescent protein gene under the control of the lacZ promoter. EIPCR was used to introduce the mutations into the CRP operator site. The primers are listed in Table S1. To minimize the possibility of unwanted mutations, strains harboring the crp mutations were propagated and maintained in M9 minimal media supplemented with 1% glucose. In addition, they were repeatedly sequenced in order to test for any possible mutations.
+###end p 11
+###begin title 12
+Construction of the TetR-regulated expression plasmid
+###end title 12
+###begin p 13
+###xml 58 61 58 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 231 238 231 238 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LtetO-1</sub>
+###xml 331 338 331 338 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LtetO-1</sub>
+###xml 418 422 418 422 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">tetR</italic>
+###xml 713 720 713 720 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LtetO-1</sub>
+In order to construct an inducible expression vector, the crp gene was introduced into the restriction sites EcoRI and BamHI of a pPROTet.E plasmid derivative (Clontech Laboratories, Inc.) under the control of the strong promoter pLtetO-1, resulting in the plasmids pCRP-x, where x denotes the allele. In the absence of TetR, the pLtetO-1 promoter is constitutively active. In order to regulate promoter activity, the tetR gene from transposon Tn10 was amplified using the primers TetR_F (ACC AGC GGC CGC AAG GAG ATA GAA ATG ATG TCT AGA TTA GAT AA) and TetR_R (ATC ATT AAT TTA AGA CCC ACT TTC AGA TT) and then inserted into the NotI and AseI restriction sites of pPROTet.E. As TetR represses expression from the pLtetO-1 by binding to an operator sequence within the promoter and sterically inhibiting RNA polymerase, this promoter is inactive in the absence of atc inducer. In the presence of inducer, TetR no longer binds the promoter and inhibits expression. The high copy number ColE1 origin of replication of pPROTet.E was also replaced with the medium copy number p15a origin of replication from the plasmid pZA31 by swapping the fragments generated by the restriction sites of AvrII and SacI in order to make the pCRP plasmids compatible with pd2EGFP.
+###end p 13
+###begin title 14
+Library construction and screening
+###end title 14
+###begin p 15
+Randomization of the middle six positions within the CRP operator site (positions 9, 10 and 11) was achieved using EIPCR with the degenerate primers. In the case of the Om5 reporter, the target of the screens, the primers 5'-GGA AAG GTC TCA TGT AAN NNN NNT TAC AGA TTA GGC AC-3' and 5'-GAC TAG GTC TCA TAC AGT AAT TGC GTT GCG C-3' were used. A similar procedure was used to randomize positions 5, 7 and 8 in the Owt reporter. To screen for operator sequences that we activated by one of the CRP variants, cells transformed with the appropriate plasmids were plated, allowed to grow overnight, and screened for GFP expression using UV light. Fluorescent colonies were then picked, sequenced and analyzed using the methods described below.
+###end p 15
+###begin title 16
+Fluorescence and cellular growth measurements
+###end title 16
+###begin p 17
+###xml 93 100 93 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 271 277 265 271 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600 nm</sub>
+###xml 93 100 <span type="species:ncbi:562">E. coli</span>
+To measure the gene expression of the green fluorescent protein (GFP) and the cell growth in E. coli, cultures were grown overnight in 3 ml of LB in test tubes with the appropriate antibiotics and inducers with constant shaking at 37degreesC. End-point fluorescent and OD600 nm measurements were taken in a Tecan Safire2 microplate reader, where 100 mul of culture was first transferred to a 96-well microplate. The excitation wavelength was 488 nm, and the emission wavelength was 520 nm. Bandwidth was specified at 10 nm, and the gain was set to 45. Four readings were taken in each well, and all of the measurements were the result of three independent growth experiments.
+###end p 17
+###begin title 18
+RESULTS
+###end title 18
+###begin title 19
+Results from comparative analysis of CRP/FNR family of transcription factors
+###end title 19
+###begin p 20
+###xml 54 56 54 56 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+###xml 170 178 170 178 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="T1">Tables 1</xref>
+###xml 183 184 183 184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="T2">2</xref>
+###xml 415 417 415 417 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B28">28</xref>
+###xml 515 517 515 517 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+###xml 518 520 518 520 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B29">29</xref>
+###xml 656 660 656 660 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">HcpR</italic>
+###xml 668 678 668 678 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lostriduim</italic>
+###xml 683 692 683 692 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Treponema</italic>
+###xml 750 754 750 754 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">HcpR</italic>
+###xml 758 782 758 782 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Porphiromonas gingivalis</italic>
+###xml 862 866 862 866 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CooA</italic>
+###xml 874 887 874 887 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Desulfovibrio</italic>
+###xml 897 905 897 905 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 1.</label>
+###xml 905 928 905 928 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="21">Operator site mutations</p>
+###xml 905 928 905 928 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="21">Operator site mutations</p></caption>
+###xml 928 928 928 928 <inline-graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkp079i1.jpg"/>
+###xml 928 928 928 928 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"><inline-graphic xlink:href="gkp079i1.jpg"/></td>
+###xml 928 928 928 928 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1"><inline-graphic xlink:href="gkp079i1.jpg"/></td></tr>
+###xml 928 928 928 928 <tbody xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" align="left"><tr><td rowspan="1" colspan="1"><inline-graphic xlink:href="gkp079i1.jpg"/></td></tr></tbody>
+###xml 928 928 928 928 <table xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" frame="hsides" rules="groups"><tbody align="left"><tr><td rowspan="1" colspan="1"><inline-graphic xlink:href="gkp079i1.jpg"/></td></tr></tbody></table>
+###xml 928 1265 928 1265 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="22">Bolded bases denote mutations. The shaded columns denote the bases that made direct contact to amino-acid side chains in wild-type CRP. Based on the structure of DNA-bound CRP, Arg180 contacts the guanine at position 5, Glu181 contacts cytosine at position 5, and Arg185 contacts the guanine at position 7 and thymine at position 8 (22).</p>
+###xml 928 1265 928 1265 <fn xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="22">Bolded bases denote mutations. The shaded columns denote the bases that made direct contact to amino-acid side chains in wild-type CRP. Based on the structure of DNA-bound CRP, Arg180 contacts the guanine at position 5, Glu181 contacts cytosine at position 5, and Arg185 contacts the guanine at position 7 and thymine at position 8 (22).</p></fn>
+###xml 928 1265 928 1265 <table-wrap-foot xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><fn><p textid="22">Bolded bases denote mutations. The shaded columns denote the bases that made direct contact to amino-acid side chains in wild-type CRP. Based on the structure of DNA-bound CRP, Arg180 contacts the guanine at position 5, Glu181 contacts cytosine at position 5, and Arg185 contacts the guanine at position 7 and thymine at position 8 (22).</p></fn></table-wrap-foot>
+###xml 897 1265 897 1265 <table-wrap xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="T1" position="float"><label>Table 1.</label><caption><p textid="21">Operator site mutations</p></caption><table frame="hsides" rules="groups"><tbody align="left"><tr><td rowspan="1" colspan="1"><inline-graphic xlink:href="gkp079i1.jpg"/></td></tr></tbody></table><table-wrap-foot><fn><p textid="22">Bolded bases denote mutations. The shaded columns denote the bases that made direct contact to amino-acid side chains in wild-type CRP. Based on the structure of DNA-bound CRP, Arg180 contacts the guanine at position 5, Glu181 contacts cytosine at position 5, and Arg185 contacts the guanine at position 7 and thymine at position 8 (22).</p></fn></table-wrap-foot></table-wrap>
+###xml 1265 1273 1265 1273 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 2.</label>
+###xml 1273 1286 1273 1286 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="23">CRP mutations</p>
+###xml 1273 1286 1273 1286 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="23">CRP mutations</p></caption>
+###xml 1286 1286 1286 1286 <inline-graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkp079i2.jpg"/>
+###xml 1286 1286 1286 1286 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"><inline-graphic xlink:href="gkp079i2.jpg"/></td>
+###xml 1286 1286 1286 1286 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1"><inline-graphic xlink:href="gkp079i2.jpg"/></td></tr>
+###xml 1286 1286 1286 1286 <tbody xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" align="left"><tr><td rowspan="1" colspan="1"><inline-graphic xlink:href="gkp079i2.jpg"/></td></tr></tbody>
+###xml 1286 1286 1286 1286 <table xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" frame="hsides" rules="groups"><tbody align="left"><tr><td rowspan="1" colspan="1"><inline-graphic xlink:href="gkp079i2.jpg"/></td></tr></tbody></table>
+###xml 1286 1443 1286 1443 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="24">Bolded residues denote mutations. The designations CRP4 and CRP4&#8242; are used to emphasize that both mutations are predicted to bind the same Om4 operator site.</p>
+###xml 1286 1443 1286 1443 <fn xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="24">Bolded residues denote mutations. The designations CRP4 and CRP4&#8242; are used to emphasize that both mutations are predicted to bind the same Om4 operator site.</p></fn>
+###xml 1286 1443 1286 1443 <table-wrap-foot xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><fn><p textid="24">Bolded residues denote mutations. The designations CRP4 and CRP4&#8242; are used to emphasize that both mutations are predicted to bind the same Om4 operator site.</p></fn></table-wrap-foot>
+###xml 1265 1443 1265 1443 <table-wrap xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="T2" position="float"><label>Table 2.</label><caption><p textid="23">CRP mutations</p></caption><table frame="hsides" rules="groups"><tbody align="left"><tr><td rowspan="1" colspan="1"><inline-graphic xlink:href="gkp079i2.jpg"/></td></tr></tbody></table><table-wrap-foot><fn><p textid="24">Bolded residues denote mutations. The designations CRP4 and CRP4&#8242; are used to emphasize that both mutations are predicted to bind the same Om4 operator site.</p></fn></table-wrap-foot></table-wrap>
+Following our previous comparative genomics analysis (20), we identified eight regulator-operator cognate sequence pairs for mutagenesis and subsequent genetic analysis (Tables 1 and 2). Five of the regulators (CRP1-4') have cognate operator sites that have been experimentally characterized, and binding sites or profiles were obtained from the RegTransBase database of literature-culled protein-DNA interactions (28). Three of the regulators (CRP5-7) had binding-site predictions based on computational analysis (20,29) that were used to design their corresponding operator sites. Om5 is based on the consensus sequence of 22 predicted binding sites for HcpR across lostriduim and Treponema species, Om6 matches a single predicted binding site for HcpR in Porphiromonas gingivalis, and Om7 is based on the consensus sequence for 17 predicted binding sites for CooA in two Desulfovibrio species. Table 1.Operator site mutationsBolded bases denote mutations. The shaded columns denote the bases that made direct contact to amino-acid side chains in wild-type CRP. Based on the structure of DNA-bound CRP, Arg180 contacts the guanine at position 5, Glu181 contacts cytosine at position 5, and Arg185 contacts the guanine at position 7 and thymine at position 8 (22).Table 2.CRP mutationsBolded residues denote mutations. The designations CRP4 and CRP4' are used to emphasize that both mutations are predicted to bind the same Om4 operator site.
+###end p 20
+###begin p 21
+Operator site mutations
+###end p 21
+###begin p 22
+Bolded bases denote mutations. The shaded columns denote the bases that made direct contact to amino-acid side chains in wild-type CRP. Based on the structure of DNA-bound CRP, Arg180 contacts the guanine at position 5, Glu181 contacts cytosine at position 5, and Arg185 contacts the guanine at position 7 and thymine at position 8 (22).
+###end p 22
+###begin p 23
+CRP mutations
+###end p 23
+###begin p 24
+Bolded residues denote mutations. The designations CRP4 and CRP4' are used to emphasize that both mutations are predicted to bind the same Om4 operator site.
+###end p 24
+###begin p 25
+###xml 51 53 51 53 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+###xml 269 271 269 271 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+###xml 358 365 358 365 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 764 772 764 772 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F1">Figure 1</xref>
+###xml 1321 1330 1321 1330 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1.</label>
+###xml 1529 1531 1529 1531 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B22">22</xref>
+###xml 1625 1627 1625 1627 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+###xml 1330 1965 1330 1965 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="26">Multiple sequence alignment of the DNA-recognition helix within candidate proteins from the CRP/FNR family of transcription factors. Residues in CRP known to make specific contacts within DNA bases (<xref ref-type="bibr" rid="B22">22</xref>) are highlighted in black. The specificity-determining residues from Rodionov and coworkers (<xref ref-type="bibr" rid="B20">20</xref>) correspond to columns 4, 5 and 10. Note that the specificity determining residues for PrfA are somewhat ambiguous due to an insertion in the alignment relative to CRPwt. The numbers in parentheses denote the region of the protein shown in the alignment and the mutant column designates the corresponding CRP mutation used in this study.</p>
+###xml 1330 1965 1330 1965 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="26">Multiple sequence alignment of the DNA-recognition helix within candidate proteins from the CRP/FNR family of transcription factors. Residues in CRP known to make specific contacts within DNA bases (<xref ref-type="bibr" rid="B22">22</xref>) are highlighted in black. The specificity-determining residues from Rodionov and coworkers (<xref ref-type="bibr" rid="B20">20</xref>) correspond to columns 4, 5 and 10. Note that the specificity determining residues for PrfA are somewhat ambiguous due to an insertion in the alignment relative to CRPwt. The numbers in parentheses denote the region of the protein shown in the alignment and the mutant column designates the corresponding CRP mutation used in this study.</p></caption>
+###xml 1965 1965 1965 1965 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkp079f1"/>
+###xml 1321 1965 1321 1965 <fig xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="F1" position="float"><label>Figure 1.</label><caption><p textid="26">Multiple sequence alignment of the DNA-recognition helix within candidate proteins from the CRP/FNR family of transcription factors. Residues in CRP known to make specific contacts within DNA bases (<xref ref-type="bibr" rid="B22">22</xref>) are highlighted in black. The specificity-determining residues from Rodionov and coworkers (<xref ref-type="bibr" rid="B20">20</xref>) correspond to columns 4, 5 and 10. Note that the specificity determining residues for PrfA are somewhat ambiguous due to an insertion in the alignment relative to CRPwt. The numbers in parentheses denote the region of the protein shown in the alignment and the mutant column designates the corresponding CRP mutation used in this study.</p></caption><graphic xlink:href="gkp079f1"/></fig>
+###xml 358 365 <span type="species:ncbi:562">E. coli</span>
+Motivated by the success of the comparative study (20) in predicting binding specificity from a small number of residues, we made the simplifying assumption that the mode of binding is identical within the CRP family of regulators studied. Although our original study (20) identified two amino-acid positions, corresponding to Arg180/Glu181 in the wild-type E. coli CRP (CRPwt), as sufficient for predicting specificity, a third position, corresponding to Arg185, makes significant contact within the major groove and thus was also targeted for mutagenesis. Our strategy was to modify only these three residues, keeping the remainder of the CRP protein intact in an attempt to maintain its stability and effector-binding properties. A multiple sequence alignment (Figure 1) provided a mapping from regulators with different specificities within the CRP family to specificity-determining residues in CRPwt. We note that the mapping from PrfA (CRP3) is ambiguous since there is a single amino-acid insertion between the two clusters of conserved residues. Nonetheless, we attempted to transfer PrfA-like specificity into CRP by anchoring our alignment on the position corresponding to Arg185 in CRPwt, as this site is both well-conserved across the family and is involved in significant major groove interactions in CRPwt. Figure 1.Multiple sequence alignment of the DNA-recognition helix within candidate proteins from the CRP/FNR family of transcription factors. Residues in CRP known to make specific contacts within DNA bases (22) are highlighted in black. The specificity-determining residues from Rodionov and coworkers (20) correspond to columns 4, 5 and 10. Note that the specificity determining residues for PrfA are somewhat ambiguous due to an insertion in the alignment relative to CRPwt. The numbers in parentheses denote the region of the protein shown in the alignment and the mutant column designates the corresponding CRP mutation used in this study.
+###end p 25
+###begin p 26
+###xml 199 201 199 201 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B22">22</xref>
+###xml 295 297 295 297 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+Multiple sequence alignment of the DNA-recognition helix within candidate proteins from the CRP/FNR family of transcription factors. Residues in CRP known to make specific contacts within DNA bases (22) are highlighted in black. The specificity-determining residues from Rodionov and coworkers (20) correspond to columns 4, 5 and 10. Note that the specificity determining residues for PrfA are somewhat ambiguous due to an insertion in the alignment relative to CRPwt. The numbers in parentheses denote the region of the protein shown in the alignment and the mutant column designates the corresponding CRP mutation used in this study.
+###end p 26
+###begin title 27
+Reporter system
+###end title 27
+###begin p 28
+###xml 92 96 92 96 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+###xml 151 155 151 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+###xml 194 196 194 196 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B30">30</xref>
+###xml 350 358 350 358 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 464 467 464 467 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 479 482 475 478 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 484 488 480 484 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp&#8722;</italic>
+###xml 533 541 529 537 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 576 580 572 576 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp&#8722;</italic>
+###xml 657 660 649 652 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 1078 1081 1070 1073 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 1361 1369 1353 1361 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 1398 1402 1390 1394 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp&#8211;</italic>
+As an indirect measure of CRP-DNA binding, we employed a transcriptional fusion between the lacZ promoter and the green fluorescent protein (GFP). The lacZ promoter requires CRP for expression (30). Therefore, by measuring fluorescence, we could determine whether different CRP variants were able to bind their cognate operator site and activate the lacZ-gfp transcriptional fusion. To test the suitability of this reporter, we measured fluorescence in wild-type (crp+) and Deltacrp (crp-) cells (Figure S1). In wild-type cells, the lacZ-gfp reporter is active whereas in the crp- background it is inactive. Furthermore, we were able to complement the Deltacrp mutant by expressing CRP from an atc-inducible promoter (see 'Materials and Methods' section for details). When atc was added to the growth media, near (70%) wild-type levels of expression were observed. Weak expression, on the other hand, was observed in the absence of atc due to the inducible promoter being slightly leaky. We also expressed CRP from the atc-inducible promoter in wild-type cells where the native crp locus was intact. In the absence of atc, a moderate inhibition of expression relative to wild type occurred for reasons unknown. Conversely, in the presence of atc, a moderate enhancement of expression was observed. Thus, we were able to conditionally activate expression of the lacZ-gfp transcriptional fusion in a crp- background by expressing CRP from a regulated promoter. This atc-inducible promoter was used in all subsequent studies involving the different CRP variants.
+###end p 28
+###begin p 29
+This assay is more stringent than a DNA-binding assay because a positive read out requires both DNA binding and activation of transcription; our assay does not distinguish between mutations that can bind their cognate operator sequence but fail to activate transcription from those that simply do not bind their cognate operator sequence. However, as mutations were made only to the three amino-acid residues in CRP that directly contact base pairs in the major groove, these changes are unlikely to affect activation, although the possibility cannot be discounted. For an example of the latter, these mutations could somehow affect the ability of CRP to contact RNA polymerase by disrupting the mode of DNA binding. In addition, these mutations may affect protein stability or have some other, unknown biochemical effect. Despite these potential limitations, this assay is ideally suited for our ultimate goal of re-engineering the specificity of CRP, namely to use these mutated transcription factors for reprogramming gene expression.
+###end p 29
+###begin title 30
+Analysis of CRP and operator site mutations in isolation
+###end title 30
+###begin p 31
+###xml 54 61 54 61 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="T1">Table 1</xref>
+###xml 91 94 91 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 133 141 133 141 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 336 344 336 344 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 401 404 401 404 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 447 455 447 455 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 535 538 535 538 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 554 557 550 553 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 559 562 555 558 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 574 582 570 578 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F2">Figure 2</xref>
+###xml 593 597 589 593 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp+</italic>
+###xml 861 868 857 864 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="T1">Table 1</xref>
+###xml 1146 1149 1142 1145 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 1163 1165 1159 1161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B31">31</xref>
+###xml 1412 1416 1408 1412 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp&#8722;</italic>
+###xml 1595 1604 1591 1600 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 2.</label>
+###xml 1605 1606 1601 1602 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</bold>
+###xml 1622 1630 1618 1626 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 1704 1707 1696 1699 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 1716 1717 1708 1709 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</bold>
+###xml 1733 1741 1725 1733 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 1801 1804 1789 1792 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 1888 1889 1876 1877 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</bold>
+###xml 1905 1913 1893 1901 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 1974 1977 1958 1961 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 2122 2130 2106 2114 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 2170 2173 2154 2157 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 1604 2187 1600 2171 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="32">(<bold>A</bold>) Expression of <italic>lacZ-gfp</italic> transcriptional fusion with mutated operator sites in wild-type and &#916;<italic>crp</italic> cells. (<bold>B</bold>) Expression of <italic>lacZ-gfp</italic> transcriptional fusion with mutated operator sites in &#916;<italic>crp</italic> cells when wild-type CRP is ectopically expressed from an atc-inducible promoter. (<bold>C</bold>) Expression of <italic>lacZ-gfp</italic> transcriptional fusion with wild-type operator site in &#916;<italic>crp</italic> when the different CRP variants are ectopically expressed from an atc-inducible promoter. All expression values were normalized relative to the <italic>lacZ-gfp</italic> transcriptional fusion in a wild-type (<italic>crp</italic>+) background.</p>
+###xml 1604 2187 1600 2171 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="32">(<bold>A</bold>) Expression of <italic>lacZ-gfp</italic> transcriptional fusion with mutated operator sites in wild-type and &#916;<italic>crp</italic> cells. (<bold>B</bold>) Expression of <italic>lacZ-gfp</italic> transcriptional fusion with mutated operator sites in &#916;<italic>crp</italic> cells when wild-type CRP is ectopically expressed from an atc-inducible promoter. (<bold>C</bold>) Expression of <italic>lacZ-gfp</italic> transcriptional fusion with wild-type operator site in &#916;<italic>crp</italic> when the different CRP variants are ectopically expressed from an atc-inducible promoter. All expression values were normalized relative to the <italic>lacZ-gfp</italic> transcriptional fusion in a wild-type (<italic>crp</italic>+) background.</p></caption>
+###xml 2187 2187 2171 2171 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkp079f2"/>
+###xml 1595 2187 1591 2171 <fig xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="F2" position="float"><label>Figure 2.</label><caption><p textid="32">(<bold>A</bold>) Expression of <italic>lacZ-gfp</italic> transcriptional fusion with mutated operator sites in wild-type and &#916;<italic>crp</italic> cells. (<bold>B</bold>) Expression of <italic>lacZ-gfp</italic> transcriptional fusion with mutated operator sites in &#916;<italic>crp</italic> cells when wild-type CRP is ectopically expressed from an atc-inducible promoter. (<bold>C</bold>) Expression of <italic>lacZ-gfp</italic> transcriptional fusion with wild-type operator site in &#916;<italic>crp</italic> when the different CRP variants are ectopically expressed from an atc-inducible promoter. All expression values were normalized relative to the <italic>lacZ-gfp</italic> transcriptional fusion in a wild-type (<italic>crp</italic>+) background.</p></caption><graphic xlink:href="gkp079f2"/></fig>
+Based on the results from the computational analysis (Table 1), mutations were made to the crp gene and CRP operator site within the lacZ-gfp reporter as described in the 'Materials and Methods' section. To facilitate comparisons, the values in all subsequent figures are normalized to the relative fluorescence values measured for the lacZ-gfp reporter with a wild-type operator site in a wild-type (crp+) background. We first tested whether the lacZ-gfp reporter with mutations to the CRP operator site would be active in wild-type (crp+) and the Deltacrp (crp-) strains (Figure 2A). In the crp+ background, all of the reporters with mutated operator sites were inactive with the exception of the Om4 reporter. Of the bases that directly interact with amino-acid side chains, only position 5 has been changed in Om4, where the guanine was mutated to thymine (Table 1). This guanine is known to form hydrogen bonds with the side chains of Arg180. Previously, Zhang and Ebright observed a 4-fold reduction in gene expression when position 5 was changed to a thymine, similar to Om4, and wild-type CRP was expressed from a plasmid in an otherwise crp- background (31). We, on the other hand, observed no decrease in gene expression with a thymine at position 5 when wild-type CRP was expressed from its native locus. Note that the wild-type guanine at position 9 has also been changed to a thymine in Om4. In the crp- background, all of the promoters, as expected, were inactive. These results also indicate that no other protein binds to these mutant operator sites and activates transcription. Figure 2.(A) Expression of lacZ-gfp transcriptional fusion with mutated operator sites in wild-type and Deltacrp cells. (B) Expression of lacZ-gfp transcriptional fusion with mutated operator sites in Deltacrp cells when wild-type CRP is ectopically expressed from an atc-inducible promoter. (C) Expression of lacZ-gfp transcriptional fusion with wild-type operator site in Deltacrp when the different CRP variants are ectopically expressed from an atc-inducible promoter. All expression values were normalized relative to the lacZ-gfp transcriptional fusion in a wild-type (crp+) background.
+###end p 31
+###begin p 32
+###xml 1 2 1 2 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</bold>
+###xml 18 26 18 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 100 103 96 99 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 112 113 108 109 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</bold>
+###xml 129 137 125 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 197 200 189 192 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 284 285 276 277 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</bold>
+###xml 301 309 293 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 370 373 358 361 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 518 526 506 514 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 566 569 554 557 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+(A) Expression of lacZ-gfp transcriptional fusion with mutated operator sites in wild-type and Deltacrp cells. (B) Expression of lacZ-gfp transcriptional fusion with mutated operator sites in Deltacrp cells when wild-type CRP is ectopically expressed from an atc-inducible promoter. (C) Expression of lacZ-gfp transcriptional fusion with wild-type operator site in Deltacrp when the different CRP variants are ectopically expressed from an atc-inducible promoter. All expression values were normalized relative to the lacZ-gfp transcriptional fusion in a wild-type (crp+) background.
+###end p 32
+###begin p 33
+###xml 153 156 153 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 170 178 170 178 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F2">Figure 2</xref>
+###xml 518 520 518 520 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B31">31</xref>
+###xml 1171 1173 1171 1173 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B22">22</xref>
+###xml 1238 1241 1238 1241 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+We also tested the operator mutations when wild-type CRP (designated CRPwt in the figures) was expressed from the atc-inducible promoter in an otherwise crp- background (Figure 2B). Consistent with our previous results, all of the reporters were inactive in the absence of atc. In the presence of atc, only the reporters with the wild type and Om4 operator site were active. In the case of Om4, we observed slightly weaker expression relative to Owt, which was more in agreement with the results of Zhang and Ebright (31). We do note that weak expression was observed for the reporters with operator sites Om5, Om6 and Om7 in the presence of atc, roughly the same level observed for the wild-type operator (Owt) in the absence of atc. The mutations in Om5 involve, amongst others, changing the guanine at position 7 to an adenine whereas the mutations in Om6 and Om7 both involve, amongst others, changing the guanine and adenine at positions 7 and 8 to a cytosine and guanine, respectively. As the two bases at positions 7 and 8 form hydrogen bonds with the side chains of Glu181 and Arg185 in the case of wild-type CRP, the similar behavior of Om6 and Om7 is expected (22). Overall, these results are consistent with the results in the crp+ background, with the exception of weak activation in the cases of Om5, Om6 and Om7. We cannot explain why weak activation is observed when CRP is expressed ectopically whereas no activation is observed when CRP is expressed from its native locus.
+###end p 33
+###begin p 34
+###xml 106 109 106 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 123 131 123 131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F2">Figure 2</xref>
+###xml 306 308 306 308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B32">32</xref>
+Finally, we tested the ability of the different CRP mutants to activate the wild-type (Owt) reporter in a crp- background (Figure 2C). Of the eight CRP variants, none were capable of activating the wild-type reporter. Ebright and colleagues previously analyzed a Val181 substitution, the same as our CRP2 (32). Consistent with our results, where CRP2 does not activate the Owt reporter, they demonstrated that this mutation eliminates the interaction between the side chain and the guanine at position 7, resulting in a 10-fold reduction in binding affinity.
+###end p 34
+###begin title 35
+Results from pairing cognate CRP and operator mutations
+###end title 35
+###begin p 36
+###xml 129 132 129 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 146 154 146 154 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F3">Figure 3</xref>
+###xml 774 777 774 777 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 1075 1079 1075 1079 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+###xml 1080 1083 1080 1083 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gfp</italic>
+###xml 1474 1483 1474 1483 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 3.</label>
+###xml 1517 1525 1517 1525 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 1687 1695 1687 1695 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 1735 1738 1735 1738 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 1483 1752 1483 1752 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="37">Results obtained when pairing the <italic>lacZ-gfp</italic> transcriptional fusion with the cognate CRP mutation ectopically expressed from an atc-inducible promoter. All expression values were normalized relative to the <italic>lacZ-gfp</italic> transcriptional fusion in a wild-type (<italic>crp</italic>+) background.</p>
+###xml 1483 1752 1483 1752 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="37">Results obtained when pairing the <italic>lacZ-gfp</italic> transcriptional fusion with the cognate CRP mutation ectopically expressed from an atc-inducible promoter. All expression values were normalized relative to the <italic>lacZ-gfp</italic> transcriptional fusion in a wild-type (<italic>crp</italic>+) background.</p></caption>
+###xml 1752 1752 1752 1752 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkp079f3"/>
+###xml 1474 1752 1474 1752 <fig xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="F3" position="float"><label>Figure 3.</label><caption><p textid="37">Results obtained when pairing the <italic>lacZ-gfp</italic> transcriptional fusion with the cognate CRP mutation ectopically expressed from an atc-inducible promoter. All expression values were normalized relative to the <italic>lacZ-gfp</italic> transcriptional fusion in a wild-type (<italic>crp</italic>+) background.</p></caption><graphic xlink:href="gkp079f3"/></fig>
+Next we tested the computational predictions by pairing the different CRP mutations with their cognate promoters in an otherwise crp- background (Figure 3). Of the eight CRP mutations predicted from the analysis, four were able to activate the reporters containing their cognate operator site, three strongly and one weakly. In the case of CRP1, strong activation was observed both in the presence and absence of atc inducer. Note that this mutant involves the most severe changes, replacing the wild-type Arg180-Glu181-Arg185 triad with a His180-Val181-Lys185 triad. The fact that this mutation (CRP1) was able to activate its cognate promoter (Om1) in the absence of the atc inducer indicates that binding was particularly strong. As we have noted, weak expression of the crp gene still occurs in the absence of atc due to 'leakiness' in the inducible system. Therefore, the apparently strong affinity between CRP1 and Om1 appears to compensate for reduced expression in the absence of atc. In the case of CRP4, we observed that it was able to bind to Om4 and activate the lacZ-gfp transcriptional reporter in a dose-dependent manner, similar to wild-type but unlike CRP1-Om1 pair. This mutant involves a Pro180 substitution. Also, recall that wild-type CRP was able to bind to and activate the Om4 reporter whereas CRP4 was unable to do the same with the wild-type reporter. These results suggest that the Pro180 substitution increases the specificity of binding to Om4. Figure 3.Results obtained when pairing the lacZ-gfp transcriptional fusion with the cognate CRP mutation ectopically expressed from an atc-inducible promoter. All expression values were normalized relative to the lacZ-gfp transcriptional fusion in a wild-type (crp+) background.
+###end p 36
+###begin p 37
+###xml 34 42 34 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 204 212 204 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 252 255 252 255 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+Results obtained when pairing the lacZ-gfp transcriptional fusion with the cognate CRP mutation ectopically expressed from an atc-inducible promoter. All expression values were normalized relative to the lacZ-gfp transcriptional fusion in a wild-type (crp+) background.
+###end p 37
+###begin p 38
+###xml 196 199 196 199 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 422 430 422 430 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F4">Figure 4</xref>
+###xml 1195 1204 1195 1204 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 4.</label>
+###xml 1397 1405 1397 1405 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 1445 1448 1445 1448 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 1204 1462 1204 1462 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="39">Expression with the CRP7&#8211;Om7 pair at varying levels of atc induction. As a reference, all other results involve atc induction at 20 ng/ml. All expression values were normalized relative to the <italic>lacZ-gfp</italic> transcriptional fusion in a wild-type (<italic>crp</italic>+) background.</p>
+###xml 1204 1462 1204 1462 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="39">Expression with the CRP7&#8211;Om7 pair at varying levels of atc induction. As a reference, all other results involve atc induction at 20 ng/ml. All expression values were normalized relative to the <italic>lacZ-gfp</italic> transcriptional fusion in a wild-type (<italic>crp</italic>+) background.</p></caption>
+###xml 1462 1462 1462 1462 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkp079f4"/>
+###xml 1195 1462 1195 1462 <fig xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="F4" position="float"><label>Figure 4.</label><caption><p textid="39">Expression with the CRP7&#8211;Om7 pair at varying levels of atc induction. As a reference, all other results involve atc induction at 20 ng/ml. All expression values were normalized relative to the <italic>lacZ-gfp</italic> transcriptional fusion in a wild-type (<italic>crp</italic>+) background.</p></caption><graphic xlink:href="gkp079f4"/></fig>
+In the case of CRP7 and Om7, we observed activation only in the absence of atc inducer. This mutant consists of a Gln181/Thr185 double substitution. Note that as the Om7 reporter is inactive in a crp- background, this result means that weak expression of CRP7 is capable of strongly activating the Om7 reporter. Further investigation demonstrated that the CRP7-Om7 combination is only active at low levels of atc inducer (Figure 4). At higher levels, no activation is observed. Furthermore, there is a moderate decrease (25%) in cell density at higher atc concentrations (results not shown), suggesting that the CRP7-Om7 pairing may be toxic to cells under strong induction conditions. Note that the other pairings, assuming they were capable of activation, yielded dose-dependent activation of gene expression with respect to increasing atc concentrations (results not shown). Strangely, wild-type CRP, which weakly activates the Om7 reporter, does not have this inverse response or any effect on cell density. Why the Om7 reporter coupled with CRP7 exhibits this behavior is not known. We note that no decrease in viability or gene expression due to atc was observed with the other reporters. Figure 4.Expression with the CRP7-Om7 pair at varying levels of atc induction. As a reference, all other results involve atc induction at 20 ng/ml. All expression values were normalized relative to the lacZ-gfp transcriptional fusion in a wild-type (crp+) background.
+###end p 38
+###begin p 39
+###xml 193 201 193 201 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 241 244 241 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+Expression with the CRP7-Om7 pair at varying levels of atc induction. As a reference, all other results involve atc induction at 20 ng/ml. All expression values were normalized relative to the lacZ-gfp transcriptional fusion in a wild-type (crp+) background.
+###end p 39
+###begin p 40
+###xml 258 266 258 266 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+Finally, we also observed weak activation in the case of the CRP5/Om5 pair at levels roughly 25% wild type. CRP5 involves a Pro181 substitution. All other CRP mutations were unable to bind to their cognate operator sequence and activate transcription of the lacZ-gfp reporter. Overall, these results indicate that between 37% (3/8) and 50% (4/8) mutations work as predicted, depending on one's measure of success.
+###end p 40
+###begin title 41
+Results from pairing CRP and operator mutations
+###end title 41
+###begin p 42
+###xml 93 101 93 101 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F5">Figure 5</xref>
+###xml 1095 1102 1095 1102 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="T1">Table 1</xref>
+###xml 1311 1320 1311 1320 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 5.</label>
+###xml 1406 1407 1406 1407 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</bold>
+###xml 1441 1442 1441 1442 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</bold>
+###xml 1515 1523 1515 1523 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 1561 1564 1561 1564 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 1647 1651 1647 1651 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+###xml 1320 1812 1320 1812 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="43">Results obtained when pairing all CRP mutations against all operator site mutations. (<bold>A</bold>) Results in the absence of atc; (<bold>B</bold>) Results in presence of atc. All values were normalized relative to the <italic>lacZ-gfp</italic> transcription fusion in a wild-type (<italic>crp</italic>+) background. To improve contrast, all values less than 10% the expression of the <italic>lacZ</italic> promoter in a wild-type background were displayed as having zero expression. The standard deviation for all pairs was less than ten percent (results not shown).</p>
+###xml 1320 1812 1320 1812 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="43">Results obtained when pairing all CRP mutations against all operator site mutations. (<bold>A</bold>) Results in the absence of atc; (<bold>B</bold>) Results in presence of atc. All values were normalized relative to the <italic>lacZ-gfp</italic> transcription fusion in a wild-type (<italic>crp</italic>+) background. To improve contrast, all values less than 10% the expression of the <italic>lacZ</italic> promoter in a wild-type background were displayed as having zero expression. The standard deviation for all pairs was less than ten percent (results not shown).</p></caption>
+###xml 1812 1812 1812 1812 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkp079f5"/>
+###xml 1311 1812 1311 1812 <fig xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="F5" position="float"><label>Figure 5.</label><caption><p textid="43">Results obtained when pairing all CRP mutations against all operator site mutations. (<bold>A</bold>) Results in the absence of atc; (<bold>B</bold>) Results in presence of atc. All values were normalized relative to the <italic>lacZ-gfp</italic> transcription fusion in a wild-type (<italic>crp</italic>+) background. To improve contrast, all values less than 10% the expression of the <italic>lacZ</italic> promoter in a wild-type background were displayed as having zero expression. The standard deviation for all pairs was less than ten percent (results not shown).</p></caption><graphic xlink:href="gkp079f5"/></fig>
+We also tested specificity by pairing all CRP mutations against all operator site mutations (Figure 5). In the absence of atc inducer, we observed strong activation by the CRP6-Om7 pair and weak activation by the CRP5-Om4 pair. In the case of Om7, this operator site mutation was also activated by CRP7 in the absence of inducer as shown previously. As a comparison, CRP6 involves an Ala181/Arg185 substitution whereas CRP7 involves a Gln181/Thr185 substitution. The Om7 mutation involves changing the wild-type guanine and adenine at positions 7 and 8 to cytosine and guanine, respectively. Recall, these two bases are the ones predicted to interact with the residues at positions 181 and 185. Thus, the Ala181 and Arg185 substitutions have the same effect as the Glu181 and Thr185 ones despite different chemistries. Furthermore, Om6 also involves the same changes at positions 7 and 8, yet neither CRP6 nor CRP7 is able to activate expression when paired with it, either in the presence or absence of atc inducer. The only differences between Om6 and Om7 are the bases at positions 9 and 10 (Table 1), which do not make direct contact with the amino-acid side chains in CRPwt. Therefore, we conclude that these non-specific mutations prevent both CRP6 and CRP7 from binding to the mutated operator site Om6. Figure 5.Results obtained when pairing all CRP mutations against all operator site mutations. (A) Results in the absence of atc; (B) Results in presence of atc. All values were normalized relative to the lacZ-gfp transcription fusion in a wild-type (crp+) background. To improve contrast, all values less than 10% the expression of the lacZ promoter in a wild-type background were displayed as having zero expression. The standard deviation for all pairs was less than ten percent (results not shown).
+###end p 42
+###begin p 43
+###xml 86 87 86 87 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</bold>
+###xml 121 122 121 122 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</bold>
+###xml 195 203 195 203 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ-gfp</italic>
+###xml 241 244 241 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp</italic>
+###xml 327 331 327 331 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+Results obtained when pairing all CRP mutations against all operator site mutations. (A) Results in the absence of atc; (B) Results in presence of atc. All values were normalized relative to the lacZ-gfp transcription fusion in a wild-type (crp+) background. To improve contrast, all values less than 10% the expression of the lacZ promoter in a wild-type background were displayed as having zero expression. The standard deviation for all pairs was less than ten percent (results not shown).
+###end p 43
+###begin p 44
+In the presence of atc, we observed both strong and weak activation with a number of non-canonical pairs. In the case of CRP1, it was able to activate promoters with the non-canonical Om3 reporter in addition to the canonical Om1 reporter. Both Om1 and Om3 are identical at positions 5, 7 and 8, the bases that make direct contact with the amino-acid side chains at residues 180, 181 and 185 in CRPwt. The only difference between these two operator mutations are at positions 9 and 10, the bases thought to have non-specific interactions with CRP. Note that CRP1 does not activate the Om3 reporter in the absence of atc, unlike the CRP1-Om1 pair. Therefore, these differences at positions 9 and 10 have a strong effect on affinity (thymine and guanine for Om1 versus cytosine and adenine for Om3); for Om1 only a small amount of CRP1 is necessary for activation whereas for Om3 a lot is needed.
+###end p 44
+###begin p 45
+In the case of Om4, we observed strong activation by CRP4 and CRPwt and weak activation by CRP5 and CRP7. Om4 is unique among the operator site mutations in that positions 7 and 8 are unchanged. All other operator sites involve changes at positions 7 or 8. Both CRP4 and CRPwt, which activate Om4 the strongest, are unchanged at Glu181 and Arg185, the residues that interact directly with the bases at positions 7 and 8. Note that CRP4' is also unchanged at these two positions, though it is unable to activate Om4. The difference is the Val180 substitution in the case of CRP4' versus a Pro180 substitution in the case of CRP4. Despite both CRP4 and CRPwt being able to activate the Om4 reporter, CRP4 is unable to activate the Owt reporter whereas, obviously, CRPwt can. These results suggest that Pro180 side chain is unable to form hydrogen bonds with the wild-type guanine at position 5 or that it disrupts the alpha-helical structure, altering the protein's binding mode. However, both the wild-type Arg180 and mutant Pro180 side chains can form hydrogen bonds with the mutated thymine at position 5 in the case of Om4. Finally, the weak activators of the Om4 reporter, CRP5 and CRP7, have unchanged, wild-type Arg180 and Arg185 residues. Therefore, the Glu181 side chain appears to be necessary for strong activation. Note that CRP5 is able to weakly activate Om4 in both the presence and absence of atc inducer. The results suggest that CRP5 is able to bind the Om4 site strongly. However, CRP5 is unable to strongly activate transcription, suggesting its mode of binding may be altered.
+###end p 45
+###begin title 46
+Optimizing designs using simple genetic screen
+###end title 46
+###begin p 47
+###xml 790 798 790 798 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F6">Figure 6</xref>
+###xml 1578 1587 1578 1587 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 6.</label>
+###xml 1587 1919 1587 1919 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="48">Results obtained from screen of randomized operator sites. In these experiments, we screened for increased CRP5 activation of Om5 reporter by randomizing positions 9, 10 and 11 in the operator sequences. The resulting sequences isolated in the screen were as follows: Om5*1 (TCCGGT), Om5*2 (CAGTGA), Om5*2 (GCTGGA) and Om5 (CATATC).</p>
+###xml 1587 1919 1587 1919 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="48">Results obtained from screen of randomized operator sites. In these experiments, we screened for increased CRP5 activation of Om5 reporter by randomizing positions 9, 10 and 11 in the operator sequences. The resulting sequences isolated in the screen were as follows: Om5*1 (TCCGGT), Om5*2 (CAGTGA), Om5*2 (GCTGGA) and Om5 (CATATC).</p></caption>
+###xml 1919 1919 1919 1919 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkp079f6"/>
+###xml 1578 1919 1578 1919 <fig xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="F6" position="float"><label>Figure 6.</label><caption><p textid="48">Results obtained from screen of randomized operator sites. In these experiments, we screened for increased CRP5 activation of Om5 reporter by randomizing positions 9, 10 and 11 in the operator sequences. The resulting sequences isolated in the screen were as follows: Om5*1 (TCCGGT), Om5*2 (CAGTGA), Om5*2 (GCTGGA) and Om5 (CATATC).</p></caption><graphic xlink:href="gkp079f6"/></fig>
+Three of the four CRP mutants were capable of activating reporters containing a cognate operator site at roughly wild-type levels. The fourth (CRP5/Om5), however, could activate its reporter at a level only 15% of wild type. We hypothesized that weak activation may be due to limitations in the ability of the computational analysis to resolve the consensus operator site. In particular, there are a number of non-specific interactions that may not be resolved solely through sequence analysis. To test whether we could improve activation by CRP5, we randomized the middle six positions in Om5 (positions 9, 10 and 11) and then screened for increased activity. In our simple screen, we were able to isolate three variants with increased activity with respect to the canonical Om5 reporter (Figure 6). While these results still do not approach wild-type levels, we are encouraged because our screen is far from comprehensive, and they demonstrate that the computational designs can further be improved using directed evolution-based approaches. In particular, the Om5*2 reporter resulted in roughly a 60% increase in activation by CRP5. Likely, further increases could be obtained in a more comprehensive screen, where multiple positions would be randomized. We note that we also tried screening for operator sequences that would be activated by the CRP mutants that failed to activate their cognate sequence (CRP2, CPR3, CRP4' and CRP6) by randomizing positions 5, 7 and 8 in Owt. However, we did not find sequences that were activated by these CRP variants in similar screens. Figure 6.Results obtained from screen of randomized operator sites. In these experiments, we screened for increased CRP5 activation of Om5 reporter by randomizing positions 9, 10 and 11 in the operator sequences. The resulting sequences isolated in the screen were as follows: Om5*1 (TCCGGT), Om5*2 (CAGTGA), Om5*2 (GCTGGA) and Om5 (CATATC).
+###end p 47
+###begin p 48
+Results obtained from screen of randomized operator sites. In these experiments, we screened for increased CRP5 activation of Om5 reporter by randomizing positions 9, 10 and 11 in the operator sequences. The resulting sequences isolated in the screen were as follows: Om5*1 (TCCGGT), Om5*2 (CAGTGA), Om5*2 (GCTGGA) and Om5 (CATATC).
+###end p 48
+###begin title 49
+DISCUSSION
+###end title 49
+###begin p 50
+###xml 201 203 201 203 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+###xml 731 735 731 735 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+###xml 862 866 862 866 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+In this study, we explored the use of comparative genomics as a tool for transcription factor engineering. Based on correlations derived from a previous study of nitrogen oxide metabolism in bacteria (20), we experimentally tested eight different mutations for their ability to change DNA-binding specificity using CRP as the template. In all cases, the mutations were made to a triad of amino acids (Arg180/Glu181/Arg185) that are known to directly contact DNA bases within the major groove. These three amino acids alone were predicted to be sufficient for DNA-binding specificity within the CRP/FNR family. For each set of mutations made to CRP, we also made a corresponding set of mutations to the CRP operator site within the lacZ promoter. Of the eight CRP variants, four were able to bind their cognate operator sequence and activate transcription of the lacZ promoter. Though the results, in general, are less dramatic than the wild-type CRP/Owt pair, they provide excellent targets for subsequent refinement by directed evolution and other more traditional methods. Along these lines, we were able to demonstrate that we could improve activation by the CRP5/Om5 pair by screening for operator sequences with select positions randomized. While this screen was limited, it nonetheless demonstrates that further refinement is possible.
+###end p 50
+###begin p 51
+###xml 210 212 210 212 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B33">33</xref>
+###xml 282 284 282 284 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B34">34</xref>
+###xml 285 287 285 287 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B35">35</xref>
+###xml 1005 1010 1005 1010 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B36 B37 B38 B39">36&#8211;39</xref>
+###xml 1525 1527 1525 1527 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B38">38</xref>
+Utilizing genomic data to inform protein engineering is not a new idea. For example, the active site in an enzyme can often be determined within a multiple sequence alignment by identifying conserved residues (33) or specificity-determining conserved within functional subfamilies (34,35) within a multiple sequence alignment. In the case of transcription factors, however, a multiple sequence alignment often will not suffice, as the DNA-binding sequence must also be considered in the analysis. In particular, identifying the specificity determining residues is often not sufficient for design purposes. Rather, we seek to identify the specific amino acids that bind different DNA sequences. Therefore, the new idea in this work is to use mutual information between transcription factors and their target DNA-binding sequences to inform protein engineering. In many regards, the computational approach used to generate the predictions tested here is similar to those used to study interacting proteins (36-39). These approaches work under the assumption that any mutation to a specificity-determining residue on one binding partner must be matched by a compensating mutation to a specificity-determining residue on the other binding partner. By studying the co-variation of residues among binding partners in a given family of proteins, one can identify the specificity-determining residues and then apply the information to inform protein engineering. Of notable significance is the recent work by Skerker and colleagues (38), where they were able to utilize these data to change the specificity of the EnvZ histidine kinase for its target response regulator. In conjunction with the analogous work presented here, these results demonstrate how purely genomic-based approaches can inform the re-engineering of protein interactions.
+###end p 51
+###begin p 52
+###xml 509 511 509 511 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B40">40</xref>
+###xml 919 921 919 921 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+###xml 1337 1344 1337 1344 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 1375 1377 1375 1377 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B41">41</xref>
+###xml 1337 1344 <span type="species:ncbi:562">E. coli</span>
+One limitation of the use of genomic-based approaches for transcription factor engineering is our ability to identify the target DNA-binding sequences and also discriminate among the potentially large number of DNA-sequences that these proteins can bind to. In the case of the work by Skerker and colleagues, the advantage of their system is that histidine kinase-response regulator pairs can often be inferred directly through their proximity in the genome, as they both typically reside in the same operon (40). Furthermore, most histidine kinases interact exclusively with a single response regulator. In the case of transcription factors, identifying the target DNA-binding sequence is often impossible unless other data are available. The results used in this work were obtained from a comparative study of nitrogen oxide metabolism that integrated multiple data from both experimental and computational analysis (20). For an arbitrary family of transcription factors, such results may not always be forthcoming. Furthermore, there is always a degree of uncertainty, often unquantifiable, associated with the identification of target-binding sites. Finally, with regards to specificity, many transcription factors are known to regulate multiple target genes. For example, CRP is estimated to regulate approximately 200 promoters in E. coli and other relative organisms (41). This promiscuity adds an extra degree of complexity, as the protein/operator site pairs often cannot directly be assigned and instead consensus sequences must be estimated. Despite these challenges, our results demonstrate the utility of these approaches for bacterial transcription factor engineering.
+###end p 52
+###begin p 53
+###xml 361 365 361 365 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">crp&#8722;</italic>
+###xml 1195 1197 1195 1197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B42">42</xref>
+###xml 1358 1360 1358 1360 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B43">43</xref>
+###xml 1361 1363 1361 1363 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B44">44</xref>
+Our results also uncovered some surprising results, highlighting our limited understanding of even simple protein-DNA interactions. When CRP7 was paired with the Om7 reporter, expression was induced at low levels of CRP expression and repressed at high. This reporter was also toxic at high levels of CRP7 expression. Moreover, the reporter was not active in a crp- background and showed weak, dose-dependent behavior with wild-type CRP, suggesting a complex, concentration-dependent interaction between this regulator-operator pair. In addition, significant cross-talk was observed in the case of wild-type CRP, which activated reporters with Om4 and Om7 in addition to the wild-type reporter, whereas the mutant regulators displayed far less promiscuity. From an evolutionary perspective, this cross-talk is not entirely unexpected; most of the regulator-operator pairs were taken from different species, so there may be no explicit evolutionary pressure to avoid crosstalk. Because large regulons such as the one dictated by CRP include an enormous diversity of promoters, the duplication and specialization of regulators could be a general mechanism in the evolution of regulatory pathways (42), especially given the observation that birth and evolutionary turnover of regulatory sites may occur at a very fast rate even under relatively weak selection (43,44).
+###end p 53
+###begin p 54
+###xml 248 250 248 250 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B22">22</xref>
+An additional puzzle concerns the role of bases within the operator sequence that do not make direct contact with amino-acid side chains. Previous work has established that only positions 5, 7 and 8 make direct contact with amino-acid side chains (22). In addition to these bases, our results demonstrate that the so-called, non-specific bases also affect binding and specificity. For example, both Om1 and Om3 are identical at positions 5, 7 and 8, yet their response to CRP1 is different. In the case of Om1, CRP1 binds this site so strongly that it is able to activate transcription both in the presence and absence of atc inducer. However, in the case of Om3, CRP3 is able to activate transcription only in the presence of atc (i.e. at high levels of expression). Similarly, Om2 and Om5 are identical at positions 5, 7 and 8, yet wild-type CRP is only able to activate promoters with Om5, albeit weakly. Finally, in the case of Om5, we were able to improve the ability of CRP5 to activate these promoters by modifying positions 9, 10 and 11. Collectively, these results show that these 'non-specific' bases likely do make specific interactions, though the mode may be quite complex. Moreover, as we focused only on the residues that make specific contact and saw weaker activation in general than wild type, future endeavors will likely need to consider optimizing non-specific binding as these interactions may be needed to facilitate and/or compensate for changes to the core contacts.
+###end p 54
+###begin p 55
+###xml 136 140 136 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+###xml 253 255 253 255 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B16">16</xref>
+###xml 559 561 559 561 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B32">32</xref>
+###xml 578 586 578 586 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F3">Figure 3</xref>
+###xml 652 656 652 656 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lacZ</italic>
+###xml 734 742 734 742 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vitro</italic>
+We note that CRP2 was previously identified by Ebright and colleagues in a genetic selection for CRP mutants that were able to bind the lacZ promoter with an adenine or thymine at position 7 within the CRP operator site, a condition that Om2 satisfies (16). In addition to the valine substitution, they also found a lysine and leucine. Subsequent analysis demonstrated that the Val181 (and Leu181) substitution was unable to distinguish between different bases at position 7, resulting in roughly a 10-fold decrease in binding affinity relative to wild type (32). As discussed (Figure 3), we found that CRP2 was unable to activate transcription of the lacZ promoter involving the Om2 operator site, results that correspond with their in vitro binding analysis.
+###end p 55
+###begin p 56
+###xml 771 776 771 776 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B45 B46 B47">45&#8211;47</xref>
+In the context of transcription factor engineering, we have shown that comparative genomics can be used to computationally isolate mutations that alter DNA-binding specificity. Previously, in the case of bacteria, these designs have resulted from randomized screens. With regards to applications, engineered transcription factors with novel DNA-binding specificity can greatly facilitate the design of synthetic gene circuits, as they expand the number of components available to build these circuits. One challenge in constructing these gene circuits is that the designs are limited by the number of components available that do not interfere with host physiology. Engineering such orthogonal components has been central focus in the nascent field of synthetic biology (45-47). In addition, these engineered transcription factors provide additional tools for fine tuning gene expression with cells, a key task in uncovering new regulation and also for potentially designing new therapeutics approaches.
+###end p 56
+###begin p 57
+###xml 561 563 561 563 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B48">48</xref>
+###xml 564 566 564 566 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B49">49</xref>
+We note that one limitation of the approach explored in this work is that it does not provide information regarding the strength of the protein-DNA interaction. The analysis is based simply on correlations derived from sequence analysis and provides no information regarding binding energies. With regards to gene regulation, the final product is ultimately linked to the template protein. In our case, where the template is CRP, the natural product is a transcriptional activator. However, CRP is also a transcription repressor for a number of promoters [cf. (48,49)], so it can potentially be used to engineer repressors with novel specificity. In addition, the approach tested in this work can be applied to other families of transcription factors, including repressors.
+###end p 57
+###begin p 58
+To what extent is there a 'code' for transcription factor specificity? Our previous study suggested a three amino-acid code may be sufficient for inferring specificity in the CRP/FNR family of regulators. The results reported here highlight the importance of a combined computational and experimental approach: the amino acids sufficient for inferring the specificity of known regulators, but insufficient to design novel regulators. Thus, the residues at these positions may constrain binding to a small number of possible operator sites, even if they contribute only a fraction of the total energy of binding. For example, in our previous study, we found that the identity of two residues (positions 180 and 181) were sufficient to predict binding specificity (i.e. each unique combination of residues at these positions mapped to a unique binding site). However, a careful inspection of the CRP-DNA co-crystal structure indicates contacts between position 185 and the major groove, motivating us to include position 185 in our redesign experiments.
+###end p 58
+###begin p 59
+###xml 249 251 249 251 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B50">50</xref>
+###xml 280 282 280 282 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B51">51</xref>
+###xml 327 329 327 329 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B52">52</xref>
+###xml 350 352 350 352 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B53">53</xref>
+###xml 353 355 353 355 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B54">54</xref>
+###xml 399 401 399 401 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B55">55</xref>
+###xml 655 662 655 662 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 727 729 727 729 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B56">56</xref>
+###xml 730 732 730 732 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B57">57</xref>
+###xml 746 748 746 748 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B58">58</xref>
+###xml 749 751 749 751 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B59">59</xref>
+###xml 767 772 767 772 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B60 B61 B62 B63">60&#8211;63</xref>
+###xml 655 662 <span type="species:ncbi:562">E. coli</span>
+In a broader evolutionary context, our results show that it is possible to create orthogonal regulatory pathways after a surprisingly small number of mutational steps. Novel regulatory pathways are thought to evolve through gene duplication events (50), horizontal gene transfer (51), changes in the specificity of regulators (52) and site turnover (53,54) yielding rewiring of regulatory pathways (55). In order for these new pathways to form, transcription factors must mutate so that they no longer regulate their old target genes but instead target new ones. Sometimes we may observe early stages of this process; some examples of recently duplicated E. coli regulators partially sharing their binding sites are UxuR/ExuR (56,57), GalS/GalR (58,59)and NarL/NarP (60-63). In the case of regulators from the CRP/FNR family (and likely other helix-turn-helix transcription factors), specificity is predominantly determined by a core set of residues. The limited number of residues implies that these regulatory networks are quite plastic, as only a few mutations either to the protein or operator sites are necessary to change specificity and introduce new regulation or rewire existing networks. One open question is why there is only a small set of possible motifs observed within this family. Is this a structural constraint or are entirely new specificities possible within this family?
+###end p 59
+###begin p 60
+###xml 259 261 259 261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B12">12</xref>
+In conclusion, we have shown experimentally that comparative genomics can be used to inform transcription factor engineering. To date, bacterial transcription factor engineering has exclusively utilized direct evolution/random mutagenesis or domain swapping (12). In particular, few computational approaches exist particularly in the case of bacterial transcription factors. Based on the computational analysis of co-variation between the specificity-determining residues within the DNA-recognition helix and the cognate, consensus binding sequence, we were able to engineer novel DNA-binding specificity in CRP. In fact, four out of eight designs worked as predicted with no subsequent refinement. Likely, the application of these computational approaches for engineering novel specificity in other proteins will also utilize directed evolution for subsequent refinement. One question might then be why employ computational approaches at all. As our results showed, many of the designs that actually worked involved multiple mutations to both the CRP protein and operator site. Searching such a large space of possible sequences is extremely labor intensive. The computational approach described in this work can focus mutagenesis to a core set of targets, greatly reducing the number of mutants needed to screen and also expanding the range of likely targets.
+###end p 60
+###begin title 61
+SUPPLEMENTARY DATA
+###end title 61
+###begin p 62
+ are available at NAR Online.
+###end p 62
+###begin title 63
+FUNDING
+###end title 63
+###begin p 64
+National Science Foundation CAREER Award CBET-0644744 [to C.V.R.] and grants from the U.S. Department of Energy Genomics:GTL program [to E.J.A.]. Partially support from the Howard Hughes Medical Institute (55005610), the Russian Foundation of Basic Research (08-04-01000), and the program 'Molecular and Cellular Biology' of the Russian Academy of Sciences [D.R. and M.G.]. Funding for open access charge: National Science Foundation CAREER CBET-0644744.
+###end p 64
+###begin p 65
+###xml 0 30 0 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Conflict of interest statement</italic>
+Conflict of interest statement. None declared.
+###end p 65
+###begin title 66
+Supplementary Material
+###end title 66
+###begin title 67
+[Supplementary Data]
+###end title 67
+###begin title 68
+ACKNOWLEDGEMENTS
+###end title 68
+###begin p 69
+We are grateful to Alexandra Rakhmaninova, Desislava Miteva and Vita Stepanova for sharing unpublished results.
+###end p 69
+###begin title 70
+REFERENCES
+###end title 70
+###begin article-title 71
+The regulation of bacterial transcription initiation
+###end article-title 71
+###begin article-title 72
+Transcription factors: structural families and principles of DNA recognition
+###end article-title 72
+###begin article-title 73
+Towards an understanding of protein-DNA recognition
+###end article-title 73
+###begin article-title 74
+Protein-DNA recognition patterns and predictions
+###end article-title 74
+###begin article-title 75
+The engineering of gene regulatory networks
+###end article-title 75
+###begin article-title 76
+Synthetic gene circuits: design with directed evolution
+###end article-title 76
+###begin article-title 77
+Genetic parts to program bacteria
+###end article-title 77
+###begin article-title 78
+Metabolic engineering for drug discovery and development
+###end article-title 78
+###begin article-title 79
+Evolvability and hierarchy in rewired bacterial gene networks
+###end article-title 79
+###begin article-title 80
+###xml 43 59 <span type="species:ncbi:562">Escherichia coli</span>
+Construction of a genetic toggle switch in Escherichia coli
+###end article-title 80
+###begin article-title 81
+Programmable cells: interfacing natural and engineered gene networks
+###end article-title 81
+###begin article-title 82
+Engineering proteins that bind, move, make and break DNA
+###end article-title 82
+###begin article-title 83
+Substituting an alpha-helix switches the sequence-specific DNA interactions of a repressor
+###end article-title 83
+###begin article-title 84
+Changing the binding specificity of a repressor by redesigning an alpha-helix
+###end article-title 84
+###begin article-title 85
+Changing the DNA-binding specificity of a repressor
+###end article-title 85
+###begin article-title 86
+###xml 94 101 <span type="species:ncbi:562">E. coli</span>
+Mutations that alter the DNA sequence specificity of the catabolite gene activator protein of E. coli
+###end article-title 86
+###begin article-title 87
+Engineering polydactyl zinc-finger transcription factors
+###end article-title 87
+###begin article-title 88
+The Genomes On Line Database (GOLD) in 2007: status of genomic and metagenomic projects and their associated metadata
+###end article-title 88
+###begin article-title 89
+Geometric analysis and comparison of protein-DNA interfaces: why is there no simple code for recognition?
+###end article-title 89
+###begin article-title 90
+Dissimilatory metabolism of nitrogen oxides in bacteria: comparative reconstruction of transcriptional networks
+###end article-title 90
+###begin article-title 91
+Phylogeny of the bacterial superfamily of Crp-Fnr transcription regulators: exploiting the metabolic spectrum by controlling alternative gene programs
+###end article-title 91
+###begin article-title 92
+Catabolite activator protein: DNA binding and transcription activation
+###end article-title 92
+###begin article-title 93
+Structural alignment of protein-DNA interfaces: insights into the determinants of binding specificity
+###end article-title 93
+###begin article-title 94
+Connecting protein structure with predictions of regulatory sites
+###end article-title 94
+###begin article-title 95
+A structure-based approach for prediction of protein binding sites in gene upstream regions
+###end article-title 95
+###begin article-title 96
+###xml 46 67 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+One-step inactivation of chromosomal genes in Escherichia coli K-12 using PCR products
+###end article-title 96
+###begin article-title 97
+Enzymatic inverse PCR: a restriction site independent, single-fragment method for high-efficiency, site-directed mutagenesis
+###end article-title 97
+###begin article-title 98
+RegTransBase - a database of regulatory sequences and interactions in a wide range of prokaryotic genomes
+###end article-title 98
+###begin article-title 99
+Reconstruction of regulatory and metabolic pathways in metal-reducing delta-proteobacteria
+###end article-title 99
+###begin article-title 100
+Transcription activation by catabolite activator protein (CAP)
+###end article-title 100
+###begin article-title 101
+Identification of a contact between arginine-180 of the catabolite gene activator protein (CAP) and base pair 5 of the DNA site in the CAP-DNA complex
+###end article-title 101
+###begin article-title 102
+###xml 104 120 <span type="species:ncbi:562">Escherichia coli</span>
+Role of glutamic acid-181 in DNA-sequence recognition by the catabolite gene activator protein (CAP) of Escherichia coli: altered DNA-sequence-recognition properties of [Val181]CAP and [Leu181]CAP
+###end article-title 102
+###begin article-title 103
+Identification of functional residues and secondary structure from protein multiple sequence alignment
+###end article-title 103
+###begin article-title 104
+Automated selection of positions determining functional specificity of proteins by comparative analysis of orthologous groups in protein families
+###end article-title 104
+###begin article-title 105
+Using orthologous and paralogous proteins to identify specificity-determining residues in bacterial transcription factors
+###end article-title 105
+###begin article-title 106
+Co-evolving motions at protein-protein interfaces of two-component signaling systems identified by covariance analysis
+###end article-title 106
+###begin article-title 107
+Features of protein-protein interactions in two-component signaling deduced from genomic libraries
+###end article-title 107
+###begin article-title 108
+Rewiring the specificity of two-component signal transduction systems
+###end article-title 108
+###begin article-title 109
+Amino acids determining enzyme-substrate specificity in prokaryotic and eukaryotic protein kinases
+###end article-title 109
+###begin article-title 110
+Two-component signal transduction pathways regulating growth and cell cycle progression in a bacterium: a system-level analysis
+###end article-title 110
+###begin article-title 111
+Identification of the CRP regulon using in vitro and in vivo transcriptional profiling
+###end article-title 111
+###begin article-title 112
+The role of DNA-binding specificity in the evolution of bacterial regulatory networks
+###end article-title 112
+###begin article-title 113
+From biophysics to evolutionary genetics: statistical aspects of gene regulation
+###end article-title 113
+###begin article-title 114
+Evolutionary population genetics of promoters: predicting binding sites and functional phylogenies
+###end article-title 114
+###begin article-title 115
+Fast, cheap and somewhat in control
+###end article-title 115
+###begin article-title 116
+Synthetic biology through biomolecular design and engineering
+###end article-title 116
+###begin article-title 117
+Modular approaches to expanding the functions of living matter
+###end article-title 117
+###begin article-title 118
+###xml 22 38 <span type="species:ncbi:562">Escherichia coli</span>
+Autoregulation of the Escherichia coli crp gene: CRP is a transcriptional repressor for its own gene
+###end article-title 118
+###begin article-title 119
+###xml 90 106 <span type="species:ncbi:562">Escherichia coli</span>
+Cyclic AMP-cyclic AMP receptor protein as a repressor of transcription of the spf gene of Escherichia coli
+###end article-title 119
+###begin article-title 120
+Gene regulatory network growth by duplication
+###end article-title 120
+###begin article-title 121
+###xml 76 92 <span type="species:ncbi:562">Escherichia coli</span>
+Horizontal gene transfer and the evolution of transcriptional regulation in Escherichia coli
+###end article-title 121
+###begin article-title 122
+Computational reconstruction of iron- and manganese-responsive transcriptional networks in alpha-proteobacteria
+###end article-title 122
+###begin article-title 123
+Adaptive evolution of transcription factor binding sites
+###end article-title 123
+###begin article-title 124
+Orthologous transcription factors in bacteria have different functions and regulate different genes
+###end article-title 124
+###begin article-title 125
+Comparative genomic analysis of regulation of anaerobic respiration in ten genomes from three families of gamma-proteobacteria (Enterobacteriaceae, Pasteurellaceae, Vibrionaceae)
+###end article-title 125
+###begin article-title 126
+###xml 79 86 <span type="species:ncbi:562">E. coli</span>
+Interchangeability of repressors for the control of the uxu and uid operons in E. coli K12
+###end article-title 126
+###begin article-title 127
+Transcriptional regulation of transport and utilization systems for hexuronides, hexuronates and hexonates in gamma purple bacteria
+###end article-title 127
+###begin article-title 128
+Functional characterization of roles of GalR and GalS as regulators of the gal regulon
+###end article-title 128
+###begin article-title 129
+###xml 47 63 <span type="species:ncbi:562">Escherichia coli</span>
+Signal integration in the galactose network of Escherichia coli
+###end article-title 129
+###begin article-title 130
+###xml 79 100 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+Differential regulation by the homologous response regulators NarL and NarP of Escherichia coli K-12 depends on DNA binding site arrangement
+###end article-title 130
+###begin article-title 131
+###xml 146 167 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+Synthetic lac operator substitutions for studying the nitrate- and nitrite-responsive NarX-NarL and NarQ-NarP two-component regulatory systems of Escherichia coli K-12
+###end article-title 131
+###begin article-title 132
+###xml 47 63 <span type="species:ncbi:562">Escherichia coli</span>
+The nrfA and nirB nitrite reductase operons in Escherichia coli are expressed differently in response to nitrate than to nitrite
+###end article-title 132
+###begin article-title 133
+###xml 29 45 <span type="species:ncbi:562">Escherichia coli</span>
+Coordinate regulation of the Escherichia coli formate dehydrogenase fdnGHI and fdhF genes in response to nitrate, nitrite, and formate: roles for NarL and NarP
+###end article-title 133
+

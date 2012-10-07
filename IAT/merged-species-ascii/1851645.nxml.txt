@@ -1,0 +1,770 @@
+###begin article-title 0
+###xml 62 67 <span type="species:ncbi:9606">human</span>
+Identifying synergistic regulation involving c-Myc and sp1 in human tissues
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution Non-Commercial License (http://creativecommons.org/licenses/by-nc/2.0/uk/) which permits unrestricted non-commercial use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin p 2
+###xml 796 801 <span type="species:ncbi:9606">human</span>
+Combinatorial gene regulation largely contributes to phenotypic versatility in higher eukaryotes. Genome-wide chromatin immuno-precipitation (ChIP) combined with expression profiling can dissect regulatory circuits around transcriptional regulators. Here, we integrate tiling array measurements of DNA-binding sites for c-Myc, sp1, TFIID and modified histones with a tissue expression atlas to establish the functional correspondence between physical binding, promoter activity and transcriptional regulation. For this we develop SLM, a methodology to map c-Myc and sp1-binding sites and then classify sites as sp1-only, c-Myc-only or dual. Dual sites show several distinct features compared to the single regulator sites: specifically, they exhibit overall higher degree of conservation between human and rodents, stronger correlation with TFIID-bound promoters, and preference for permissive chromatin state. By applying regression models to an expression atlas we identified a functionally distinct signature for strong dual c-Myc/sp1 sites. Namely, the correlation with c-Myc expression in promoters harboring dual-sites is increased for stronger sp1 sites by strong sp1 binding and the effect is largest in proliferating tissues. Our approach shows how integrated functional analyses can uncover tissue-specific and combinatorial regulatory dependencies in mammals.
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin p 4
+###xml 160 161 160 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B1">1</xref>
+###xml 162 163 162 163 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B2">2</xref>
+###xml 443 444 443 444 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B3">3</xref>
+###xml 808 809 808 809 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B4">4</xref>
+Understanding how combinatorial regulatory networks contribute to phenotypic diversity in higher organisms is a major challenge of current functional genomics (1,2). To tackle this complex problem a powerful experimental strategy relies on genome-wide chromatin immuno-precipitation (ChIP) experiments which can localize binding sites of transcriptional regulators in a whole genome (ChIP-chip) and hence map protein-DNA interaction networks (3). Furthermore, such experiments can be combined with genomic sequence or expression profiling to assess the link between physical protein-DNA association and functional gene regulation. A key for the success of these methods are bioinformatics algorithms that range from signal analysis to robust integration of complementary data types on a comprehensive scale (4).
+###end p 4
+###begin p 5
+###xml 186 189 186 189 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B5 B6 B7">5&#8211;7</xref>
+###xml 265 266 265 266 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B6">6</xref>
+###xml 267 271 267 271 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B8 B9 B10 B11 B12 B13">8&#8211;13</xref>
+###xml 512 514 512 514 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B14">14</xref>
+###xml 650 652 650 652 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B15">15</xref>
+###xml 681 683 681 683 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B16">16</xref>
+###xml 715 717 715 717 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B17">17</xref>
+###xml 0 5 <span type="species:ncbi:4932">Yeast</span>
+Yeast has been the most extensively studied organism and the only one for which large-scale datasets (>100 DNA-binding proteins) have been produced for the same condition (rich medium) (5-7). In mammalian cells, several specific transcription factors were studied (6,8-13) and datasets for several transcription factors measured in the same conditions are beginning to reveal multi-factorial aspects of gene regulation in mammals, notably around the HNF family of transcription activators in pancreas and liver (14). ChIP was also used to characterize binding of general transcription regulators, as the Taf1 subunit of the initiation complex TFIID (15), the polymerase II enzyme (16) or modified histone patterns (17).
+###end p 5
+###begin p 6
+###xml 242 247 242 247 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B18 B19 B20">18&#8211;20</xref>
+###xml 366 368 366 368 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B21">21</xref>
+###xml 519 524 519 524 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B22 B23 B24 B25">22&#8211;25</xref>
+###xml 691 693 691 693 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B26">26</xref>
+###xml 836 838 836 838 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B27">27</xref>
+###xml 1063 1065 1063 1065 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B28">28</xref>
+###xml 1161 1162 1161 1162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B8">8</xref>
+###xml 1163 1165 1163 1165 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B13">13</xref>
+###xml 1166 1168 1166 1168 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B14">14</xref>
+###xml 1169 1171 1169 1171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B29">29</xref>
+###xml 613 618 <span type="species:ncbi:4932">yeast</span>
+###xml 908 913 <span type="species:ncbi:4932">yeast</span>
+Investigating the functional link between gene expression and transcription factor binding at promoters, computational approaches for explaining co-regulated gene clusters could identify overrepresented sequence motifs in the gene promoters (18-20). Examples of combinatorial regulation through pairs of sequence elements emphasized the importance of element order (21). Other classes of approaches used linear regression to model continuous expression levels in function of sequence elements or ChIP-binding strength (22-25). This approach was extended to multiple and interacting sequence motifs and applied to yeast-cell-cycle data, however at the cost of increased number of parameters (26). An interesting algorithm to tighten co-regulated modules imposed correlations in binding-site patterns (from ChIP) and expression profiles (27). Along this line, integration of large-scale ChIP and expression in yeast reconstructed the active parts of gene regulatory networks by imposing condition specific activity criteria on the static network inferred via ChIP (28). In mammals, integration of ChIP sites with other data types is expected to increase rapidly (8,13,14,29).
+###end p 6
+###begin p 7
+###xml 115 120 115 120 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B30 B31 B32">30&#8211;32</xref>
+###xml 249 251 249 251 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B33">33</xref>
+###xml 252 254 252 254 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B34">34</xref>
+###xml 557 559 557 559 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B35">35</xref>
+###xml 586 588 586 588 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B36">36</xref>
+###xml 637 638 637 638 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B8">8</xref>
+###xml 659 661 659 661 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B10">10</xref>
+###xml 914 915 914 915 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B8">8</xref>
+###xml 916 918 916 918 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B37">37</xref>
+###xml 1069 1071 1069 1071 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B38">38</xref>
+###xml 1195 1197 1195 1197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B39">39</xref>
+###xml 95 100 <span type="species:ncbi:9606">human</span>
+As a highly versatile transcriptional regulator, c-Myc is a proto-oncogene upregulated in many human malignancies (30-32). It encodes a basic helix-loop-helix leucine zipper transcription factor with a role in growth regulation and differentiation (33,34). Bound to its partner Max, the heterodimer induces expression of its targets by direct DNA binding to E-box motifs. Since this is a relatively uninformative criteria for comprehensive target identification, a number of studies have attempted to better characterize target genes, using classical ChIP (35), microarray experiments (36) and more recently ChIP combined with promoter (8) or genomic arrays (10). While it has so far not been possible to refine the target specificity beyond E-box preference, these studies have shown that c-Myc plays a nearly ubiquitous role at core promoters, possibly through interaction with the core transcription machinery (8,37). Likewise the sp1 zinc finger protein (specificity protein 1) is thought to play a critical role in cancer progression by regulating growth factors (38). It is known as a proximal promoter factor that frequently binds multiple GC-boxes upstream of transcription start sites (39), and acts as a transcription co-activator by direct binding to subunits of the basal transcription machinery.
+###end p 7
+###begin p 8
+###xml 222 224 222 224 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B40">40</xref>
+In order to systematically investigate how bound c-Myc and sp1 influence expression of their target genes, we study how the expression of genes that harbor c-Myc or sp1 sites responds across a large collection of tissues (40). Using regression models, we find that genes with both c-Myc-and sp1-binding sites have a distinct expression signature when compared to genes with either site alone. Specifically, we find a group of proliferation associated genes whose correlation with c-Myc mRNA level is increased by the co-localization of c-Myc and sp1 binding at promoters.
+###end p 8
+###begin title 9
+MATERIALS AND METHODS
+###end title 9
+###begin title 10
+Datasets
+###end title 10
+###begin title 11
+Genomic data
+###end title 11
+###begin p 12
+###xml 183 185 183 185 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B41">41</xref>
+###xml 513 521 513 521 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F1">Figure 1</xref>
+###xml 103 108 <span type="species:ncbi:9606">human</span>
+###xml 110 115 <span type="species:ncbi:10090">mouse</span>
+###xml 120 123 <span type="species:ncbi:10116">rat</span>
+Genomic sequence, annotations, chromosomal coordinates of TSSs, genes structure and alignments between human, mouse and rat are publicly available from the UCSC Genome Table browser (41). Based on these coordinates, we define 'genes' as the genomic regions from -1.5 kb upstream of the transcription start site (TSS) to +1 kb downstream of the polyadenylation site (PAS), accounting for roughly 30% of the chromosomes length. Additionally we define distal promoters stretching from -10 kb and -1.5 kb of the TSS (Figure 1A). The intragenic mapping follows the annotation, except for the 5' regions defined as -1.5 kb to +0.5 kb of TSS, and 3'UTR, -1 kb to +1 kb of polyadenylation site (PAS).
+###end p 12
+###begin title 13
+CHiP-chip data
+###end title 13
+###begin p 14
+###xml 46 48 46 48 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B10">10</xref>
+###xml 324 326 324 326 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B43">43</xref>
+###xml 275 280 <span type="species:ncbi:9606">human</span>
+The raw ChIP-chip data is publicly available (10). Recently, c-Myc and sp1 proteins were cross-linked to DNA and purified using specific antibodies. Fragments were amplified with random primers and hybridized on tiling arrays covering the non-repetitive genomic sequences of human chromosomes 21 and 22 at 35 bp resolution (43). The data provides three biological replicas and two technical replicas for each condition. To quantify the enrichment we used the six enriched samples and the six total chromatin samples.
+###end p 14
+###begin p 15
+###xml 46 48 46 48 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B15">15</xref>
+###xml 79 84 <span type="species:ncbi:9606">human</span>
+Coordinates of TFIID binding were taken from (15) () and converted to the UCSC human genome build hg17. c-Myc or sp1 sites falling in windows of +/-2 kb around TFIID sites were classified as close to a TFIID site.
+###end p 15
+###begin p 16
+###xml 46 48 46 48 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B17">17</xref>
+###xml 71 76 <span type="species:ncbi:9606">human</span>
+Histone modification islands were taken from (17) and converted to the human genome build hg17. c-Myc or sp1 sites, or TFIID anchor points localized in the regions reported as di-methylated, tri-methylated or acetylated were classified accordingly.
+###end p 16
+###begin title 17
+Expression microarray data
+###end title 17
+###begin p 18
+###xml 92 94 92 94 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B40">40</xref>
+The publicly available tissue microarray data consists of 79 conditions in duplicate at () (40). We used condition normalized MAS5.0 scores as provided on the website. To map the TSSs to probeset identifiers, we used the tables provided in the UCSC browser.
+###end p 18
+###begin title 19
+Analysis
+###end title 19
+###begin p 20
+We use sequential steps: (1) a background subtraction for Affymetrix tiling arrays; (2) a binding site detection algorithm for ChIP experiments called sliding linear modeling (SLM) followed by a false discovery proportion (FDP) assessment; (3) a classification of sites according to their location with respect to genome annotations, and functional signatures in other comprehensive ChIP experiments; (4) a regression analysis to investigate the relationship between the mapped promoter classes and gene expression as measured on arrays.
+###end p 20
+###begin title 21
+Processing of raw tiling arrays data
+###end title 21
+###begin p 22
+###xml 182 184 182 184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B44">44</xref>
+###xml 185 187 185 187 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B45">45</xref>
+###xml 213 215 213 215 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B46">46</xref>
+###xml 216 218 216 218 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B47">47</xref>
+###xml 330 332 330 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B48">48</xref>
+###xml 441 442 441 442 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 440 442 440 442 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>j</sub></italic>
+###xml 446 447 446 447 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 445 447 445 447 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S<sub>j</sub></italic>
+###xml 452 453 452 453 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 450 453 450 453 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">NS<sub>j</sub></italic>
+###xml 456 457 456 457 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">O</italic>
+###xml 466 467 466 467 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 465 467 465 467 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>j</sub></italic>
+###xml 530 531 530 531 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 526 531 526 531 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j, S<sub>j</sub></italic>
+###xml 538 539 538 539 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 536 539 536 539 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">NS<sub>j</sub></italic>
+###xml 592 593 592 593 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">O</italic>
+###xml 643 644 643 644 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 659 660 659 660 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 712 713 712 713 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 711 713 711 713 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>j</sub></italic>
+###xml 810 812 810 812 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B48">48</xref>
+###xml 813 815 813 815 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B49">49</xref>
+###xml 847 849 847 849 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">il</sub>
+###xml 846 849 846 849 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>il</sub></italic>
+###xml 864 865 864 865 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 903 904 894 895 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">l</italic>
+###xml 909 914 899 904 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A,C,G</italic>
+###xml 915 916 905 906 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 945 948 935 938 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">jil</sub>
+###xml 944 948 934 938 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P<sub>jil</sub></italic>
+###xml 1002 1003 992 993 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 1013 1014 1003 1004 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">l</italic>
+###xml 1027 1028 1017 1018 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 1170 1171 1160 1161 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 1192 1194 1181 1183 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B49">49</xref>
+###xml 1210 1212 1199 1201 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ik</sub>
+###xml 1209 1212 1198 1201 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">q<sub>ik</sub></italic>
+###xml 1348 1350 1337 1339 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kl</sub>
+###xml 1347 1350 1336 1339 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c<sub>kl</sub></italic>
+###xml 1722 1724 1711 1713 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B50">50</xref>
+###xml 1822 1823 1811 1812 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 1820 1823 1809 1812 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">NS<sub>j</sub></italic>
+###xml 1839 1840 1816 1817 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 1842 1843 1819 1820 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 1841 1843 1818 1820 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b<sub>j</sub></italic>
+###xml 1847 1848 1822 1823 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 1956 1958 1931 1933 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B51">51</xref>
+###xml 2015 2016 1988 1989 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 2097 2103 2070 2076 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ad hoc</italic>
+###xml 2114 2115 2087 2088 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 2128 2129 2101 2102 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 2127 2129 2100 2102 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>j</sub></italic>
+###xml 2137 2138 2108 2109 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 2154 2155 2125 2126 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 2164 2165 2135 2136 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 2163 2165 2134 2136 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>j</sub></italic>
+###xml 2171 2172 2142 2143 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 2184 2185 2155 2156 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 2192 2193 2163 2164 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 2191 2193 2162 2164 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S<sub>j</sub></italic>
+###xml 2203 2204 2174 2175 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 2311 2312 2282 2283 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 2309 2312 2280 2283 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">NS<sub>j</sub></italic>
+###xml 2571 2573 2542 2544 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B52">52</xref>
+The analysis is suited for ChIP experiments on high resolution tiling arrays, e.g. 35 bp resolution oligonucleotide arrays (10). Previous analysis methods focused both on chromatin (44,45) and RNA hybridizations (46,47). We implement a background correction for tiling arrays similar to the GCRMA algorithm for expression arrays (48). Background correction is done for each array separately. The intensities are assumed to follow the model Ij = Sj + NSj + O, where Ij is the measured intensity of the perfect match (PM) probe j, Sj and NSj represent the specific and non-specific binding and O is a probe-independent basal fluorescence level. j runs over all n probes on each array. We use the estimator  = min(Ij) - 1 as the minimum PM intensity measured on the array. The non-specific part is modeled as in (48,49) using a linear model:  where ail are position (i in {1, em leader ,  25}) and letter (l in {A,C,G,T}) dependent affinities and Pjil is an indicator variable taking value 1 if the probe j has base l at position i and 0 otherwise. In practice, we reduce the number of parameters by expressing the position dependence using third degree polynomials:  with k in {0,1,2,3} as in (49). Here  where qik are orthogonal Legendre polynomials on the interval [1,25]. Due to the constraints , this leaves 13 independent regression parameters ckl. Since binding of a specific transcription factor is a rare event at the scale of the genome, we fit all probes on the array to the background model. This can be modified by the user in our software if necessary. The fraction of the variance in intensity captured by the model varies from 40 to 60% in the set of 12 arrays. This is comparable or larger than reported in (50). Maximum likelihood estimates of the  (Figure S1A) are computed under the assumption that log(NSj) approximately N(bj,tau2), where . We then define  and . The estimated log of the specific signal is denoted . As in previous work (51) we impose a lower bound on  by requiring that  >/= log(m) to control the extension of the dynamical range at the lower limit. We used an ad hoc choice of m = 10. When Ij -  </= m, we set  = log(m). When Ij -  > m, we set  = E [log(Sj)], where E [ ], represents expectation with respect to a truncated version of the estimated normal density for log(NSj). Specifically  with the upper integration boundary . This estimator behaves as a softer maximum likelihood estimate (Figure S1B). In practice we evaluate the integral numerically using the Gnu Scientific Library (GSL). We then apply quantile normalization (52) in which we pool experiments and controls. Comparison with other background corrections and normalization is provided in Figure S2.
+###end p 22
+###begin title 23
+Estimation of local enrichment and sliding linear model (SLM)
+###end title 23
+###begin p 24
+###xml 89 91 89 91 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B53">53</xref>
+###xml 139 141 139 141 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B53">54</xref>
+###xml 142 144 142 144 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B54">55</xref>
+###xml 422 423 422 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 423 424 423 424 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 458 459 458 459 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 473 474 473 474 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 472 474 472 474 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p<sub>k</sub></italic>
+###xml 493 494 493 494 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e</italic>
+###xml 552 553 548 549 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 552 553 548 549 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 661 662 654 655 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 662 663 655 656 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 671 672 660 661 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e</sub>
+###xml 671 672 660 661 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>e</sub></italic>
+###xml 672 674 661 662 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8712;</sub>
+###xml 674 675 662 663 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 674 675 662 663 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>E</sub></italic>
+###xml 719 720 707 708 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e</italic>
+###xml 762 764 748 750 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ke</sub>
+###xml 762 764 748 750 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>ke</sub></italic>
+###xml 902 903 885 886 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 903 904 886 887 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 918 919 901 902 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 917 919 900 902 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>k</sub></italic>
+###xml 929 930 912 913 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 928 930 911 913 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p<sub>k</sub></italic>
+###xml 933 934 916 917 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 934 935 917 918 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 936 937 919 920 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 944 945 923 924 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 994 995 973 974 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 993 995 972 974 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p<sub>k</sub></italic>
+###xml 998 999 977 978 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 999 1000 978 979 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 1293 1294 1261 1262 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1295 1296 1263 1264 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 1295 1296 1263 1264 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 1302 1303 1270 1271 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</italic>
+###xml 1304 1305 1272 1273 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 1304 1305 1272 1273 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 1390 1391 1358 1359 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 1394 1395 1362 1363 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1431 1432 1399 1400 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</italic>
+###xml 1578 1579 1546 1547 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1699 1701 1667 1669 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B55">56</xref>
+###xml 1788 1789 1756 1757 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1789 1790 1757 1758 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+The closely spaced 25-mers justify an extension of RMA estimators for expression arrays (53). Only the perfect match (PM) probes are used (54,55). To estimate the position-dependent enrichment in the immunoprecipitated samples, SLM applies local multilinear regression to the normalized logarithmic signals. For simplicity, we describe the procedure for a single window centered on probe 0 located at the genomic position p0. The normalized signals of probe k at position pk in the experiment e is described as the superposition of a probe effect alphak common to all samples, and beta represents the enrichment of experiments (E) over controls (C) at position p0:  deltaeinE is an indicator function taking value 1 if e is an experiment and 0 otherwise, and etake are independent Gaussian noise terms with constant variance . beta is estimated locally using a Gaussian kernel centered on the position p0. The kernel wk = exp(-(pk - p0)2/2sigma2) decays with the inter-probe genomic distance |pk - p0| with sigma = 200 bp. The latter scale was chosen since it is much smaller than the width of an expected site but is large enough for local smoothing. On average, the signals from about five probes are smoothed at each position. Maximum likelihood estimators for alpha and beta read:  where 〈E〉k and 〈C〉k stand for as the group average of all experiments, respectively controls, for probe k. |E| is the number of experiments and |C| the number of controls. This shows that the estimator  is a weighted average of the difference between enriched and control samples. We apply a t-like statistic for locally weighted regression , where  is the estimated variance in  (cf. Supplementary any data and (56)) with the (biased) estimated noise strength .  is the estimated signal. The position p0 is then shifted by one probe and the procedure is repeated along the entire chromosome to determine the enrichment at each position. The statistics is then assessed non-parametrically as detailed below.
+###end p 24
+###begin title 25
+Site detection
+###end title 25
+###begin p 26
+###xml 110 111 110 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 314 315 314 315 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">h</italic>
+###xml 546 548 540 542 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B56">57</xref>
+###xml 549 551 543 545 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B57">58</xref>
+###xml 874 875 868 869 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 892 893 886 887 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</sub>
+###xml 891 893 885 887 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n<sub>r</sub></italic>
+###xml 1063 1064 1057 1058 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 1155 1156 1147 1148 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 1167 1168 1159 1160 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 1170 1171 1162 1163 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</sub>
+###xml 1169 1171 1161 1163 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n<sub>r</sub></italic>
+As a first permissive selection, candidate peaks are required to have a minimum of six contiguous probes with t above the local 95th percentile computed locally in 10 kb windows. To summarize each peak, a Gaussian shape () is fit to the probes above the threshold plus the neighboring three probes on either side. h, mu, lambda are used to define the height, location and width of sites. This set of putative sites is then filtered using a resampling method that allows to control the false discovery proportion (FDP). The method is detailed in (57,58). Briefly, to construct the null model, we extract Gaussian shapes as described for all 924 possible label permutations (six experiments and six samples). The sites are then ranked according to their heights and a null-distribution of the test statistics for each rank is computed from the 924 permutations. For each rank r, we retain the nr sites in the correct experiment-control assignment with heights above the 95% percentile in the null-distribution. We then control the FDP by retaining the highest rank r that define a group with </=5% predicted false positives, that is by choosing the largest r such that r/nr </= 0.05.
+###end p 26
+###begin title 27
+Site remapping
+###end title 27
+###begin p 28
+To compare results with the previous analysis we keep hg12 build for the site detection. Localization of sites to the hg17 genome version is determined using the batch coordinate conversion tool liftOver provided with the UCSC genome browser.
+###end p 28
+###begin title 29
+Data and probesets selection
+###end title 29
+###begin p 30
+###xml 98 103 <span type="species:ncbi:9606">human</span>
+We restrict the expression analysis to the 745 probesets in the GNF SymAtlas matching to genes on human chromosome 21 and 22. The reference probeset identifiers for c-Myc and sp1 are 202431_s_at and 214732_at, respectively.
+###end p 30
+###begin title 31
+Regression models for expression data
+###end title 31
+###begin p 32
+###xml 141 142 141 142 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 140 142 140 142 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 154 155 154 155 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 153 155 153 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b<sub>g</sub></italic>
+###xml 180 181 180 181 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 179 181 179 181 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>g</sub></italic>
+###xml 244 245 244 245 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 265 266 265 266 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</italic>
+###xml 280 281 280 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e</italic>
+###xml 290 292 284 286 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ge</sub>
+###xml 290 292 284 286 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>ge</sub></italic>
+###xml 388 389 382 383 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e</italic>
+To assess the relation between gene expression levels and regulator expression levels we introduce gene-specific susceptibilities to c-Myc (ag) and sp1 (bg) via the linear model: Ig is a gene-specific intercept and  the condition normalized log2 expression of gene g in condition e, epsilonge are independent Gaussian noise terms.  and refer to mRNA levels of the regulators in condition e and are our best proxies for their activity levels. Notice that we cannot prove that such susceptibilities reflect direct causal interaction; these can also reflect indirect regulation, or the existence of upstream regulators influencing both the expression of the regulator and the gene under consideration. Multilinear regression parameters and statistics are computed using the software R (). When a gene symbol is represented by multiple probesets, the probesets expression levels are averaged.
+###end p 32
+###begin title 33
+RESULTS
+###end title 33
+###begin title 34
+c-Myc and sp1-binding sites
+###end title 34
+###begin p 35
+###xml 201 203 201 203 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B56">57</xref>
+###xml 304 311 304 311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="T1">Table 1</xref>
+###xml 685 688 661 664 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cis</italic>
+###xml 762 770 738 746 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F1">Figure 1</xref>
+###xml 903 911 879 887 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F1">Figure 1</xref>
+###xml 1127 1129 1103 1105 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B10">10</xref>
+###xml 1509 1511 1473 1475 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B10">10</xref>
+###xml 43 48 <span type="species:ncbi:9606">human</span>
+We evaluate ChIP data for c-Myc and sp1 on human chromosomes 21 and 22 (10) by adapting signal estimators previously developed for GeneChips (Figure S3, Methods). We then apply a resampling technique (57) to control the false discovery proportion (FDP), resulting in 312 sites for c-Myc and 260 for sp1 (Table 1, left, Figure. S6). To examine the localization of sites relative to known genes we use the latest annotations and find that factors are preferentially (approximately75%) located near genes (as defined in the Materials and Methods section). The negligible fraction of sites in the distal promoters (<1%) indicates that sites outside genes (approximately20%) occur far from cis-regulatory enhancers, or that such elements can be located beyond 10 kb (Figure 1A). Among the 75% of sites near genes, sp1 occurs more frequently in 5' regions (from -1.5 kb to +0.5 kb), 75% versus 60% for c-Myc (Figure 1B), which correlates with the known affinity of sp1 for GC-boxes frequently located near TSSs. Thus a significantly higher fraction of all sites (>50% for both factors) bind near TSSs than originally reported (22%, (10)) and we also find fewer sites within genes or in 3' regions (maximally 10%). Specifically, 55% of the sp1 sites overlap with the 358 sites in the original mapping, that is the old peak falls in the interval [mu - 2lambda, mu + 2lambda] defined by the Gaussian shape. Similarly 77% of the c-Myc sites overlap with the 756 original sites. A comparison with original mapping from (10) is detailed in Figure S5 and in the online supplement. Finally no c-Myc or sp1 site maps closer than 10 kb from any of the eight annotated miRNA genes on chromosome 21 and 22.
+###end p 35
+###begin title 36
+Co-localization of c-Myc and sp1 sites is overrepresented at evolutionarily conserved promoters
+###end title 36
+###begin p 37
+###xml 241 249 241 249 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F1">Figure 1</xref>
+###xml 676 678 664 666 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B10">10</xref>
+###xml 708 715 696 703 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="T1">Table 1</xref>
+###xml 810 811 796 797 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 816 819 802 805 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;49</sup>
+###xml 1582 1590 1568 1576 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F2">Figure 2</xref>
+###xml 1639 1641 1625 1627 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B43">44</xref>
+###xml 1336 1341 <span type="species:ncbi:9606">human</span>
+###xml 1346 1351 <span type="species:ncbi:10090">mouse</span>
+###xml 1355 1360 <span type="species:ncbi:9606">human</span>
+###xml 1365 1368 <span type="species:ncbi:10116">rat</span>
+We next study the position of sites relative to TSS by considering the distance between all peaks and each TSS. Sites occur preferentially within 500 bp of annotated TSSs; additionally, the sp1 distribution is tighter and upstream of c-Myc (Figure 1C). This shows that the sp1 site occurs on average 150 bp upstream of annotated TSS, which is encouraging considering the approximately1 kb resolution of the mapping. It is also consistent with the enrichment of GC-boxes found 65 bp upstream of TSSs (the result can be generated at ). The resemblance between the c-Myc and sp1 localization profiles hints at a co-localization of these factors near initiation as found also in (10). Among all sites near TSSs (Table 1, right) we find 130 TSS with dual c-Myc and sp1 sites while the expected overlap is 43 +/- 5 (P < 10-49, hypergeometric distribution). This makes 50% (61% in the original analysis) of sp1 sites and 62% of c-Myc sites (originally 29%) dual sites. Moreover, 96% of all dual sites found in 10 kb windows fall within 1 kb of each other, and without obvious bias in the ordering. In comparison, only 19% of close co-localization is expected under the null hypothesis of random positions in the 10 kb window; thus co-localization is highly non-random. Moreover, positioning the sites with respect to conserved regions between human and mouse or human and rat (genome alignments taken from UCSC, cf. methods section) shows that binding of c-Myc and sp1 often occurs in conserved region, and that the enrichment increases with the conservation level in the aligned regions (Figure 2A). This agrees with previous reports for c-Myc (44), however we add that dual sites are generally more conserved than single sites.
+###end p 37
+###begin title 38
+Functional annotation of sites
+###end title 38
+###begin p 39
+Gene Ontology (GO) analysis restricted to chromosomes 21 and 22 (using the GO Tree Machine ) highlights the dominantly proliferation-associated character of the sites. However, the three groups (c-Myc-only, sp1-only and dual sites) represent distinct functional sub-categories: the dual sites are enriched for genes involved in RNA processing, generation of ATP, DNA checkpoints and ribonucleotide biosynthesis; c-Myc-only sites point to the cell cycle genes; lastly, the sp1-only group relates to intracellular transport (GO results are detailed on our online supplement).
+###end p 39
+###begin title 40
+Dual c-Myc/sp1 sites are enriched near active promoters
+###end title 40
+###begin p 41
+###xml 166 168 166 168 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B15">15</xref>
+###xml 596 598 596 598 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B15">15</xref>
+###xml 835 843 835 843 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F2">Figure 2</xref>
+###xml 923 924 923 924 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 929 931 929 931 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;9</sup>
+###xml 1101 1103 1101 1103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B58">59</xref>
+A recent genome-wide study identified active promoters using an antibody against the TAF1 subunit of the transcription initiation complex TFIID in IMR90 fibroblasts (15). Although the chromatin states of fibroblast and lymphocytes lineages might differ considerably, we find correlations between the TFIID sites and our identified sets, indicating that important characteristics of the regulatory landscape appear conserved across lineages. The first observation is that c-Myc or sp1 are significantly more frequent near active promoters, defined here as the 255 TSSs harboring TFIID sites from (15) and representing 15% of all TSSs on chromosomes 21 and 22. Indeed binding of either c-Myc or sp1 occurs in over 60% of the sites occupied by TFIID, as expected from (8), whereas this fraction is lower than 20% in the absence of TFIID (Figure 2B). Moreover, the relative fraction of dual sites when TFIID binds is over 50% (P < 10-9, hypergeometric test), while the three fractions are roughly comparable in absence of TFIID. This analysis suggests interaction between c-Myc and sp1 at core promoters (59).
+###end p 41
+###begin title 42
+Permissive chromatin distinguishes c-Myc only and dual c-Myc/sp1 sites
+###end title 42
+###begin p 43
+###xml 186 188 186 188 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B17">17</xref>
+###xml 471 473 471 473 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B15">15</xref>
+###xml 781 789 781 789 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F2">Figure 2</xref>
+###xml 1122 1124 1122 1124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B60">60</xref>
+###xml 1222 1224 1222 1224 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B60">61</xref>
+###xml 1275 1276 1275 1276 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1281 1284 1281 1284 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;11</sup>
+###xml 1305 1306 1305 1306 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1311 1314 1311 1314 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;16</sup>
+###xml 1336 1337 1336 1337 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1342 1345 1342 1345 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;15</sup>
+To pursue this hypothesis, we reasoned that the specific role of dual sites might also be reflected in the surrounding chromatin state. We analyze a genome-wide histone profiling study (17) reporting that tri-methylation at H3-K4 lysine residues (and to a lesser extent di-methylation) and acetylation at lysine H3-K9 close to TSSs were hallmarks of active transcriptional units in hepatocellular carcinoma cells (HepG2 line). This was in agreement with the TFIID study (15) in which histone acetylation and methylation (without distinction between di- and tri-methylation) were systematically found near TFIID sites. Despite potential pitfalls in comparing different cell lineages, we find a striking signature in the HepG2 methylation profiles that differentiate the dual sites (Figure 2C). Namely, permissive chromatin islands on chromosomes 21 and 22, characterized by tri-methylation at lysine H3-K4 and acetylation at H3-K9, clearly coincide with a larger fraction of c-Myc or sp1 sites than the ones harbored in the di-methylated H3-K4 islands, characteristic of the less permissive or facultative chromatin state (60). Additionally, the fraction of c-Myc sites is higher in the permissive states, consistent with (61), and this is more pronounced for the dual sites (P < 10-11 for di-methylation; P < 10-16 for tri-methylation; P < 10-15 acetylation; hypergeometric tests).
+###end p 43
+###begin title 44
+Tissue-specific expression for c-Myc and sp1 sites
+###end title 44
+###begin p 45
+###xml 158 160 158 160 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B40">40</xref>
+###xml 783 791 783 791 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F3">Figure 3</xref>
+###xml 1016 1024 1016 1024 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F3">Figure 3</xref>
+###xml 1160 1168 1160 1168 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F3">Figure 3</xref>
+We assess the functionality of the identified ChIP sites by considering the expression profiles of all c-Myc and sp1 sites in a tissue expression compendium (40). We are thus implicitly testing whether binding sites measured in Jurkat cells are functional in other cell types. While this is not expected for all regulators, it may hold here. First, there are many lymphoid-related conditions in the gene expression atlas where we expect similarity in the chromatin states. Second, c-Myc and sp1 are basic transcription factors that mediate generic or conserved functions. Comparing the mean expression levels in all three groups and tissues we find that these are highly correlated with c-Myc mRNA level which probably reflects the connection between c-Myc levels and proliferation (Figure 3A). Moreover while the sp1-only sites have the lowest expression, followed by the c-Myc-only sites, the dual sites are generally expressed at highest levels, noticeably in lymphoid lineages which are closest to Jurkat cells (Figure 3A, tissue track). The association between blood lineage, c-Myc expression and high expression of the dual site targets is quantified in Figure 3B. The mean expression levels of genes with c-Myc sites, or those with dual c-Myc and sp1 sites, are significantly correlated with c-Myc mRNA levels across conditions. For sp1 this correlation is not significant (Figure S7). Interestingly, the dual group is correlated with c-Myc expression with a slope that is approximately30% larger that for c-Myc-only sites, indicating that sp1 may contribute synergistically to the induction by c-Myc. As expected the genes without sites show much weaker correlation. It is also apparent from the conditions with lowest c-Myc mRNA expression that the genes with c-Myc sites, either single or accompanied by sp1 sites, have higher baseline expression than genes without sites, or genes with sp1 only sites (Figure S7). Given that it is highly unlikely that c-Myc sites would systematically hit high affinity probes, this presumably reflects that c-Myc sites are frequent in promoters of housekeeping genes that can be induced by multiple other regulators. A few terminally differentiated conditions appear uncorrelated despite intermediate to high c-Myc expression levels.
+###end p 45
+###begin title 46
+Strong sp1 sites enhance c-Myc susceptibility
+###end title 46
+###begin p 47
+###xml 783 784 783 784 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 835 843 835 843 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F3">Figure 3</xref>
+###xml 859 860 859 860 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 858 860 858 860 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 894 902 894 902 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F4">Figure 4</xref>
+###xml 947 950 947 950 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Myc</sub>
+###xml 946 950 946 950 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>Myc</sub></italic>
+###xml 994 1002 994 1002 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F4">Figure 4</xref>
+###xml 1076 1077 1076 1077 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1075 1077 1075 1077 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b<sub>g</sub></italic>
+###xml 1201 1209 1201 1209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F4">Figure 4</xref>
+###xml 1300 1301 1300 1301 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1299 1301 1299 1301 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 1420 1428 1420 1428 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F4">Figure 4</xref>
+###xml 1637 1638 1637 1638 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1636 1638 1636 1638 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b<sub>g</sub></italic>
+###xml 1664 1672 1664 1672 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F4">Figure 4</xref>
+###xml 1734 1735 1734 1735 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1733 1735 1733 1735 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 1741 1742 1741 1742 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1740 1742 1740 1742 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b<sub>g</sub></italic>
+###xml 1952 1953 1952 1953 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 2005 2006 2005 2006 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 2024 2025 2024 2025 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 2023 2025 2023 2025 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b<sub>g</sub></italic>
+###xml 2170 2171 2158 2159 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 2169 2171 2157 2159 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 2177 2178 2165 2166 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 2176 2178 2164 2166 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b<sub>g</sub></italic>
+###xml 2207 2208 2195 2196 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 2206 2208 2194 2196 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 2265 2266 2253 2254 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 2313 2314 2301 2302 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 2361 2362 2349 2350 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 2360 2362 2348 2350 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b<sub>g</sub></italic>
+###xml 2380 2381 2368 2369 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+Switching from a condition-centered to a gene-centered view, we systematically investigate associations between expression levels of genes and ChIP signals in their promoters. We model the expression levels of all genes in the atlas in function of c-Myc and sp1 mRNA levels using multilinear regression. We aim to test whether a correlation between gene expression and regulator activity reflects the strength of binding sites measured with ChIP. For this, the mRNA levels of the regulators are taken as best proxies for the activity levels of the proteins. The model (M1, methods section) assumes no indirect regulation and measures the gene-specific contributions for each transcription factor. To determine whether the susceptibilities reflect binding strength we use the nominal t scores for binding instead of fixed cutoffs as in Figure 3. We find that ag shows a significant correlation (Figure 4A) with the ChIP signal strength for c-Myc (tMyc) while not significant in the case of sp1 (Figure 4B), even though the sp1-bound promoters exhibit weak systematic positive bg. Analysis shows that for genes with dual sites, c-Myc susceptibility generally increases with the strength of sp1 binding (Figure 4C and D). This synergistic trend is confirmed in a stratified representation showing that ag for promoters with both strong c-Myc and sp1 ChIP sites (the B group) is higher than for promoters with weaker sites (Figure 4E). The regression coefficients for genes in group B are listed in Table S1. The susceptibility to sp1 mRNA level does not show similar differences, although the sp1 sites are subject to a slight increase in bg compared to c-Myc sites (Figure 4F). Turning to the significance of the regression parameters ag and bg, we find that the total fraction of genes that correlate significantly with c-Myc is about 65%, while only about 20% correlate with sp1 (Figure S10). For c-Myc, this fraction increases in the c-Myc only (76%, P = 0.09, hypergeometric test) and dual groups (87%, P = 0.025), while bg does not show large differences across groups. Interestingly, while there is overall bias for positive correlations (approximately65% for both ag and bg), the fraction of positive ag is significantly enriched in the c-Myc only group (84%, P = 0.01) even more so for the dual sites (91%, P = 0.005). Finally the fraction with positive bg is highest (86%, P = 0.026) for the sp1-only sites.
+###end p 47
+###begin title 48
+DISCUSSION
+###end title 48
+###begin p 49
+###xml 1195 1203 1195 1203 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F2">Figure 2</xref>
+###xml 174 179 <span type="species:ncbi:9606">human</span>
+###xml 858 863 <span type="species:ncbi:9606">human</span>
+We combined genome-wide protein-DNA interaction data for the transcription regulators c-Myc, sp1 and for the TAF1 subunit of the TFIID complex with histone modifications and human expression data to establish the functional correspondence between physical binding, promoter activity and transcriptional regulation. Using sliding linear modeling (SLM) and classifying binding sites in Jurkat cells as sp1-only, c-Myc-only or dual, we uncovered that sites with both factors within 1 kb of each other showed several distinct features compared to the single regulator sites. Specifically, the dual sites showed a strong correlation with TFIID-bound promoters, even if the latter were measured in IMR90 fibroblasts. The dual sites also showed preference for permissive chromatin states as measured in HepG2 cells and overall higher degree of conservation between human and rodents. When assessing the relationship between c-Myc, sp1 sites and promoter activity, we have taken the risk of comparing different tissues: sp1 and c-Myc sites are from Jurkat cells, the TFIID sites from fibroblasts and methylation status was measured in HepG2 cells. Surprisingly the consistent distinction of dual sites (Figure 2B and C) indicates that these tissues share comparable chromatin states, which might be rooted in the general proliferating state of immortalized cell lines. Taken together, these findings pointed toward specific functional characteristics of dual sites. Nevertheless, to minimize caveats from difficult comparisons, we have not used the HepG2 and fibroblasts in the study of the expression data.
+###end p 49
+###begin p 50
+###xml 1215 1217 1215 1217 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B61">62</xref>
+Classes of promoters were monitored across large expression datasets to study the relationship between promoter-binding configurations and gene expression. By assuming that many sites measured in Jurkat cells would also be found in other cell lines, linear models were used to determine the susceptibility of sites to the levels of the corresponding regulators as measured in the tissue atlas. We found that for genes harboring both factors, stronger sp1 binding increased the correlation between c-Myc activity and target expression levels. Furthermore, our analysis of correlation with regulator mRNA levels supports the notion that functional c-Myc sites are not strictly cell-type specific, which is consistent with its involvement in basic cellular functions such as growth or transcription. Specifically, the expression levels of genes with c-Myc site correlate well with c-Myc expression levels in the majority of tissues, with some exceptions. These insensitive conditions coincide with terminally differentiated tissues in which chromatin remodeling could prevent response to c-Myc while the conditions with open chromatin respond in a graded manner to the regulator level according to the proposed model (62).
+###end p 50
+###begin p 51
+###xml 49 50 49 50 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B8">8</xref>
+###xml 301 303 301 303 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B62">63</xref>
+###xml 477 479 477 479 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B63">64</xref>
+###xml 492 494 492 494 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B64">65</xref>
+###xml 557 559 557 559 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B33">33</xref>
+###xml 702 703 702 703 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B8">8</xref>
+###xml 704 706 704 706 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B35">35</xref>
+###xml 1159 1161 1159 1161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B14">14</xref>
+###xml 969 974 <span type="species:ncbi:9606">human</span>
+This analysis generalizes an earlier ChIP study (8) where correlation between c-Myc levels and expression of c-Myc sites was discussed. Importantly, we add the dependency on sp1 sites using multilinear regression. Incidentally cooperativity between c-Myc and sp1 has been dissected in the hTert gene (63) which might provide a mechanistic basis for the observed behavior of dual sites. Cooperativity with sp1 has also been reported for other bHLH family members, notably ARNT (64) and SREBP (65). In agreement with studies of the c-Myc regulatory networks (33) Gene Ontology analysis identified biological processes linked to proliferation. Our analysis finds the presence of c-Myc in 16% of all TSSs (8,35), supporting the view that c-Myc might directly interact with the core transcription machinery to induce gene expression and that it might be helped in this task by sp1. In conclusion, the regulatory logic, or the way the c-Myc and sp1 signals are integrated at human promoters leads to complex relationships between transcription- factor binding and expression phenotypes. As ChIP experiments for multiple regulators in mammalian tissue are produced (14) we expect similar analyses to probe further combinatorial dependencies in mammalian gene regulatory systems.
+###end p 51
+###begin title 52
+SUPPLEMENTARY DATA
+###end title 52
+###begin p 53
+Supplementary Data is available at NAR online.
+###end p 53
+###begin p 54
+The complete lists of binding sites, together with the software source code, the Gene Ontology analysis and the comparison with previous studies can be found at: .
+###end p 54
+###begin title 55
+ACKNOWLEDGEMENTS
+###end title 55
+###begin p 56
+We thank Philipp Bucher for useful discussions, Ioannis Xenarios, Otto Hagenbuechle, Mirko Bischofberger and Jacques Rougemont for insightful comments on the manuscript. This work was supported by the NCCR Molecular Oncology program from the Swiss National Science Foundation. The permutation null model was computed on Intel/HP cluster at the Vital-IT facilities at the Swiss Institute of Bioinformatics (SIB). Funding to the pay the Open Access publication charge was provided by the NCCR Molecular Oncology program.
+###end p 56
+###begin p 57
+###xml 0 45 0 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Conflict of interest statement. None declared</italic>
+Conflict of interest statement. None declared.
+###end p 57
+###begin title 58
+REFERENCES
+###end title 58
+###begin article-title 59
+Transcription regulation and animal diversity
+###end article-title 59
+###begin article-title 60
+Logic functions of the genomic cis-regulatory code
+###end article-title 60
+###begin article-title 61
+Constructing transcriptional regulatory networks
+###end article-title 61
+###begin article-title 62
+Computational methods for transcriptional regulation
+###end article-title 62
+###begin article-title 63
+Transcriptional regulatory code of a eukaryotic genome
+###end article-title 63
+###begin article-title 64
+###xml 39 63 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Transcriptional regulatory networks in Saccharomyces cerevisiae
+###end article-title 64
+###begin article-title 65
+Genome-wide location and function of DNA binding proteins
+###end article-title 65
+###begin article-title 66
+A global transcriptional regulatory role for c-Myc in Burkitt's lymphoma cells
+###end article-title 66
+###begin article-title 67
+###xml 47 52 <span type="species:ncbi:9606">human</span>
+Distribution of NF-kappaB-binding sites across human chromosome 22
+###end article-title 67
+###begin article-title 68
+###xml 61 66 <span type="species:ncbi:9606">human</span>
+Unbiased mapping of transcription factor binding sites along human chromosomes 21 and 22 points to widespread regulation of noncoding RNAs
+###end article-title 68
+###begin article-title 69
+###xml 31 36 <span type="species:ncbi:9606">human</span>
+CREB binds to multiple loci on human chromosome 22
+###end article-title 69
+###begin article-title 70
+Chromosome-wide mapping of estrogen receptor binding reveals long-range regulation requiring the forkhead protein FoxA1
+###end article-title 70
+###begin article-title 71
+Control of pancreas and liver gene expression by HNF transcription factors
+###end article-title 71
+###begin article-title 72
+###xml 45 50 <span type="species:ncbi:9606">human</span>
+Core transcriptional regulatory circuitry in human hepatocytes
+###end article-title 72
+###begin article-title 73
+###xml 49 54 <span type="species:ncbi:9606">human</span>
+A high-resolution map of active promoters in the human genome
+###end article-title 73
+###begin article-title 74
+###xml 87 92 <span type="species:ncbi:9606">human</span>
+Genomic mapping of RNA polymerase II reveals sites of co-transcriptional regulation in human cells
+###end article-title 74
+###begin article-title 75
+###xml 66 71 <span type="species:ncbi:9606">human</span>
+###xml 76 81 <span type="species:ncbi:10090">mouse</span>
+Genomic maps and comparative analysis of histone modifications in human and mouse
+###end article-title 75
+###begin article-title 76
+Systematic determination of genetic network architecture
+###end article-title 76
+###begin article-title 77
+A module map showing conditional activity of expression modules in cancer
+###end article-title 77
+###begin article-title 78
+###xml 38 43 <span type="species:ncbi:4932">yeast</span>
+Revealing modular organization in the yeast transcriptional network
+###end article-title 78
+###begin article-title 79
+Predicting gene expression from sequence
+###end article-title 79
+###begin article-title 80
+Regulatory element detection using correlation with expression
+###end article-title 80
+###begin article-title 81
+Integrating regulatory motif discovery and genome-wide expression analysis
+###end article-title 81
+###begin article-title 82
+Defining transcriptional networks through integrative modeling of mRNA expression and transcription factor binding data
+###end article-title 82
+###begin article-title 83
+Transcriptome network component analysis with limited microarray data
+###end article-title 83
+###begin article-title 84
+Interacting models of cooperative gene regulation
+###end article-title 84
+###begin article-title 85
+Computational discovery of gene modules and regulatory networks
+###end article-title 85
+###begin article-title 86
+Genomic analysis of regulatory network dynamics reveals large topological changes
+###end article-title 86
+###begin article-title 87
+Mining ChIP-chip data for transcription factor and cofactor binding sites
+###end article-title 87
+###begin article-title 88
+Proteins of the Myc network: essential regulators of cell growth and differentiation
+###end article-title 88
+###begin article-title 89
+The ubiquitin ligase HectH9 regulates transcriptional activation by Myc and is essential for tumor cell proliferation
+###end article-title 89
+###begin article-title 90
+Identification of genes that are regulated transcriptionally by Myc in childhood tumors
+###end article-title 90
+###begin article-title 91
+###xml 46 51 <span type="species:ncbi:9606">human</span>
+Reverse engineering of regulatory networks in human B cells
+###end article-title 91
+###begin article-title 92
+Characterization of the c-MYC-regulated transcriptome by SAGE: identification and analysis of c-MYC target genes
+###end article-title 92
+###begin article-title 93
+###xml 23 28 <span type="species:ncbi:9606">human</span>
+Genomic targets of the human c-Myc protein
+###end article-title 93
+###begin article-title 94
+###xml 77 82 <span type="species:ncbi:9606">human</span>
+Dissection of transcriptional programmes in response to serum and c-Myc in a human B-cell line
+###end article-title 94
+###begin article-title 95
+Direct activation of RNA polymerase III transcription by c-Myc
+###end article-title 95
+###begin article-title 96
+Sp transcription factor family and its role in cancer
+###end article-title 96
+###begin article-title 97
+###xml 56 61 <span type="species:ncbi:9606">human</span>
+Synergistic activation by the glutamine-rich domains of human transcription factor Sp1
+###end article-title 97
+###begin article-title 98
+###xml 20 25 <span type="species:ncbi:10090">mouse</span>
+###xml 30 35 <span type="species:ncbi:9606">human</span>
+A gene atlas of the mouse and human protein-encoding transcriptomes
+###end article-title 98
+###begin article-title 99
+The UCSC Table Browser data retrieval tool
+###end article-title 99
+###begin article-title 100
+###xml 0 5 <span type="species:ncbi:9606">Human</span>
+###xml 6 11 <span type="species:ncbi:10090">mouse</span>
+Human-mouse alignments with BLASTZ
+###end article-title 100
+###begin article-title 101
+Large-scale transcriptional activity in chromosomes 21 and 22
+###end article-title 101
+###begin article-title 102
+TileMap: create chromosomal map of tiling array hybridizations
+###end article-title 102
+###begin article-title 103
+Multiple testing methods for ChIP-Chip high density oligonucleotide array data
+###end article-title 103
+###begin article-title 104
+###xml 46 51 <span type="species:ncbi:4932">yeast</span>
+A high-resolution map of transcription in the yeast genome
+###end article-title 104
+###begin article-title 105
+Transcript mapping with high-density oligonucleotide tiling arrays
+###end article-title 105
+###begin article-title 106
+Stochastic models inspired by hybridization theory for short oligonucleotide arrays
+###end article-title 106
+###begin article-title 107
+Solving the riddle of the bright mismatches: labeling and effective binding in oligonucleotide arrays
+###end article-title 107
+###begin article-title 108
+Model-based analysis of tiling-arrays for ChIP-chip
+###end article-title 108
+###begin article-title 109
+A model based background adjustment for oligonucleotide Expression arrays
+###end article-title 109
+###begin article-title 110
+Experimental design and low-level analysis of microarray data
+###end article-title 110
+###begin article-title 111
+Exploration, normalization, and summaries of high density oligonucleotide array probe level data
+###end article-title 111
+###begin article-title 112
+Model-based analysis of oligonucleotide arrays: expression index computation and outlier detection
+###end article-title 112
+###begin article-title 113
+Absolute mRNA concentrations from sequence-specific calibration of oligonucleotide arrays
+###end article-title 113
+###begin article-title 114
+Smoothing by local regression: Principles and methods
+###end article-title 114
+###begin article-title 115
+Controlling the number of false discoveries: application to high-dimensional genomic data
+###end article-title 115
+###begin article-title 116
+Resampling-based Multiple Testing for Microarray Data Analysis
+###end article-title 116
+###begin article-title 117
+Direct interaction of c-Myc with Smad2 and Smad3 to inhibit TGF-beta-mediated induction of the CDK inhibitor p15(Ink4B)
+###end article-title 117
+###begin article-title 118
+Histone and chromatin cross-talk
+###end article-title 118
+###begin article-title 119
+###xml 36 41 <span type="species:ncbi:9606">human</span>
+Myc-binding-site recognition in the human genome is determined by chromatin context
+###end article-title 119
+###begin article-title 120
+Memory by modification: the influence of chromatin structure on gene expression during vertebrate development
+###end article-title 120
+###begin article-title 121
+###xml 59 64 <span type="species:ncbi:9606">human</span>
+Sp1 cooperates with c-Myc to activate transcription of the human telomerase reverse transcriptase gene (hTERT)
+###end article-title 121
+###begin article-title 122
+Cooperative interaction between AhR.Arnt and Sp1 for the drug-inducible expression of CYP1A1 gene
+###end article-title 122
+###begin article-title 123
+Domains of transcription factor Sp1 required for synergistic activation with sterol regulatory element binding protein 1 of low density lipoprotein receptor promoter
+###end article-title 123
+###begin title 124
+Figures and Tables
+###end title 124
+###begin p 125
+###xml 192 193 192 193 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</bold>
+###xml 564 565 552 553 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</bold>
+###xml 627 635 615 623 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F2">Figure 2</xref>
+###xml 909 910 897 898 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</bold>
+Localization of binding sites with respect to annotated genes. Annotation is from UCSC build hg17 (on chromosome 21 and 22 these sum to 1255 TSSs, including alternative TSSs for some genes). (A) More than 70% of the 633 (360 for c-Myc, 221 for sp1) fall close to genes (black), defined here as spanning from -1.5 kb upstream of the TSS to 1 kb downstream of the PAS (this represents approximately30% of total genomic sequence). Very few sites are found in distal promoters (-10 kb to -1.5 kb, gray). The remaining 20-25% of sites (white) are thus far from genes. (B) Refined mapping for the sites near genes (black fraction in Figure 2A) shows a strong preference for the 5' regions. Sites are classified as either 5' regions (from -1.5 kb to +0.5 kb of the TSS; green), exons (light green), intron (pink) or 3'UTR (-1 kb to +1 kb of PAS; red). Color scheme for panels A and B is explained below the panels. (C) Distribution of distances from TSSs for sites mapped in the 5' regions. We find a tight co-localization with the TSS (defined as 0) for both factors, coordinates are taken positive in the transcript direction.
+###end p 125
+###begin p 126
+###xml 61 62 61 62 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</bold>
+###xml 542 544 542 544 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B42">42</xref>
+###xml 548 551 548 551 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B&#8211;C</bold>
+###xml 580 582 580 582 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B15">15</xref>
+###xml 616 618 616 618 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B17">17</xref>
+###xml 1056 1058 1056 1058 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B15">15</xref>
+###xml 1661 1662 1661 1662 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</bold>
+###xml 1892 1894 1892 1894 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B17">17</xref>
+###xml 116 121 <span type="species:ncbi:9606">human</span>
+###xml 122 127 <span type="species:ncbi:10090">mouse</span>
+###xml 132 137 <span type="species:ncbi:9606">human</span>
+###xml 138 141 <span type="species:ncbi:10116">rat</span>
+###xml 943 948 <span type="species:ncbi:9606">human</span>
+Positions of sites assessed in genomic and functional data. (A) Binding sites are enriched for conservation between human-mouse and human-rat. The fold enrichment (expressed with respect to randomized site locations) is plotted versus a conservation score taken as the quantile of pairwise alignment scores taken from UCSC genome database. For each conservation threshold, the number of sites falling in conserved islands is divided by its expected number, assuming random sites positions. Genome-wide alignments and scoring is described in (42). (B-C). Overlap with TFIID sites (15) and modified chromatin islands (17). In all cases the positions for c-Myc or sp1 sites are taken as the location of the Gaussian profiles (cf. Figure. S2, methods section). The TFIID- binding sites and the modified histone islands are given as genomic intervals. Their coordinates were taken from the original publications and mapped to the build hg17 of the human genome (Materials and Methods Section). (B) c-Myc and sp1 bind preferentially to TSSs also bound by TFIID (15). Such TSSs (255) are defined as having a TFIID island in a window of [-1 kb, +1 kb] around the TSS position and amount to 21% of all unique TSS region on chromosomes 21 and 22. Such TSSs also bound by c-Myc or sp1 are nearly 65% while this fraction is well below 20% for TFIID free sites. The relative fraction of dual sites is clearly higher when TFIID binds: the green fraction (dual) is larger than the combined blue (Myc) and yellow (sp1), whereas all three are approximately equal for TSS regions without TFIID. We find that 33% of all sp1 sites coincide with TFIID and 27% for the c-Myc sites. (C) c-Myc-only and dual sites are enriched near permissive chromatin islands (tri-methylated (Tri) and acetylated H3-K4 residues (Ace), 2 right bars). Bars represent the fraction of modified histone islands measured in HepG2 cells (17), (supplementary material) also bound by TFIID, and which contain either c-Myc, sp1, dual or no sites. We counted 125 such di-methylated (Di), 241 tri-methylated (Tri) and 259 acetylated (Ace) islands. Whereas the fractions c-Myc-only and dual sites is increased in the permissive state, sp1 fractions is unchanged from the facultative to the permissive states.
+###end p 126
+###begin p 127
+###xml 131 138 131 138 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="T1">Table 1</xref>
+###xml 290 291 290 291 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</bold>
+###xml 450 452 450 452 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B40">40</xref>
+###xml 1031 1032 1031 1032 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</bold>
+###xml 1236 1237 1236 1237 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1293 1294 1293 1294 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1299 1301 1299 1301 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;9</sup>
+###xml 1319 1320 1319 1320 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1325 1328 1325 1328 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;10</sup>
+###xml 1349 1350 1349 1350 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+Summary of expression levels for genes with binding sites across tissues. The null, c-Myc-only, sp1-only and dual groups are as in Table 1. They are represented by 31 (c-Myc), 57 (sp1), 57 (dual), 600 (null) probesets in the tissue atlas. The gene expression matrix is condition centered. (A) In all three lanes (c-Myc and sp1 expression, ChIP group and tissue) the horizontal axis represents the 79 tissue conditions from the SymAtlas tissue atlas (40), each represented for the sp1-only, c-Myc-only and dual groups. Ordering is according to increasing mean expression (from left to right) per group and tissue. In the lane 'ChIP group', the dual sites cluster at the right end of the scale, and this correlates with high c-Myc expression (blue track, top). Sp1-only sites have generally lower expression followed by c-Myc-only sites which are interspersed. The 'tissue' lane emphasizes that blood samples (20/79 samples, shown in red for the lymphoid and orange for the myeloid lineage) are enriched at the high expression end. (B) Quantification of data in (A). The dots show for each condition the mean expression level in each group. The lines show the correlation between the group means and c-Myc mRNA level. Slopes and adjusted R-squared are reported; all correlation are significant (P < 10-9 for the M group, P < 10-10 for the B group and P < 0.0001 for the null group). The mean expressions in c-Myc-only and dual groups correlate well with c-Myc expression levels. The dual group shows the highest slope (0.13) and clear positive outliers in the blood lineage. The weak correlation between the null group and c-Myc mRNA probably reflects indirect regulation. The low outliers in the c-Myc and dual groups coincide with terminally differentiated tissues, e.g. skin, uterus and tongue.
+###end p 127
+###begin p 128
+###xml 107 110 107 110 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A&#8211;B</bold>
+###xml 177 178 177 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 264 265 264 265 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 355 356 355 356 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 356 357 356 357 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 366 367 366 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 372 374 372 374 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;8</sup>
+###xml 416 417 416 417 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</bold>
+###xml 438 439 438 439 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 439 442 439 442 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Myc</sub>
+###xml 456 457 456 457 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 457 460 457 460 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sp1</sub>
+###xml 530 531 530 531 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 529 531 529 531 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 656 657 654 655 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">D</bold>
+###xml 688 689 686 687 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 689 692 687 690 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Myc</sub>
+###xml 707 708 705 706 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 708 711 706 709 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Myc</sub>
+###xml 802 803 800 801 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 801 803 799 801 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 819 820 817 818 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 820 823 818 821 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sp1</sub>
+###xml 850 851 848 849 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 849 851 847 849 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 918 921 916 919 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E&#8211;F</bold>
+###xml 963 964 961 962 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 962 964 960 962 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 970 971 968 969 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 969 971 967 969 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b<sub>g</sub></italic>
+###xml 1091 1092 1089 1090 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1092 1095 1090 1093 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Myc</sub>
+###xml 1104 1105 1102 1103 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1105 1108 1103 1106 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sp1</sub>
+###xml 1130 1131 1128 1129 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1131 1134 1129 1132 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sp1</sub>
+###xml 1156 1157 1154 1155 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1157 1160 1155 1158 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Myc</sub>
+###xml 1187 1188 1185 1186 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1188 1191 1186 1189 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Myc</sub>
+###xml 1200 1201 1198 1199 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1201 1204 1199 1202 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sp1</sub>
+###xml 1287 1288 1285 1286 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</bold>
+###xml 1312 1313 1310 1311 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1311 1313 1309 1311 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>g</sub></italic>
+###xml 1391 1392 1389 1390 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</bold>
+###xml 1416 1417 1414 1415 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1415 1417 1413 1415 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b<sub>g</sub></italic>
+Relation between target expression, regulator expression levels and ChIP- binding strength for all genes. (A-B) Susceptibilities versus the strength of the ChIP- binding sites (t parameter) for c-Myc (A) and sp1 (B). Each dot is one TSS represented by the highest t score occurring in a fixed -1.5 to +1.5 kb window. Gray line show correlation for c-Myc (r2 = 0.26, P = 10-8) while that for sp1 is not significant. (C) Strength of c-Myc (tMyc) versus sp1 (tsp1) sites. Colored grid indicates the mean of the c-Myc susceptibility ag in each square. Red indicates positive and green negative mean values. Saturating colors represent absolute means >/=0.33. (D) c-Myc sites for two cutoffs (tMyc > 6 in black; tMyc > 9 in red) are binned according to sp1 binding. The smoothed mean (loess regression) of ag in function of tsp1 shows increasing average ag. The increase is more pronounced for stronger c-Myc sites (red). (E-F) Boxplots for the gene susceptibilities ag and bg stratified in groups. To emphasize the dependence on site strength we define groups as follows: the null group (O) has tMyc < 9 and tsp1 < 9; the S group has tsp1 > 9; the M group has tMyc > 9; the B group has both tMyc > 9 and tsp1 > 9. Groups are mutually exclusive and group size is indicated above the panels. (E) The distribution for ag shifts upwards: the B group has the highest median followed by the M group. (F) The distribution for bg shows no similar behavior. Comparable results are obtained with different processing of the raw ChIP data (Figures S8 and S9).
+###end p 128
+###begin p 129
+###xml 789 790 777 778 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</italic>
+Columns 1-2: Detected sites (FDP < 5%) and their positions with respect to annotated TSSs. The higher number of sites on chromosome 22 than chromosome 21 follows the number of annotated TSS (391 on chr 21, 864 on chr 22). Columns 3-7: All annotated TSS (UCSC genome browser, hg17) are split in to four groups: those without c-Myc or sp1 sites, those with only c-Myc, only sp1 or both. To be associated with a TSS, a site is required to lie between -1.5 kb and +1.5 kb of the TSS. The percentages refer to the total number of TSSs on each chromosome. All sites near genes with their functional annotations can be found at . Here the smoothing used sigma = 200 bp; the number of significant sites decreases as a function of sigma (Figures S4 and S5). All sites computed with different sigma's are provided in the above website
+###end p 129
+

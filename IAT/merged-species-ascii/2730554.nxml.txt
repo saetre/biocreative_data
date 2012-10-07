@@ -1,0 +1,582 @@
+###begin article-title 0
+Investigation and prediction of the severity of p53 mutants using parameters from structural calculations
+###end article-title 0
+###begin p 1
+###xml 891 896 <span type="species:ncbi:9606">human</span>
+A method has been developed to predict the effects of mutations in the p53 cancer suppressor gene. The new method uses novel parameters combined with previously established parameters. The most important parameter is the stability measure of the mutated structure calculated using molecular modelling. For each mutant, a severity score is reported, which can be used for classification into deleterious and nondeleterious. Both structural features and sequence properties are taken into account. The method has a prediction accuracy of 77% on all mutants and 88% on breast cancer mutations affecting WAF1 promoter binding. When compared with earlier methods, using the same dataset, our method clearly performs better. As a result of the severity score calculated for every mutant, valuable knowledge can be gained regarding p53, a protein that is believed to be involved in over 50% of all human cancers.
+###end p 1
+###begin title 2
+Introduction
+###end title 2
+###begin p 3
+###xml 100 101 100 101 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b1">1</xref>
+###xml 102 103 102 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b2">2</xref>
+###xml 810 811 810 811 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b3">3</xref>
+###xml 65 70 <span type="species:ncbi:9606">human</span>
+Recently, several large-scale screens for genetic alterations in human cancers have been published [1,2]. The identification of novel genes associated with tumour development will provide novel insight into the biology of cancer development, but should also identify whether some of these mutated genes could be efficient targets for anticancer drug development. Analysis of these screens has led to the finding that the prevalence of missense somatic mutations is far more frequent than expected. Moreover, this observation has been complicated by the discovery that the genome of cancer cells is polluted by somatic passenger mutations (or hitchhiking mutations) that have no active role in cancer progression and are coselected by driver mutations, which are the true driving force for cell transformation [3].
+###end p 3
+###begin p 4
+###xml 651 652 651 652 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4">4</xref>
+Passenger mutations can be found in coding or noncoding regions of any gene, and distinguishing them from driving mutations is a difficult but necessary task in order to obtain an accurate picture of the cancer genome. Several statistical approaches have been developed to solve this problem, such as comparing the observed to expected ratios of synonymous to nonsynonymous variants. Alternatively, various bioinformatics methods can be used to provide an indication of whether an amino acid substitution is likely to damage protein function on the basis of either conservation through species or whether or not the amino acid change is conservative [4].
+###end p 4
+###begin p 5
+###xml 150 151 150 151 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4">4</xref>
+###xml 152 153 152 153 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+###xml 538 539 538 539 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8">8</xref>
+###xml 887 888 887 888 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9">9</xref>
+###xml 1118 1126 1118 1126 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vitro</italic>
+###xml 1192 1194 1192 1194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10">10</xref>
+###xml 1559 1581 1559 1581 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Caenorhabditis elegans</italic>
+###xml 1586 1596 1586 1596 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+###xml 1631 1633 1631 1633 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b11">11</xref>
+###xml 523 528 <span type="species:ncbi:9606">human</span>
+###xml 1132 1137 <span type="species:ncbi:4932">yeast</span>
+###xml 1559 1581 <span type="species:ncbi:6239">Caenorhabditis elegans</span>
+###xml 1586 1596 <span type="species:ncbi:7227">Drosophila</span>
+Predicting the effects of amino acid substitutions on protein function can be a powerful method, and several algorithms have been developed recently [4-7]. The major drawback of these analyses is the lack of information regarding the activity or loss of activity of the target protein, as only a few variants (< 100) have been fully analysed. In this regard, analysis of the p53 gene can be a paradigm for this type of analysis. First, p53 gene mutations are the most common genetic modifications found in more than 50% of human cancers [8]. Almost 80% of p53 mutations are missense mutations, leading to the synthesis of a stable protein lacking its specific DNA binding activity. The latest version of the UMD_p53 database contains 28 000 p53 mutations, corresponding to 4147 mutants that were found with a frequency ranging from once (2218 mutants) to 1264 times (one mutant, R175H) [9]. A second advantage of p53 mutation analysis, and a unique feature of this database, is the availability of the residual activity of the majority of p53 missense mutants. The biological activity of mutant p53 has been evaluated in vitro in a yeast system using eight different transcription promoters [10]. Third, the three-dimensional structure of the p53 core domain, where the majority of p53 mutations are located, has been solved, which allows the inclusion of structural data in a predictive algorithm. Last, phylogenetic studies of p53 have been extensive, and more than 50 sequences from p53 or p53 family members are available in various species, ranging from Caenorhabditis elegans and Drosophila to a large number of vertebrates [11].
+###end p 5
+###begin p 6
+###xml 353 355 353 355 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+###xml 273 278 <span type="species:ncbi:9606">human</span>
+With all this information on p53, there is an excellent opportunity for structural calculations and the development of methods to predict the severity of p53 mutations. In a recent study, we have successfully used structural calculation techniques in studies of mutants in human steroid 21-hydroxylase (CYP21A2), causing congenital adrenal hyperplasia [12]. Using structural calculations of around 60 known mutants, we managed in all cases but one to explain why specific mutations belonged to one of four different severity classes. This was accomplished by investigating several parameters, in combination with the inspection of the structural models. In the light of this achievement, we have applied a similar approach to p53 to arrive at an automated method for the prediction of mutant severity. In this paper, we show that this is possible and that we can achieve a prediction accuracy of 77%.
+###end p 6
+###begin title 7
+Results
+###end title 7
+###begin p 8
+###xml 57 62 <span type="species:ncbi:9606">human</span>
+###xml 91 99 <span type="species:ncbi:9606">patients</span>
+In this study, we have investigated correlations between human p53 mutants found in cancer patients and the corresponding activity of promoter binding. The aim was to obtain a better understanding of molecular mechanisms to explain why certain mutations cause more severe effects than others and to be able to predict the severity of new, hitherto uncharacterized mutants.
+###end p 8
+###begin title 9
+Initial parameter investigation
+###end title 9
+###begin p 10
+###xml 111 121 111 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico-</italic>
+###xml 486 492 486 492 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig01">Fig. 1</xref>
+###xml 498 505 498 505 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig01">Fig. 1A</xref>
+###xml 685 692 682 689 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig01">Fig. 1B</xref>
+###xml 1143 1152 1137 1146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig01">Figure 1C</xref>
+For the initial development of the PREDMUT method, two parameters were investigated: sequence conservation and in silico-calculated molecular stability for a specific mutant, which are described in more detail later. Correlations between these two parameters and impaired transactivating activity of mutants were searched for in order to identify important regions of p53. This is illustrated by projection of the properties onto the three-dimensional structure of the p53 core domain (Fig. 1). In Fig. 1A, it can be seen that positions with residue exchanges having high energy are present in every part of the protein, with a slight preference for the core beta-sheet structures. In Fig. 1B, it can be seen that many of the highly conserved residues (red) are located in the core beta-region, but also in the DNA binding loops. When comparing these figures, there are many similarities, but also some disagreement. Examples of disagreement are residues R156, with high energy but low conservation, and G244, with low energy but high conservation. In these cases, it is hard to determine which of the observations best correspond to reality. Figure 1C shows the experimentally determined activity, illustrating that, for R156, the energy property correlates with the activity, whereas, for G244, the conservation parameter correlates. Thus, these two parameters alone are not sufficient to make accurate predictions about the severity of a mutant, even though they contain useful information. Therefore, the PREDMUT algorithm was developed based on a much larger set of parameters.
+###end p 10
+###begin p 11
+Comparison of calculated energy (A), positional conservation (B) and transactivating activity (C) of p53 mutants. The structure is based on the 1tsr crystal structure of p53. In (A), p53 is coloured according to the calculated energy for mutants at each position. Red indicates high energy and blue low energy. In (B), the colours illustrate conservation, where red corresponds to highly conserved and blue to nonconserved residues. In (C), the positions are colour coded from red to blue, where red indicates most severe and blue wild-type activity.
+###end p 11
+###begin title 12
+PREDMUT prediction algorithm
+###end title 12
+###begin p 13
+###xml 131 138 131 138 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl1">Table 1</xref>
+###xml 436 443 436 443 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+###xml 696 702 696 702 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig02">Fig. 2</xref>
+The PREDMUT prediction algorithm is described in detail in Materials and methods. Using 12 different and complementary parameters (Table 1), the prediction algorithm manages to classify the training data with, on average, 79% accuracy, and to classify the test data with, on average, slightly lower than 77% accuracy and Matthews' correlation coefficient (MCC) of 0.52. Individual results from the six controlled test runs are shown in Table 2. The total accuracy is in the range 74-81% in total, 72-85% for severe mutants and 70-79% for nonsevere mutants. The prediction power of the algorithm can also be viewed in the form of a receiver operating characteristic (ROC) curve, which is shown in Fig. 2. Here, the severity cut-off value is varied, which, when increased, raises the accuracy for severe mutations and decreases the accuracy for nonsevere mutations, and vice versa when decreased.
+###end p 13
+###begin p 14
+Prediction accuracy (%) for each of the six test runs on p53 cancer mutants, where each run was trained on five-sixths of the mutants and tested on the remaining one-sixth.
+###end p 14
+###begin p 15
+###xml 123 126 123 126 <sc xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">icm</sc>
+Description of the 12 parameters used to predict the severity of p53 mutants. Asterisks denote parameters calculated using icm.
+###end p 15
+###begin p 16
+ROC curve. True positive rate (TPR) and false positive rate (FPR) depending on the cut-off value used to discriminate between the two severity classes in the test data. The broken line represents prediction on test data and the full line on training data. The straight line represents a random classification and the cross indicates the cut-off value used in PREDMUT.
+###end p 16
+###begin p 17
+###xml 112 120 112 120 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="SD2">Table S2</xref>
+We also tested the algorithm on a subset of breast cancer-specific mutations with a prediction accuracy of 88% (Table S2). Only mutants with an observed frequency over five in cancer were included in this dataset, resulting in 342 mutations. The nonsevere mutations are classified correctly in 85% of cases and the severe mutations in 89% of cases, giving an MCC value of 0.66. If mutations are sorted according to frequency, the 49 most frequent mutations are predicted correctly. For the 12% that are not correctly classified, we found some common properties. Among the 31 wrongly predicted severe mutations, 20 correspond to residue side-chains exposed to the surface (65% versus 13% for correctly predicted mutations) and 17 correspond to residue exchange with similar properties (55% versus 24%). Together, these two properties explain why 29 of the 31 wrongly predicted mutations are hard to predict. Among the nine wrongly predicted nonsevere mutations, two are DNA/zinc binding (22% versus 0%) and six are completely conserved (67% versus 15%). Together, this explains the difficulty in predicting seven of the nine wrongly classified nonsevere mutations.
+###end p 17
+###begin title 18
+25% activity delineates severe and nonsevere mutants
+###end title 18
+###begin p 19
+###xml 370 377 370 377 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl3">Table 3</xref>
+The limit between the classes was set to the activity value of 25%, because this value was observed to be a natural divider of the data. The algorithm was also evaluated with other separation limits between the classes (1%, 2%, 3%, 5%, 10%, 15%, 20%, 30% and 40% activity) but, in all of these cases except for the 1% value, the data were always harder to separate (see Table 3). In the case of the 1% limit, the distribution between the two classes is highly skewed. A prediction stating that all mutations were nonsevere would result in 89% prediction accuracy. However, the MCC of such a prediction is zero. Thus, the 25% value seems to be an optimal class divider.
+###end p 19
+###begin p 20
+Effect of cut-off value on the prediction accuracy. The prediction accuracy, specificity, sensitivity, number of mutants classified and MCC values on training data using different activity thresholds to delineate between severe and nonsevere mutants.
+###end p 20
+###begin p 21
+###xml 292 298 292 298 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig03">Fig. 3</xref>
+###xml 156 162 <span type="species:ncbi:9606">humans</span>
+Biological support of the 25% activity limit can be found by looking at the frequency distribution of the mutations. Mutations found with high frequency in humans should also be those that cause cancer, whereas the low-frequency mutations often are passenger mutations. As can be observed in Fig. 3, almost all of the high-frequency mutations have an average activity of less than 25%. In total, there are 15 272 mutations found with lower than 25% activity and only 888 mutations found with over 25% activity. This corresponds to an average mutation frequency of 47 versus 8. In addition, the average frequency of mutations with 20-25% activity is still high, with a value of 24, whereas the frequency decreases to 13 for mutants with 25-30% activity.
+###end p 21
+###begin p 22
+###xml 119 124 <span type="species:ncbi:9606">human</span>
+###xml 132 140 <span type="species:ncbi:9606">patients</span>
+Activity versus frequency. The WAF1 activity of p53 mutations is plotted against the number of times they are found in human cancer patients. The most frequent mutations, the hotspot mutations, are not included. However, they all have activity below 25%.
+###end p 22
+###begin title 23
+Parameter weights
+###end title 23
+###begin p 24
+###xml 96 103 96 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl4">Table 4</xref>
+###xml 236 238 236 238 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b13">13</xref>
+The different parameter weights in the prediction algorithm can provide crucial information. In Table 4, the parameters and their corresponding weights are listed for the WAF1 promoter. As WAF1 has well-defined binding characteristics [13], it was chosen as the first promoter for the development of PREDMUT. The parameters are divided into three classes: general property, position specific and mutant specific. The general property class contains parameters that are protein independent, but mutant dependent. The position-specific class includes parameters that are protein dependent, but does not reflect the resulting amino acid residue after mutation. Finally, the mutant-specific class, including only one parameter, contains information dependent on both protein and mutant.
+###end p 24
+###begin p 25
+Parameter weights calculated by PREDMUT and PLS for the WAF1 promoter, together with parameter classification. General property parameters are completely protein nonspecific, position-specific parameters are dependent on the position in the protein and mutant-specific parameters depend on the position and type of amino acid residue substitution.
+###end p 25
+###begin p 26
+Not surprisingly, conservation is found to be a very important factor for the severity of a mutant. Accessibility is also shown to be important; this is natural as side-chains at the surface possess fewer spatial restraints and are thereby less often correlated with severe mutations. Other intuitively important factors are the similar amino acid variable and size change variable, as large changes in property and size of an amino acid residue could affect the protein negatively.
+###end p 26
+###begin p 27
+###xml 174 182 174 182 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl5">Table 5A</xref>
+###xml 360 368 360 368 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl5">Table 5B</xref>
+###xml 474 480 474 480 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig04">Fig. 4</xref>
+###xml 667 668 667 668 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 737 738 737 738 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">y</italic>
+###xml 1897 1899 1897 1899 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+The novel variables, the calculated energy for a specific residue exchange and for the average of all amino acid substitutions at one position, are the third and fourth (see Table 5A) most important variables, respectively. The combined weight of the two energy variables is even larger than the individual weights for both conservation and accessibility (see Table 5B), making it possible to increase the prediction accuracy compared with earlier prediction algorithms. In Fig. 4, the energy parameter is studied in more detail. Here, all mutants of the two classes are ranked according to their average calculated energy. The diagram shows decreasing energy on the x-axis, and the number of mutations with this or higher energy on the y-axis. For severe mutants, the number of mutants increases at high energy values, causing a gap between the curves representing severe and nonsevere mutants. The separation is not complete between the two classes, but there is a clear difference. One can, for example, observe that, if a mutant has a normalized energy of 0.5 or more, it is extremely likely to be a severe mutant, as only 2.7% of the nonsevere mutants possess such high energy compared with 18.6% of severe mutants, or a 1 : 7 ratio. If we look at the energy value 0.325, we still have a ratio of 1 : 2.5, or 71% probability in favour of a severe mutant. At the other end of the spectrum, where we have low energy, there is 75% probability for the mutation to be nonsevere if the energy is 0.125 or lower. Thus, on the basis of this variable alone, we can make reasonably accurate predictions on 35% of the severe mutations and on 20% of the nonsevere mutations. Even in the most difficult case, an energy value of 0.225, the variable provides useful information, as we have a prediction accuracy of 58%. This result is similar to those in earlier studies on steroid 21-hydroxylase, CYP21A2 [12]. The calculated energy is the only parameter that is specific to both position in the protein and the type of residue exchange. This adds valuable information when discriminating between two similar mutations at different positions in the protein.
+###end p 27
+###begin p 28
+Parameter weights for all promoters. (A) Average and individual weights for all parameters for each promoter. Values are sorted in descending order according to the absolute value of the average weight. (B) Average and individual weights for the grouped parameters for each promoter. Values are sorted in descending order according to the absolute value of the average weight. Parameters that are similar are grouped together. Energy = Energy of mutant + Average energy of mutant. General properties = Similar amino acids + Size change + Hydrophobicity difference + Polarity change. Other = Surrounding amino acids + Two-dimensional structure + Pocket/cavity.
+###end p 28
+###begin p 29
+Energy diagram. Cumulative frequency of severe and nonsevere mutants, respectively, plotted against the normalized average calculated energy for all mutants.
+###end p 29
+###begin p 30
+###xml 86 93 86 93 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl4">Table 4</xref>
+The weights for the parameters extracted from the partial least-squares (PLS) method (Table 4) show good agreement with those for our PREDMUT method: the six most important parameters are the same, with a total weight of 82% for our method and 81% for the PLS method.
+###end p 30
+###begin p 31
+###xml 236 243 232 239 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl6">Table 6</xref>
+Analogous to the prediction of the WAF1 promoter, we developed prediction schemes for seven other promoters (MDM2, BAX, 14-3-3-sigma, AIP, GAD45, NOXA, p53R2). These classifications were shown to perform with similar prediction scores (Table 6).
+###end p 31
+###begin p 32
+Promoter prediction results (%) for eight p53-related promoters.
+###end p 32
+###begin p 33
+###xml 82 90 82 90 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl5">Table 5A</xref>
+The parameter weights used in the predictions of all eight promoters are shown in Table 5A. Every column sums to 100, using absolute values, so the weights are directly comparable. The DNA/zinc parameter is not included in the table as its weight, for technical reasons, was limited to few values in the algorithm, and it only contains information for a few mutants.
+###end p 33
+###begin p 34
+###xml 3 11 3 11 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl5">Table 5B</xref>
+In Table 5B, similar properties are grouped together. The weights are added using absolute values in order to be able to judge the importance of all parameters, regardless of their signs. We see that the energy parameter is, on average, responsible for almost one-third of the information used in the prediction. Conservation, which is commonly used in predictions, and accessibility contain almost one-quarter each of the information, which is only slightly more information than can be gathered from just looking at the general properties of the residue replacement.
+###end p 34
+###begin p 35
+The weights are generally stable, with mutual parameter rankings possessing only a few swaps in position. This indicates that the algorithm provides a classification that is optimal or at least close to optimal using linear separation.
+###end p 35
+###begin p 36
+The differences in weight for the promoters could be interpreted as reflecting differences in the mode of binding. The promoter p53R2 seems to be less dependent on the stability of the protein, indicating that it either possesses more relaxed binding that tolerates small changes in structure, or that it binds harder and thereby stabilizes the protein. BAX, however, seems to be very sensitive to structural changes.
+###end p 36
+###begin title 37
+Cross-correlation between parameters
+###end title 37
+###begin p 38
+###xml 66 68 66 68 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b14">14</xref>
+###xml 173 180 173 180 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl7">Table 7</xref>
+###xml 570 578 570 578 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl5">Table 5B</xref>
+When applying the Pearson product-moment correlation coefficient [14] on all possible pairs of parameters, we can see that a few of the parameters show some correlation. In Table 7, we highlight the parameters with the highest correlation. The two energy parameters are partly correlated, as are conservation and accessibility, and secondary structure and accessibility. The four parameters that reflect amino acid properties are also correlated. This explains how the hydrophobicity difference can be negative for some promoters, as it is the total weight (as shown in Table 5B) of these four parameters that best describe this phenomenon. However, when testing to remove any of the parameters, the prediction became slightly worse, showing that all parameters are necessary and that they complement each other.
+###end p 38
+###begin p 39
+Cross-correlation between parameters. Parameters that show the highest pairwise correlation coefficients are shown. All other correlation coefficients are below 0.3, with the majority below 0.1.
+###end p 39
+###begin title 40
+Other classification techniques
+###end title 40
+###begin p 41
+###xml 250 252 250 252 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b15">15</xref>
+###xml 253 255 253 255 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b16">16</xref>
+###xml 552 554 552 554 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b17">17</xref>
+###xml 706 709 706 709 <sc xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">icm</sc>
+###xml 795 802 795 802 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl8">Table 8</xref>
+Other classification techniques were investigated to evaluate whether they could add improvements to the new method. To further investigate differences between the two classes, the data were analysed using principal component analysis in SIMCA-P 11 [15,16]. However, the data could only be partially separated when considering the first two components. Thus, using only principal component analysis on the data is not sufficiently powerful to provide an accurate prediction. Another popular method for classification is support vector machines (SVMs) [17], and several kernels [radial, dot, sigmoid and polynomial (using values of two to six as the polynomial)] were tested using the SVM implementation in icm. The best SVM used the polynomial kernel with a value of five as the polynomial (see Table 8). The total prediction accuracy is similar to that of PREDMUT. However, the weights for the individual parameters are not known, making it impossible to determine the contributions of each parameter to the final classification.
+###end p 41
+###begin p 42
+Prediction accuracy (%) for the best of the methods tested and their respective MCC values.
+###end p 42
+###begin p 43
+###xml 52 54 52 54 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b16">16</xref>
+###xml 275 282 275 282 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl8">Table 8</xref>
+Furthermore, PLS was investigated using SIMCA-P 11 [16]. This method performed with slightly lower prediction quality than PREDMUT. In addition, the nonsevere classification of only 63% is on the low side and the MCC value of 0.50 is slightly lower than that of PREDMUT (see Table 8).
+###end p 43
+###begin title 44
+Cut-off safety margin
+###end title 44
+###begin p 45
+###xml 410 417 410 417 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl9">Table 9</xref>
+Sometimes, when the algorithm decides whether or not a mutation is severe, the severity score is very close to the cut-off, making the prediction of that particular mutant uncertain. By introducing a small safety margin around the cut-off value, the prediction results outside this margin can be improved. The mutants that possess a score within the safety margin are classified as having unknown severity. In Table 9, the prediction accuracy is shown using difference sizes of the safety margin. By increasing the safety margin, we can go from 77% accuracy and an MCC value of 0.52 to 88% accuracy and an MCC value of 0.74. The drawback is that, in the latter case, only 45% of the mutants are classified.
+###end p 45
+###begin p 46
+Prediction accuracy (%) depending on the size of the safety margin (%) used around the cut-off value. Mutants with a severity score inside the safety margin were classified as unknown.
+###end p 46
+###begin title 47
+Hotspot mutants
+###end title 47
+###begin p 48
+###xml 165 171 165 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al.</italic>
+###xml 173 175 173 175 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b18">18</xref>
+###xml 69 74 <span type="species:ncbi:9606">human</span>
+There are several p53 mutants that are extremely over-represented in human cancers, for example three lung cancer mutants induced by smoking described by Denissenko et al. [18]. It was therefore interesting to investigate how these mutants score using our prediction algorithm. In the case of R273C, R273H, R248W and R248Q, they are fairly easy to predict as they are involved in DNA binding. However, if the information about DNA binding is removed, all but R248Q are still correctly classified, mostly depending on their high conservation, but the high energy and low accessibility are also important factors. Looking at nonDNA binders, R175H, G245S, R249S and R282W, they are also highly conserved, but here the high energy and low accessibility of the mutants contribute equally to the total severity score. The above examples of eight frequent mutants are all correctly predicted with the new method. Indeed, the prediction accuracy greatly increases with mutation frequency, even though this information is not included in the data. The low-frequency mutants (frequency below six) have a 75% prediction accuracy on the training data, whereas the high-frequency mutants have 84% prediction accuracy. If the frequency cut-off is further increased to 10, the accuracy increases to 88%, 95% at frequency 40, and 100% at frequency 80. Thus, all very frequent mutants are correctly predicted using PREDMUT.
+###end p 48
+###begin title 49
+Thermally sensitive mutants
+###end title 49
+###begin p 50
+In contrast with initial beliefs, thermally sensitive mutants were only slightly harder to predict than the others, with 76% correctly predicted. To be able to discriminate this type of mutant from the rest, we looked for special characteristics that were common for most of these mutants. The only overall difference found was an increased number of changes in polarity (51% versus 23%). Mutants that have a polarity change are correctly classified in 91% of cases, and so these are very easy to spot. The remaining mutants are harder to predict (60% correct), and thus require further experimental tests in order to explain their behaviour.
+###end p 50
+###begin title 51
+Web server
+###end title 51
+###begin p 52
+###xml 433 439 433 439 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al.</italic>
+###xml 441 443 441 443 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10">10</xref>
+###xml 563 565 563 565 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b19">19</xref>
+A web server has been developed with the purpose of displaying information about p53 mutations. It shows information on molecular properties for all single-nucleotide mutations affecting the central domain of p53. For each variant, the values of all parameters used in the severity prediction are given. On the basis of these values, a severity score is presented, in addition to a class prediction and the activity values from Kato et al. [10]. Furthermore, the protein structure is shown as an interactive three-dimensional display based on the KiNG 3D viewer [19]. The amino acid residue exchanged is highlighted in red. In the interactive view, it is possible to zoom, rotate, change colours, save viewpoints, and so on. The server is available via  under 'Services'.
+###end p 52
+###begin title 53
+Discussion
+###end title 53
+###begin title 54
+Parameters
+###end title 54
+###begin p 55
+###xml 910 917 910 917 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl4">Table 4</xref>
+The prediction method described uses 12 parameters, each assigned a weight, reflecting the contribution of that parameter. The parameter representing the individual molecular free energy has a relatively large weight and gives a direct indication of the severity of a mutant. This is also the only parameter that is completely specific to a given mutant. The average calculated energy at each position could be interpreted as a measure of the structural robustness. If this measure is mapped onto the three-dimensional structure, structurally important regions can be discerned that could not be found by considering conservation alone. This can be useful in further studies of proteins with known three-dimensional structures, when evaluating new mutants or designing mutants in a protein that should not affect the stability of the protein. It might also be used to understand protein folding mechanisms. In Table 4, the parameters were categorized into general, position specific and mutant specific. Almost three-quarters of the information content originates from position-specific and mutant-specific parameters, showing that the structural context is very important.
+###end p 55
+###begin title 56
+Comparison with earlier prediction methods
+###end title 56
+###begin p 57
+###xml 238 244 238 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al.</italic>
+###xml 246 248 246 248 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10">10</xref>
+The prediction of the severity of p53 mutants has been attempted several times before. A direct comparison is difficult to make as different mutation datasets have been used. Many have (as have we) focused on the mutation dataset of Kato et al. [10]. However, different filtering and limitations to this dataset have been applied.
+###end p 57
+###begin p 58
+As we use structural information, we can only predict 1148 (codons 95-288) of 2314 (codons 2-393) mutations. However, without any filtering, our method has an MCC value of 0.52 and an accuracy of 77%.
+###end p 58
+###begin p 59
+###xml 15 16 15 16 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b6">6</xref>
+###xml 17 19 17 19 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b20">20</xref>
+###xml 532 533 532 533 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4">4</xref>
+###xml 534 535 534 535 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b5">5</xref>
+###xml 575 581 575 581 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al.</italic>
+###xml 583 585 583 585 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b20">20</xref>
+###xml 664 666 664 666 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b21">21</xref>
+In Align-GVGD [6,20], the mutations in which the promoters behaved differently were filtered out. In addition, a different activity cut-off of 45% was used versus 25% in our study. In this way, nonfunctional and functional mutations were predicted with 64.6% and 95% prediction accuracy, equalling an MCC value of 0.57 for 1514 mutants. If the same filtering is used on the 1148 mutations with structural information, we obtain 652 mutants and an MCC value as high as 0.64 (86% for nonfunctional and 79% for functional). When SIFT [4,5] was compared with Align-GVGD by Mathe et al. [20], it performed slightly worse (MCC = 0.47), whereas Dayhoff's classification [21] made inferior predictions (MCC = 0.19).
+###end p 59
+###begin p 60
+###xml 120 122 120 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b22">22</xref>
+###xml 180 182 180 182 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 887 893 887 893 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al.</italic>
+###xml 895 897 895 897 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b20">20</xref>
+To determine how effective our structural parameters are at predicting mutation severity, we compared them with CUPSAT [22]. By choosing the optimal cut-off value of -0.37 kcal.mol-1 for stability changes, CUPSAT managed to obtain an MCC value of 0.19, with slightly higher prediction accuracy for nonsevere mutations. In the same way, we chose optimal cut-off values of 0.35 and 0.30 for the two energy parameters used in PREDMUT: the average calculated energy and the calculated energy for a specific mutation. With these cut-off values, we obtained MCC values of 0.26 and 0.18. The parameters have high prediction accuracy on nonsevere mutations, making them a valuable complement to conservation analysis which performs well when predicting severe mutations. A 25% delineation between classes is used in this comparison, whereas, if 45% is used to delineate the classes, as in Mathe et al. [20], the results are slightly worse for both methods (MCC values of 0.16 for CUPSAT and 0.23 and 0.18 for the respective PREDMUT energy parameters).
+###end p 60
+###begin title 61
+Interpretation of mutant severity
+###end title 61
+###begin p 62
+From the prediction algorithm, each mutant is given a severity score. This total score carries information on how much the mutant affects the activity of the protein. Further information can be gathered by considering which parameters have the largest contribution to the total score. If the most strongly contributing parameters are predominantly structurally related, the low activity probably is caused by a destabilization of the protein, whereas, if most contributions come from functionally related parameters, residues critical for the function can be expected.
+###end p 62
+###begin p 63
+An example of a structurally related mutant is one with low energy and large changes in amino acid properties, whereas a functionally related mutant could be one with rather high energy that is conserved and surface exposed. Which of the prediction parameters belongs to which group is not easily distinguished; instead, the complete picture is needed to make a correct prediction.
+###end p 63
+###begin title 64
+Correlation between severity and frequency
+###end title 64
+###begin p 65
+###xml 734 739 <span type="species:ncbi:9606">human</span>
+###xml 897 905 <span type="species:ncbi:9606">patients</span>
+The mutants show a clear correlation between severity and frequency for most of the parameters. If the high-frequency half of the mutants is compared with the low-frequency half, the high-frequency mutants are found to be more conserved (95% versus 87%), to have more deeply buried residues (84% versus 75%), to more often be DNA/zinc binders (25% versus 9%), to have higher normalized energy (0.36 versus 0.26). and so on. From this, it can be concluded that the more frequent is a mutant, the more severe it is, which is confirmed by the difference in average activity between the two groups (7.9% versus 23.7%). Therefore, it can be assumed that the less frequent mutants need some additional trigger or factor to be able to cause human cancer, whereas the high-frequency mutants can cause cancer by themselves. Thus, the consequence is that the severe mutants appear more frequently in cancer patients, whereas the nonsevere mutants may exist in similar quantity but are not found as frequently as they do not cause cancer.
+###end p 65
+###begin p 66
+###xml 138 139 138 139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9">9</xref>
+###xml 191 199 <span type="species:ncbi:9606">patients</span>
+In addition, there are relatively few mutants with only a small decrease in p53 activity found in cancer. From the p53 mutation database [9], it can be seen that the average number of cancer patients having a certain p53 mutation with a corresponding activity of over 50% is only 5.7, whereas it is as high as 40 on average for mutations with a corresponding activity of below 50%. This indicates that, in general, cancer-causing p53 mutations are associated with low activity.
+###end p 66
+###begin title 67
+Infrequent and high-activity mutations
+###end title 67
+###begin p 68
+###xml 209 217 <span type="species:ncbi:9606">patients</span>
+###xml 297 305 <span type="species:ncbi:9606">patients</span>
+In the p53 mutation database, there are few mutations with high activity and also some mutations found only once. Some of these mutations may not be causative agents of cancer, but may only be found in cancer patients by coincidence. As cancer is such a common disease, there are bound to be some patients having a p53 mutation that has nothing to do with the cause of their cancer. Alternatively, the effect of the mutation alone is not sufficient to cause cancer without additional help from other factors. These aspects are important to bear in mind when considering p53-specific treatments.
+###end p 68
+###begin title 69
+Difference in promoter binding
+###end title 69
+###begin p 70
+###xml 428 436 428 436 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl10">Table 10</xref>
+###xml 813 821 813 821 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl10">Table 10</xref>
+For most of the mutants, the promoters behave in similar ways, although WAF1 and MDM2 seem to be slightly more sensitive to mutations and NOXA and p53R2 slightly less so. This is indicated by the average activity of mutants in the central domain of 26% for WAF1 and 34% for MDM2, 71% for NOXA and 61% for p53R2, and around 45% for the other four promoters. For some specific mutants, the differences in activity are very large (Table 10). These mutants are therefore expected to be involved in the binding of the promoters. If the activity is comparatively low, the residue exchanges should be of special importance for the specific promoters. If the activity is comparatively high, it can be concluded that this promoter does not bind to this amino acid residue, at least not in the same way as the others. From Table 10, it can be seen that p53R2 possesses a few mutants that behave differently from the rest of the promoters. Of these, amino acid residues 243 and 275 are involved in DNA binding and 244 and 246 are in very close proximity to DNA binding. This indicates that p53R2 either does not use these residues for binding or that they are not necessary for binding as the DNA binds sufficiently hard to the other DNA binding residues. For the WAF1 and MDM2 promoters, the situation is opposite with extra high sensitivity towards certain mutants. Of these, only residue 283 is involved in DNA binding. However, residues 272 and 276 are close to DNA binding. The other four residues are further away, but at the same side of the protein, indicating a possible additional binding site needed for the WAF1 promoter.
+###end p 70
+###begin p 71
+Mutants with very different behaviour depending on which promoter is measured. The top half shows mutants in which the activity for the p53R2 and NOXA promoters is similar to that of the wild-type, whereas the activity for all the other promoters measured is almost zero. The bottom half shows mutants that affect WAF1 and MDM2 more severely than the other promoters.
+###end p 71
+###begin title 72
+Prediction of the severity of mutants in other proteins
+###end title 72
+###begin p 73
+###xml 408 413 <span type="species:ncbi:9606">human</span>
+All parameters used for the predictions of p53 could be used for any protein with known structure. However, without sufficient training data, an automated prediction is not possible. Nevertheless, if the same weights are used as for p53, possibly somewhat tuned according to biological knowledge of the protein in question, a relative score between different mutants can be produced. This has been tested on human steroid 11-beta-hydroxylase with good results (J. Carlsson, A. Wedell and B. Persson, unpublished results). The initial investigation of a number of additional proteins adds further evidence that the method generalizes well on other, nonrelated proteins.
+###end p 73
+###begin p 74
+If the purpose is to find residue exchanges that do not impair stability, the individual severity scores can be calculated for several candidate mutants and, subsequently, the mutant(s) with the lowest score(s) can be selected. If, on the other hand, the aim is a prediction of the activity, the scores are less valuable. However, if the mutants are split into three groups with the lowest scores in one group indicating wild-type activity, the intermediate scores in a middle group and the high-severity scores and thereby low activity in a third group, the mutants placed in the first and third groups can be expected to correlate well with high and low activity, respectively, if the intermediate group is sufficiently large. For the conservation score, it is important to base this on a good multiple sequence alignment with many sequences. All other parameters are independent of such 'environmental' effects.
+###end p 74
+###begin title 75
+Materials and methods
+###end title 75
+###begin title 76
+p53 activity data
+###end title 76
+###begin p 77
+###xml 191 197 187 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al.</italic>
+###xml 199 201 195 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10">10</xref>
+Activity data are available for all single-nucleotide mutants with eight different promoters (WAF1, MDM2, BAX, 14-3-3-sigma, AIP, GAD45, NOXA, and p53R2) and were taken from the work by Kato et al. [10], where 2314 p53 mutants were expressed (on average, 5.9 mutants per residue) and their activity measured. Data are available from the p53 website (). Among the 2314 mutants, 1148 were localized in the central core domain of the protein and were used for training and evaluation of our prediction algorithm. Of the eight promoters, we studied the WAF1 promoter in greatest detail with additional testing and usage of different training methods. We also developed similar prediction schemes for the remaining promoters and evaluated them in the same way as for WAF1.
+###end p 77
+###begin title 78
+Training and testing sets
+###end title 78
+###begin p 79
+The mutants were divided into two classes. Mutants with an activity above 25% were considered to be less severe and were denoted class 1 mutants (524 mutants), whereas those with lower activity were considered to be severe and were denoted class 2 (624 mutants).
+###end p 79
+###begin p 80
+To evaluate the performance of the algorithm, test sets were created. We used five-sixths of the data for training and the remaining one-sixth for evaluation. This was performed for all six combinations. Data were sorted according to activity and then evenly distributed into six representative test groups by letting the first mutant go into the first training set, the second mutation into the second training set, and so on.
+###end p 80
+###begin title 81
+Development of the prediction method PREDMUT
+###end title 81
+###begin p 82
+A two-state classification algorithm, called PREDMUT (PREDict MUTants), was developed for prediction of the severity of p53 mutants. The method was trained on a set of known mutants and subsequently evaluated on another set.
+###end p 82
+###begin p 83
+###xml 225 232 225 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl1">Table 1</xref>
+The method is based on parameters reflecting the biochemical and structural properties of the amino acid residues affected by the mutations. In total, 12 different and complementary parameters were considered, as detailed in Table 1. A test of systematically removing one parameter at a time resulted in impaired prediction accuracy in all cases. As a preprocessing step, input data for each parameter were normalized to a value ranging from zero to unity.
+###end p 83
+###begin p 84
+In the prediction method, each of the 12 parameters was assigned a weight. These weights were optimized during the training phase (see below). To obtain the severity score for a specific mutant, the values for each of the 12 parameters were multiplied by the respective parameter weight and then summed. If this score was above a threshold calculated by the algorithm, the mutant was predicted to be severe and thereby belonging to class 2 and, if it was below, it was predicted to be nonsevere and thereby belonging to class 1.
+###end p 84
+###begin p 85
+###xml 116 118 116 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b24">24</xref>
+During training of PREDMUT, a Monte Carlo technique was employed to optimize the parameters used in the prediction [24]. Initially, weights of zero were assigned to all parameters. Subsequently, an iterative process was undertaken in which a parameter weight was increased or decreased randomly by a fixed value. After each random change, the parameter settings were evaluated. If the score was improved, the parameters were retained; if the score was impaired, the recent change was rejected. However, if no improvements were found after a predefined number of iterations, one of the parameters causing impairment was randomly changed in order to determine the global optimum.
+###end p 85
+###begin p 86
+As there are many random steps involved, the algorithm can traverse the multidimensional parameter landscape in an infinite number of ways, at least in a practical sense. The predictions were improved by performing multiple training runs and, subsequently, by selecting the run that resulted in the best prediction on the training data. However, often several runs resulted in a similar set of parameter weights and thresholds, indicating a stable solution which is likely to correspond to the optimal. If infinite loops of increments and decrements of the same parameter without improvement were detected, the algorithm made a random change of another parameter in order to circumvent the problem.
+###end p 86
+###begin p 87
+When evaluating the PREDMUT algorithm, the goal was to arrive at as accurate a prediction as possible without being biased towards the larger class 2. This was obtained by minimizing the sum of the individual prediction error percentage for the two classes.
+###end p 87
+###begin title 88
+Structural modelling and energy calculations
+###end title 88
+###begin p 89
+###xml 82 84 82 84 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b25">25</xref>
+###xml 318 321 318 321 <sc xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">icm</sc>
+###xml 323 325 323 325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b26">26</xref>
+###xml 326 328 326 328 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b27">27</xref>
+###xml 370 372 370 372 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+The three-dimensional structure of p53 was taken from the PDB entry 1tsr chain 1 [25] in the RCSB protein data bank (), as a basis for all measurements and simulations. For each mutant, the residue exchange was inferred to the structure, whereafter its energy was minimized using the Monte Carlo method implemented in icm [26,27], similar to that described for CYP21A2 [12].
+###end p 89
+###begin p 90
+The structure was repeatedly minimized, alternating between local and global procedures. In the local minimization, the sum of the energy terms was minimized locally in the direction in which the total energy gradient was the steepest. In the global energy minimization, a stochastic method was used where random changes, biased towards high-energy regions, were made. Changes which decreased the energy were always retained, whereas changes that increased the energy were kept with a probability that decreased exponentially with increasing energy difference. For each local minimization, we used five times 1000 iterations and, for the global minimization, we used 3000 iterations for each variable that was changed from the original structure.
+###end p 90
+###begin p 91
+###xml 299 301 299 301 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b28">28</xref>
+The energy values obtained were subsequently used as parameters in the prediction algorithm. The energy was minimized on the basis of the following energy terms: electrostatic interactions, hydrogen bonds, van der Waals' interactions and torsion energy with parameters from the ECEPP/3 force field [28]. The water in the simulation was treated implicitly in order to considerably reduce the simulation time.
+###end p 91
+###begin p 92
+###xml 99 102 99 102 <sc xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">icm</sc>
+For each mutant, the energy value of its corresponding structure was calculated, using the program icm. Furthermore, for each position, the average energy value for 19 structures, representing all possible amino acid residue exchanges, was also calculated. As the central domain of the p53 domain (positions 94-289) contains 196 amino acid residues, a total of 3724 possible mutants was simulated. Each mutant was simulated four times to obtain representative sampling, decreasing the risk of inappropriate energy values as a result of calculations becoming stuck in local minima.
+###end p 92
+###begin p 93
+###xml 65 67 65 67 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b29">29</xref>
+###xml 68 70 68 70 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b34">34</xref>
+###xml 576 582 576 582 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al.</italic>
+###xml 584 585 584 585 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+Stability changes on mutation have been investigated previously [29-34] as a complement to other prediction parameters. However, we used a physical effective energy function to calculate the stability changes on mutation, whereas the methods mentioned use either statistical potentials, constructed from atom contact in existing protein structures, or empirical models, based on protein experiments. To speed up calculations, we used an implicit water solvent, which, combined with modern multicore CPUs, makes it possible to simulate all possible mutants in the protein. Yip et al. [7] have also used a physical effective energy function simulation, but with a completely different technique, molecular dynamics, compared with our Monte Carlo-based molecular modelling method. They also used a different approach in which they predicted functionally important residues and not the effect of mutations.
+###end p 93
+###begin p 94
+###xml 90 91 90 91 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4">4</xref>
+###xml 92 94 92 94 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b35">35</xref>
+###xml 95 97 95 97 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b36">36</xref>
+###xml 205 207 205 207 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b22">22</xref>
+###xml 208 210 208 210 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b31">31</xref>
+Methods have also been developed to predict mutant severity without stability parameters [4,35,36], as have methods that look only at stability changes of the mutation compared with the wild-type protein [22,31].
+###end p 94
+###begin title 95
+Matthews' correlation coefficient
+###end title 95
+###begin p 96
+###xml 41 43 41 43 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b37">37</xref>
+Matthews' correlation coefficient (MCC) [37] was used to estimate the performance of the classifications. Values can range from -1 to 1, where 1 is a perfect classification. To obtain a high MCC value, the classification needs to be accurate for both classes. This makes the value unbiased in relation to the difference in class sizes. It also has the effect that it is hard to achieve a high value. For example, a classification with a total accuracy of 85% (90% true positives and 75% true negatives) will only produce an MCC value of 0.66. The MCC value is calculated using the following formula: 
+###end p 96
+###begin p 97
+where TP denotes true positives, TN true negatives, FP false positives and FN false negatives.
+###end p 97
+###begin title 98
+Cross-correlation between parameters
+###end title 98
+###begin p 99
+###xml 104 106 104 106 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b14">14</xref>
+To measure the similarity between parameters, we used Pearson's product-moment correlation coefficient [14] described by the following equation: 
+###end p 99
+###begin p 100
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 12 13 12 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">y</italic>
+where x and y are values from the two parameters measured, and  and  are the mean values for the respective parameters.
+###end p 100
+###begin title 101
+Thermally sensitive mutants
+###end title 101
+###begin p 102
+There are several p53 mutants whose activity varies considerably depending on the temperature. Under normal conditions, they have no or very low activity but, if the temperature is lowered by just 7 degreesC, they behave almost as the wild-type protein. This dataset should be very hard to predict correctly as the stabilities of the mutated proteins are very close to those of the wild-type, yet they have low activity.
+###end p 102
+###begin title 103
+References
+###end title 103
+###begin article-title 104
+###xml 34 39 <span type="species:ncbi:9606">human</span>
+The consensus coding sequences of human breast and colorectal cancers
+###end article-title 104
+###begin article-title 105
+###xml 32 37 <span type="species:ncbi:9606">human</span>
+Patterns of somatic mutation in human cancer genomes
+###end article-title 105
+###begin article-title 106
+The devil is in the DNA
+###end article-title 106
+###begin article-title 107
+Predicting deleterious amino acid substitutions
+###end article-title 107
+###begin article-title 108
+###xml 15 20 <span type="species:ncbi:9606">human</span>
+Accounting for human polymorphisms predicted to affect protein function
+###end article-title 108
+###begin article-title 109
+Comprehensive statistical study of 452 BRCA1 missense substitutions with classification of eight recurrent substitutions as neutral
+###end article-title 109
+###begin article-title 110
+Structural assessment of single amino acid mutations: application to TP53 function
+###end article-title 110
+###begin article-title 111
+###xml 25 30 <span type="species:ncbi:9606">human</span>
+Assessing TP53 status in human tumours to evaluate clinical outcome
+###end article-title 111
+###begin article-title 112
+###xml 50 55 <span type="species:ncbi:9606">human</span>
+p53 website and analysis of p53 gene mutations in human cancer: forging a link between epidemiology and carcinogenesis
+###end article-title 112
+###begin article-title 113
+Understanding the function-structure and function-mutation relationships of p53 tumor suppressor protein by high-resolution missense mutation analysis
+###end article-title 113
+###begin article-title 114
+Detailed computational study of p53 and p16: using evolutionary sequence analysis and disease-associated mutations to predict the functional consequences of allelic variants
+###end article-title 114
+###begin article-title 115
+###xml 19 24 <span type="species:ncbi:9606">human</span>
+Molecular model of human CYP21 based on mammalian CYP2C5: structural features correlate with clinical severity of mutations causing congenital adrenal hyperplasia
+###end article-title 115
+###begin article-title 116
+WAF1, a potential mediator of p53 tumor suppression
+###end article-title 116
+###begin article-title 117
+Thirteen ways to look at the correlation coefficient
+###end article-title 117
+###begin article-title 118
+PCA in studying coordination and variability: a tutorial
+###end article-title 118
+###begin article-title 119
+Preferential formation of benzo[a]pyrene adducts at lung cancer mutational hotspots in P53
+###end article-title 119
+###begin article-title 120
+The kinemage: a tool for scientific communication
+###end article-title 120
+###begin article-title 121
+Computational approaches for predicting the biological effect of p53 missense mutations: a comparison of three sequence analysis based methods
+###end article-title 121
+###begin article-title 122
+CUPSAT: prediction of protein stability upon point mutations
+###end article-title 122
+###begin article-title 123
+Mathematical models in decision analysis
+###end article-title 123
+###begin article-title 124
+Crystal structure of a p53 tumor suppressor-DNA complex: understanding tumorigenic mutations
+###end article-title 124
+###begin article-title 125
+Biased probability Monte Carlo conformational searches and electrostatic calculations for peptides and proteins
+###end article-title 125
+###begin article-title 126
+###xml 0 3 0 3 <sc xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">icm</sc>
+icm- a new method for protein modeling and design: applications to docking and structure prediction from the distorted native conformation
+###end article-title 126
+###begin article-title 127
+Energy parameters in polypeptides. 10. Improved geometrical parameters and nonbonded interactions for use in the ECEPP/3 algorithm, with application to proline-containing peptides
+###end article-title 127
+###begin article-title 128
+Free energy changes associated with amino acid substitution in proteins
+###end article-title 128
+###begin article-title 129
+SNPs, protein structure, and disease
+###end article-title 129
+###begin article-title 130
+Predicting changes in the stability of proteins and protein complexes: a study of more than 1000 mutations
+###end article-title 130
+###begin article-title 131
+Predicting protein stability changes from sequences using support vector machines
+###end article-title 131
+###begin article-title 132
+Modeling mutations in protein structures
+###end article-title 132
+###begin article-title 133
+###xml 68 73 <span type="species:ncbi:9606">human</span>
+Statistical geometry approach to the study of functional effects of human nonsynonymous SNPs
+###end article-title 133
+###begin article-title 134
+Predicting the functional consequences of non-synonymous single nucleotide polymorphisms: structure-based assessment of amino acid variation
+###end article-title 134
+###begin article-title 135
+###xml 74 79 <span type="species:ncbi:9606">human</span>
+Prediction of functional nonsynonymous single nucleotide polymorphisms in human G-protein-coupled receptors
+###end article-title 135
+###begin article-title 136
+Comparison of the predicted and observed secondary structure of T4 phage lysozyme
+###end article-title 136
+###begin article-title 137
+Integrating mutation data and structural analysis of the TP53 tumor-suppressor protein
+###end article-title 137
+###begin article-title 138
+Dictionary of protein secondary structure: pattern recognition of hydrogen-bonded and geometrical features
+###end article-title 138
+###begin article-title 139
+A simple method for displaying the hydropathic character of a protein
+###end article-title 139
+###begin article-title 140
+The characterization of amino acid sequences in proteins by statistical methods
+###end article-title 140
+###begin article-title 141
+Multiple sequence alignment with the Clustal series of programs
+###end article-title 141
+###begin title 142
+Abbreviations
+###end title 142
+###begin p 143
+Matthews' correlation coefficient
+###end p 143
+###begin p 144
+partial least squares
+###end p 144
+###begin p 145
+receiver operating characteristic.
+###end p 145
+###begin title 146
+Supporting information
+###end title 146
+###begin p 147
+The following supplementary material is available:
+###end p 147
+###begin p 148
+###xml 0 9 0 9 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table S1.</bold>
+Table S1. p53 sequences.
+###end p 148
+###begin p 149
+###xml 0 9 0 9 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table S2.</bold>
+Table S2. Breast cancer mutations.
+###end p 149
+###begin p 150
+This supplementary material can be found in the online version of this article.
+###end p 150
+###begin p 151
+Please note: As a service to our authors and readers, this journal provides supporting information supplied by the authors. Such materials are peer-reviewed and may be re-organized for online delivery, but are not copy-edited or typeset. Technical support issues arising from supporting information (other than missing files) should be addressed to the authors.
+###end p 151
+

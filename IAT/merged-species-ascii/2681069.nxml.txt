@@ -1,0 +1,895 @@
+###begin article-title 0
+Identifying promoter features of co-regulated genes with similar network motifs
+###end article-title 0
+###begin p 1
+This is an open access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+###xml 581 584 581 584 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+A large amount of computational and experimental work has been devoted to uncovering network motifs in gene regulatory networks. The leading hypothesis is that evolutionary processes independently selected recurrent architectural relationships among regulators and target genes (motifs) to produce characteristic expression patterns of its members. However, even with the same architecture, the genes may still be differentially expressed. Therefore, to define fully the expression of a group of genes, the strength of the connections in a network motif must be specified, and the cis-promoter features that participate in the regulation must be determined.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 319 322 319 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+###xml 878 895 878 895 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 899 919 899 919 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella enterica </italic>
+###xml 878 894 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 899 938 <span type="species:ncbi:90371">Salmonella enterica serovar Typhimurium</span>
+We have developed a model-based approach to analyze proteobacterial genomes for promoter features that is specifically designed to account for the variability in sequence, location and topology intrinsic to differential gene expression. We provide methods for annotating regulatory regions by detecting their subjacent cis-features. This includes identifying binding sites for a transcriptional regulator, distinguishing between activation and repression sites, direct and reverse orientation, and among sequences that weakly reflect a particular pattern; binding sites for the RNA polymerase, characterizing different classes, and locations relative to the transcription factor binding sites; the presence of riboswitches in the 5'UTR, and for other transcription factors. We applied our approach to characterize network motifs controlled by the PhoP/PhoQ regulatory system of Escherichia coli and Salmonella enterica serovar Typhimurium. We identified key features that enable the PhoP protein to control its target genes, and distinct features may produce different expression patterns even within the same network motif.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+###xml 337 340 337 340 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+Global transcriptional regulators control multiple promoters by a variety of network motifs. This is clearly the case for the regulatory protein PhoP. In this work, we studied this regulatory protein and demonstrated that understanding gene expression does not only require identifying a set of connexions or network motif, but also the cis-acting elements participating in each of these connexions.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+Transcription regulatory networks can be represented as directed graphs in which a node stands for a gene (or an operon in the case of bacteria) and an edge symbolizes a direct transcriptional interaction. Recurrent patterns of interactions, termed network motifs, occur far more often than in randomized networks, forming elementary building blocks that carry out key functions. This is a convenient representation of the architecture of a set of regulatory Boolean (i.e. ON-OFF) networks, in which each gene is either fully expressed or not expressed at all, or that it has a binding site for a transcriptional regulator or lacks such a site. However, this approach has serious limitations because most genes are not expressed in a simple Boolean fashion. Indeed, genes that are co-regulated by the same transcription factor are often differently expressed with characteristic expression levels and kinetics. Therefore, a deeper understanding of regulatory networks demands the identification of the key features used by a transcriptional regulator to differentially control genes that display distinct behaviours despite belonging to networks with identical motifs.
+###end p 9
+###begin p 10
+###xml 386 387 386 387 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 388 389 388 389 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 566 569 566 569 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+###xml 610 611 610 611 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 612 613 612 613 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+The identification of the promoter features that determine the distinct expression behavior of co-regulated genes is a challenging task because: first, these features are often short combinations of a constrained four-symbol DNA alphabet. Therefore, it is not clear how to distinguish a sequence pattern that could affect gene expression from a just slightly different random sequence [1,2]. Second, the sequences recognized by a transcription factor may differ from promoter to promoter within and between genomes and may be located at various distances from other cis-acting features in different promoters [3,4]. Third, similar expression patterns can be generated from different or a mixture of multiple underlying features, thus, making it more difficult to discern the causes of analogous regulatory effects.
+###end p 10
+###begin p 11
+In this study, we present a method specifically aimed at handling the variability in sequence, location and topology that characterize gene transcription. We decompose a feature into a family of models or building blocks that uncover important differences among observations that are often concealed when using global patterns that tend to average sequences between promoters and even across species. This approach maximizes the sensitivity of detecting those instances that weakly resemble a consensus (e.g., binding site sequences) without decreasing the specificity. In addition, features are considered using fuzzy assignments, which allow us to encode how well a particular sequence matches each of the multiple models for a given promoter feature. Individual features can be linked into more informative composite models that can be used to explain the kinetic expression behavior of genes.
+###end p 11
+###begin p 12
+###xml 92 109 92 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 113 133 113 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella enterica </italic>
+###xml 215 217 215 217 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2+</sup>
+###xml 236 237 236 237 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 238 239 238 239 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 256 269 256 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli phoP </italic>
+###xml 293 309 293 309 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella phoP </italic>
+###xml 317 318 317 318 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 415 416 415 416 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 417 418 417 418 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 452 453 452 453 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 614 625 614 625 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 626 628 626 628 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 759 761 759 761 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1A</xref>
+###xml 793 795 793 795 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1B</xref>
+###xml 815 817 815 817 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1C</xref>
+###xml 838 840 838 840 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1D</xref>
+###xml 874 876 874 876 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1E</xref>
+###xml 879 881 879 881 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 882 884 882 884 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 92 108 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 113 152 <span type="species:ncbi:90371">Salmonella enterica serovar Typhimurium</span>
+###xml 256 263 <span type="species:ncbi:562">E. coli</span>
+We applied our method to analyze promoters controlled by the PhoP/PhoQ regulatory system of Escherichia coli and Salmonella enterica serovar Typhimurium. This system responds to the same inducing signal (i.e. low Mg2+) in both species [4-7]. Moreover, the E. coli phoP gene could complement a Salmonella phoP mutant [8]. The DNA-binding PhoP protein appears to recognize a tandem repeat sequence separated by 5 bp [4-6], consistent with being a dimer [9]. The PhoP/PhoQ system is an excellent test case because it controls the expression of a large number of genes, amounting to ca. 3% of the genes in the case of Salmonella [10]. Furthermore, the PhoP/PhoQ regulon has been shown to employ a variety of network motifs including the single-input module (Fig. 1A), the multi-input module (Fig. 1B), the bi-fan (Fig. 1C), the chained (Fig. 1D), and the feedforward loop (Fig. 1E) [10-12]. Our analysis uncovered the salient features that distinguish genes co-regulated by PhoP belonging to similar networks. Gene transcription measurements provided experimental support for the investigated predictions.
+###end p 12
+###begin p 13
+###xml 0 87 0 87 <bold xmlns:xlink="http://www.w3.org/1999/xlink">The PhoP/PhoQ system employs a variety of network motifs to regulate gene transcription</bold>
+###xml 190 194 190 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtA</italic>
+###xml 196 201 196 201 <italic xmlns:xlink="http://www.w3.org/1999/xlink">phoP </italic>
+###xml 205 209 205 209 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pmrD</italic>
+###xml 328 331 328 331 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ugd</italic>
+###xml 381 386 381 386 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pmrD </italic>
+###xml 390 394 390 394 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yrbL</italic>
+###xml 733 739 733 739 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hdeA/D</italic>
+The PhoP/PhoQ system employs a variety of network motifs to regulate gene transcription. (A) In the single-input module, PhoP as a single transcription factor regulates a set of genes (i.e. mgtA, phoP and pmrD). (B) In the multi-input module, two or more transcription factors (e.g., PhoP and RcsB) regulate a target gene (i.e. ugd). (C) In the bi-fan module, a set of genes (i.e. pmrD and yrbL) are each regulated by a combination of transcription factors (i.e. PhoP and PmrA). (D) In the chained motif, genes are regulated in an ordered cascade. (E) In the feedforward loop, a transcription factor (i.e. PhoP) regulates the expression of a second transcription factor (i.e. YhiW), and both jointly regulate one or more genes (i.e. hdeA/D).
+###end p 13
+###begin title 14
+Results and discussion
+###end title 14
+###begin title 15
+Approach
+###end title 15
+###begin p 16
+###xml 30 33 30 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+###xml 677 680 677 680 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i.e</italic>
+###xml 823 825 823 825 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 826 828 826 828 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 1084 1086 1084 1086 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 1252 1253 1252 1253 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 1436 1438 1436 1438 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+We investigated five types of cis-acting promoter features by extracting the maximal amount of useful information from datasets and then creating models that describe promoter regulatory regions. This entailed applying three key strategies: first, we conducted an initial survey of the data provided from different available sources, capturing and distinguishing between broad and easily discernable patterns. We then used these patterns as models to re-visit the data with greater sensitivity and specificity. This allowed us not only to recognize those instances with a low resemblance to consensus models, but also to reflect and annotate the diversity of the observations (i.e., when distances between the transcription factor binding site and RNA polymerase are unusual). Second, we utilized fuzzy clustering methods [13,14] to encode promoter matching to multiple models for a given promoter feature, which avoided having to make premature categorical assignments, and producing an initial classification of the promoters into multiple subsets. Finally, we applied fuzzy logic [15] to relate some basic features into more informative composite models that may explain the distinct expression behavior of genes belonging to similar networks (Fig. 2). A distinguishing characteristic of our approach is that promoters for orthologous genes are considered individually. This is in contrast to some phylogenetic footprinting methods [16] that often ignore regulatory differences among closely-related organisms due to their strict reliance on the conservation of regulatory motifs across bacterial species.
+###end p 16
+###begin p 17
+###xml 0 77 0 77 <bold xmlns:xlink="http://www.w3.org/1999/xlink">PhoP-regulated promoters are described on the basis of five types of features</bold>
+###xml 1100 1108 1100 1108 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1112 1123 1112 1123 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 1196 1197 1196 1197 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 1199 1200 1199 1200 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 1313 1314 1313 1314 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 1330 1331 1330 1331 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 1453 1454 1453 1454 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 1456 1457 1456 1457 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+###xml 1512 1513 1512 1513 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 1515 1516 1515 1516 <sub xmlns:xlink="http://www.w3.org/1999/xlink">6</sub>
+###xml 1581 1595 1581 1595 <italic xmlns:xlink="http://www.w3.org/1999/xlink">close class II</italic>
+###xml 1601 1614 1601 1614 <italic xmlns:xlink="http://www.w3.org/1999/xlink">close class I</italic>
+###xml 1620 1635 1620 1635 <italic xmlns:xlink="http://www.w3.org/1999/xlink">medium class II</italic>
+###xml 1641 1655 1641 1655 <italic xmlns:xlink="http://www.w3.org/1999/xlink">medium class I</italic>
+###xml 1661 1677 1661 1677 <italic xmlns:xlink="http://www.w3.org/1999/xlink">remote class II </italic>
+###xml 1685 1699 1685 1699 <italic xmlns:xlink="http://www.w3.org/1999/xlink">remote class I</italic>
+###xml 1100 1107 <span type="species:ncbi:562">E. coli</span>
+PhoP-regulated promoters are described on the basis of five types of features. We conform a database including whether the position of the PhoP box suggests that a promoter is activated or repressed (activated/repressed); the orientation of the PhoP box (orientation); distinct PhoP box patterns (motif patterns); the distance of the PhoP box relative to the RNA polymerase site and the class of sigma 70 promoter (RNA polymerase sites); and the presence of potential binding sites for 24 transcription factors in the PhoP-regulated promoters (Other TFBs). The identification of a feature in a promoter is based on measuring the degree of match between a promoter instance and a model that represents that feature, which results in a vector of [0, 1] values where 1 (red) corresponds to maximum matching and 0 (green) corresponds to the absence of the feature. Individual genes are allowed to have more than one promoter because more than one candidate PhoP box can be identified in an intergenic region. In addition, promoters for the same gene in different genomes are considered separately in the E. coli and Salmonella genomes. Activated/repressed analysis discriminates among three groups (A1-A2) corresponding to activated, and repressed genes, respectively. The PhoP box could be present in the opposite (O1) or the same (O2) orientation as the regulated open reading frame. Pattern analysis of the PhoP box resulted in four preliminary groups (M1-M4). RNA polymerase sites analysis revealed six groups (P1-P6) corresponding to types and location of sigma 70 promoters: (1) close class II, (2) close class I, (3) medium class II, (4) medium class I, (5) remote class II and (6) remote class I. The presence of other transcription factor binding sites in PhoP-regulated promoters includes: (1) OxyR, (2) FruR, (3) DeoR, (4) MalT, (5) MelR, (6) CytR, (7) GlpR, (8) ArcA, (9) FNR, (10) RcsB, (11) Fur, (12) ArgR, (13) RhaS, (14) AraC, (15) CRP, (16) DnaA, (17) YhiW, (18) Lrp, (19) NarL, (20) FIS, (21) IHF, (22) OmpR, (23) PmrA and (24) SlyA.
+###end p 17
+###begin title 18
+Activated/repressed promoters
+###end title 18
+###begin p 19
+###xml 396 401 396 401 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3A, B</xref>
+###xml 404 406 404 406 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+Gene expression data normally allow clear separation of genes into those that are activated and those that are repressed by a regulatory protein. Because the expression signal is sometimes absent or too low to be informative, we considered the location of a transcription factor binding site relative to that of the RNA polymerase to separate promoters into activated and repressed subsets (Fig. 3A, B) [17].
+###end p 19
+###begin p 20
+###xml 0 26 0 26 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Learning promoter features</bold>
+###xml 170 178 170 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 182 194 182 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. enterica </italic>
+###xml 1084 1085 1083 1084 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1086 1091 1085 1090 <italic xmlns:xlink="http://www.w3.org/1999/xlink">close</italic>
+###xml 1092 1101 1091 1100 <italic xmlns:xlink="http://www.w3.org/1999/xlink">activated</italic>
+###xml 1117 1127 1116 1126 <italic xmlns:xlink="http://www.w3.org/1999/xlink">activated </italic>
+###xml 1168 1174 1167 1173 <italic xmlns:xlink="http://www.w3.org/1999/xlink">close </italic>
+###xml 170 177 <span type="species:ncbi:562">E. coli</span>
+###xml 182 193 <span type="species:ncbi:28901">S. enterica</span>
+Learning promoter features. Promoter features were learned as models from examples in databases (e.g., RegulonDB) and then used to describe the intergenic regions of the E. coli and S. enterica genomes. (A, B) Promoters were classified into activated (A), repressed (B) or both, based on the location and the distance of a regulatory protein binding site to the RNA polymerase site. Different distributions are observed for activated, repressed and activated/repressed genes. The property that characterizes activated genes was learned from distances between the transcription start sites (+1) and the binding sites of different transcription factors. These distances were grouped in histograms and codified as elastic (fuzzy) functions, which can be interpreted as the membership degrees (in a unit interval) by which subsets of the dataset can embrace this property. (B) The histogram and membership function corresponding to repressed promoters. mu is maximal at much closer distances. Thus, the promoter distances can be probabilistically interpreted as the posterior probability p(close/activated) that given an activated gene, the regulator binding site is at a close distance from the transcription start site, following Bayes' rule. (C) The distances between transcription start sites (+1) and the binding sites of regulators were grouped into a histogram and codified as elastic (fuzzy)unit-interval functions. This process is analogous to fitting data from a parametric or non-parametric distribution and then assigning probabilities of membership to such distributions. We used these models to characterize the relationships between binding sites for the PhoP protein and the RNA polymerase binding site in the genome. Relationships were classified according to their similarity (fuzzy membership) with the prototypes to obtain a similarity vector of expression values. (D) The histogram illustrates the distances for binding sites of different regulators sharing the same promoter regions. The resulting membership functions, which were learned from such distributions, allows evaluating the putative relationship between a transcription factor motif and a PhoP box based both on motif quality and physical location.
+###end p 20
+###begin p 21
+###xml 153 158 153 158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3A, B</xref>
+###xml 359 360 359 360 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 512 517 512 517 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hilA </italic>
+###xml 559 570 559 570 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 662 664 662 664 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 665 667 665 667 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 712 728 712 728 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella pipD </italic>
+###xml 732 737 732 737 <italic xmlns:xlink="http://www.w3.org/1999/xlink">nmpC </italic>
+###xml 992 1000 992 1000 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1014 1019 1014 1019 <italic xmlns:xlink="http://www.w3.org/1999/xlink">nmpC </italic>
+###xml 1045 1046 1045 1046 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 1047 1048 1047 1048 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 1148 1153 1148 1153 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtC </italic>
+###xml 1157 1162 1157 1162 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 1273 1275 1273 1275 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 992 999 <span type="species:ncbi:562">E. coli</span>
+We determined that the location of binding sites functioning in activation is different from that corresponding to sites functioning in repression (Fig. 3A, B), being centered ~40 and ~20 bp upstream of the transcription start site, respectively. This allowed us to distinguish among PhoP-regulated promoters that have apparently similar network motifs (Fig. 2). For example, we identified a PhoP binding site at a relative distance to the RNA polymerase consistent with repression in the promoter region of the hilA gene, which encodes a master regulator of Salmonella invasion and had been known to be under transcriptional repression by the PhoP/PhoQ system [18,19]. Several promoters, including those of the Salmonella pipD and nmpC genes, were classified as candidates for being both activated and repressed, because the distance between the predicted transcription start site and the PhoP box is consistent with either activation or repression. Gene expression experiments conducted in E. coli indicate that nmpC is a PhoP-repressed gene [4-6]. Other promoters were predicted to have more than one PhoP box (e.g., those of the PhoP-activated mgtC and pagC genes), where by their location one could correspond to an activation site and the other to a repression site [20].
+###end p 21
+###begin title 22
+Transcription factor binding site orientation
+###end title 22
+###begin p 23
+###xml 134 136 134 136 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 314 316 314 316 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 317 319 317 319 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 466 470 466 470 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yobG</italic>
+###xml 476 481 476 481 <italic xmlns:xlink="http://www.w3.org/1999/xlink">slyB </italic>
+###xml 503 508 503 508 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagK </italic>
+###xml 512 517 512 517 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 528 539 528 539 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 555 557 555 557 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4A</xref>
+###xml 720 728 720 728 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 732 743 732 743 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 757 758 757 758 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 778 791 778 791 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli ompT </italic>
+###xml 795 800 795 800 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yhiW </italic>
+###xml 818 841 818 841 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella mig-14, pipD</italic>
+###xml 843 848 843 848 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 852 857 852 857 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagK </italic>
+###xml 993 998 993 998 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtA </italic>
+###xml 1008 1009 1008 1009 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 1017 1018 1017 1018 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 1060 1064 1060 1064 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ybjX</italic>
+###xml 1066 1070 1066 1070 <italic xmlns:xlink="http://www.w3.org/1999/xlink">slyB</italic>
+###xml 1072 1077 1072 1077 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yeaF </italic>
+###xml 1086 1094 1086 1094 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1102 1106 1102 1106 <italic xmlns:xlink="http://www.w3.org/1999/xlink">virK</italic>
+###xml 1108 1112 1108 1112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ybjX</italic>
+###xml 1118 1123 1118 1123 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtC </italic>
+###xml 1132 1142 1132 1142 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella</italic>
+###xml 1253 1266 1253 1266 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtC, mig-14 </italic>
+###xml 1270 1275 1270 1275 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 1286 1287 1286 1287 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 1363 1368 1363 1368 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtA </italic>
+###xml 1517 1519 1517 1519 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 720 727 <span type="species:ncbi:562">E. coli</span>
+###xml 778 785 <span type="species:ncbi:562">E. coli</span>
+###xml 1086 1093 <span type="species:ncbi:562">E. coli</span>
+Functional binding sites for a transcription factor may be present in either orientation relative to the RNA polymerase binding site [21]. This is due to the possibility of DNA looping and to the flexibility of the alpha subunit of the bacterial RNA polymerase in its interactions with transcriptional regulators [22,23]. Yet, promoters harboring binding boxes in different orientation can be controlled by PhoP using the same network motif. That is the case of the yobG, and slyB (direct), compared to pagK and pagC (opposite) Salmonella promoters (Fig. 4A). Analysis of PhoP-regulated promoters revealed that the PhoP box could be found with the same probability in either orientation in the intergenic regions of the E. coli and Salmonella genomes (Fig. 5). For example, the E. coli ompT and yhiW promoters and the Salmonella mig-14, pipD, pagC and pagK promoters harbor putative PhoP binding sites in the opposite relative orientation to that described for the prototypical PhoP-activated mgtA promoter [4] (Fig. 2). Yet other promoters (i.e. those of the ybjX, slyB, yeaF genes in E. coli and the virK, ybjX, and mgtC genes in Salmonella) contain sequences resembling the PhoP box in both orientations. The demonstration that PhoP does bind to the mgtC, mig-14 and pagC promoters [4], which harbor the PhoP binding site in the opposite orientation as in the mgtA promoter, validates our predictions and argues against alternative network designs where these promoters would be regulated by PhoP only indirectly [24].
+###end p 23
+###begin p 24
+###xml 36 39 36 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+###xml 0 88 0 88 <bold xmlns:xlink="http://www.w3.org/1999/xlink">The PhoP protein exhibits different <italic>cis</italic>-features for genes within the same network motif</bold>
+###xml 233 248 233 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella yobG</italic>
+###xml 250 254 250 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink">slyB</italic>
+###xml 256 261 256 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagK </italic>
+###xml 265 270 265 270 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 337 348 337 348 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 366 368 366 368 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2+</sup>
+###xml 434 439 434 439 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yobG </italic>
+###xml 443 448 443 448 <italic xmlns:xlink="http://www.w3.org/1999/xlink">slyB </italic>
+###xml 493 498 493 498 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagK </italic>
+###xml 502 507 502 507 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 560 568 560 568 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo </italic>
+###xml 569 571 569 571 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B56">56</xref>
+###xml 879 884 879 884 <italic xmlns:xlink="http://www.w3.org/1999/xlink">phoP </italic>
+###xml 888 892 888 892 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pmrD</italic>
+###xml 918 923 918 923 <italic xmlns:xlink="http://www.w3.org/1999/xlink">phoP </italic>
+###xml 927 943 927 943 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtA Salmonella </italic>
+###xml 988 993 988 993 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtA </italic>
+###xml 1127 1132 1127 1132 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ugtL </italic>
+###xml 1136 1141 1136 1141 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 1399 1414 1399 1414 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella pmrD</italic>
+###xml 1420 1424 1420 1424 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ugd </italic>
+###xml 1597 1613 1597 1613 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella pmrD </italic>
+###xml 1617 1621 1617 1621 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ugd </italic>
+The PhoP protein exhibits different cis-features for genes within the same network motif. (A) PhoP-regulated promoters that differ in the orientation of the PhoP-binding site. PhoP regulates a set of promoters including those of the Salmonella yobG, slyB, pagK and pagC genes using a single-input network motif. We established that when Salmonella experiences low Mg2+, the PhoP protein binds to both the archetypal directly oriented yobG and slyB promoters as well as the oppositely oriented pagK and pagC promoters using chromatin immunoprecipitation (ChIP) in vivo [56]. (B) The PhoP protein uses the single-input network motif to control genes that differ in their binding site pattern. The PhoP protein recognizes a binding site motif consisting of a hexameric direct repeat separated by 5 bp, but distinguishes between different patterns with different specificities (i.e. phoP and pmrD). (C) PhoP regulates the phoP and mgtA Salmonella genes using the same network motif, however, mgtA harbors a riboswitch pattern in its 5'UTR region. (D) PhoP-regulated promoters differ in the RNA polymerase sites. The PhoP-activated ugtL and pagC promoters share the orientation of the PhoP-binding site as well as the class I sigma 70 promoter, but differ in the distance between the PhoP box and the RNA polymerase site. (E) Expression of PhoP-regulated promoters that use the bi-fan network motif. The Salmonella pmrD, and ugd promoters harbor experimentally verified PhoP- and PmrA-binding sites that can be described by the bi-fan network motif. The distance between the PhoP and PmrA boxes in the Salmonella pmrD and ugd promoters are also different (~38 bp and ~65 bp, respectively).
+###end p 24
+###begin p 25
+###xml 0 57 0 57 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Statistical significance of PhoP-binding site orientation</bold>
+###xml 446 457 446 457 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 461 469 461 469 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 713 726 713 726 <italic xmlns:xlink="http://www.w3.org/1999/xlink">one-way ANOVA</italic>
+###xml 927 940 927 940 <italic xmlns:xlink="http://www.w3.org/1999/xlink">multicompare </italic>
+###xml 461 468 <span type="species:ncbi:562">E. coli</span>
+Statistical significance of PhoP-binding site orientation. (A) PhoP-binding sites were discovered in both possible orientations relative to the open reading frame, even though all published PhoP-binding sites are reportedly only in one (i.e. direct) orientation. To test the hypothesis that the genome harbors the PhoP-binding site in either orientation, we collected the number of PhoP-binding sites both in intergenic and coding regions of the Salmonella and E. coli genomes at different specificity levels. % indicates the relationship with the maximum score obtained by the Consensus/Patser program with a single consensus motif. Using a 95% confidence interval, we could not reject the null hypothesis using one-way ANOVA. (B) Multiple tests illustrates that we did not find significant differences in pairwise comparisons among six sets generated by splitting the data by regions, motif scores and genomes (we use Matlab multicompare routine with corrections for multiple tests). The horizontal axis corresponds to rows in (A), and the vertical axis illustrates the group means of the columns in (B).
+###end p 25
+###begin title 26
+Transcription factor binding site patterns
+###end title 26
+###begin p 27
+###xml 317 319 317 319 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4B</xref>
+###xml 471 473 471 473 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 474 476 474 476 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 575 577 575 577 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 578 580 578 580 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 684 686 684 686 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+Many genes are controlled by a single-input network motif where the affinity of a transcription factor for its promoter sequences is a major determinant of gene expression. Thus, co-regulated genes displaying distinct expression patterns are likely to differ in the binding site for such a transcription factor (Fig. 4B). Methods that look for matching to a sequence motif have been successfully used to identify promoters controlled by particular transcription factors [25-27]. However, the strict cutoffs used by such methods increase specificity but decrease sensitivity [26,28], which makes it difficult to detect binding sites with weak resemblance to a global sequence pattern [29].
+###end p 27
+###begin p 28
+###xml 308 313 308 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 442 450 442 450 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 454 465 454 465 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 479 480 479 480 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 557 570 557 570 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli hdeA </italic>
+###xml 582 597 582 597 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella pmrD</italic>
+###xml 670 672 670 672 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 673 675 673 675 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 724 725 724 725 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 726 727 726 727 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 728 730 728 730 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 731 733 731 733 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 1118 1120 1118 1120 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 1269 1274 1269 1274 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 442 449 <span type="species:ncbi:562">E. coli</span>
+###xml 557 564 <span type="species:ncbi:562">E. coli</span>
+We decomposed set of binding site sequences corresponding to a transcription factor into several patterns and then combined them to increased the sensitivity to weak sites without losing specificity (a detailed sensitivity performance analysis and evolutionary effects of these patters are described in O.H. et al, manuscript in preparation). In the case of PhoP, we used this approach to search both strands of the intergenic regions of the E. coli and Salmonella genomes (Fig. 2). This allowed the recovery of promoters, such as that corresponding to the E. coli hdeA gene or the Salmonella pmrD, that had not been detected by the single position weight matrix model [26,28] despite being footprinted by the PhoP protein [4-6,10-12]. The use of four patterns instead of a single consensus increased the sensitivity for PhoP binding sites from 46% to 74%; yet, the specificity remained essentially the same (i.e., 98% in a consensus model versus 97%). Importantly, this approach is not exclusive to binding sites recognized by the PhoP protein, but for other transcription factors reported in the RegulonDB database [30], where we could increase the sensitivity in an average of 35%, while retain almost the same sensitivity than a single position weight matrix (O.H. et al, manuscript in preparation).
+###end p 28
+###begin title 29
+Riboswitch site patterns
+###end title 29
+###begin p 30
+###xml 251 254 251 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+###xml 1006 1022 1006 1022 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella mgtA </italic>
+###xml 1078 1080 1078 1080 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4C</xref>
+###xml 1083 1085 1083 1085 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 1163 1166 1163 1166 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2+ </sup>
+###xml 1248 1252 1248 1252 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lac </italic>
+###xml 1385 1387 1385 1387 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4C</xref>
+Riboswitches are structured domains that usually reside in the non-coding regions of mRNAs (UTRs), where they bind specific metabolites and control gene expression. The most common effects occur at the level of premature termination of transcription (cis-acting) or translation initiation. Upstream regions of PhoP regulated genes were screened for riboswitches by analyzing the presence of segments with conserved secondary structure across genomes and thermodynamic stability; because Rfam  searches did not produce significant hits. Then, we evaluate if these candidate segments could be either small non-coding RNA or riboswitches, depending on their relative location to the beginning of the gene. Those candidates with conserved helixes, stable thermodynamically energy, and located close (<5 bp) to the translation start site of the closest gene, were further inspected as possible riboswitches. We found several genes with a long UTR region as possible candidates (see ). One of these genes is the Salmonella mgtA promoter, which has been experimentally validated (Fig. 4C) [31] showing that the DNA corresponding to a 264 nucleotide riboswitch confers Mg2+ regulation when cloned in front of a reporter gene and behind a derivative of the lac promoter. Again, PhoP uses a similar network architecture to control promoters with differentially arranged regulatory regions (Fig. 4C).
+###end p 30
+###begin title 31
+RNA polymerase binding site patterns and location
+###end title 31
+###begin p 32
+###xml 171 173 171 173 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 372 380 372 380 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 384 395 384 395 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 401 402 401 402 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 500 502 500 502 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3C</xref>
+###xml 588 593 588 593 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ugtL </italic>
+###xml 597 602 597 602 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 736 738 736 738 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 746 748 746 748 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4D</xref>
+###xml 372 379 <span type="species:ncbi:562">E. coli</span>
+The distance of a transcription factor binding site to the RNA polymerase binding site(s) and the class of sigma 70 promoter are critical determinants of gene expression [22]. These classes correspond to the different types of contacts that can be established between a transcription factor and RNA polymerase. We identified six patterns among PhoP-regulated promoters of E. coli and Salmonella (Fig. 2) that combine promoter class and distance between the PhoP box and the RNA polymerase site (Fig. 3C). These patterns may correspond to a similar network motif, as it is the case of the ugtL and pagC promoters, which share the orientation of the PhoP box but differ in the distance of the PhoP box to the RNA polymerase binding site [22] (Fig. 4D).
+###end p 32
+###begin p 33
+###xml 40 45 40 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hemL </italic>
+###xml 49 54 49 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">phoP </italic>
+###xml 67 74 67 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 297 298 297 298 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 825 826 825 826 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 827 829 827 829 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 830 832 830 832 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 67 74 <span type="species:ncbi:562">E. coli</span>
+Some PhoP-regulated promoters (e.g. the hemL and phoP promoters of E. coli) contain several putative RNA polymerase binding sites located at different positions and belonging to different classes, suggesting that such promoters may be regulated by additional signals and/or transcription factors [6]. The RNA polymerase site feature was evaluated using 721 RNA polymerase sites from RegulonDB as positive examples and 7210 random sequences as negative examples. We obtained an 82% sensitivity and 95% specificity for detecting RNA polymerase sites. These values provide a false discovery rate <0.001 and a correlation coefficient of 82%. In addition, we selected 34 examples of RNA polymerase sites reported to be of class II, which all differ from the typical class I promoter by exhibiting a degenerate -35 sequence motif [6,22,32], and obtained 74% sensitivity and 95% specificity.
+###end p 33
+###begin title 34
+Binding sites for other transcription factors
+###end title 34
+###begin p 35
+Certain promoters harbor binding sites for more than one transcription factor. This could be because transcription requires the concerted action of such proteins, or because the promoter is independently activated by individual transcription factors, each responding to a distinct signal.
+###end p 35
+###begin p 36
+###xml 42 50 42 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 54 65 54 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 137 139 137 139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 346 361 346 361 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella pmrD</italic>
+###xml 363 367 363 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ugd </italic>
+###xml 371 376 371 376 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yrbL </italic>
+###xml 394 407 394 407 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli yrbL </italic>
+###xml 594 595 594 595 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 596 598 596 598 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 606 608 606 608 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4E</xref>
+###xml 690 692 690 692 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3D</xref>
+###xml 747 763 747 763 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella pmrD </italic>
+###xml 767 772 767 772 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yrbL </italic>
+###xml 862 866 862 866 <italic xmlns:xlink="http://www.w3.org/1999/xlink">udg </italic>
+###xml 42 49 <span type="species:ncbi:562">E. coli</span>
+###xml 394 401 <span type="species:ncbi:562">E. coli</span>
+We analyzed the intergenic regions of the E. coli and Salmonella genomes for the presence of binding sites for 54 transcription factors [30]. We then investigated the co-occurrence of 24 sites with the binding site of the PhoP protein in an effort to uncover different types of network motifs involving PhoP-regulated promoters. For example, the Salmonella pmrD, ugd and yrbL promoters and the E. coli yrbL promoter harbor PhoP- and PmrA-binding sites, consistent with the experimentally-verified regulation by both the PhoP and PmrA proteins that can be described by the bi-fan network motif [4,33] (Fig. 4E). In addition, the relative position of transcription factor binding sites (Fig. 3D) can play a critical role because the PmrA-box in the Salmonella pmrD and yrbL promoters is located closer to the PhoP-box (~38 bp and ~24 bp, respectively) than in the udg promoter (~65 bp). By analyzing both the binding site quality and the location of transcription factor binding sites, we increase the chances of identifying co-regulated promoters.
+###end p 36
+###begin p 37
+###xml 200 204 200 204 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gadA</italic>
+###xml 206 209 206 209 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dps</italic>
+###xml 211 215 211 215 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hdeA</italic>
+###xml 217 222 217 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yhiE </italic>
+###xml 226 231 226 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yhiW </italic>
+###xml 240 248 240 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 315 316 315 316 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 577 578 577 578 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 240 247 <span type="species:ncbi:562">E. coli</span>
+By considering the presence of binding sites for multiple transcription factors, it is possible to generate hypotheses about potential network motifs. For example, the promoters of the PhoP-activated gadA, dps, hdeA, yhiE and yhiW genes of E. coli also have binding sites for the regulatory proteins YhiX and YhiE [4], raising the possibility that some of these genes might be regulated by feedforward loops where both the PhoP protein and either the YhiW or the YhiE proteins would bind to the same promoter to activate transcription. This notion was experimentally verified [4], validating our prediction.
+###end p 37
+###begin title 38
+###xml 34 37 34 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+Evaluating the effect of distinct cis-regulatory features within a network motif
+###end title 38
+###begin p 39
+###xml 568 579 568 579 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 651 655 651 655 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gfp </italic>
+###xml 704 705 704 705 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+Gene expression is often measured by binary assays that evaluate differentials between wild-type and mutant strains (e.g., typical microarrays). These experiments always help to differentiate activated from repressed genes, and sometimes very low from very highly expressed genes. However, these approaches often conceal quantitative differences between true expressed genes. We hypothesize that distinct promoter features may affect gene expression even in similarly arranged network motifs. To test this notion, we compared the gene expression patterns of wild-type Salmonella harboring plasmids with a transcriptional fusion between a promoterless gfp gene to different PhoP-activated promoters (Fig. 6).
+###end p 39
+###begin p 40
+###xml 0 108 0 108 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Measurements of promoter activity and growth kinetics for GFP reporter strains with high-temporal resolution</bold>
+###xml 148 159 148 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 231 235 231 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gfp </italic>
+###xml 248 259 248 259 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 279 284 279 284 <italic xmlns:xlink="http://www.w3.org/1999/xlink">phoP </italic>
+###xml 292 296 292 296 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pmrd</italic>
+###xml 305 310 305 310 <italic xmlns:xlink="http://www.w3.org/1999/xlink">slyB </italic>
+###xml 317 322 317 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 330 333 330 333 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ugd</italic>
+###xml 344 349 344 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ugtL </italic>
+###xml 362 367 362 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtA </italic>
+###xml 578 580 578 580 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dG</italic>
+###xml 580 581 580 581 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 580 581 580 581 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 581 591 581 591 <italic xmlns:xlink="http://www.w3.org/1999/xlink">(t)/dt]/OD</italic>
+###xml 591 592 591 592 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 591 592 591 592 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 592 595 592 595 <italic xmlns:xlink="http://www.w3.org/1999/xlink">(t)</italic>
+###xml 604 605 604 605 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 605 606 605 606 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 605 606 605 606 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 606 610 606 610 <italic xmlns:xlink="http://www.w3.org/1999/xlink">(t) </italic>
+###xml 645 656 645 656 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 719 721 719 721 <italic xmlns:xlink="http://www.w3.org/1999/xlink">OD</italic>
+###xml 721 722 721 722 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 721 722 721 722 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 722 726 722 726 <italic xmlns:xlink="http://www.w3.org/1999/xlink">(t) </italic>
+Measurements of promoter activity and growth kinetics for GFP reporter strains with high-temporal resolution. Transcriptional activity of wild-type Salmonella harboring plasmids with a transcriptional fusion between a promoterless gfp gene and the Salmonella promoters including phoP (blue), pmrd(green), slyB (red), pagC (cyan), ugd(magenta), ugtL (yellow) and mgtA (orange). Each experiment was conducted independently at least twice, and shown after preprocessing. The activity of each promoter is proportional to the number of GFP molecules produced per unit time per cell [dGi(t)/dt]/ODi(t)], where Gi(t) is GFP fluorescence from wild-type Salmonella strain 14028s culture and conditions described in Methods, and ODi(t) is the optical density. The activity signal was smoothed by a polynomial fit (sixth order).
+###end p 40
+###begin p 41
+###xml 132 137 132 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink">slyB </italic>
+###xml 141 146 141 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 204 206 204 206 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4A</xref>
+###xml 208 209 208 209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 264 269 264 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink">phoP </italic>
+###xml 277 282 277 282 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pmrD </italic>
+###xml 294 296 294 296 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4B</xref>
+###xml 435 436 435 436 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 492 497 492 497 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtA </italic>
+###xml 607 609 607 609 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4C</xref>
+###xml 611 612 611 612 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 683 688 683 688 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mgtA </italic>
+###xml 772 774 772 774 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4C</xref>
+###xml 781 786 781 786 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ugtL </italic>
+###xml 790 795 790 795 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pagC </italic>
+###xml 928 930 928 930 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4D</xref>
+###xml 1099 1103 1099 1103 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gfp </italic>
+###xml 1114 1115 1114 1115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+We found that promoters that differ in the orientation of the PhoP binding site and are arranged in a similar network motif such as slyB and pagC produce a complete different patterns of expression (Fig. 4A, 6). Moreover, single-output network motif including the phoP and the pmrD genes (Fig. 4B), which exhibit different PhoP box patterns, reveal a substantial different levels of promoter activity as measured by GFP kinetics (Fig. 6). Within the same network motif, we also evaluated the mgtA promoter and found that without specific primers for the 5'-UTR region the gene is unable to transcribe (Fig. 4C, 6). This suggests that the riboswitch located in the promoter region of mgtA is a critical feature that distinguishes promoters within the similar network (Fig. 4C). The ugtL and pagC promoters share the orientation and the PhoP box but differ in the distance of the PhoP box to the RNA polymerase binding site (Fig. 4D). This may account for the different kinetic behavior of these promoters when tested in a wild-type strain harboring plasmids with promoter fusions to the promoterless gfp gene (Fig. 6).
+###end p 41
+###begin p 42
+###xml 121 126 121 126 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pmrD </italic>
+###xml 130 134 130 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ugd </italic>
+###xml 199 201 199 201 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 202 204 202 204 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 212 214 212 214 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4E</xref>
+###xml 307 308 307 308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 396 399 396 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+###xml 445 449 445 449 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gfp </italic>
+We also realized that the expression patterns differ in other types of network motifs such as the bi-fan. The Salmonella pmrD and ugd promoters harbour experimentally validated PhoP- and PmrA-boxes [10,34] (Fig. 4E), and both promoters confer distinct levels of expression as well as kinetic patterns (Fig. 6). Although it is hard to discern the specific and individual influence of each type of cis-feature, the preliminary results obtained by gfp experiments suggest that those regulatory elements described above can effectively produce differential gene expression even within similar network motifs.
+###end p 42
+###begin title 43
+Conclusion
+###end title 43
+###begin p 44
+###xml 403 406 403 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+###xml 632 633 632 633 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+We demonstrated that a transcription factor could mediate differential expression of genes described by the same network motif. This is because of the functional significance of variability in sequence, location and topology that exists among promoters that are co-regulated by a given transcription factor. We developed methods that encode and combine these promoter features, which allows matching of cis-observations to multiple models for a given promoter feature, into flexible databases constituting annotations of genome regulatory regions. These annotations cannot be uncovered by simpler sequence analysis approaches (Fig. 7). Indeed, the developed methods can be used to search and predict regulatory features even in incompletely characterized organism. Notably, these features do not constitute a computational artifact, but reflect different kinetic behaviours of co-regulated genes.
+###end p 44
+###begin p 45
+###xml 0 58 0 58 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Using promoter cis-features to annotate regulatory regions</bold>
+###xml 597 600 597 600 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+Using promoter cis-features to annotate regulatory regions. We recognized different PhoP binding box orientations and patterns, and RNA polymerase close class II and medium class I sites, and isolated the corresponding regions of promoters with similar features. Then, we described the similarity among DNA sequences in terms of the entropy of the frequency of the dominant base. This allowed us to visualize the variability of the promoter DNA sequences in terms of useful information (low values). These alignments with maximum information content could not be identified without using distinct cis-features harboring different patterns. This is clearly shown when the plain alignment of the intergenic region of all 11 promoters is performed (not shown).
+###end p 45
+###begin p 46
+###xml 93 95 93 95 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 161 162 161 162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 351 354 351 354 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+Global transcriptional regulators control multiple promoters by a variety of network motifs [27]. This is clearly the case for the regulatory protein PhoP (Fig. 1). In this work, we studied this regulatory protein and demonstrated that understanding gene expression does not only require identifying a set of connexions or network motif, but also the cis-acting elements participating in each of these connexions.
+###end p 46
+###begin title 47
+Materials and methods
+###end title 47
+###begin p 48
+###xml 145 148 145 148 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+###xml 395 407 395 407 <italic xmlns:xlink="http://www.w3.org/1999/xlink">model-based </italic>
+###xml 492 495 492 495 <italic xmlns:xlink="http://www.w3.org/1999/xlink">F) </italic>
+###xml 551 554 551 554 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q) </italic>
+###xml 613 615 613 615 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+###xml 618 619 618 619 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 619 624 619 620 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+###xml 619 624 619 620 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>&#945;</italic></sub>
+###xml 644 651 640 643 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;) </italic>
+###xml 705 711 697 703 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q(F, M</italic>
+###xml 711 716 703 704 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+###xml 711 716 703 704 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>&#945;</italic></sub>
+###xml 720 722 708 710 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 723 725 711 713 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 902 903 890 891 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1057 1058 1045 1046 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+Our method consists of three phases: first, encoding the available information into preliminary model-based features, which includes identifying cis-features from DNA sequences and information from available databases; performing initial modeling of each individual feature, allowing the process of multiple occurrences of a feature and using relaxed thresholds and permitting missing values. A model-based feature is generated by the identification of a feature in a subset of observations (F) in the dataset, based on measuring the degree of match (Q) between an observation and a model, or a family of models (M = {Malpha}), at some degree (alpha) defined in a unit-interval scale (i.e., fuzzy values, Q(F, Malpha)) [35,36]. Second, grouping the results into subsets, thus, decomposing the preliminary models into a family of models or building blocks by using fuzzy clustering (see Additional file 1). Third, composing the building blocks by either combining the same or different types of features by using fuzzy logic expressions (see Additional file 1). And fourth, describing new promoters using the resulting models.
+###end p 48
+###begin title 49
+Network motifs
+###end title 49
+###begin p 50
+###xml 159 161 159 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 162 164 162 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 244 252 244 252 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 294 319 294 319 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 328 330 328 330 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 244 251 <span type="species:ncbi:562">E. coli</span>
+###xml 294 318 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+In theory, the term "network motifs" is related to a statistical significant subgraph; however, in practice, they are treated as an over represented subgraph [37,38]. For example, a motif termed "single input motif " of three/four nodes in the E. coli (e.g., mfinder1.2 p-value < 34.7+-8.5) or Saccharomyces cerevisiae network [39] is not recognized as significant, while the only motif that exceeds the standard threshold is the "feed forward motif".
+###end p 50
+###begin title 51
+Activated/repressed
+###end title 51
+###begin p 52
+###xml 116 118 116 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 121 125 121 125 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(1) </bold>
+###xml 338 342 338 342 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(2) </bold>
+###xml 496 498 496 498 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 506 511 506 511 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3A, B</xref>
+###xml 534 535 534 535 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 609 613 609 613 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(3) </bold>
+###xml 635 639 635 639 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(2) </bold>
+###xml 877 878 877 878 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 935 936 935 936 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 937 946 937 946 <italic xmlns:xlink="http://www.w3.org/1999/xlink">activated</italic>
+###xml 947 953 947 953 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sigma </italic>
+###xml 1412 1413 1412 1413 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+We modeled PhoP-regulated promoters as activated or repressed based on examples reported in the RegulonDB database [30]. (1) We separately grouped activated and repressed promoters, and plotted histograms for each group corresponding to the distances between transcription factor binding sites and the transcription initiation (+1) site. (2) We distinguished two non-disjoint distributions in each group and built models for these distances by fitting histograms with fuzzy membership functions [15] (Fig. 3A, B) (see Additional file 1), which do not force promoters to be exclusively Activated or Repressed. (3) Finally, we connected (2) and sigma 70 promoters previously detected to select the most representative candidate for each promoter condition (e.g., best promoter that characterize the activated condition) by using fuzzy logic-based operations (see Additional file 1), which also have a probabilistic interpretation (e.g., p(activated/sigma 70)), to characterize relationships between predicted PhoP and RNA polymerase binding sites detected in candidate promoters (see below). Simple features, such as activated and repressed can be combined in more complex composite models to represent divergently transcribed genes (e.g., two adjacent genes, one repressed, the other activated, both sharing the same putative PhoP box in different orientations) using fuzzy logic expressions (see Additional file 1).
+###end p 52
+###begin title 53
+Binding site patterns and orientation
+###end title 53
+###begin p 54
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(1) </bold>
+###xml 94 96 94 96 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 99 107 99 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E-value </italic>
+###xml 199 207 199 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 211 222 211 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 257 258 257 258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 261 265 261 265 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(2) </bold>
+###xml 451 453 451 453 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 544 548 544 548 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(3) </bold>
+###xml 601 603 601 603 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 764 765 764 765 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 803 805 803 805 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 806 808 806 808 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 811 815 811 815 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(4) </bold>
+###xml 882 890 882 890 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E-value </italic>
+###xml 917 925 917 925 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 929 940 929 940 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 1043 1044 1043 1044 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 199 206 <span type="species:ncbi:562">E. coli</span>
+###xml 917 924 <span type="species:ncbi:562">E. coli</span>
+(1) We built an initial model for the PhoP binding site by learning a position weight matrix [28] (E-value < 10E-12) based on the upstream sequences of genes corresponding to the training set of the E. coli and Salmonella genomes (Table S1, Additional file 1). (2) We searched the intergenic regions of the genes in both orientations, using low thresholds corresponding to two standard deviations below the mean score obtained with the initial model [40]. Multiple PhoP binding site candidates were allowed in a given promoter operator region. (3) After transforming nucleotides into dummy variables [41], we grouped sequences matching the PhoP position weight matrix using the fuzzy C-means clustering method with the Xie-Beni validity index (see Additional file 1) to estimate the number of clusters [13,42]. (4) We built models for these clusters using position weight matrices (E-value < 10E-22) and searched the E. coli and Salmonella genomes to characterize each gene according to its similarity to each model as a fuzzy partition (Fig. 2).
+###end p 54
+###begin title 55
+Riboswitch site patterns
+###end title 55
+###begin p 56
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(1) </bold>
+###xml 181 183 181 183 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+###xml 251 255 251 255 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(2) </bold>
+###xml 286 287 286 287 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 418 422 414 418 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(3) </bold>
+###xml 505 507 501 503 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+###xml 655 661 651 657 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(3.1) </bold>
+###xml 1186 1187 1182 1183 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1190 1194 1186 1190 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(5) </bold>
+###xml 1295 1296 1291 1292 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+(1) We employed upstream regions of PhoP regulated genes to create conserved sequence aligments by comparisons against representative proteobacterial genomes. We used WU BLAST 2.0 [43] with a word hit of eight, and using default parameters otherwise. (2) We selected alignments with an E-value </= 0.00001 and a length >/= 50 nt; and divided alignments longer than 300 bp into windows of 300 bp with 50 bp of overlap. (3) These windows fed the programs eQRNA and RNAz following the protocol described in [44] using a window size of 200 nucleotides and a window slide increment of 50 nucleotides. QRNA analysis was performed with eQRNA version 2.0.3c. (). (3.1) We classified the alignment as RNA, coding, or other, according to the Bayesian posterior probability of each model. RNAz was used with its version 0.1.1 . We only considered overlapping eQRNA and RNAz predictions for the upstream regions of PhoP regulated genes as candidates for small non-coding RNA or riboswitches. (4) We encoded the conservation identity of the segments and their distance to the translation start site of the closest gene as fuzzy sets; and aggregated them using fuzzy expressions (see Additional file 1). (5) All fuzzy expressions of a single gene were combined using the Maximum T-conorm (see Additional file 1).
+###end p 56
+###begin title 57
+RNA polymerase sites
+###end title 57
+###begin p 58
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(1) </bold>
+###xml 57 59 57 59 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 60 62 60 62 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+###xml 97 99 97 99 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B46">46</xref>
+###xml 192 194 192 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B47">47</xref>
+###xml 297 305 297 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 309 320 309 320 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 390 394 390 394 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(2) </bold>
+###xml 516 518 516 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 519 521 519 521 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 566 567 566 567 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 638 640 638 640 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B48">48</xref>
+###xml 644 648 644 648 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(3) </bold>
+###xml 856 862 856 862 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(3.1) </bold>
+###xml 918 941 918 941 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Activated or repressed </italic>
+###xml 951 957 951 957 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(3.2) </bold>
+###xml 1104 1110 1104 1110 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(3.3) </bold>
+###xml 1220 1222 1220 1222 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 1245 1246 1245 1246 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1354 1356 1354 1356 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3C</xref>
+###xml 1557 1558 1557 1558 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 297 304 <span type="species:ncbi:562">E. coli</span>
+(1) We gathered sigma 70 class I and class II promoters [32,45] from the RegulonDB database and [46]. Then, we built models of the RNA polymerase site using a neuro-fuzzy method (see HPAM in [47]), and used the resulting models to perform genome-wide descriptions of the intergenic regions of the E. coli and Salmonella genomes with a false discovery rate <0.001 (see Promoter search in ). (2) We used an intelligent parser to differentiate class I and class II promoters that evaluate the quality of the -35 motif [22,32], based on fuzzy logic (see Additional file 1) and genetic algorithms techniques (see MOSS in gps-tools2.wustl.edu [48]). (3) To characterize the distance relationship between transcription factors binding sites and RNA polymerase binding sites, we built models of such distances from the examples reported in the RegulonDB database. (3.1) We modeled activated and repressed promoters (see below Activated or repressed feature). (3.2) We re-built histograms for each group of distances (i.e. activated and repressed), distinguishing three overlapping distributions for each of them.(3.3) We built models for distances by fitting their distributions into models based on fuzzy membership functions [15] (see Additional file 1), which were termed close, medium and remote distances for each set of activated and repressed genes (Fig. 3C). Finally, to characterize the distance relationship between the PhoP box and putative RNA polymerase binding site, we connected (2) and (3) by using fuzzy logic-based operations (see Additional file 1).
+###end p 58
+###begin p 59
+###xml 354 355 354 355 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 456 457 456 457 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 458 466 458 466 <italic xmlns:xlink="http://www.w3.org/1999/xlink">class II</italic>
+###xml 467 472 467 472 <italic xmlns:xlink="http://www.w3.org/1999/xlink">close</italic>
+###xml 488 494 488 494 <italic xmlns:xlink="http://www.w3.org/1999/xlink">close </italic>
+###xml 561 563 561 563 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 564 566 564 566 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 567 569 567 569 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 645 647 645 647 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B49">49</xref>
+###xml 701 702 701 702 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+This process allowed us to retrieve the most representative RNA polymerase binding site candidates for each promoter region relative to the PhoP binding site (e.g., best class II RNA polymerase site, which is located close to the PhoP box in an activated promoter), which were arrayed and constituted the value of the RNA polymerase site feature in Fig. 2. The probabilistic interpretation of the former process is usually the posterior probability (e.g., p(class II/close) that, given a close promoter, it comes from class "class II" by following Bayes' rule [13,41,42]). This process is analogous to classification methods termed Naive Bayes [49] if the T-norm and the T-conorm (see Additional file 1) are restricted to the Product and the Maximum.
+###end p 59
+###begin title 60
+Binding sites for other transcription factors
+###end title 60
+###begin p 61
+###xml 109 113 109 113 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(1) </bold>
+###xml 447 449 447 449 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+###xml 519 523 519 523 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(2) </bold>
+###xml 565 573 565 573 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 577 588 577 588 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 678 679 678 679 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 739 741 739 741 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 777 785 777 785 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E-value </italic>
+###xml 812 814 812 814 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B50">50</xref>
+###xml 851 855 851 855 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(3) </bold>
+###xml 1034 1039 1034 1039 <italic xmlns:xlink="http://www.w3.org/1999/xlink">proP </italic>
+###xml 1049 1051 1049 1051 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B51">51</xref>
+###xml 1152 1154 1152 1154 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3D</xref>
+###xml 1157 1161 1157 1161 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(4) </bold>
+###xml 1240 1241 1240 1241 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1424 1428 1424 1428 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(5) </bold>
+###xml 1450 1454 1450 1454 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(2) </bold>
+###xml 1458 1462 1458 1462 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(4) </bold>
+###xml 1521 1522 1521 1522 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1583 1614 1583 1614 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p(CRP, FIS/appropriate distance</italic>
+###xml 1632 1637 1632 1637 <italic xmlns:xlink="http://www.w3.org/1999/xlink">proP </italic>
+###xml 1659 1666 1659 1666 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 565 572 <span type="species:ncbi:562">E. coli</span>
+###xml 1659 1666 <span type="species:ncbi:562">E. coli</span>
+We developed models for different transcription factor binding sites from the RegulonDB database as follows: (1) We built position weight matrices for each transcription factor using the Consensus/Patser program, choosing the best final matrix for motif lengths between 14-30 bps if the corresponding length had not been previously specified (see "Consensus matrices" in ). We accounted for the motif symmetry (e.g., asymmetric, direct, inverted [45]) if available (see "Search known transcription factor motifs" in ). (2) We searched the intergenic regions of the E. coli and Salmonella genomes with these models, using the correlation coefficient measure (see Additional file 1) and additional 772 promoters from the RegulonDB database [30] to establish a threshold (average E-value < 10E-10) for each matrix [50] (see "Thresholded consensus" in ). (3) We accounted for the distances between distinct transcription factors binding sites occurring in the same promoter region (e.g., the distance between the CRP and FIS sites in the proP promoter [51]) in promoters reported in RegulonDB database and built a histogram with the obtained results (Fig. 3D). (4) We fitted the histogram using a fuzzy membership function (see Additional file 1) and used this model as a fuzzy cluster to characterize the distances between a putative PhoP box and another putative transcription factor binding site detected in the same region. (5) Finally, we connected (2) and (4) by using fuzzy logic-based operations (see Additional file 1), which can also have a probabilistic interpretation (e.g., p(CRP, FIS/appropriate distance) upstream of the proP open reading frame of E. coli), to characterize PhoP regulated candidates promoters.
+###end p 61
+###begin title 62
+Dataset
+###end title 62
+###begin p 63
+###xml 44 52 44 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 56 67 56 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 228 230 228 230 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B49">49</xref>
+###xml 493 494 493 494 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 584 597 584 597 <italic xmlns:xlink="http://www.w3.org/1999/xlink">phoP E. coli </italic>
+###xml 675 676 675 676 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 742 744 742 744 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B52">52</xref>
+###xml 950 958 950 958 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 962 973 962 973 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 44 51 <span type="species:ncbi:562">E. coli</span>
+###xml 589 596 <span type="species:ncbi:562">E. coli</span>
+###xml 950 957 <span type="species:ncbi:562">E. coli</span>
+We initially used the intergenic regions of E. coli and Salmonella operons from -800 to +50 because > 5% are larger than 800 bp in bacterial genomes (as described in the RegulonDB database or generously provided by H. Salgado) [49]; however, predictions have been performed in whole coding and non coding regions (see ). The promoter and transcription factor information was taken from RegulonDB database. We compiled from the literature and our own lab information (Table S1, Additional file 1) genes whose expression (using microarrays) differed statistically between wild-type and phoP E. coli strains experiencing inducing conditions for the PhoP/PhoQ regulatory system [4], as well as a list of genes known/assumed to be PhoP regulated [52]. However, this information did not explicitly indicate whether these genes were regulated directly or indirectly by the PhoP protein. The learned features were used to make genome-wide predictions in the E. coli and Salmonella genomes.
+###end p 63
+###begin title 64
+Programming resources
+###end title 64
+###begin p 65
+###xml 265 273 265 273 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 277 288 277 288 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 354 355 354 355 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 265 272 <span type="species:ncbi:562">E. coli</span>
+The scripts and programs used in this work, some of which are accessible from  web site, were based on Perl, Matlab r2006a and C++ interpreters/languages, and the visualization routines were performed on Spotfire DecisionSite software 8.2. Data and predictions for E. coli and Salmonella genomes are available at supplemental table S1 in Additional file 1 and at .
+###end p 65
+###begin title 66
+Bacterial strains, plasmids and growth conditions
+###end title 66
+###begin p 67
+###xml 90 91 90 91 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 93 113 93 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella enterica </italic>
+###xml 255 257 249 251 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B53">53</xref>
+###xml 287 289 281 283 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B54">54</xref>
+###xml 350 351 344 345 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 93 132 <span type="species:ncbi:90371">Salmonella enterica serovar Typhimurium</span>
+Bacterial strains and plasmids used in this study are listed in Table S2, Additional file 1. Salmonella enterica serovar Typhimurium strains used in this study are derived from strain 14028s. Bacteria were grown at 37degreesC in Luria-Bertani broth (LB) [53] or N-minimal medium pH 7.7 [54] supplemented with 0.1% Casamino Acids, 38 mM glycerol, MgCl2. Kanamycin was used at 25 mug/ml.
+###end p 67
+###begin title 68
+Constructions of GFP reporter plasmids
+###end title 68
+###begin p 69
+###xml 193 194 193 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 231 234 231 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bam</italic>
+###xml 241 244 241 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Xho</italic>
+###xml 355 357 355 357 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B55">55</xref>
+Promoter regions (i.e. the intergenic region between two ORFs) were amplified using PCR. A list of the promoter-specific primers used in the PCR reactions is shown in Table S3, Additional file 1. The PCR fragment was digested with BamHI and XhoI, purified, then introduced to the cloning site of pMS201 (GFP reporter vector plasmid, a gift from Alon, U. [55]). Sequences of promoter region were verified by nucleotide sequencing.
+###end p 69
+###begin title 70
+Measurements of promoter activity and growth kinetics for GFP reporter strains
+###end title 70
+###begin p 71
+###xml 51 62 51 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella </italic>
+###xml 166 167 166 167 <sup xmlns:xlink="http://www.w3.org/1999/xlink">3</sup>
+###xml 184 186 184 186 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B55">55</xref>
+###xml 254 256 254 256 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 328 330 327 329 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 440 441 437 438 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 574 576 570 572 <sup xmlns:xlink="http://www.w3.org/1999/xlink">3 </sup>
+Promoter activity and growth kinetics of wild-type Salmonella strain harboring GFP reporter plasmid was measured in parallel using automated microplate reader (VICTOR3, Perkin Elmer) [55]. Overnight cultures of strains in N-minimal medium with 10 mM MgCl2 and 25 mug/ml of kanamycin were washed with the same medium without MgCl2 then diluted (1:100) to 96-well plate (Packard) containing 150 mul of N-minimal media supplemented 50 muM MgCl2. After overlaying the wells with 50 mul of mineral oil (Sigma) to prevent evaporation of media, the plate was inserted in the VICTOR3 machine pre-warmed to 37degreesC. The fluorescence and optical density (600 nm) of cells were recorded with shaking of the plate (1 min with 0.1 mm diameter), and this protocol was repeated every 6 min for 99 times. The background fluorescence was measured using a strain carrying empty vector and subtracted from the test values. Each experiment was conducted independently twice, and a representative is shown in the figures.
+###end p 71
+###begin title 72
+Data preprocessing
+###end title 72
+###begin p 73
+###xml 76 78 76 78 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dG</italic>
+###xml 78 79 78 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 78 79 78 79 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 79 85 79 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">(t)/dt</italic>
+###xml 87 89 87 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">OD</italic>
+###xml 89 90 89 90 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 89 90 89 90 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 90 93 90 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink">(t)</italic>
+The raw GFP and OD signals were used to calculate the promoter activity as [dGi(t)/dt]/ODi(t). The activity signal was then smoothed by a shape-preserving interpolant (Piecewise Cubic Hermite Interpolating Polynomial, Matlab r2006a) fitting algorithm that finds values of an underlying interpolating function at intermediate points that are not described in the experimental assays. Then, we applied a polynomial fit (sixth order, Matlab r2006a) on each expression signal. This smoothing procedure captures the dynamics well, while removing the noise inherent in the differentiation of noisy signals.
+###end p 73
+###begin title 74
+Competing interests
+###end title 74
+###begin p 75
+The authors declare that they have no competing interests.
+###end p 75
+###begin title 76
+Authors' contributions
+###end title 76
+###begin p 77
+OH and IZ designed and implemented the methods and wrote the manuscript; CV designed and implemented the riboswitch identification methods; RRZ coded the perl scripts and the web page; DS performed the experimental validation using GFP technology; HH provided advice on the project and revised the manuscript; EAG supported the project and drafted the manuscript.
+###end p 77
+###begin title 78
+Supplementary Material
+###end title 78
+###begin title 79
+Additional File 1
+###end title 79
+###begin p 80
+###xml 0 19 0 19 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Supplemental tables</bold>
+Supplemental tables. Table S1 provide the features describing PhoP regulated promoters and raw data used to build them. Table S2 details the bacterial strains and plasmids used in this study, and Table S3 the primers used to construct the promoters in GFP reporter plasmids.
+###end p 80
+###begin p 81
+Click here for file
+###end p 81
+###begin title 82
+Acknowledgements
+###end title 82
+###begin p 83
+We thank U. Alon (Weizmann Institute of Science, Israel) for plasmid pMS201, and Elena Rivas (Janelia Farm Research Campus, Howard Hughes Medical Institute) for providing the computational tools to identify riboswitches. This research was supported in part by the Spanish Ministry of Science and Technology under project TIN2006-12879 and by Consejeria de Innovacion, Investigacion y Ciencia de la de la Junta de Andalucia under project TIC02788. E.A.G. is an Investigator of the Howard Hughes Medical Institute.
+###end p 83
+###begin p 84
+###xml 43 62 43 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">BMC Bioinformatics </italic>
+This article has been published as part of BMC Bioinformatics Volume 10 Supplement 4, 2009: Proceedings of the IEEE International Conference on Bioinformatics and Biomedicine (BIBM) 2008. The full contents of the supplement are available online at .
+###end p 84
+###begin article-title 85
+Predicting gene expression from sequence
+###end article-title 85
+###begin article-title 86
+Whole-genome discovery of transcription factor binding sites by network-level conservation
+###end article-title 86
+###begin article-title 87
+###xml 46 62 <span type="species:ncbi:562">Escherichia coli</span>
+Phenotypic differences between Salmonella and Escherichia coli resulting from the disparate regulation of homologous genes
+###end article-title 87
+###begin article-title 88
+###xml 42 58 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 63 82 <span type="species:ncbi:28901">Salmonella enterica</span>
+Dissecting the PhoP regulatory network of Escherichia coli and Salmonella enterica
+###end article-title 88
+###begin article-title 89
+###xml 85 101 <span type="species:ncbi:562">Escherichia coli</span>
+Signal Transduction Cascade between EvgA/EvgS and PhoP/PhoQ Two-Component Systems of Escherichia coli
+###end article-title 89
+###begin article-title 90
+###xml 70 86 <span type="species:ncbi:562">Escherichia coli</span>
+Identification and molecular characterization of the Mg2+ stimulon of Escherichia coli
+###end article-title 90
+###begin article-title 91
+###xml 57 79 <span type="species:ncbi:90371">Salmonella typhimurium</span>
+Molecular basis of the magnesium deprivation response in Salmonella typhimurium: identification of PhoP-regulated genes
+###end article-title 91
+###begin article-title 92
+###xml 34 50 <span type="species:ncbi:562">Escherichia coli</span>
+Molecular genetic analysis of the Escherichia coli phoP locus
+###end article-title 92
+###begin article-title 93
+###xml 36 55 <span type="species:ncbi:28901">Salmonella enterica</span>
+Dimerization and DNA binding of the Salmonella enterica PhoP response regulator are phosphorylation independent
+###end article-title 93
+###begin article-title 94
+Closing the loop: the PmrA/PmrB two-component system negatively controls expression of its posttranscriptional activator PmrD
+###end article-title 94
+###begin article-title 95
+Signal-dependent requirement for the co-activator protein RcsA in transcription of the RcsB-regulated ugd gene
+###end article-title 95
+###begin article-title 96
+Transcriptional control of the antimicrobial peptide resistance ugtL gene by the Salmonella PhoP and SlyA regulatory proteins
+###end article-title 96
+###begin article-title 97
+Pattern Analysis
+###end article-title 97
+###begin article-title 98
+###xml 42 47 <span type="species:ncbi:4932">yeast</span>
+Exploring the conditional coregulation of yeast gene expression through fuzzy k-means clustering
+###end article-title 98
+###begin article-title 99
+Phylogenetic footprinting of transcription factor binding sites in proteobacterial genomes
+###end article-title 99
+###begin article-title 100
+###xml 56 72 <span type="species:ncbi:562">Escherichia coli</span>
+Control site location and transcriptional regulation in Escherichia coli
+###end article-title 100
+###begin article-title 101
+The pleiotropic two-component regulatory system PhoP-PhoQ
+###end article-title 101
+###begin article-title 102
+Two AraC/XylS family members can independently counteract the effect of repressing sequences upstream of the hilA promoter
+###end article-title 102
+###begin article-title 103
+###xml 83 102 <span type="species:ncbi:28901">Salmonella enterica</span>
+The PhoP/PhoQ two-component system stabilizes the alternative sigma factor RpoS in Salmonella enterica
+###end article-title 103
+###begin article-title 104
+AraC-DNA looping: orientation and distance-dependent loop breaking by the cyclic AMP receptor protein
+###end article-title 104
+###begin article-title 105
+Regulation at complex bacterial promoters: how bacteria use different promoter organizations to produce different regulatory outcomes
+###end article-title 105
+###begin article-title 106
+Conservation of gene co-regulation in prokaryotes and eukaryotes
+###end article-title 106
+###begin article-title 107
+###xml 71 90 <span type="species:ncbi:28901">Salmonella enterica</span>
+Molecular characterization of the Mg2+-responsive PhoP-PhoQ regulon in Salmonella enterica
+###end article-title 107
+###begin article-title 108
+The value of prior knowledge in discovering motifs with MEME
+###end article-title 108
+###begin article-title 109
+DNA binding sites: representation and discovery
+###end article-title 109
+###begin article-title 110
+Identifying global regulators in transcriptional regulatory networks in bacteria
+###end article-title 110
+###begin article-title 111
+Identifying DNA and protein patterns with statistically significant alignments of multiple sequences
+###end article-title 111
+###begin article-title 112
+Assessing computational tools for the discovery of transcription factor binding sites
+###end article-title 112
+###begin article-title 113
+###xml 98 119 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+RegulonDB (version 4.0): transcriptional regulation, operon organization and growth conditions in Escherichia coli K-12
+###end article-title 113
+###begin article-title 114
+An RNA sensor for intracellular Mg(2+)
+###end article-title 114
+###begin article-title 115
+Protein-protein communication within the transcription apparatus
+###end article-title 115
+###begin article-title 116
+Connecting two-component regulatory systems by a protein that protects a response regulator from dephosphorylation by its cognate sensor
+###end article-title 116
+###begin article-title 117
+Control of the Salmonella ugd gene by three two-component regulatory systems
+###end article-title 117
+###begin article-title 118
+Automated generation of qualitative representations of complex objects by hybrid soft-computing methods
+###end article-title 118
+###begin article-title 119
+Automated biological sequence description by genetic multiobjective generalized clustering
+###end article-title 119
+###begin article-title 120
+###xml 60 76 <span type="species:ncbi:562">Escherichia coli</span>
+Network motifs in the transcriptional regulation network of Escherichia coli
+###end article-title 120
+###begin article-title 121
+Network motifs: simple building blocks of complex networks
+###end article-title 121
+###begin article-title 122
+###xml 39 63 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Transcriptional regulatory networks in Saccharomyces cerevisiae
+###end article-title 122
+###begin article-title 123
+###xml 93 114 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+A comprehensive library of DNA-binding site matrices for 55 proteins applied to the complete Escherichia coli K-12 genome
+###end article-title 123
+###begin article-title 124
+WU-Blast2 server at the European Bioinformatics Institute
+###end article-title 124
+###begin article-title 125
+###xml 92 114 <span type="species:ncbi:382">Sinorhizobium meliloti</span>
+Identification of differentially expressed small non-coding RNAs in the legume endosymbiont Sinorhizobium meliloti by comparative genomics
+###end article-title 125
+###begin article-title 126
+###xml 79 100 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+RegulonDB (version 3.2): transcriptional regulation and operon organization in Escherichia coli K-12
+###end article-title 126
+###begin article-title 127
+###xml 12 19 <span type="species:ncbi:562">E. coli</span>
+Analysis of E. coli promoter sequences
+###end article-title 127
+###begin article-title 128
+A hybrid promoter analysis methodology for prokaryotic genomes
+###end article-title 128
+###begin article-title 129
+Generalized analysis of promoters: a method for DNA sequence description
+###end article-title 129
+###begin article-title 130
+###xml 87 107 <span type="species:ncbi:83333">Escherichia coli K12</span>
+Evaluation of thresholds for the detection of binding sites for regulatory proteins in Escherichia coli K12 DNA
+###end article-title 130
+###begin article-title 131
+###xml 137 153 <span type="species:ncbi:562">Escherichia coli</span>
+The C-terminal domains of the RNA polymerase alpha subunits: contact site with Fis and localization during co-activation with CRP at the Escherichia coli proP P2 promoter
+###end article-title 131
+###begin article-title 132
+Analysis of Differentially-Regulated Genes within a Regulatory Network by GPS Genome Navigation
+###end article-title 132
+###begin article-title 133
+###xml 23 45 <span type="species:ncbi:90371">Salmonella typhimurium</span>
+Magnesium transport in Salmonella typhimurium. Regulation of mgtA and mgtB expression
+###end article-title 133
+###begin article-title 134
+Structure and function of the feed-forward loop network motif
+###end article-title 134
+###begin article-title 135
+Signal-dependent Binding of the Response Regulators PhoP and PmrA to Their Target Promoters in Vivo
+###end article-title 135
+

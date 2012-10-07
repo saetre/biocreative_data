@@ -1,0 +1,400 @@
+###begin article-title 0
+The computational analysis of scientific literature to define and recognize gene expression clusters
+###end article-title 0
+###begin p 1
+###xml 178 202 178 202 <email xmlns:xlink="http://www.w3.org/1999/xlink">russ.altman@stanford.edu</email>
+To whom correspondence should be addressed at 251 Campus Drive, MSOB X-215, Stanford University, Stanford, CA 94305-5479, USA. Tel: +1 650 725 3394; Fax: +1 650 725 7944; Email: russ.altman@stanford.edu
+###end p 1
+###begin p 2
+###xml 1201 1225 1201 1225 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 1319 1342 1319 1342 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila melanogaster</italic>
+###xml 1201 1225 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 1319 1342 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+A limitation of many gene expression analytic approaches is that they do not incorporate comprehensive background knowledge about the genes into the analysis. We present a computational method that leverages the peer-reviewed literature in the automatic analysis of gene expression data sets. Including the literature in the analysis of gene expression data offers an opportunity to incorporate functional information about the genes when defining expression clusters. We have created a method that associates gene expression profiles with known biological functions. Our method has two steps. First, we apply hierarchical clustering to the given gene expression data set. Secondly, we use text from abstracts about genes to (i) resolve hierarchical cluster boundaries to optimize the functional coherence of the clusters and (ii) recognize those clusters that are most functionally coherent. In the case where a gene has not been investigated and therefore lacks primary literature, articles about well-studied homologous genes are added as references. We apply our method to two large gene expression data sets with different properties. The first contains measurements for a subset of well-studied Saccharomyces cerevisiae genes with multiple literature references, and the second contains newly discovered genes in Drosophila melanogaster; many have no literature references at all. In both cases, we are able to rapidly define and identify the biologically relevant gene expression profiles without manual intervention. In both cases, we identified novel clusters that were not noted by the original investigators.
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin p 4
+###xml 180 181 180 181 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c1">1</xref>
+###xml 182 183 182 183 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c3">3</xref>
+###xml 241 242 241 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c4">4</xref>
+###xml 243 244 243 244 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c5">5</xref>
+###xml 345 346 345 346 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c6">6</xref>
+###xml 347 348 347 348 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c7">7</xref>
+###xml 925 926 925 926 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c8">8</xref>
+###xml 156 161 <span type="species:ncbi:9606">human</span>
+###xml 218 227 <span type="species:ncbi:7227">fruit fly</span>
+###xml 283 288 <span type="species:ncbi:4932">yeast</span>
+High throughput gene expression analysis offers an opportunity to assay the induction of all genes in an organism. Recent applications include profiling of human cancer specimens (1-3), tracking gene expression during fruit fly development (4,5) and the comprehensive measurement of yeast gene expression in response to specific gene deletions (6,7). A challenge in the field has been to rapidly analyze and interpret these comprehensive data sets with hundreds of measurements of thousands of genes. It is critical to include comprehensive background knowledge to appropriately analyze such data sets and to fully understand them. We have argued elsewhere that it is effective to use computational methods that incorporate external information, such as functional information about the genes, upstream nucleotide sequences and scientific literature, to help drive the interpretation and organization of the expression data (8).
+###end p 4
+###begin p 5
+###xml 360 361 360 361 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c9">9</xref>
+###xml 362 364 362 364 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c10">10</xref>
+Currently, clustering methods that use no background knowledge remain the most popular computational approach to apply to gene expression data. Clustering methods organize complex expression data sets into tractable subgroups, or clusters, of genes sharing similar expression patterns and thus suggesting co-regulation and possibly common biological function (9,10). Careful examination of the genes that cluster together can lead to hypotheses about gene function and co-regulation. However, the quality of clusters and their ability to explain biological function can vary greatly.
+###end p 5
+###begin p 6
+###xml 283 285 283 285 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c11">11</xref>
+###xml 358 360 358 360 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c12">12</xref>
+###xml 361 363 361 363 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c15">15</xref>
+###xml 466 468 466 468 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c16">16</xref>
+###xml 604 606 604 606 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c17">17</xref>
+Published scientific text contains a distilled version of all of the most significant biological discoveries and is a potent source of functional information for analytical algorithms. Text analysis of scientific literature has been applied successfully to many biological problems (11). Article abstracts about genes can successfully predict gene function (12-15). Genes can be clustered based on text in the scientific literature into functionally related groups (16). Co-occurrence of gene names in abstracts implies networks of related genes that are potentially useful for gene expression analysis (17).
+###end p 6
+###begin p 7
+###xml 313 314 313 314 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f1">1</xref>
+###xml 317 319 317 319 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c10">10</xref>
+The most commonly used clustering method, hierarchical clustering, offers considerable ambiguity in determining the exact cluster boundaries. Hierarchical clustering organizes expression data into a binary tree, in which the leaves are genes and the interior nodes (or branch points) are candidate clusters (Fig. 1) (10). The more similar the gene expression patterns of two genes, the closer they are within the tree structure. In many cases, genes with a shared biological function also share expression features and therefore cluster together in a node.
+###end p 7
+###begin p 8
+###xml 936 938 936 938 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c18">18</xref>
+Once a tree has been devised, the challenge is to properly define the final cluster boundaries by pruning the tree or, in other words, to select nodes appropriately so that the genes are divided into non-overlapping biologically meaningful clusters. Typically, cluster boundaries are drawn so that the final clusters contain functionally related genes. In practice, investigators define clusters by a manual scan of the genes in each node and rely on their biological expertise to notice shared functional properties of genes within a node, and then select the nodes that are most coherent. The entire process is very laborious, as it must be done one node at a time. Some have proposed automatically selecting nodes and defining boundaries based on statistical properties of the gene expression profiles within them; however, the same statistical criteria may not be generally applicable to identify all relevant biological functions (18).
+###end p 8
+###begin p 9
+###xml 231 233 231 233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c19">19</xref>
+###xml 234 236 234 236 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c21">21</xref>
+We previously have described and evaluated a computational method, neighbor divergence per gene (NDPG), which uses scientific text to compute an information theoretical score indicating how functionally coherent a set of genes is (19-21). Thus, groups of genes with shared function receive high scores. The method requires a corpus of documents and an index connecting the documents to genes. Here we investigate the application of the literature-based NDPG approach at resolving gene expression cluster boundaries. We use scientific literature to define cluster boundaries by selecting a disjoint set of nodes that correspond to biological functions. Our method selects nodes so that the total weighted average of NDPG cluster scores is maximal. Since selected nodes with the highest scores are likely to constitute functionally relevant clusters, the NDPG scores can be used to prioritize clusters for subsequent detailed manual analysis and experimental follow-up.
+###end p 9
+###begin p 10
+###xml 57 81 57 81 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 218 220 218 220 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c10">10</xref>
+###xml 641 643 641 643 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c22">22</xref>
+###xml 57 81 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 83 88 <span type="species:ncbi:4932">yeast</span>
+###xml 543 548 <span type="species:ncbi:4932">yeast</span>
+To test our method, we applied our pruning method to the Saccharomyces cerevisiae (yeast) gene expression data set based on measurements of 2467 genes over 79 experimental conditions published by Eisen and colleagues (10). This data set contains measurements of mostly well-studied genes whose functions have been elucidated and described in the literature. If our method is successful, the expression clusters defined by our method should correspond to well-defined functional groups of genes. Fortunately, a carefully constructed catalog of yeast gene functions, gene ontology (GO), is available for use as a gold standard for comparison (22).
+###end p 10
+###begin p 11
+###xml 68 91 68 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila melanogaster</italic>
+###xml 208 209 208 209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c4">4</xref>
+###xml 68 91 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+In a more challenging test, we applied this strategy to analyzing a Drosophila melanogaster (fly) development series containing expression measurements for 3987 genes, most of which are poorly characterized (4). This data set is more challenging since only 1681 of the genes have any primary literature. To effectively use our literature-based method with a data set with a paucity of literature, we can use sequence similarity searches to identify homologous genes for each gene in the study, and associate references from the homologous gene to the study gene. Such references augmented the number of genes with references while providing clues about potential gene functions.
+###end p 11
+###begin p 12
+In both cases, we are able to successfully define and identify the key reported functional groups of genes guided only by the scientific literature. In addition, we also find novel clusters not reported in the original publications. Our results are comparable with those produced manually by the original investigators and required only about an hour of computation.
+###end p 12
+###begin title 13
+MATERIALS AND METHODS
+###end title 13
+###begin title 14
+Defining hierarchical cluster boundaries
+###end title 14
+###begin p 15
+###xml 42 43 42 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K</italic>
+###xml 57 62 57 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K &#8211; 1</italic>
+###xml 113 114 113 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K</italic>
+###xml 179 180 179 180 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K</italic>
+###xml 289 290 289 290 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 357 358 357 358 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f1">1</xref>
+Application of hierarchical clustering on K genes yields K - 1 internal nodes containing at least two genes, and K leaf nodes containing a single gene. The root node contains all K genes. The goal of the algorithm presented here is 'prune the tree', or rather to select a subset of nodes, S, such that each gene is contained in a single selected node (Fig. 1). The objective of our pruning strategy is to maximize the functional relatedness of the genes in each selected node based on the scientific literature. To this end, we select nodes so that the weighted average of the literature-based NDPG functional coherence score is maximized. This method also applies if an alternative functional coherence metric is used instead.
+###end p 15
+###begin p 16
+###xml 53 54 53 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+The NDPG weighted average of a disjoint set of nodes S, is defined as:
+###end p 16
+###begin p 17
+###xml 0 0 0 0 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="gkg636equ1.gif"/>
+
+###end p 17
+###begin p 18
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 7 8 7 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 7 8 7 8 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 39 40 39 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 46 47 46 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K</italic>
+###xml 137 138 137 138 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 140 141 140 141 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 141 142 141 142 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 141 142 141 142 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 181 182 181 182 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+where fi is the NDPG score of the node i, and K is the total number of genes. The average is weighted by the number of genes in the node i, ni. Our algorithm selects disjoint nodes S so that equation 1 is maximized. The key insight to the algorithm is that if a node is in the optimal set, then the NDPG score of the node must exceed the weighted average NDPG score of any disjoint set of its descendants.
+###end p 18
+###begin p 19
+###xml 54 63 54 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">unvisited</italic>
+###xml 65 72 65 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink">visited</italic>
+###xml 77 85 77 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">selected</italic>
+###xml 168 169 168 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 225 232 225 232 <italic xmlns:xlink="http://www.w3.org/1999/xlink">visited</italic>
+Our algorithm has three states that a node can be in: unvisited, visited and selected. After running the algorithm, the set of selected nodes constitutes the final set S of clusters; the remainder of the nodes will be in the visited state.
+###end p 19
+###begin p 20
+###xml 37 38 37 38 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg636tb1">1</xref>
+###xml 73 82 73 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink">unvisited</italic>
+###xml 174 183 174 183 <italic xmlns:xlink="http://www.w3.org/1999/xlink">unvisited</italic>
+###xml 219 226 219 226 <italic xmlns:xlink="http://www.w3.org/1999/xlink">visited</italic>
+###xml 230 238 230 238 <italic xmlns:xlink="http://www.w3.org/1999/xlink">selected</italic>
+###xml 283 290 283 290 <italic xmlns:xlink="http://www.w3.org/1999/xlink">visited</italic>
+###xml 393 401 393 401 <italic xmlns:xlink="http://www.w3.org/1999/xlink">selected</italic>
+###xml 435 443 435 443 <italic xmlns:xlink="http://www.w3.org/1999/xlink">selected</italic>
+###xml 466 474 466 474 <italic xmlns:xlink="http://www.w3.org/1999/xlink">selected</italic>
+###xml 529 536 529 536 <italic xmlns:xlink="http://www.w3.org/1999/xlink">visited</italic>
+###xml 645 653 645 653 <italic xmlns:xlink="http://www.w3.org/1999/xlink">selected</italic>
+###xml 486 494 <span type="species:ncbi:9606">children</span>
+The algorithm is summarized in Table 1. Initially all internal nodes are unvisited and the terminal leaves are selected. The pruning algorithm proceeds iteratively, visiting unvisited nodes whose descendants are in the visited or selected state; the status of the node is changed to visited. If the functional coherence score of this node equals or exceeds that of the weighted average of its selected descendants, it is placed in the selected state, and all of its selected descendant children are de-selected and placed in the visited state. The process repeats until all nodes up to the root node have been examined; the nodes that are still selected define the final set of clusters that maximize NDPG weighted average across the hierarchical tree.
+###end p 20
+###begin title 21
+Literature reference indices
+###end title 21
+###begin p 22
+###xml 185 187 185 187 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c23">23</xref>
+###xml 110 115 <span type="species:ncbi:4932">yeast</span>
+Reference indices connecting each of the PubMed abstracts to the genes are required for NDPG calculation. For yeast, we obtained the index from the Saccharomyces Genome Database (SGD) (23).
+###end p 22
+###begin p 23
+###xml 306 308 306 308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c24">24</xref>
+###xml 1227 1229 1227 1229 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#8211;6</sup>
+###xml 390 395 <span type="species:ncbi:10090">mouse</span>
+###xml 400 405 <span type="species:ncbi:4932">yeast</span>
+###xml 671 676 <span type="species:ncbi:4932">yeast</span>
+###xml 681 686 <span type="species:ncbi:10090">mouse</span>
+###xml 755 760 <span type="species:ncbi:10090">Mouse</span>
+###xml 1083 1088 <span type="species:ncbi:4932">yeast</span>
+###xml 1092 1097 <span type="species:ncbi:10090">mouse</span>
+The fly data set contained expression measurements for 4040 expressed sequence tags (ESTs); 4032 of these corresponded to 3987 different known fly genes. The available reference index from Flybase contained PubMed references for only 1681 of the 3987 unique fly data set genes represented in the data set (24). We augmented this reference index by looking for well-documented genes in fly, mouse and yeast that have the protein sequences most similar to that of the gene protein product and then transferring its references. We were able to associate 3962 fly data set genes with protein sequences from SWISS-PROT or SPTREMBL. We then identified all of the genes in fly, yeast and mouse with five or more PubMed references assigned by Flybase, SGD or the Mouse Genome Database (MGD); this constituted our set of well-documented genes. We obtained protein sequences for all of these genes from the same databases. Then, for each of these 3962 fly data set gene protein sequences, BLAST was used to find the single most similar well-documented protein sequence corresponding to a fly, yeast or mouse gene. The fly gene was assigned references from the most similar gene if the e-value score of the similarity was less than 1 x 10-6. We did not transfer references if the e-value was larger than this arbitrary threshold, as the similarity may have represented a local or spurious similarity.
+###end p 23
+###begin title 24
+Hierarchical clustering
+###end title 24
+###begin p 25
+###xml 109 111 109 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c10">10</xref>
+###xml 286 288 286 288 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c10">10</xref>
+###xml 118 123 <span type="species:ncbi:4932">yeast</span>
+For all data sets, we used the gene expression analysis software Cluster to create hierarchical clusterings (10). The yeast gene expression data set was published initially by Eisen and colleagues and consisted of 79 diverse conditions compiled from eight separate experimental series (10). Expression measurements were compiled on 2467 genes. To create the clustered dendrogram of the data, we used average linkage clustering with the centered correlation metric option to calculating inter-gene distances. In inter-gene distance calculations, conditions were differentially weighted according to the scheme introduced in the original publication; each condition was weighted with the square root of the number of conditions in that series.
+###end p 25
+###begin p 26
+The fly gene expression data set consisted of 4040 ESTs measured over 85 conditions, 75 of which were part of a wild-type developmental time series, four that were segregated by sex, and five that involved mutations in specific genes. To create the clustered dendrogram of the data, we used average linkage clustering with the uncentered correlation metric option to calculating inter-gene distances.
+###end p 26
+###begin p 27
+We define the tightness of a cluster as the correlation between the two nodes fused to constitute that cluster.
+###end p 27
+###begin title 28
+Scoring a cluster of genes for related function with scientific literature
+###end title 28
+###begin p 29
+###xml 222 224 222 224 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c19">19</xref>
+###xml 225 227 225 227 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c20">20</xref>
+To score how related a set of genes contained in a cluster are with the scientific literature automatically, we utilize the NDPG method; the details and validation of this method and its evaluation are provided elsewhere (19,20). Based on scientific literature, the method assigns a positive information theoretic score that is proportional to the number of genes in a group that share a common function. Detection of coherence is difficult in gene groups that are too small due to limited statistical power. In addition, coherent groups of genes that are too large are likely to share a function too broad to be of general interest. Therefore, in this study, groups containing fewer than six or more than 200 genes with at least one reference are assigned a score of zero.
+###end p 29
+###begin p 30
+NDPG requires a reference index that connects genes to articles as well as the text of the article abstracts. The abstracts were obtained from the PubMed database; only title and abstract fields were employed.
+###end p 30
+###begin p 31
+###xml 71 72 71 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 181 182 181 182 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 193 194 193 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+Given the text of the abstracts, NDPG identifies for each abstract the N most similar abstracts, or semantic neighbors, based on word use similarity between abstracts. Here we used n = 19, but n = 199 generated similar results. NDPG quantifies the similarity between two documents with the cosine angle between the two inverse document frequency weighted article abstract word vectors.
+###end p 31
+###begin p 32
+Then given a group of genes and reference index, NDPG scores each of the referring abstracts for overall relevance to the given gene group by counting the number of its semantic neighbors that also have references to group genes. For each gene in the group, the scores of its articles are compared with the expected distribution of scores if the group of genes was a random one. The functional relevance of each gene to the subgroup is scored as the KL-divergence between its article scores and the random distribution. The NDPG score for the group is the average divergence for all genes in the group.
+###end p 32
+###begin title 33
+GO annotations
+###end title 33
+###begin p 34
+###xml 4 9 <span type="species:ncbi:4932">yeast</span>
+###xml 184 192 <span type="species:ncbi:9606">children</span>
+###xml 564 569 <span type="species:ncbi:4932">yeast</span>
+For yeast, GO annotations were obtained from  to use as a gold standard. GO is a hierarchical vocabulary of gene functional terms in which more general parent terms have more specific children terms. For each GO code, a functional group was defined that contained (i) all genes with that code as an annotation and (ii) all genes with a descendant of that code as an annotation. We used the January 23, 2002 release of GO component ontology, the January 24, 2002 releases of the GO process and function ontologies, and the January 24, 2002 GO gene associations for yeast. To assess the concordance or overlap of a cluster with a functional group, we used the following formula:
+###end p 34
+###begin p 35
+###xml 0 0 0 0 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="gkg636equ2.gif"/>
+
+###end p 35
+###begin p 36
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 39 40 39 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C</italic>
+Where G is the GO functional group and C is the cluster of genes produced after resolving boundaries. This is the percentage of genes in either the cluster or the GO functional group that are in both.
+###end p 36
+###begin title 37
+RESULTS AND DISCUSSION
+###end title 37
+###begin title 38
+###xml 16 21 <span type="species:ncbi:4932">yeast</span>
+Analysis of the yeast data set
+###end title 38
+###begin p 39
+The literature reference index obtained from SGD had references available for 2394 of the 2467 genes (97%) in the data set. There were a total of 40 351 references to 17 858 articles. Each gene had a median of eight article references, but a mean of 16.9 references. The distribution of article references per gene is skewed; a few articles have many references. This data set had the advantage of containing genes that had excellent coverage in the scientific literature.
+###end p 39
+###begin p 40
+###xml 616 617 616 617 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f2">2</xref>
+###xml 775 776 775 776 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 31 36 <span type="species:ncbi:4932">yeast</span>
+Hierarchical clustering of the yeast gene expression data set creates a total of 2466 internal nodes containing two or more genes; the availability of the SGD literature reference index and corpus of article abstracts allows NDPG evaluation of the functional coherence of each node. Here we use overlap with GO functional groups as an independent measure of functional coherence. An overlap of 100% indicates that the GO functional group and the node contain the same genes and the node is functionally coherent, while 0% indicates that there are no shared genes between the functional group and the node. In Figure 2A, we show that the literature-based NDPG score of a node predicts how well it corresponds to a GO functional group (non-parametric Spearman-rank correlation r = 0.81). Therefore, selecting nodes with large NDPG groups will result in selecting nodes whose genes share a common function.
+###end p 40
+###begin p 41
+###xml 213 214 213 214 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f2">2</xref>
+###xml 224 225 224 225 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f2">2</xref>
+###xml 340 363 340 363 <italic xmlns:xlink="http://www.w3.org/1999/xlink">threonine endopeptidase</italic>
+###xml 365 375 365 375 <italic xmlns:xlink="http://www.w3.org/1999/xlink">heat shock</italic>
+###xml 380 397 380 397 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cytosolic ribsome</italic>
+Defining cluster boundaries that respect biological function by maximizing total NDPG weighted average selects 369 non-overlapping nodes as the final clusters. These nodes are indicated as black circles in Figure 2A. Figure 2B, C and D individually plot three of the selected nodes as black circles that correspond to biological functions: threonine endopeptidase, heat shock and cytosolic ribsome, respectively. The other points in these plots correspond to other nodes that are either ancestors or descendants of the selected node; these nodes contain a subset or superset of the genes in the selected nodes. The selected nodes usually have greater concordance with a GO functional group than almost all of the other nodes in the same plot; these are nodes that might have been selected instead.
+###end p 41
+###begin p 42
+###xml 49 50 49 50 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f3">3</xref>
+###xml 544 546 544 546 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c10">10</xref>
+###xml 573 596 573 596 <italic xmlns:xlink="http://www.w3.org/1999/xlink">threonine endopeptidase</italic>
+###xml 598 635 598 635 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ATP synthesis-coupled proton response</italic>
+###xml 637 663 637 663 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ATP-dependent DNA helicase</italic>
+###xml 665 675 665 675 <italic xmlns:xlink="http://www.w3.org/1999/xlink">nucleosome</italic>
+###xml 677 695 677 695 <italic xmlns:xlink="http://www.w3.org/1999/xlink">electron transport</italic>
+###xml 697 737 697 737 <italic xmlns:xlink="http://www.w3.org/1999/xlink">glyceraldehyde 3-phosphate dehydrogenase</italic>
+###xml 739 757 739 757 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cytosolic ribosome</italic>
+###xml 759 781 759 781 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mitochondrial ribosome</italic>
+###xml 785 815 785 815 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tricarboxylic acid cycle (TCA)</italic>
+We ranked the clusters by NDPG scores; in Figure 3 we list the top 20 clusters. To evaluate whether the selected genes are true functional groups of genes, we checked the degree to which they corresponded to any of the functional groups defined by GO. Listed alongside the clusters is the best corresponding GO code and a graphical depiction of the overlap between that GO code and the cluster. Nine of the 10 functional clusters noted in the original publication of the data set are included in our list, along with other functional clusters (10). These functions include threonine endopeptidase, ATP synthesis-coupled proton response, ATP-dependent DNA helicase, nucleosome, electron transport, glyceraldehyde 3-phosphate dehydrogenase, cytosolic ribosome, mitochondrial ribosomeand tricarboxylic acid cycle (TCA). The other depicted groups also contain functionally related genes, but were not described in the original publication, such as pheromone response, heat shock protein and nucleolus.
+###end p 42
+###begin p 43
+###xml 210 251 210 251 <italic xmlns:xlink="http://www.w3.org/1999/xlink">glyceraldehydes-3-phosphate dehydrogenase</italic>
+It should be noted that for many functional groups, the percentage overlap underestimates the functional relatedness of the gene group. For example, the eleventh listed cluster has the highest overlap with the glyceraldehydes-3-phosphate dehydrogenase (G3PD) GO code, but the non-G3PD genes in the cluster are other closely related glycolysis genes.
+###end p 43
+###begin title 44
+Analysis of the fly data set
+###end title 44
+###begin p 45
+The initial literature reference index obtained from Flybase contained primary references for 1681 of the 3987 genes (42%) in the data set. There were a total of 30 622 references to 11 070 articles. Each gene had a median of three article references and a mean of 18.2 references.
+###end p 45
+###begin p 46
+In the augmented reference index, containing references transferred from homologous genes, 2602 of the 3987 genes (65%) had references. There were a total of 77 509 references to 29 115 articles. Each gene had a median of eight article references and a mean of 29.8 references.
+###end p 46
+###begin p 47
+###xml 206 225 206 225 <italic xmlns:xlink="http://www.w3.org/1999/xlink">photoreceptor genes</italic>
+###xml 227 246 227 246 <italic xmlns:xlink="http://www.w3.org/1999/xlink">protein degradation</italic>
+###xml 248 265 248 265 <italic xmlns:xlink="http://www.w3.org/1999/xlink">protein synthesis</italic>
+###xml 267 282 267 282 <italic xmlns:xlink="http://www.w3.org/1999/xlink">muscle function</italic>
+###xml 284 301 284 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink">citric acid cycle</italic>
+###xml 306 322 306 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">proton transport</italic>
+###xml 330 331 330 331 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg636tb2">2</xref>
+###xml 399 400 399 400 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f4">4</xref>
+###xml 576 577 576 577 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c4">4</xref>
+###xml 630 637 630 637 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in situ</italic>
+Defining cluster boundaries by maximizing NDPG weighted average selects 525 non-overlapping nodes as the final clusters. Many of the defined clusters correspond to well-defined biological functions such as photoreceptor genes, protein degradation, protein synthesis, muscle function, citric acid cycle and proton transport (Table 2). Some of these clusters listed are graphically depicted in Figure 4; the others are available in the Supplementary Material. Most of these clusters corresponded exactly or closely to clusters described in the original publication of the data (4). These are discussed in detail, and validated with in situ hybridization and mutation experiments in that publication.
+###end p 47
+###begin p 48
+###xml 265 266 265 266 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f4">4</xref>
+###xml 818 820 818 820 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c25">25</xref>
+###xml 821 823 821 823 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c26">26</xref>
+###xml 934 936 934 936 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c27">27</xref>
+One novel cluster not previously noted represents uncharacterized maternally expressed genes that localize primarily to the nucleolus; this functional cluster was not identified in the original publication and has the highest NDPG score of the selected nodes (Fig. 4A). The maternal expression of these genes is apparent from the expression profile: transcripts are seen in the female adult, but not the male adult, and in the embryo. These genes probably constitute an interesting biological module of developmentally regulated fly genes. Only two genes in the cluster are well studied, each with five primary papers listed in FlyBase. It has already been demonstrated that these two genes, the Fbgn0029196 (Nop5) and FBgn0023184 (Nop60B) genes, are in fact maternally expressed genes that localize to the nucleolus (25,26). The FBgn0038964 (Nop56) gene has only a single primary document that indicates that it is a nucleolar gene (27). The Fbgn0029148 (NHP2) and Fbgn0039627 genes have no primary papers but do have GO annotations. The Fbgn0029148 gene has been assigned the nucleolus GO code by FlyBase, citing a non-traceable author statement as evidence; the Fbgn0039627 gene has been assigned the rRNA modification GO codes by FlyBase by sequence similarity. Two genes, Fbgn0033485 (CG1381) and FBgn0039275 (CG33095), are uncharacterized genes without any primary literature or GO annotations.
+###end p 48
+###begin p 49
+###xml 128 129 128 129 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f4">4</xref>
+Proper resolution for approximately half of the labeled functional clusters, including the nucleolar maternal cluster in Figure 4A, required the use of the augmented reference index, as the published primary literature on the fly genes was sparse.
+###end p 49
+###begin title 50
+Understanding uncharacterized genes
+###end title 50
+###begin p 51
+One of the primary goals of gene expression analysis is to attribute functions to unidentified genes and identify novel functions based on gene co-expression. If a gene with unknown function is in a functionally coherent cluster, it probably shares the common function of the other genes in the cluster. Experimental follow-up is necessary to confirm the putative gene function. In addition, detailed examination of unstudied genes just outside the cluster may be fruitful since they may also share the cluster function.
+###end p 51
+###begin p 52
+###xml 20 21 20 21 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f4">4</xref>
+###xml 254 261 254 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in situ</italic>
+###xml 277 278 277 278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c4">4</xref>
+###xml 416 417 416 417 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg636f4">4</xref>
+For example, Figure 4D appears to be a cluster of muscle genes. Some of the genes, have not been specifically annotated as muscle-expressed genes, but are likely candidates. Glycogenin, Fbgn0034603, was recently confirmed to be a muscle-specific gene by in situ hybridization (4). In addition, other putative muscle genes were confirmed that were just outside this cluster. Similarly, the cluster depicted in Figure 4A consists of genes that are maternally expressed that localize to the nucleolus; it contains two completely uncharacterized genes. The Fbgn0033485 (CG1381) and FBgn0039275 (CG33095) genes may share function with the other genes in the cluster. Experimental follow-up looking for genetic interactions or immunolocalization studies could confirm the function of these genes. In addition, the Fbgn0029148 and Fbgn0039627 genes have GO annotations based on poor evidence that already supports the possibility that they are nucleolar maternal genes; experimental validation could confirm this possibility.
+###end p 52
+###begin title 53
+Assessing the functional coherence of groups of genes
+###end title 53
+###begin p 54
+###xml 181 183 181 183 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c20">20</xref>
+###xml 48 53 <span type="species:ncbi:4932">yeast</span>
+###xml 484 489 <span type="species:ncbi:4932">yeast</span>
+###xml 505 510 <span type="species:ncbi:10090">mouse</span>
+When we evaluated NDPG, it was 96% sensitive in yeast and 82% sensitive in fly at discriminating between functional groups of genes and random groups of genes at 99.9% specificity (20). We also found that one of the limitations of this (and probably any) literature-based approach is that certain biological functions have not been studied and reported on in the literature in certain organisms. For example, cellular and metabolic functions of many genes are better characterized in yeast than in fly or mouse. So, in many cases, transferring references from well-studied homologous genes from other model organisms as we have done here may be necessary to obtain a complete analysis. Additionally, the score of a group is also related to how extensively the function that it embodies is described in the literature.
+###end p 54
+###begin p 55
+Since abstracts have limited information, we believe there is the potential to further increase performance by including whole text of scientific articles and citation information.
+###end p 55
+###begin p 56
+###xml 327 329 327 329 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c28">28</xref>
+###xml 330 332 330 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg636c30">30</xref>
+Once the functionally related groups of genes are partitioned based on our method, the next challenge is to discern the common function represented by the group. Some groups have proposed algorithms that can identify keywords for groups of genes automatically that describe the function of the group from text about the genes (28-30). Since NDPG scores articles for relevance to the unifying biological function of the group, we could enhance the performance of these approaches by only including the most relevant articles.
+###end p 56
+###begin p 57
+The cluster boundary definition method proposed here would be effective with an alternative scoring of functional coherence that relied on scientific text or other knowledge-based resources, such as gene ontology annotations. The preferred criteria for a scoring system are (i) that the groups of genes containing all genes with a shared function should receive a higher score than random groups; (ii) combination of two unrelated coherent groups should result in a lower score; (iii) the score should increase steadily as a greater proportion of genes in a group share function; and (iv) large coherent groups should not score consistently higher or lower than small functionally coherent groups.
+###end p 57
+###begin title 58
+Hierarchical clustering
+###end title 58
+###begin p 59
+Hierarchical clustering can be implemented in multiple different ways (such as average linkage, centered linkage, etc.) with one of a wide array of metrics (such as euclidean, manhattan, jack-knife, etc.). In this study, we did not wish to explicitly evaluate the choice of hierarchical clustering implementation. We attempted to use methodology that was as consistent as possible with the original publication so that our results were comparable. However, maximization of NDPG weighted average to select cluster boundaries could be used in evaluating the output of different implementations of hierarchical clustering and selection of the best one. The better implementation will produce hierarchical trees that are more easily segmented into clusters that respect biological function. Such hierarchical trees will have higher total maximized NDPG weighted average than trees produced by an implementation less effective for the specific data set.
+###end p 59
+###begin title 60
+Objective cluster boundary definition
+###end title 60
+###begin p 61
+###xml 884 889 <span type="species:ncbi:4932">yeast</span>
+The most labor-intensive component of gene expression array projects is the identification of biologically relevant clusters and optimization of cluster boundaries. This task is difficult and often arbitrary, requiring laborious steps of gathering information on genes within a cluster, identifying a common biological process, and drawing a boundary line somewhere around a cluster. This method not only automates the identification of biologically relevant data using the same source literature that researchers would access to make the same comparisons by hand, but it also creates an optimized version of each cluster, at the level of highest enrichment for a given biological function. Not only has this method almost completely recapitulated the biologically relevant associations found through months of hands-on, one-gene-at-a-time work by teams of scientists working in both yeast and fly, but it has also been able to identify new clusters that were missed by the primary researchers. Furthermore, this method was able to accomplish this task in the order of hours. This approach will give researchers the capability to simplify significantly the amount of data analysis required to begin to make meaning from the mountain of experimental data.
+###end p 61
+###begin title 62
+SUPPLEMENTARY MATERIAL
+###end title 62
+###begin p 63
+Supplementary Material is available at NAR Online.
+###end p 63
+###begin title 64
+[Supplementary Material]
+###end title 64
+###begin title 65
+Figures and Tables
+###end title 65
+###begin p 66
+ Hierarchical clustering and cluster boundary definition. A schematic of hierarchically clustered expression data with subsequent cluster boundary definition. On the right are gene expression data represented as a colored grid. Each row in the grid represents the expression of a single gene across multiple conditions; each column represents the expression of each of the genes in a specific condition. Red squares indicate gene induction, while green squares indicate repression. On the left is a tree generated by a hierarchical clustering algorithm. The tree consists of nodes (dark boxes) that organize the genes according to expression similarity. All of the genes that descend from one node are the genes in the candidate cluster defined by that node. In this schematic, we illustrate a pruning of the tree into four disjoint biologically relevant gene clusters. Pruning the tree defines concrete clusters and their boundaries. After clustering the data, one must identify the biologically significant candidate clusters. Typically, careful expert examination of the genes in the clusters is required to identify the critical clusters in which the genes share function and to draw cluster boundaries that respect biological function. We assert that scientific literature can be mined automatically instead to identify biologically consistent clusters, and to draw cluster boundaries that respect biological function.
+###end p 66
+###begin p 67
+###xml 59 60 59 60 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 223 224 223 224 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 303 304 303 304 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 383 384 383 384 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+###xml 534 557 534 557 <italic xmlns:xlink="http://www.w3.org/1999/xlink">threonine endopeptidase</italic>
+###xml 781 782 781 782 <bold xmlns:xlink="http://www.w3.org/1999/xlink">C</bold>
+###xml 818 828 818 828 <italic xmlns:xlink="http://www.w3.org/1999/xlink">heat shock</italic>
+###xml 837 838 837 838 <bold xmlns:xlink="http://www.w3.org/1999/xlink">D</bold>
+###xml 874 894 874 894 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cytoplasmic ribosome</italic>
+###xml 83 88 <span type="species:ncbi:4932">yeast</span>
+ NDPG score correlates with cluster functional coherence. (A) After clustering the yeast gene expression data into 2466 nodes, we have plotted the literature-based NDPG score of the 1150 nodes containing 6-200 genes on the x-axis and the highest percentage concordance with a GO functional group on the y-axis. Black circles indicate the nodes selected by the computational method. (B) Similar to (A), except we have plotted the NDPG score and the highest percentage concordance with a GO functional group for the clusters containing threonine endopeptidase genes. The cluster selected by the algorithm is the black circle; other points represent nodes that are the ancestors and descendants of the selected node containing subsets or supersets of the genes in the selected node. (C) Similar plot for nodes containing heat shock genes. (D) Similar plot for nodes containing cytoplasmic ribosome genes.
+###end p 67
+###begin p 68
+###xml 8 13 <span type="species:ncbi:4932">yeast</span>
+###xml 189 194 <span type="species:ncbi:4932">yeast</span>
+ Top 20 yeast gene clusters in order of literature-based functional coherence. To check if these clusters correspond to groups of genes with shared function, we correlate the clusters with yeast GO codes. On the left of the graphic, we list the literature-based NDPG score of each cluster and the number of genes within the cluster. On the right, we list the GO code that best corresponds to the cluster. The length of the green bar in the graphic is proportional to the number of genes in the cluster that are also assigned the GO function listed on the right. The length of the yellow bar is proportional to the number of genes in the cluster not assigned the corresponding function by GO. The length of the blue bar is proportional to the number of additional genes assigned the GO function that are not in the cluster. The longer the green bar, the better the cluster represents that specific function.
+###end p 68
+###begin p 69
+###xml 434 435 434 435 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 530 531 530 531 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+###xml 649 650 649 650 <bold xmlns:xlink="http://www.w3.org/1999/xlink">C</bold>
+###xml 907 908 907 908 <bold xmlns:xlink="http://www.w3.org/1999/xlink">D</bold>
+ Four examples of gene expression clusters from a fly development time course whose boundaries were defined with scientific literature. The gene expression conditions are annotated at the top with E (embryo), L (larvae), P (pupae), M (adult male) and F (adult female). On the right, genes are listed by FlyBase ID and name if available. On the far right, we have listed the appropriate GO code annotation for that gene if available. (A) Nucleolar maternal genes. This cluster had not been identified in the original publication. (B) Photoreceptor genes. We found two separate photoreceptor clusters, as did the authors of the original publication. (C) Citric acid cycle genes. Most of these genes have not yet been studied. Using sequence homology to obtain additional references made it feasible to identify this cluster of genes. A related but broader cluster was identified in the original publication. (D) Muscle-specific genes. A similar but broader cluster was identified in the original publication containing more unknown genes.
+###end p 69
+###begin title 70
+Algorithm to define cluster boundaries
+###end title 70
+###begin p 71
+###xml 25 26 25 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 45 46 45 46 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 46 47 46 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 46 47 46 47 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 87 88 87 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 88 89 88 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 88 89 88 89 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 124 125 124 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 151 157 151 157 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Sel(i)</italic>
+The NDPG score of a node i is represented as fi; the number of nodes in the cluster is ni. The set of descendants of a node i in the selected state is Sel(i).
+###end p 71
+###begin title 72
+Fly functional clusters
+###end title 72
+###begin p 73
+Functional clusters obtained after using NDPG to define boundaries on a hierarchical clustering of a fly development time series are listed here. Here we list the top 20 clusters sorted by NDPG score. Listed also are the number of genes in the cluster, the tightness of the cluster and whether or not a similar or identical cluster was reported in the original publication of the data. We listed an appropriate cluster function if it was immediately apparent. Clusters are depicted in greater detail in the Supplementary Material.
+###end p 73
+###begin title 74
+ACKNOWLEDGEMENTS
+###end title 74
+###begin p 75
+The authors thank SGD, Flybase and MGD for access to their literature resources. R.B.A. is supported by NIH 3-U01-GM-61374; SR is supported by NIH GM-07365.
+###end p 75
+###begin title 76
+REFERENCES
+###end title 76
+

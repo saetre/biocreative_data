@@ -1,0 +1,764 @@
+###begin article-title 0
+###xml 26 31 <span type="species:ncbi:9606">Human</span>
+Local Network Topology in Human Protein Interaction Data Predicts Functional Association
+###end article-title 0
+###begin p 1
+Conceived and designed the experiments: HL SL. Analyzed the data: HL. Contributed reagents/materials/analysis tools: SL. Wrote the paper: HL SL.
+###end p 1
+###begin p 2
+###xml 1407 1408 1404 1405 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1411 1414 1408 1411 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;50</sup>
+###xml 233 238 <span type="species:ncbi:4932">yeast</span>
+###xml 524 529 <span type="species:ncbi:9606">human</span>
+###xml 916 921 <span type="species:ncbi:9606">human</span>
+The use of high-throughput techniques to generate large volumes of protein-protein interaction (PPI) data has increased the need for methods that systematically and automatically suggest functional relationships among proteins. In a yeast PPI network, previous work has shown that the local connection topology, particularly for two proteins sharing an unusually large number of neighbors, can predict functional association. In this study we improved the prediction scheme by developing a new algorithm and applied it on a human PPI network to make a genome-wide functional inference. We used the new algorithm to measure and reduce the influence of hub proteins on detecting function-associated protein pairs. We used the annotations of the Gene Ontology (GO) and the Kyoto Encyclopedia of Genes and Genomes (KEGG) as benchmarks to compare and evaluate the function relevance. The application of our algorithms to human PPI data yielded 4,233 significant functional associations among 1,754 proteins. Further functional comparisons between them allowed us to assign 466 KEGG pathway annotations to 274 proteins and 123 GO annotations to 114 proteins with estimated false discovery rates of <21% for KEGG and <30% for GO. We clustered 1,729 proteins by their functional associations and made functional inferences from detailed analysis on one subcluster highly enriched in the TGF-beta signaling pathway (P<10-50). Analysis of another four subclusters also suggested potential new players in six signaling pathways worthy of further experimental investigations. Our study gives clear insight into the common neighbor-based prediction scheme and provides a reliable method for large-scale functional annotation in this post-genomic era.
+###end p 2
+###begin title 3
+Introduction
+###end title 3
+###begin p 4
+###xml 421 424 421 424 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Dhaeseleer1">[1]</xref>
+###xml 468 471 468 471 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Chien1">[2]</xref>
+###xml 686 689 686 689 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Rual1">[3]</xref>
+###xml 690 694 690 694 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Ramani1">[11]</xref>
+###xml 798 802 798 802 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Li2">[12]</xref>
+###xml 803 807 803 807 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Gandhi1">[27]</xref>
+###xml 1225 1229 1225 1229 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Samanta1">[28]</xref>
+###xml 1425 1429 1425 1429 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Stark1">[29]</xref>
+###xml 444 449 <span type="species:ncbi:4932">yeast</span>
+###xml 1105 1110 <span type="species:ncbi:4932">yeast</span>
+###xml 1407 1412 <span type="species:ncbi:9606">human</span>
+###xml 1464 1469 <span type="species:ncbi:9606">human</span>
+Due to advance in DNA sequencing, genes are being discovered at unprecedented speed, creating a need for annotating their functions. High-throughput mapping of protein-protein interaction (PPI) data is an example of functional genomics that enables rapid assignment of functional annotations by links between proteins which imply functional associations. However, due to noises inherent in the process of data generation [1], for example, by a yeast two-hybrid method [2], it becomes important to develop algorithms that reduce the influence of such noises and improve the quality of declared functional associations. So far, partial PPI networks for several organisms have been mapped [3]-[11], and different methods have been formulated to investigate these networks, and hence protein functions [12]-[27]. One method to suggest biological function is to compare the PPI network with similar random networks to identify unusual topological connectivity between proteins, which we call common-neighbor statistics. Such statistics has been used to assess the functional relationship between proteins in a yeast PPI network, and functional inferences that are statistically significant have been made from those relationships [28]. In this study, we improved upon the common-neighbor statistics, thereby enhancing the quality of functional association predictions, and applied our methods to a comprehensive human PPI dataset [29] to suggest potential functions of human proteins.
+###end p 4
+###begin p 5
+###xml 227 231 227 231 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Jeong1">[30]</xref>
+###xml 232 236 232 236 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Han1">[32]</xref>
+###xml 784 788 784 788 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Samanta1">[28]</xref>
+###xml 1097 1101 1097 1101 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Stark1">[29]</xref>
+###xml 687 692 <span type="species:ncbi:4932">yeast</span>
+###xml 1090 1096 <span type="species:ncbi:9606">humans</span>
+PPIs can be visualized as a graph with proteins composing the nodes, and interactions composing the edges (the graphical interactions). Ample evidence exists that such a graph is nonrandom in the topologies of its connectivity [30]-[32]. We assumed that most of the nonrandomness is necessary for the protein-interaction network to perform proper biological function. We further hypothesize, that two proteins share a number of interacting neighbors which is significantly larger than that occurred on average in truncated power-law preserving random networks can significantly enhance the likelihood of the two proteins sharing a common or related biological function. In prior work on yeast PPI network, we developed a formula for ranking the degree of rareness of such occurrences [28]. In this study, we developed an additional formula to overcome a deficiency in the previous work and make the ranking more accurate. We found that the combination of these two formulas leads to better results. We applied the method of detecting nonrandomness to the publicly available PPI dataset for humans [29]. With our clustering method, we built a 1729-protein cluster where we found most function-related proteins were clustered together and many subclusters were highly enriched in different signaling pathways. In particular, we made an in-depth analysis of the transforming growth factor beta (TGF-beta) pathway which is important in cell proliferation and tumorigenesis, and suggested a list of proteins presumably involved in several signaling pathways.
+###end p 5
+###begin title 6
+Results
+###end title 6
+###begin title 7
+Algorithms
+###end title 7
+###begin p 8
+###xml 38 39 38 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 272 273 272 273 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 278 279 278 279 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 281 282 281 282 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 306 307 306 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 342 343 342 343 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 348 349 348 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+Suppose that in a PPI network of size N, the degree (i.e., the number of interactions) for each protein node is fixed, but the interacting partners are randomly selected. This specifies the random network which we compare the real PPI data with. We randomly pick proteins X and Y (X with  interactions and Y with  interactions) and find that X and Y share  interacting partners (nodes) in this network. We denote the set of common partners as , the set of all proteins as , and the number of interacting partners for each protein in  as .
+###end p 8
+###begin p 9
+###xml 45 46 45 46 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 51 52 51 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 58 59 58 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 108 109 108 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 111 112 111 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 152 153 152 153 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 197 199 197 199 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ii</italic>
+###xml 257 258 257 258 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 326 329 326 329 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">iii</italic>
+###xml 373 374 373 374 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 536 537 536 537 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 559 560 559 560 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 666 670 666 670 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Samanta1">[28]</xref>
+###xml 934 935 934 935 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 935 936 935 936 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+The total number of graphs in which proteins X and Y have m common partners is a product of three factors: (i) m proteins can be chosen from any of the N proteins, and there are  ways to do that; (ii) the remaining  proteins that interact only with protein X can occupy  spaces still available, resulting in a count of ; and (iii)  proteins that interact only with protein Y can be in any  available spaces, contributing a factor of . By multiplying these three factors and dividing by the total number of unrestricted ways for protein X to have  and protein Y to have  interacting partners--we can arrive at the following formula (Algorithm I) by Samanta and Liang [28]:In this calculation, we have relaxed the constraint that the degree of each node remains the same. For such totally randomized networks for which only the average number of interactions per protein is fixed, our simulation showed that the probability computed by P1 is accurate.
+###end p 9
+###begin p 10
+###xml 170 174 170 174 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Han1">[32]</xref>
+###xml 397 398 397 398 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 398 399 398 399 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 515 516 515 516 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 864 865 864 865 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 865 866 865 866 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 943 944 943 944 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 944 945 944 945 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 1229 1230 1229 1230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 1235 1236 1235 1236 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 1288 1289 1288 1289 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 1294 1295 1294 1295 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 1366 1373 1366 1373 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0006410.s001">Text S1</xref>
+However, a more realistic random control is to also keep the degree distribution the same as the real PPI network (i.e., to preserve the truncated power-law distribution [32]). This is much broader than a totally random network, for which the degree distribution, for a large number of interactions, decays exponentially. For such a truncated power-law random network, our simulations showed that P1 becomes inaccurate. To determine the reason behind this and to devise a compensation, we note that in any set A of m common partners, proteins with more interactions will appear at a higher frequency. An extreme case is that if one protein interacts with most proteins in the network (i.e., a hub protein), it is hardly a surprise to find any two proteins sharing it as a common partner. Because it is easier to observe hub proteins as common partners and because P1 only takes into account the degree of nodes on average, the significance of P1 should be down-weighted when hub proteins are involved as common partners. Therefore, we came up with another algorithm (Algorithm II) to reduce the influence of hub proteins: under the condition that all proteins are randomly connected, we used the degree of  (except the degree of X and Y) to compute the probability that only  connects to X and Y, and we derived the probability as follows:In supporting information (Text S1), we show that the second product is bounded from both above and below; and hence, we use the approximation .
+###end p 10
+###begin p 11
+###xml 76 77 76 77 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 77 78 77 78 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 83 84 83 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 84 85 84 85 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 123 127 123 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Samanta1">[28]</xref>
+###xml 138 139 138 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 139 140 139 140 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 209 210 209 210 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 210 211 210 211 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 367 368 367 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 368 369 368 369 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 374 375 374 375 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 375 376 375 376 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 464 465 464 465 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 465 466 465 466 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+Therefore, each protein pair with common neighbor(s) was assigned with both P1 and P2. In previous work, Samanta and Liang [28] used only P1 to rank the relationship of protein pairs. For our method, we added P2 as a complementary algorithm to improve the biological inference. We showed that by reducing the influence of hub proteins in the network, the use of both P1 and P2 allowed us to identify a more reliable functional relationship than that identified by P1 alone.
+###end p 11
+###begin title 12
+Comparing Network Topology between Real and Randomized PPI Networks
+###end title 12
+###begin p 13
+###xml 31 32 31 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 32 33 32 33 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 38 39 38 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 39 40 39 40 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 197 205 197 205 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a and 1b</italic>
+###xml 191 205 191 205 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g001">Fig. 1<italic>a and 1b</italic></xref>
+###xml 269 270 269 270 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e</italic>
+###xml 570 571 570 571 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 702 704 702 704 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ii</italic>
+###xml 722 723 722 723 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 1070 1076 1070 1076 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g001">Fig. 1</xref>
+###xml 1156 1160 1156 1160 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Han1">[32]</xref>
+###xml 1549 1557 1549 1557 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c and 1d</italic>
+###xml 1543 1557 1543 1557 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g001">Fig. 1<italic>c and 1d</italic></xref>
+###xml 372 377 <span type="species:ncbi:9606">human</span>
+###xml 1413 1418 <span type="species:ncbi:9606">human</span>
+We computed the probabilities (P1 and P2) according to Algorithms I and II for 311,023 protein pairs that had at least one common neighbor, and plotted the distribution of the probabilities (Fig. 1a and 1b). In this paper, all the probabilities have been natural [base e] logarithm transformed. To assess the statistical significance of the topological connections in the human PPI network, we computed and compared the distributions of probabilities calculated from Algorithms I and II in suitably randomized networks. There are two ways to randomize the PPI network: (i) randomly connect nodes (proteins) but keep the total number of edges (interactions) the same (i.e., simple random network); and (ii) in addition to (i), keep the number of interacting partners of each protein the same as in our real PPI network (i.e., a truncated power law-preserving random network). Compared to simple randomization, for both Algorithms I and II, the truncated power law-preserving randomization produced a probability distribution more similar to that of the real PPI network (Fig. 1). As a biological network is a network with a truncated power-law distribution [32], it is more realistic to use a truncated power law-preserving random network as the background for comparisons. We use "random network" hereafter to refer to a truncated power law-preserving random network, unless otherwise specified. As expected, the human PPI network has much more highly improbable topological connections that happen by chance only with a very low probability (Fig. 1c and 1d).
+###end p 13
+###begin title 14
+Density distributions and histograms of probabilities derived from our method.
+###end title 14
+###begin p 15
+###xml 227 228 227 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 255 256 255 256 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 256 257 256 257 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 260 261 260 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 288 289 288 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 289 290 289 290 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 293 294 293 294 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 310 311 310 311 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 311 312 311 312 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 315 316 315 316 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">d</italic>
+###xml 332 333 332 333 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 333 334 333 334 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 54 59 <span type="species:ncbi:9606">human</span>
+Red lines and bars: probabilities calculated from the human PPI network; green lines and bars: probabilities from truncated power law-preserving random networks; blue lines and bars: probabilities from simple random networks. (a) Density distributions of P1. (b) Density distributions of P2. (c) Histograms of P1. (d) Histograms of P2.
+###end p 15
+###begin title 16
+Ranking Protein Pairs and Suggesting Functionally Associated Protein Pairs
+###end title 16
+###begin p 17
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 21 22 21 22 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 140 141 140 141 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 141 142 141 142 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 290 291 290 291 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 291 292 291 292 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 383 387 383 387 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Ashburner1">[33]</xref>
+###xml 459 463 459 463 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Kanehisa1">[34]</xref>
+###xml 517 538 517 538 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods and Materials</xref>
+###xml 601 602 601 602 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 602 603 602 603 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 954 960 954 960 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g002">Fig. 2</xref>
+###xml 999 1000 999 1000 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1000 1001 1000 1001 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 1137 1138 1137 1138 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 1220 1224 1220 1224 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Benjamini1">[35]</xref>
+###xml 1417 1438 1417 1438 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods and Materials</xref>
+Ideally, given that P1 assesses the degree of nonrandomness in the network, which indicates the functional association, we anticipated that P1 should rank our protein pairs in a way that reflected their functional relevance. Therefore, we hypothesized that a higher ranking (i.e., a better P1) corresponds to a closer biological relationship. With the Gene Ontology (GO) annotations [33] and Kyoto Encyclopedia of Genes and Genomes (KEGG) pathway annotations [34] as benchmarks, we used annotation overlap rates (see Methods and Materials) to validate the reliability of the protein pair ranking from P1, and preliminarily determined functionally associated protein pairs (i.e., significant protein pairs). We noted that in the top 5,000 protein pairs, each 1,000 pairs always had a higher overlap rate than those beyond the top 5,000 pairs, and that the region of high overlap will give us a high level of confidence in presenting reliable predictions (Fig. 2). Thus, we chose the 5,000th value of P1 (-17.11) as the cutoff from Algorithm I. It was interesting that the probability perfectly matched the Bonferroni correction  in which N = 7,362 is the size of the whole protein network. The false discovery rate (FDR) [35], which was used to assess the effectiveness of our method, is 0.40 for the top 5,000 functional associations selected by Algorithm I, with the cutoff at -17.11 (for our definition of FDR, see Methods and Materials).
+###end p 17
+###begin title 18
+Annotation overlap rate with GO and KEGG as the benchmarks.
+###end title 18
+###begin p 19
+###xml 28 29 28 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 29 30 29 30 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+Protein pairs are ranked by P1. The top-ranked 20,000 pairs are divided equally into 20 bins. In each bin (1,000 protein pairs), we calculated the GO overlap rate and the KEGG overlap rate. The red curve stands for the GO overlap rates and the blue one stands for the KEGG overlap rates. The dashed line is the cutoff at the 5,000th protein pair. The correlation coefficient between the two groups of overlap rates is 0.928 (P<0.0001).
+###end p 19
+###begin p 20
+###xml 107 108 107 108 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 108 109 108 109 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 215 216 215 216 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 216 217 216 217 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 237 238 237 238 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 238 239 238 239 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 279 280 279 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 280 281 280 281 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 445 446 445 446 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 446 447 446 447 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 496 497 496 497 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 529 530 529 530 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 530 531 530 531 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 650 651 650 651 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 651 652 651 652 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 670 671 670 671 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 664 671 664 671 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g003">Fig. 3<italic>a</italic></xref>
+###xml 679 681 679 681 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ii</italic>
+###xml 713 714 713 714 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 714 715 714 715 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 802 803 802 803 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 803 804 803 804 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 828 829 828 829 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 822 829 822 829 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g003">Fig. 3<italic>b</italic></xref>
+###xml 859 860 859 860 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 860 861 860 861 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 866 867 866 867 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 867 868 867 868 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 949 950 949 950 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 953 956 953 956 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;16</sup>
+###xml 967 974 967 974 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0006410.s002">Fig. S1</xref>
+###xml 974 975 974 975 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 1045 1046 1045 1046 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1052 1053 1052 1053 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1084 1085 1084 1085 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1088 1091 1088 1091 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;16</sup>
+###xml 1220 1221 1220 1221 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1417 1418 1417 1418 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 1411 1418 1411 1418 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g003">Fig. 3<italic>a</italic></xref>
+###xml 1465 1466 1465 1466 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1478 1486 1478 1486 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0006410.s005">Table S1</xref>
+###xml 1759 1760 1759 1760 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1760 1761 1760 1761 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 1774 1775 1774 1775 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 1768 1775 1768 1775 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g003">Fig. 3<italic>b</italic></xref>
+###xml 1884 1885 1884 1885 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1885 1886 1885 1886 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 1906 1907 1906 1907 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1907 1908 1907 1908 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1973 1974 1973 1974 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1974 1975 1974 1975 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 1989 1990 1989 1990 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1990 1991 1990 1991 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+In a real PPI network, it is common to have many hub proteins with large numbers of interacting neighbors. P2 is designed to reduce the influence of these hub proteins within the top 5,000 protein pairs selected by P1 as we believe that P2 can identify protein pairs whose lower P1 is caused by common neighbors that are hub proteins and remove them from the list of significant protein pairs. With GO and KEGG as the benchmarks, the utility of P2 is then confirmed by the following assertions: (i) the protein pairs with a good P2 (Group I) always have a lower FDR (here a lower FDR means a closer functional relationship) than those without a good P2 (Group II; Fig. 3a); and (ii) the protein pairs with a good P2 (Group I) always have a lower FDR than the same number of top protein pairs ranked by P1 only (Group III; Fig. 3b). We also noted that because P1 and P2 have a very low linear correlation (Pearson's correlation coefficient = -0.033, P<10-16; also see Fig. S1a in supporting information) and rankings of functional association by P1 and P2 are significantly different (P<10-16), an additional cutoff from Algorithm II makes difference from merely tightening the cutoff from Algorithm I. As the cutoff for P2 changes, the difference in FDR between Groups I and II varies; the difference maximizes when the cutoff goes to -30.03, which is the value we used for the second cutoff from Algorithm II (Fig. 3a). Therefore, 4,233 significant protein pairs (P<0.001; see Table S1 in supporting information) were considered to have a close functional association in terms of the cutoffs from Algorithm I (-17.11) and Algorithm II (-30.03). In addition, the 4,233 significant pairs had a FDR of 0.35, compared with 0.39 for the top 4,233 pairs ranked by P1 only (Fig. 3b), 0.83 for the top 4233 pairs from the truncated power law-preserving random network [cutoffs: -8.90 for ln(P1) and -11.33 for ln(P2)] and 0.92 from the totally randomized network [cutoffs: -6.42 (P1) and -13.10 (P2)].
+###end p 20
+###begin title 21
+Algorithm II decreased the false discovery rate (FDR) of our predictions.
+###end title 21
+###begin p 22
+###xml 1 2 1 2 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 46 47 46 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 47 48 47 48 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 73 74 73 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 74 75 74 75 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 84 85 84 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 110 111 110 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 111 112 111 112 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 193 194 193 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 194 195 194 195 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 256 257 256 257 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 257 258 257 258 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 537 538 537 538 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 538 539 538 539 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 542 543 542 543 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 612 613 612 613 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 613 614 613 614 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 621 622 621 622 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 768 769 768 769 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 769 770 769 770 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 775 776 775 776 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 776 777 776 777 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+(a) For the top 5,000 protein pairs ranked by P1, each cutoff value from P2 (on the x axis is the quantile of P2 we used as the cutoffs) divided them into two groups: Group I (red line), whose P2 was better than the cutoff, and Group II (blue line), whose P2 was worse than the cutoff. In this plot, the maximal difference between the two groups is at 0.039 (vertical dashed line), which corresponds to the cutoff of -30.03 from Algorithm II. The horizontal dotted line stands for the FDR (0.40) of the top 5,000 protein pairs ranked by P1. (b) The blue line (Group III) shows the FDR of protein pairs ranked by P1 only (x axis stands for the amount of selected top protein pairs), and the red line (Group I) shows the FDR of the significant protein pairs selected by P1 and P2 together.
+###end p 22
+###begin title 23
+Estimate the Lower Bound of FDR for the 4233 significant protein pairs
+###end title 23
+###begin p 24
+###xml 452 456 452 456 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Han1">[32]</xref>
+###xml 576 577 576 577 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 577 578 577 578 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 598 599 598 599 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 599 600 599 600 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 707 714 707 714 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0006410.s002">Fig. S1</xref>
+###xml 39 44 <span type="species:ncbi:9606">human</span>
+Because the functional annotations for human proteins are far from complete, the proportion of true positive functional associations must be higher and thus the FDR should be lower than 0.35. To estimate the lower bound of the FDR, we took into consideration the behavior of the random network by computing what percentage of the 4,233 protein pairs were generated by chance. As biological networks are networks with a truncated power-law distribution [32], we used only a truncated power law-preserving random network as the background. Cut by the same cutoff [-17.11 for ln(P1) and -30.03 for ln(P2)], the power law-preserving random networks have on average 86 protein pairs as significant associations (Fig. S1). The lower bound of FDR is the false discovery number generated in random network (86) divided by the number of predicted significant associations (4233), which is approximately 2%.
+###end p 24
+###begin title 25
+Significant Protein Pairs Are Informative in Functional Inference
+###end title 25
+###begin p 26
+###xml 283 290 283 290 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0006410-t001">Table 1</xref>
+We observed strong functional relationships among the top 4,233 protein pairs. After manual inspection, we found that at least 96 of the top 100 annotated protein pairs (excluding pairs with unannotated proteins) have close functional relationships and we listed the top 10 pairs in Table 1.
+###end p 26
+###begin title 27
+Top 10 protein pairs from our 4,233 significant protein pairs.
+###end title 27
+###begin p 28
+All of them share close functional relationships.
+###end p 28
+###begin p 29
+###xml 118 119 118 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 122 125 122 125 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;16</sup>
+###xml 262 267 <span type="species:ncbi:9606">human</span>
+The GO and KEGG-based FDR for 23,782 direct interactions is 0.57, which is significantly higher than our FDR of 0.35 (P<10-16, two-sample proportion test). This comparison supports the notion that our method offers more reliable functional associations than the human PPI data itself does. Because only 21.6% of the 4,233 protein pairs interact directly in the PPI data, we believe that the rest of them provide additional functional information that is not revealed in the PPI data.
+###end p 29
+###begin p 30
+###xml 736 743 736 743 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0006410.s001">Text S1</xref>
+###xml 748 755 748 755 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0006410.s004">Fig. S3</xref>
+###xml 1624 1631 1624 1631 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0006410-t002">Table 2</xref>
+###xml 1663 1671 1663 1671 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0006410.s006">Table S2</xref>
+We used GO and KEGG annotations to compare functions and compute annotation overlaps. Among the 1,754 proteins in the top 4,233 protein pairs, 1,220 have qualified GO terms (i.e., GO terms at the highest level without direct or indirect GO "offspring" terms in each ontology), and 834 have KEGG pathway annotations. If a protein has at least one annotated significant partner (i.e., two proteins are significant partners to each other if they are a significant protein pair), a list of annotation(s) from its partner(s) can be sorted by frequency and annotations occurring at the highest frequency are assigned to this protein (frequency must be at least twice for KEGG and four times for GO; otherwise discarded. For more details, see Text S1 and Fig. S3 in supporting information). For an annotated protein (based on GO and KEGG annotations), if an assigned annotation occurs among its known functions, we consider this to be a correct prediction. By this method, we found that 79% (for KEGG) and 70% (for GO) of assigned annotations were correct predictions. (Randomly picking 4233 pairs from 1729 proteins will only yield a 7% correct prediction rate for KEGG and 12% for GO on average from 100 trials.) In the same way, we predicted 466 KEGG pathways for 274 proteins and 123 GO terms for 114 proteins. We estimated that the FDRs of our predictions are much less than 21% (for KEGG) and 30% (for GO) because of the percentage of correct predictions for annotated proteins and the incompleteness of GO and KEGG annotations. We arbitrarily selected 40 predicted annotations (20 for KEGG and 20 for GO) and listed them in Table 2. For complete predictions, see Table S2 in supporting information.
+###end p 30
+###begin title 31
+###xml 52 57 <span type="species:ncbi:9606">human</span>
+Selected Predictions of KEGG and GO annotations for human proteins.
+###end title 31
+###begin p 32
+###xml 5 7 5 7 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nd</sup>
+###xml 69 71 69 71 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">st</sup>
+###xml 85 87 85 87 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">th</sup>
+The 2nd column is the predicted KEGG and GO IDs for proteins in the 1st column. The 3th column is the corresponding KEGG pathway name and GO term. Ratio is the number of significant partners with the assigned annotation(s) divided by the total number of significant partners.
+###end p 32
+###begin title 33
+Clustering from the Significant Protein Pairs
+###end title 33
+###begin p 34
+###xml 81 85 81 85 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Samanta1">[28]</xref>
+###xml 182 183 182 183 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 183 184 183 184 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 285 286 285 286 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 286 287 286 287 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 414 415 414 415 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 415 416 415 416 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 578 579 578 579 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 579 580 579 580 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 810 817 810 817 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0006410.s003">Fig. S2</xref>
+###xml 153 158 <span type="species:ncbi:9606">human</span>
+Because clustering can significantly improve the quality of functional inference [28], we built a cluster consisting of 1,729 proteins (excluding 25 non-human proteins) based on the P1 of 4,233 significant protein pairs. We constructed the empirical cumulative distribution from these P1 values; thus, each significant protein pair had a score between 0 and 1 according to its ranking order in the distribution of P1. Then we built a 1729x1729 dissimilarity matrix in which each matrix element was assigned either a score (if applicable) or a "10" for pairs with no significant P1. The purpose of using such a large value was to minimize background noise. Then the dissimilarity matrix was subjected to agglomerative hierarchical clustering with an unweighted pair-group average. The whole cluster is given in Fig. S2 in supporting information.
+###end p 34
+###begin title 35
+###xml 48 49 48 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+Analysis of Functional Modules with Significant P Values
+###end title 35
+###begin p 36
+###xml 220 226 220 226 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g004">Fig. 4</xref>
+###xml 385 392 385 392 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0006410.s003">Fig. S2</xref>
+In the cluster of 1,729 proteins, most of the functionally related proteins were correctly clustered into their corresponding functional modules, in which they are characterized by similar functions or the same pathway (Fig. 4). The largest subcluster derives directly from the root of the whole cluster and consists of 959 proteins; the second-largest subcluster has only 51 members (Fig. S2). We cut the 959-member subcluster with different cutoff values and analyzed the corresponding subclusters by using both manual inspection and Ingenuity Pathway Analysis (IPA). We conducted a detailed analysis for one prominent subcluster (the subcluster related to the TGF-beta signaling pathway) as a reference.
+###end p 36
+###begin title 37
+Examples of subclusters derived from the significant 4,233 protein associations.
+###end title 37
+###begin p 38
+Apparently each of them belongs to the same functional module in which they perform similar or the same biological functions.
+###end p 38
+###begin p 39
+###xml 57 58 54 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 51 58 48 55 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g005">Fig. 5<italic>a</italic></xref>
+###xml 254 257 248 251 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;54</sup>
+###xml 377 378 371 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 634 638 625 629 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Breitkreutz1">[36]</xref>
+###xml 712 713 703 704 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 706 713 697 704 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g005">Fig. 5<italic>b</italic></xref>
+###xml 615 621 <span type="species:ncbi:56262">Osprey</span>
+The TGF-beta signaling pathway-related subcluster (Fig. 5a) has a total of 45 protein members, 35 of which are known to participate in the TGF-beta signaling pathway, according to the Ingenuity database. The probability of observing this by chance is <10-54, according to the calculation from Ingenuity software (right-tailed Fisher's exact test). With respect to this extreme P value, we reasoned that probably all the cluster members cooperate to mediate signal transduction. To investigate the role of the other 10 proteins in the TGF-beta signaling pathway, we generated a functional relationship network using Osprey software () [36] to explicitly elucidate the relationships between the 45 proteins (Fig. 5b): the 10 proteins not related to TGF-beta according to the Ingenuity database are located inside a circle, whereas the other 35 TGF-beta member proteins lie on the circle; common neighbors which do not belong to the 45-member subcluster stay outside the circle.
+###end p 39
+###begin title 40
+TGF-beta signaling pathway-related subcluster.
+###end title 40
+###begin p 41
+###xml 1 2 1 2 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 121 122 118 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 514 515 508 509 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+(a) One subcluster identified by our method consists of proteins presumably involved in the TGF-beta signaling pathway. (b) Detailed interpretation of the relationships between each protein from the subcluster. On the basis of the Ingenuity Pathway Analysis 5.0, the 35 blue-green proteins on the circle participate in the TGF-beta signaling pathway, and the 10 red proteins inside the circle are unrelated. The violet proteins outside the circle are common neighbors that do not belong to the subcluster in panel a. Red lines represent significant protein pairs, green lines represent direct protein-protein interactions, and yellow lines represent both.
+###end p 41
+###begin p 42
+###xml 47 55 47 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a and 5b</italic>
+###xml 41 55 41 55 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g005">Fig. 5<italic>a and 5b</italic></xref>
+###xml 232 233 229 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 226 233 223 230 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g005">Fig. 5<italic>b</italic></xref>
+###xml 776 780 770 774 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Chen1">[37]</xref>
+###xml 782 786 776 780 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Sun1">[38]</xref>
+###xml 994 998 988 992 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Mazzarella1">[39]</xref>
+###xml 1241 1245 1232 1236 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Laurikkala1">[40]</xref>
+###xml 1247 1251 1238 1242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-McMahon1">[41]</xref>
+###xml 1298 1302 1289 1293 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Hocevar1">[42]</xref>
+###xml 1426 1430 1414 1418 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Datta1">[43]</xref>
+###xml 1432 1436 1420 1424 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Datta2">[44]</xref>
+###xml 1560 1564 1545 1549 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Ikeda1">[45]</xref>
+###xml 1565 1569 1550 1554 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Hildebrand1">[47]</xref>
+The cluster and the association network (Fig. 5a and 5b) intuitively suggest possible roles that the inner proteins play in the TGF-beta signaling pathway, which have not yet been incorporated into the Ingenuity pathway. Take Fig. 5b for instance: SKI functions as both the significant partner and the direct interacting neighbor of SMAD2 and SMAD3, and the three proteins' common neighbors (five violet nodes) all share the function of transcriptional regulation. From this we infer that SKI may regulate the TGF-beta signaling pathway on a transcription level, which is in accordance with findings in the literature (but has not been incorporated into the Ingenuity database) that SKI regulates downstream DNA transcription by forming a protein complex with SMAD2 and SMAD3 [37], [38]. With respect to IGSF1's significant partners, direct-interaction partners, and the previous work identifying IGSF1 as a potential receptor that could affect cellular response through its cytoplasmic region [39], we suspect that IGSF1 could function as a coreceptor for inhibin and/or activin. SOSTDC1 and NOG may regulate TGF-beta by interacting with BMP receptors, which is in accordance with the findings that both of them function as BMP antagonists [40], [41]. In addition to positive regulatory functions [42], DAB2 may serve as an antagonist of STRAP, which has a negative regulation on TGF-beta-mediated transcriptional activation [43], [44]. FMOD, CTGF, and SLITL2 may be involved in regulating receptor binding of TGF-betas, in accordance with published findings [45]-[47], and they may interact with each other. Thus, through integration with information from known networks, our method (probability, probability-derived clusters and networks) suggests new features which we can further investigate in experiments.
+###end p 42
+###begin p 43
+###xml 87 88 87 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 100 103 100 103 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;40</sup>
+###xml 162 168 162 168 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g006">Fig. 6</xref>
+###xml 324 325 324 325 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 318 325 318 325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g006">Fig. 6<italic>a</italic></xref>
+###xml 545 548 545 548 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b&#8211;e</italic>
+###xml 539 548 539 548 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g006">Fig. 6<italic>b&#8211;e</italic></xref>
+###xml 644 647 644 647 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b&#8211;e</italic>
+###xml 638 647 638 647 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g006">Fig. 6<italic>b&#8211;e</italic></xref>
+###xml 1144 1150 1137 1143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g007">Fig. 7</xref>
+To facilitate analysis of this type, we proposed eight signaling pathways with extreme P values (<10-40, from IPA 5.0) that are worthy of further investigations (Fig. 6). The proteins within the same signaling pathway tend to stay together in the same subclusters. This is shown for the largest 959-member subcluster (Fig. 6a; cluster members are indexed from 1 to 959). From IPA-based classification of the proteins into each of the eight pathways, we calculated a density distribution for all eight signaling pathways along the cluster (Fig. 6b-e). Each pathway is expected to have a distinct distribution (its own peaks). The peaks in Fig. 6b-e map to some areas (i.e., subclusters) that are probably highly related to their corresponding pathways. Functionally intercrossed pathways, like death-receptor/NF-kappaB signaling, may have close peaks. The distribution patterns are useful in identifying pathway-specific regions in the cluster. We selected another 4 subclusters that are presumably involved in six signaling pathways (excluding TGF-beta) with respect to pathway member distributions, and listed the potential pathway members in Fig. 7. We expect that the clusters and distributions will help biologists to find their subcluster of interest and discover new pathway members.
+###end p 43
+###begin title 44
+Distribution patterns of eight different signaling pathways.
+###end title 44
+###begin p 45
+###xml 1 2 1 2 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 350 351 350 351 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 402 403 399 400 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 472 473 465 466 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">d</italic>
+###xml 536 537 529 530 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e</italic>
+(a) The largest subcluster of 959 proteins is derived from the root of the whole 1729-member cluster. Each protein in this subcluster has a coordinate with respect to its order in the 959 members (from left to right); a pathway distribution is generated from the distribution of its members' coordinates under the bandwidth of 10 (R 2.25; IPA 5.5). (b) Distribution of the TGF-beta signaling pathway. (c) Distributions of death-receptor and NF-kappaB signaling pathways. (d) Distributions of B- and T-cell receptor signaling pathways. (e) Distributions of insulin receptor, Fc epsilon RI and natural killer cell signaling pathways.
+###end p 45
+###begin title 46
+###xml 126 132 126 132 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g007">Fig. 7</xref>
+###xml 132 133 132 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+Four subclusters that are presumably involved in six signaling pathways (indices above protein names are their coordinates in Fig. 7a).
+###end title 46
+###begin p 47
+###xml 1 2 1 2 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 49 50 45 46 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 57 60 53 56 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;20</sup>
+###xml 136 137 132 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 185 186 181 182 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 193 196 189 192 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;19</sup>
+###xml 264 265 260 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 315 316 311 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 323 326 319 322 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;10</sup>
+###xml 381 382 377 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">d</italic>
+###xml 444 445 440 441 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 452 455 448 451 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;22</sup>
+###xml 485 486 481 482 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 493 496 489 492 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;17</sup>
+###xml 541 544 537 540 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;21</sup>
+(a) Cluster for the NF-kappaB signaling pathway (P<3.2x10-20): TRAF1, TRAF3IP2, TANK, TRPC4AP and RIPK2 are potential pathway members. (b) Cluster for death receptor signaling pathway (P<2.4x10-19): CASP8AP2, DEDD and DEDD2 are potential members in this pathway. (c) Cluster for insulin receptor signaling pathway (P<2.4x10-10): SOCS2, PKD1, PTPN14 are potential pathway members. (d) Cluster for the immune response [T-cell receptor signaling (P<4.9x10-22), B-cell receptor signaling (P<1.1x10-17) and natural killer cell signaling (P<1.7x10-21)]: SRC, PTK2, PTK2B, PTPN12, CRK, CRKL, SIT1, PXN, NEDD9, EVL, KIT and IRS4 are potential members of the above three pathways.
+###end p 47
+###begin title 48
+Discussion
+###end title 48
+###begin p 49
+###xml 502 503 502 503 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 509 510 509 510 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+An advantage of our prediction scheme, inherited from Samanta and Liang (2003), is the insensitivity to the high false positive rate of high-throughput PPI data. After adding 6086 randomly generated interactions (30.4% of the real data, assuming at least 50% false positive rate for high-throughput data), we were still able to recover on average 93.4% of significant protein pairs; furthermore, >90% of falsely generated "significant protein pairs" will become significant if we loosen the cutoffs of P1 and P2 a little to double the number of significant protein pairs. This will certainly offer more flexibility when selecting which PPI data to use.
+###end p 49
+###begin p 50
+###xml 114 119 114 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 223 227 223 227 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Schwikowski1">[48]</xref>
+###xml 229 233 229 233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Sharan2">[49]</xref>
+###xml 510 514 510 514 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Schwikowski1">[48]</xref>
+###xml 681 686 <span type="species:ncbi:9606">human</span>
+We compared the performance of our prediction scheme with that of the direct prediction scheme used by Schwikowki et al. (2000) which infers the function of a protein from it direct interacting neighbors in the PPI network [48], [49]. Under the same criteria (i.e., the minimum frequency of shared functions required to assign annotations), the FDRs of our predictions (30% for GO and 21% for KEGG) have been significantly improved over the FDRs (60% for GO and 49% for KEGG) from the direct prediction scheme [48]. This result is reasonable because our algorithms identified significant protein pairs that are more functionally associated than the direct-interacting pairs in the human PPI data, and we made functional inferences from these significant pairs, not from direct protein interactions which may suffer large amounts of false positives generated in high throughput assays.
+###end p 50
+###begin p 51
+###xml 237 240 237 240 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b&#8211;e</italic>
+###xml 231 240 231 240 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006410-g007">Fig. 7<italic>b&#8211;e</italic></xref>
+###xml 0 5 <span type="species:ncbi:9606">Human</span>
+Human proteins may have multiple functions and belong to different functional modules, so different signaling pathways may also have some pathway members in common. It is thus reasonable to assume that the overlap of distribution (Fig. 7b-e), especially of peaks, may reveal the functional relevance of different pathways. For example, the death-receptor and NF-kappaB signaling pathways overlap in the peak area, and the T- and B-cell receptor signaling pathways have a similar distribution. Therefore, the cluster and its pathway distributions will be useful in multi-pathway analysis and accurate function prediction.
+###end p 51
+###begin p 52
+###xml 92 93 92 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 120 127 120 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0006410.s001">Text S1</xref>
+###xml 236 237 236 237 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 307 308 307 308 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 308 309 308 309 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 370 371 370 371 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 371 372 371 372 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+We also developed a new algorithm for computing the probabilities that three proteins share m interacting partners (see Text S1 in supporting information). However, we found that if three proteins have a very low probability of sharing m interacting partners, in most cases two of them will have a very low P1. Because this algorithm is highly dependent on Algorithm I (P1), we do not think it provides more information worthy of further investigation.
+###end p 52
+###begin p 53
+###xml 278 283 <span type="species:ncbi:9606">human</span>
+###xml 359 364 <span type="species:ncbi:9606">human</span>
+In conclusion, we proposed an improved method to predict protein functional association and make reliable functional annotations; we derived a cluster to investigate signaling pathways and suggest potential novel pathway members. We believe that with the explosion of available human PPI data, our method will contribute greatly to the functional research of human proteins.
+###end p 53
+###begin title 54
+Materials and Methods
+###end title 54
+###begin title 55
+Protein-Protein Interaction Data
+###end title 55
+###begin p 56
+###xml 211 215 187 191 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Stark1">[29]</xref>
+###xml 39 44 <span type="species:ncbi:9606">human</span>
+###xml 173 178 <span type="species:ncbi:4932">yeast</span>
+###xml 390 395 <span type="species:ncbi:9606">human</span>
+From the BioGRID (), we downloaded the human PPI data (version 2.20), which derived from both conventional focused studies (approximately69.6%) and high-throughput studies (yeast two-hybrid; approximately30.4%) [29]. There are 20,019 total non-redundant interactions (excluding self-interactions) and 7,362 protein entries in this dataset, including 42 nonhuman proteins that interact with human proteins.
+###end p 56
+###begin title 57
+Benchmarks for evaluating the functional association
+###end title 57
+###begin p 58
+We used GO and KEGG as independent benchmarks to assess the functional association of each protein pair. GO and KEGG databases provide specific pathways, functions and cellular components for proteins in our PPI data: we classified the 7,362 proteins into 237 KEGG pathways and 1956 qualified GO terms (including biological process, molecular function and cellular component). These databases are good references for evaluating functional association because of its reasonable coverage of the genome and its large number of categories, which makes it improbable to have random matching of pathways.
+###end p 58
+###begin title 59
+Annotation overlap rate
+###end title 59
+###begin p 60
+###xml 521 525 521 525 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006410-Ashburner1">[33]</xref>
+With GO annotation (R package: GO, 08-Aug-2006), we defined the GO overlap rate as follows: , where  is the number of protein pairs of which both proteins share at least one qualified GO term;  is the number of protein pairs of which both proteins are annotated with qualified GO terms. Here "qualified GO terms" means GO terms at the highest level without direct or indirect GO "offspring" terms in each ontology (the level is defined as the number of nestings from the root node (level 1) in the Gene Ontology DAG file [33]).
+###end p 60
+###begin p 61
+We defined the KEGG overlap rate in the same way as above (R package: KEGG, Release 41.1). We used the GO and KEGG overlap rates to assess the functional association of protein pairs: a higher overlap rate corresponds to a closer functional relationship.
+###end p 61
+###begin title 62
+Definition of FDR for the declared significant functional associations
+###end title 62
+###begin p 63
+Suppose the GO and KEGG pathways are complete: if both proteins in each pair have KEGG pathway identifiers and qualified GO terms, we call them declared positive protein pairs. If they share at least one identifier (either GO or KEGG identifier), we consider this declared association true positive; otherwise we consider it false positive. Therefore, the FDR can be written as follows:
+###end p 63
+###begin p 64
+This false discovery rate is used to assess the performance of our algorithm as we expect an improved annotation scheme will lower the proportion of wrong predictions among declared significant functional associations.
+###end p 64
+###begin title 65
+Pathway analysis tool
+###end title 65
+###begin p 66
+###xml 152 153 150 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 83 90 <span type="species:ncbi:28980">Redwood</span>
+We used Ingenuity(R) Pathway Analysis (IPA) 5.0 software (Ingenuity Systems, Inc., Redwood City, CA) to identify existing pathway members and calculate P values for signaling pathways identified in our cluster.
+###end p 66
+###begin title 67
+Supporting Information
+###end title 67
+###begin p 68
+(0.12 MB DOC)
+###end p 68
+###begin p 69
+Click here for additional data file.
+###end p 69
+###begin p 70
+###xml 38 39 38 39 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 45 46 45 46 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 73 78 <span type="species:ncbi:9606">human</span>
+Density plot of the distributions of P1 and P2 (two dimensions) from the human protein-protein interaction (PPI) network (a) and the randomized but truncated power-law preserving PPI network (b). The vertical and horizontal lines stand for the thresholds from Algorithms I and II, respectively. In a random PPI network (with truncated power-law), the expectation of significant protein associations is 86 (lower left in b) compared with 4,233 significant associations in the real PPI network (lower left in a).
+###end p 70
+###begin p 71
+(0.15 MB TIF)
+###end p 71
+###begin p 72
+Click here for additional data file.
+###end p 72
+###begin p 73
+###xml 32 37 <span type="species:ncbi:9606">human</span>
+A cluster that consists of 1729 human proteins. Indices above protein names are their coordinates in this cluster.
+###end p 73
+###begin p 74
+(0.08 MB PDF)
+###end p 74
+###begin p 75
+Click here for additional data file.
+###end p 75
+###begin p 76
+###xml 97 98 97 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 100 101 100 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 249 250 249 250 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 317 318 317 318 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 375 376 375 376 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 439 440 439 440 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+Estimation of prediction precise rates and the number of predictions we can make given different n (n is the minimal frequency of annotation occurrence required for functional prediction). (a) Estimated precise rate of predicted KEGG pathways given n. (b) The number of predictions for KEGG pathway we can make given n. (c) Estimated precise rate of predicted GO terms given n. (d) The number of predictions for GO terms we can make given n.
+###end p 76
+###begin p 77
+(0.03 MB TIF)
+###end p 77
+###begin p 78
+Click here for additional data file.
+###end p 78
+###begin p 79
+###xml 161 162 161 162 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 82 87 <span type="species:ncbi:9606">human</span>
+The 4233 significant protein pairs derived by our method. There are totally 1,729 human proteins and 25 nonhuman proteins. Protein pairs are ranked in terms of P1.
+###end p 79
+###begin p 80
+(5.43 MB DOC)
+###end p 80
+###begin p 81
+Click here for additional data file.
+###end p 81
+###begin p 82
+Predictions of 466 KEGG pathways for 274 proteins and 123 GO annotations for 114 proteins. The 2nd column is the predicted KEGG and GO IDs for proteins in the 1st column, with 3rd column as corresponding KEGG pathway names and GO terms. Ratio is the number of significant partners with the assigned annotation(s) divided by the total number of significant partners.
+###end p 82
+###begin p 83
+(0.40 MB DOC)
+###end p 83
+###begin p 84
+Click here for additional data file.
+###end p 84
+###begin p 85
+We thank Li Zhang, Kevin Coombes, Donald Berry, Jeffrey Molldrem, and Yuan Ji for thoughtful discussions.
+###end p 85
+###begin title 86
+References
+###end title 86
+###begin article-title 87
+Estimating and improving protein interaction error rates.
+###end article-title 87
+###begin article-title 88
+The two-hybrid system: a method to identify and clone genes for proteins that interact with a protein of interest.
+###end article-title 88
+###begin article-title 89
+###xml 36 41 <span type="species:ncbi:9606">human</span>
+Towards a proteome-scale map of the human protein-protein interaction network.
+###end article-title 89
+###begin article-title 90
+###xml 2 7 <span type="species:ncbi:9606">human</span>
+A human protein-protein interaction network: a resource for annotating the proteome.
+###end article-title 90
+###begin article-title 91
+###xml 29 52 29 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila melanogaster</italic>
+###xml 29 52 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+A protein interaction map of Drosophila melanogaster.
+###end article-title 91
+###begin article-title 92
+###xml 49 59 49 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C. elegans</italic>
+###xml 49 59 <span type="species:ncbi:238774|species:ncbi:386067|species:ncbi:147878|species:ncbi:193182|species:ncbi:313250|species:ncbi:323266|species:ncbi:315362|species:ncbi:148887|species:ncbi:124036|species:ncbi:48798|species:ncbi:529401|species:ncbi:314391|species:ncbi:646318|species:ncbi:254962|species:ncbi:323047|species:ncbi:287681|species:ncbi:269614|species:ncbi:103475|species:ncbi:114942|species:ncbi:212608|species:ncbi:457136|species:ncbi:227469|species:ncbi:449387|species:ncbi:551876|species:ncbi:248142|species:ncbi:252961|species:ncbi:466267|species:ncbi:119832|species:ncbi:228196|species:ncbi:316080|species:ncbi:217897|species:ncbi:109099|species:ncbi:328850|species:ncbi:266263|species:ncbi:348465|species:ncbi:181251|species:ncbi:6239|species:ncbi:320029|species:ncbi:293163|species:ncbi:4853|species:ncbi:160529|species:ncbi:292745|species:ncbi:368875|species:ncbi:323318|species:ncbi:209968|species:ncbi:405608|species:ncbi:480533">C. elegans</span>
+A map of the interactome network of the metazoan C. elegans.
+###end article-title 92
+###begin article-title 93
+###xml 39 58 39 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Helicobacter pylori</italic>
+###xml 39 58 <span type="species:ncbi:210">Helicobacter pylori</span>
+The protein-protein interaction map of Helicobacter pylori.
+###end article-title 93
+###begin article-title 94
+###xml 56 61 <span type="species:ncbi:4932">yeast</span>
+###xml 162 167 <span type="species:ncbi:4932">yeast</span>
+Toward a protein-protein interaction map of the budding yeast: A comprehensive system to examine two-hybrid interactions in all possible combinations between the yeast proteins.
+###end article-title 94
+###begin article-title 95
+###xml 14 19 <span type="species:ncbi:9606">human</span>
+A first-draft human protein-interaction map.
+###end article-title 95
+###begin article-title 96
+Protein interaction maps for complete genomes based on gene fusion events.
+###end article-title 96
+###begin article-title 97
+###xml 31 36 <span type="species:ncbi:9606">human</span>
+###xml 112 117 <span type="species:ncbi:9606">human</span>
+Consolidating the set of known human protein-protein interactions in preparation for large-scale mapping of the human interactome.
+###end article-title 97
+###begin article-title 98
+###xml 4 9 <span type="species:ncbi:4932">yeast</span>
+The yeast cell-cycle network is robustly designed.
+###end article-title 98
+###begin article-title 99
+Global protein function prediction from protein-protein interaction networks.
+###end article-title 99
+###begin article-title 100
+Whole-genome annotation by using evidence integration in functional-linkage networks.
+###end article-title 100
+###begin article-title 101
+Whole proteome prediction of protein function via graph-theoretic analysis of interaction maps.
+###end article-title 101
+###begin article-title 102
+Prediction of protein function using protein-protein interaction data.
+###end article-title 102
+###begin article-title 103
+###xml 10 15 <span type="species:ncbi:4932">yeast</span>
+Analyzing yeast protein-protein interaction data obtained from different sources.
+###end article-title 103
+###begin article-title 104
+Development and implementation of an algorithm for detection of protein complexes in large interaction networks.
+###end article-title 104
+###begin article-title 105
+###xml 63 68 <span type="species:ncbi:4932">yeast</span>
+Identification of protein complexes by comparative analysis of yeast and bacterial protein interaction data.
+###end article-title 105
+###begin article-title 106
+Protein complexes and functional modules in molecular networks.
+###end article-title 106
+###begin article-title 107
+Functional topology in a network of protein interactions.
+###end article-title 107
+###begin article-title 108
+Protein complex prediction via cost-based clustering.
+###end article-title 108
+###begin article-title 109
+Assessing experimentally derived interactions in a small world.
+###end article-title 109
+###begin article-title 110
+Annotating proteins with generalized functional linkages.
+###end article-title 110
+###begin article-title 111
+###xml 28 39 <span type="species:ncbi:3702">Arabidopsis</span>
+A predicted interactome for Arabidopsis.
+###end article-title 111
+###begin article-title 112
+###xml 31 41 <span type="species:ncbi:238774|species:ncbi:386067|species:ncbi:147878|species:ncbi:193182|species:ncbi:313250|species:ncbi:323266|species:ncbi:315362|species:ncbi:148887|species:ncbi:124036|species:ncbi:48798|species:ncbi:529401|species:ncbi:314391|species:ncbi:646318|species:ncbi:254962|species:ncbi:323047|species:ncbi:287681|species:ncbi:269614|species:ncbi:103475|species:ncbi:114942|species:ncbi:212608|species:ncbi:457136|species:ncbi:227469|species:ncbi:449387|species:ncbi:551876|species:ncbi:248142|species:ncbi:252961|species:ncbi:466267|species:ncbi:119832|species:ncbi:228196|species:ncbi:316080|species:ncbi:217897|species:ncbi:109099|species:ncbi:328850|species:ncbi:266263|species:ncbi:348465|species:ncbi:181251|species:ncbi:6239|species:ncbi:320029|species:ncbi:293163|species:ncbi:4853|species:ncbi:160529|species:ncbi:292745|species:ncbi:368875|species:ncbi:323318|species:ncbi:209968|species:ncbi:405608|species:ncbi:480533">C. elegans</span>
+Protein interaction mapping in C. elegans using proteins involved in vulval development.
+###end article-title 112
+###begin article-title 113
+###xml 16 21 <span type="species:ncbi:9606">human</span>
+###xml 62 67 <span type="species:ncbi:4932">yeast</span>
+Analysis of the human protein interactome and comparison with yeast, worm and fly interaction datasets.
+###end article-title 113
+###begin article-title 114
+Predicting protein functions from redundancies in large-scale protein interaction networks.
+###end article-title 114
+###begin article-title 115
+BioGRID: a general repository for interaction datasets.
+###end article-title 115
+###begin article-title 116
+Lethality and centrality in protein networks.
+###end article-title 116
+###begin article-title 117
+Community structure in social and biological networks.
+###end article-title 117
+###begin article-title 118
+Effect of sampling on topology predictions of protein-protein interaction networks.
+###end article-title 118
+###begin article-title 119
+Gene ontology: tool for the unification of biology.
+###end article-title 119
+###begin article-title 120
+KEGG: Kyoto Encyclopedia of Genes and Genomes.
+###end article-title 120
+###begin article-title 121
+Controlling the false discovery rate: a practical and powerful approach to multiple testing.
+###end article-title 121
+###begin article-title 122
+###xml 0 6 <span type="species:ncbi:56262">Osprey</span>
+Osprey: a network visualization system.
+###end article-title 122
+###begin article-title 123
+Competition between Ski and CREB-binding protein for binding to Smad proteins in transforming growth factor-beta signaling.
+###end article-title 123
+###begin article-title 124
+Interaction of the Ski oncoprotein with Smad3 regulates TGF-beta signaling.
+###end article-title 124
+###begin article-title 125
+Cloning and expression of an immunoglobulin superfamily gene (IGSF1) in Xq25.
+###end article-title 125
+###begin article-title 126
+Identification of a secreted BMP antagonist, ectodin, integrating BMP, FGF, and SHH signals from the tooth enamel knot.
+###end article-title 126
+###begin article-title 127
+Noggin-mediated antagonism of BMP signaling is required for growth and patterning of the neural tube and somite.
+###end article-title 127
+###begin article-title 128
+The adaptor molecule disabled-2 links the transforming growth factor beta receptors to the Smad pathway.
+###end article-title 128
+###begin article-title 129
+Identification of STRAP, a novel WD Domain protein in transforming growth factor-beta signaling.
+###end article-title 129
+###begin article-title 130
+STRAP and Smad7 synergize in the inhibition of transforming growth factor beta signaling.
+###end article-title 130
+###begin article-title 131
+Vasorin, a transforming growth factor beta-binding protein expressed in vascular smooth muscle cells, modulates the arterial response to injury in vivo.
+###end article-title 131
+###begin article-title 132
+Connective-tissue growth factor (CTGF) modulates cell signalling by BMP and TGF-beta.
+###end article-title 132
+###begin article-title 133
+Interaction of the small interstitial proteoglycans biglycan, decorin and fibromodulin with transforming growth factor beta.
+###end article-title 133
+###begin article-title 134
+###xml 45 50 <span type="species:ncbi:4932">yeast</span>
+A network of protein-protein interactions in yeast.
+###end article-title 134
+###begin article-title 135
+Network-based prediction of protein function.
+###end article-title 135
+###begin p 136
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing Interests: </bold>
+Competing Interests: The authors have declared that no competing interests exist.
+###end p 136
+###begin p 137
+###xml 0 9 0 9 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding: </bold>
+Funding: The study was partially supported by a grant from NIH/NCI (K25 CA123344). The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.
+###end p 137
+

@@ -1,0 +1,306 @@
+###begin article-title 0
+Proteome Analyst: custom predictions with explanations in a web-based tool for high-throughput proteome annotations
+###end article-title 0
+###begin p 1
+###xml 94 115 94 115 <email xmlns:xlink="http://www.w3.org/1999/xlink">paullu@cs.ualberta.ca</email>
+To whom correspondence should be addressed. Tel: +1 780 492 7760; Fax: +1 780 492 1071; Email paullu@cs.ualberta.ca
+###end p 1
+###begin p 2
+###xml 62 82 62 82 <email xmlns:xlink="http://www.w3.org/1999/xlink">duane@cs.uslberta.ca</email>
+Correspondence may also be addressed to Duane Szafron. Email: duane@cs.uslberta.ca
+###end p 2
+###begin p 3
+The authors wish it to be known that, in their opinion, the first two authors should be regarded as joint First Authors
+###end p 3
+###begin p 4
+The online version of this article has been published under an open access model. Users are entitled to use, reproduce, disseminate, or display the open access version of this article provided that: the original authorship is properly and fully attributed; the Journal and Oxford University Press are attributed as the original place of publication with the correct citation details given; if an article is subsequently reproduced or disseminated not in its entirety but only in part or as a derivative work this must be clearly indicated.
+###end p 4
+###begin p 5
+(c) 2004, the authors
+###end p 5
+###begin p 6
+Proteome Analyst (PA) () is a publicly available, high-throughput, web-based system for predicting various properties of each protein in an entire proteome. Using machine-learned classifiers, PA can predict, for example, the GeneQuiz general function and Gene Ontology (GO) molecular function of a protein. In addition, PA is currently the most accurate and most comprehensive system for predicting subcellular localization, the location within a cell where a protein performs its main function. Two other capabilities of PA are notable. First, PA can create a custom classifier to predict a new property, without requiring any programming, based on labeled training data (i.e. a set of examples, each with the correct classification label) provided by a user. PA has been used to create custom classifiers for potassium-ion channel proteins and other general function ontologies. Second, PA provides a sophisticated explanation feature that shows why one prediction is chosen over another. The PA system produces a Naive Bayes classifier, which is amenable to a graphical and interactive approach to explanations for its predictions; transparent predictions increase the user's confidence in, and understanding of, PA.
+###end p 6
+###begin title 7
+INTRODUCTION
+###end title 7
+###begin p 8
+###xml 479 480 479 480 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c1">1</xref>
+###xml 494 495 494 495 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c2">2</xref>
+###xml 507 508 507 508 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c3">3</xref>
+###xml 519 520 519 520 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c4">4</xref>
+###xml 534 535 534 535 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c5">5</xref>
+###xml 546 547 546 547 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c6">6</xref>
+###xml 559 560 559 560 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c7">7</xref>
+There are now more than 1200 complete or partially sequenced genomes deposited in public databases () and this number is growing rapidly. Given the size and complexity of these data sets, most researchers are compelled to use automated annotation systems to identify or classify individual genes/proteins in their genomic data. A number of systems have been developed over the past few years that permit automated genome-wide or proteome-wide annotation. These include GeneQuiz (1), GeneAtlas (2), Ensembl (3), PEDANT (4), Genotator (5), MAGPIE (6) and GAIA (7).
+###end p 8
+###begin p 9
+###xml 34 35 34 35 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c8">8</xref>
+###xml 36 38 36 38 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c10">10</xref>
+The Proteome Analyst (PA) system (8-10) () focuses on the task of predicting (classifying) various aspects of a protein. Our results show that classification can be used for many annotations, including general function, subcellular localization, specific function and many specialized predictors, such as the potassium-ion channel predictor described later in this paper.
+###end p 9
+###begin p 10
+###xml 279 280 279 280 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c9">9</xref>
+Although there are a variety of tools for protein annotation, PA has unique capabilities. In addition to being the most accurate and most comprehensive (i.e. broadest range of organisms and organelles, highest number of proteins annotated) predictor of subcellular localization (9),
+###end p 10
+###begin p 11
+PA provides a single, integrated, high-throughput and web-based interface to a number of different tools for proteome annotation;
+###end p 11
+###begin p 12
+PA allows the user to create custom predictors in a simple train-by-example way, for any user-specified ontology of labels; and
+###end p 12
+###begin p 13
+PA provides clear and transparent explanations for each of its predictions.
+###end p 13
+###begin p 14
+###xml 255 256 255 256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f8">8</xref>
+In the context of PA, transparency is the ability to provide formally sound and intuitively simple explanations for predictions. PA bases its predictions on well-understood concepts from probability theory. Its explanations use stacked-bar graphs (Figure 8) and hyperlinks to clearly display the evidence for each prediction.
+###end p 14
+###begin title 15
+USING PROTEOME ANALYST
+###end title 15
+###begin p 16
+Proteome Analyst is web based. The user may choose to either analyze (annotate) a proteome using built-in (previously trained) classifiers or train a new custom classifier, which can afterwards be used to analyze specific properties of proteins. We explain both options.
+###end p 16
+###begin title 17
+Analysis of a proteome
+###end title 17
+###begin p 18
+###xml 356 372 356 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 381 391 381 391 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+###xml 356 372 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 374 379 <span type="species:ncbi:4932">Yeast</span>
+###xml 381 391 <span type="species:ncbi:7227">Drosophila</span>
+To analyze a proteome, the user first uploads a FASTA-format file containing the sequences to be analyzed. Two important tools are a classifier-based predictor and the PACardCreator. Currently, a user may select from several built-in general function classifiers that use the GeneQuiz (GQ) ontology and were trained on sequences from individual organisms: Escherichia coli, Yeast, Drosophila or a multiorganism-trained classifier trained with sequences from all three organisms. A Gene Ontology (GO)-based classifier for molecular function is also available in the latest version of PA. Alternatively, a user may select any custom classification-based predictor that has been trained as described below.
+###end p 18
+###begin p 19
+###xml 184 185 184 185 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f1">1</xref>
+###xml 212 218 212 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 212 218 <span type="species:ncbi:562">E.coli</span>
+The PACardCreator generates a PACard for each sequence-a summary of all the predicted properties of each protein specified in the input. The top of a typical PACard is shown in Figure 1. A PACard is based on the E.coli cards from the CyberCell Database (CCDB) ().
+###end p 19
+###begin p 20
+Currently, PA can fill in over 30 different fields: Name, GeneQuiz general function, subcellular location, GeneOntology molecular function, Specific Function, Pfam Domain/Function, EC Number, Specific Reaction, General Reaction, PROSITE, BLAST, Important Sites, Inhibitor, Interacting Partners, Sequence, Secondary Structure, Metabolic Importance, Copy Number, RNA Copy No., Similarity, Number of Amino Acids, Molecular Weight, Transmembrane, Cys/Met Content, Structure Class, Quaternary Structure, Cofactors, Metals Ions, Kcat Value (1/min), Specific Activity (mumol) and Km Value (mM).
+###end p 20
+###begin p 21
+###xml 7 8 7 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f2">2</xref>
+###xml 441 442 441 442 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f3">3</xref>
+###xml 499 500 499 500 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f1">1</xref>
+Figure 2 shows an example analysis, sorted by general function (GeneQuiz ontological class). The probability of the predicted general function class is shown for each sequence. The output also shows the predicted subcellular localization (and the probability of this prediction), the top homologs found during the BLAST search, a link to the full BLAST output in standard format, links to the full general function classifier output (Figure 3), the subcellular classifier output, the PACard (Figure 1) and explanations for each classifier prediction. The 'explain' facility is discussed later in the paper and is one of the most novel characteristics of PA. We believe explanations are essential for widespread acceptance of computational prediction techniques in bioinformatics.
+###end p 21
+###begin p 22
+###xml 7 8 7 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f3">3</xref>
+###xml 122 123 122 123 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f2">2</xref>
+Figure 3 shows that the predicted ontological class (Energy metabolism) of the ACEA_ECOLI protein (Protein #1 from Figure 2) has a probability of 72.1%. It also shows that the next most probable class is Other categories, with a probability of 27.8%.
+###end p 22
+###begin title 23
+Prediction techniques in PA
+###end title 23
+###begin p 24
+PA makes extensive use of machine-learning (ML) classifiers to predict annotations. PA can help the user build novel classifiers, for new annotations, by applying a standard ML algorithm to a set of labeled training items-a list of known proteins with their respective class labels (i.e. annotations). The classifier is later used to provide labels (predictions or annotations) to previously unlabeled proteins. In PA, each training item consists of a primary protein sequence and the ontological class it has been assigned by an expert.
+###end p 24
+###begin p 25
+In general, an ML classifier algorithm requires features to be associated with each training item. Note that PA is given only the primary sequence of the protein; the features are automatically computed by the system. Once built, a classifier takes a protein sequence with unknown class and uses the values of these features (i.e. the presence or absence of the associated word or phrase) to predict its class.
+###end p 25
+###begin p 26
+###xml 108 109 108 109 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f4">4</xref>
+###xml 251 252 251 252 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 366 368 366 368 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c11">11</xref>
+###xml 539 540 539 540 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+Specifically, PA uses a preprocessing step that maps each sequence to a set of features, as shown in Figure 4. First, the sequence is compared to the SWISS-PROT database using BLAST. Second, the SWISS-PROT entries of (up to) three top homologs (whose E-values are <0.001) are parsed to extract a feature set from the SWISS-PROT KEYWORDS field, any Interpro numbers (11) contained in the DBSOURCE field, and the SUBCELLULAR LOCATION field. The union of the features for the selected homologs forms the feature set. If no homologs match the E-value cutoff or if all features are removed by feature selection (described later) then the sequence has no features, so no prediction is made.
+###end p 26
+###begin p 27
+The feature set is then used as input for both the training and classification phases of PA (discussed below). In essence, PA learns a mapping from feature sets to classes (also known as 'annotations'). The same extraction algorithm is used to determine the prediction or annotation for each protein sequence, whether the classifier is a built-in one or a custom user-trained one.
+###end p 27
+###begin title 28
+Training a custom classifier
+###end title 28
+###begin p 29
+Since PA provides several built-in classifiers, many users will not need to build their own custom classifier. However, for user-specified ontologies or other specialized purposes, the ability to build and explain a custom classifier, without requiring any programming, is a key advantage of PA.
+###end p 29
+###begin p 30
+###xml 19 20 19 20 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f5">5</xref>
+As shown in Figure 5, classification-based prediction is a two-step process: training/learning and prediction. In the training/learning step, a classifier is built using an ML classification algorithm by analyzing a set of training sequences, each tagged by a known class label. In the prediction step, the generated classifier is used to predict the class label of an unknown query sequence.
+###end p 30
+###begin p 31
+###xml 480 482 480 482 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c10">10</xref>
+Of course, when building any classifier, it is necessary for the training data to satisfy two criteria. First, they must be broad enough to contain representative examples of each labeled class. Second, the training data must be relatively free from errors. Training data with narrow coverage or labeling errors cannot produce an accurate classifier using any ML technology. However, PA's explanation system can actually be used to find errors in the training data, if necessary (10). If the training data contain too many errors, PA will indicate the poor quality of the trained classifier by reporting low accuracy in the automatic validation that is done after training a classifier.
+###end p 31
+###begin p 32
+###xml 480 481 480 481 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f6">6</xref>
+The production version of PA includes a general function (GeneQuiz ontology) classifier and a series of subcellular localization classifiers (based on organism type). However, a user can also train a Naive Bayes (NB) custom classifier. The first step in training a custom classifier is to provide a name for the classifier and a corresponding training file in FASTA format. Each sequence in the file must have a FASTA tag that starts with a known class label. For example, Figure 6 shows part of a training file for a custom K-ion channel classifier, where the two training sequences have known class labels KV1 and KV2, respectively.
+###end p 32
+###begin p 33
+###xml 108 110 108 110 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c12">12</xref>
+###xml 129 130 129 130 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 139 140 139 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 233 235 233 235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c13">13</xref>
+After uploading the training file, the user has a choice of two configuration parameters: feature wrapping (12) and the value of k for the k-fold cross-validation. The wrapping (feature selection) process is a standard ML technique (13). It removes the less discriminating features from the trained classifier and has the overall effect of improving accuracy by reducing overfitting. The default configuration uses wrapping.
+###end p 33
+###begin p 34
+###xml 3 4 3 4 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 28 30 28 30 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c12">12</xref>
+###xml 92 93 92 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 103 104 103 104 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 116 117 108 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 116 117 108 109 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 236 237 228 229 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 278 279 270 271 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 291 292 275 276 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 291 292 275 276 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 302 303 286 287 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 302 303 286 287 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 370 371 354 355 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 370 371 354 355 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 426 427 410 411 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 442 443 426 427 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 442 443 426 427 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 475 476 459 460 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 475 476 459 460 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 814 815 798 799 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+In k-fold cross-validation (12), the labeled training instances are 'randomly' divided into k groups (G1,em leader,Gk), while keeping the number of training instances with each label approximately the same in each training group. Then, k different classifiers are constructed (C1,em leader,Ck), where Ci uses all of the training instances from all of the groups except Gi. Next, a confusion matrix is computed for each of the k classifiers, Ci, using the sequences in group Gi (which were not used in its training) as test data. The confusion matrix records the number and type of classification mistakes made by the newly trained classifier (false positives, false negatives, and so on). The final confusion matrix is then computed by summing the entries in all of the confusion matrices. The PA default value of k is 5 (common in ML).
+###end p 34
+###begin p 35
+###xml 94 95 94 95 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f7">7</xref>
+Once the classifier has been trained, the user may view a classifier information page (Figure 7) that contains three lists that summarize the training. The first list shows the training sequences that PA excluded (none in this example) because the BLAST search did not produce any usable features. The second list contains training sequences that are most probably labeled incorrectly, sorted from the highest to the lowest probability. The third list contains the rest of the training sequences, sorted from the highest to the lowest probability of being labeled correctly. The user can discover why PA inferred that a training sequence was labeled correctly or incorrectly by selecting an Explain hyperlink or by looking at the raw BLAST results.
+###end p 35
+###begin title 36
+CUSTOM CLASSIFIER EXAMPLE
+###end title 36
+###begin p 37
+###xml 226 228 226 228 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c14">14</xref>
+Voltage-gated potassium channels (VKCs) are intrinsic membrane proteins that respond to changes in the transmembrane electric field by changing shape and selectively allowing potassium ions to pass through the lipid bi-layer (14). We obtained 78 protein sequences that were divided into 4 classes (KV1, 23 sequences; KV2, 19 sequences; KV3, 17 sequences; and KV4, 19 sequences) from W. Gallin's laboratory. Many of the VKC sequences have close homologs that lie in classes other than their own class.
+###end p 37
+###begin p 38
+###xml 280 282 280 282 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c12">12</xref>
+In a process that mirrors how users of PA might create a custom classifier, we iteratively trained a classifier, used PA's Explain (and other capabilities) to find the reasons for any inaccurate predictions on the training set itself [i.e. re-substitution or training set errors (12)], fixed the source of the inaccuracies and then trained a new classifier. After only two rounds, we were able to create a final custom classifier that is 100% accurate, over 5-fold cross-validation, with respect to the training data.
+###end p 38
+###begin p 39
+###xml 279 280 279 280 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f7">7</xref>
+Initially, PA produced an NB classifier that made only three errors during 5-fold cross-validation. However, one error was a labeling error in the training set. After consulting with an expert and fixing the labeling error, we re-trained another classifier. The output in Figure 7 shows the two remaining errors. We eliminated these two errors by modifying the feature extraction algorithm's parameters. Originally, we performed three PSI-BLAST iterations before picking the top three homologs to use for feature extraction. We found that when there are many homologs in different ontological classes, better accuracy can be obtained by using only a single PSI-BLAST iteration. Since one iteration of PSI-BLAST is equivalent to BlastP, PA uses BlastP.
+###end p 39
+###begin p 40
+From this case study, we now understand that PSI-BLAST with multiple iterations is likely to perform poorly because multiple iterations tend to promote sequences from the most prevalent organisms in the SWISS-PROT database, at the expense of sequences from minority organisms, even though the minority sequences may have better similarity. The lesson is that when you train a classifier for predicting properties that differentiate based on small differences, a single iteration is better. After making this change, the accuracy increased to 100% on the K-ion training set. PA's explanation mechanism was key in improving the custom classifier.
+###end p 40
+###begin title 41
+ACCURACY AND COVERAGE OF PA
+###end title 41
+###begin p 42
+Identifying the destination or localization of proteins is key to understanding their function and facilitating their purification. A number of existing computational prediction methods are based on sequence analysis. However, these methods are limited in scope, accuracy and most particularly breadth of coverage. Rather than using sequence information alone, we have explored the use of database text annotations from homologs and machine learning to substantially improve the prediction of subcellular location.
+###end p 42
+###begin p 43
+###xml 260 261 260 261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkh485tb1">1</xref>
+###xml 369 370 369 370 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c9">9</xref>
+We constructed five custom classifiers for predicting subcellular localization of proteins from animals, plants, fungi, Gram-negative bacteria and Gram-positive bacteria which are 81% accurate for fungi and 92-94% accurate for the other four categories (Table 1). These are the most accurate subcellular predictors across the widest set of organisms published to date (9). In a series of experiments, we showed that PA makes highly accurate subcellular localization predictions, for many different organisms (e.g. the five custom classifiers listed above), for a variety of different data sets (e.g. SWISS-PROT, LOCkey, PSORT-B) and using a variety of ML techniques. We tested Naive Bayes, artificial neural networks (ANNs), support vector machines (SVMs), and nearest-neighbor classifiers.
+###end p 43
+###begin p 44
+###xml 242 243 242 243 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c9">9</xref>
+PA uses Naive Bayes classifiers, since the accuracy is always within 3-5% of the best technique for all of the classifiers we have trained (the best technique varies for different training sets, so no particular ML technique is always best) (9). Since there is very little quantitative difference in accuracy between NB and the best technique for any training set, we select NB for qualitative reasons. Specifically, as described in the next section, it is possible to transparently explain NB predictions to non-computational scientists. Since the production version of PA uses only NB, it is the only ML technique discussed in this paper.
+###end p 44
+###begin p 45
+The subcellular predictors began their lives as custom predictors in PA. However, after their success, we constructed a simple standalone web tool for predicting just subcellular localization (PA-SUB), available at (). In addition, these predictors have also become built-in classifiers in the production version of PA ().
+###end p 45
+###begin title 46
+TRANSPARENCY AND EXPLAINABILITY
+###end title 46
+###begin p 47
+While it is necessary for a protein prediction tool to be accurate, it is also important that it can clearly explain its predictions to the user. This is important for two main reasons. First, it helps biologists to develop confidence in the tool. Second, it can help locate and correct errors that occur in the training set, the underlying database (which might give rise to incorrect predictions) or the system parameters, as with the K-ion custom classifier in PA.
+###end p 47
+###begin title 48
+Explaining a prediction/classification
+###end title 48
+###begin p 49
+###xml 114 116 114 116 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c10">10</xref>
+###xml 458 459 458 459 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f2">2</xref>
+###xml 490 491 490 491 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f8">8</xref>
+PA provides an explanation mechanism to help users understand why a classifier makes a particular classification (10). It allows a user to examine the query protein itself, as well as the proteins on which the classifier was trained. The user can then examine which particular features added the most evidence to a classification. We will use the protein ACEA_ECOLI as an example. If the user clicks the Explain hyperlink of the ACEA_ECOLI protein in Figure 2, then an Explain page (Figure 8) is displayed.
+###end p 49
+###begin p 50
+###xml 388 389 388 389 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f8">8</xref>
+Each stacked bar in the graph represents a class in the ontology, and each of its five colored sub-bars corresponds to the presence of one of five selected features in the training sequences. In fact, a sub-bar may represent the absence of a feature. However, for simplicity, in this subsection, we will assume that sub-bars mark the presence of a feature (and this is the case in Figure 8, where the features are tricarboxylic acid cycle, glyoxylate bypass, ipr000918, lyase, and phophorylation).
+###end p 50
+###begin p 51
+###xml 386 389 350 353 <sup xmlns:xlink="http://www.w3.org/1999/xlink">1.4</sup>
+###xml 421 422 373 374 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f3">3</xref>
+Each composed bar on a single line represents the logarithm (base 2) of the combined probability that the protein is in the class represented by the line. For example the lengths of the Energy metabolism and Other categories bars are approximately43 and 41.6 units respectively. The difference is approximately1.4 units, which means that the ratio of the probabilities is approximately21.4 approximately 2.6. From Figure 3, the ratio is actually 72.1/27.8 approximately 2.6. The logarithm is used so that the contributions to the probabilities represented by each feature can be added. Additive quantities can be visualized using stacked bar graphs. No simple visual mechanism is available for multiplicative values.
+###end p 51
+###begin p 52
+The (red) tricarboxylic acid cycle subbars occur in the class lines of Other categories, Purines, Energy metabolism and Amino acid biosynthesis and in no other class lines. This indicates that this feature occurred only in the training data of these four classes. The relative lengths of the sub-bars indicate the (logs of the) relative number of times the feature occurred in the different training sets. Similarly, the violet sub-bar represents the occurrence of the feature glyoxylate bypass, which appeared only in training data for the classes Other categories, Purines, Energy metabolism and Regulatory functions.
+###end p 52
+###begin p 53
+###xml 648 657 648 657 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(63&#8722;61.6)</sup>
+###xml 661 664 661 664 <sup xmlns:xlink="http://www.w3.org/1999/xlink">1.4</sup>
+###xml 824 833 824 833 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(43&#8722;41.6)</sup>
+###xml 837 840 837 840 <sup xmlns:xlink="http://www.w3.org/1999/xlink">1.4</sup>
+The (orange) reduced residual bar represents the combined contributions of all features that are not explicitly shown in the graph. The length of each (orange) reduced residual bar has been reduced by subtracting the length of the shortest one from all the (orange) reduced residual bars. Since bar lengths represent logarithms of probabilities, any fixed amount can always be subtracted from all bars in the graph without affecting the difference between the lengths of any two bars. For example, if the original lengths of two bars were 63 and 61.6 respectively, this would mean that the ratio of probabilities for the two predicted classes was 2(63-61.6) = 21.4 = 2.6. If we subtract 20 from both bars the new lengths are 63 - 20 = 43 and 61.6 - 20 = 41.6. The ratio of probabilities of the two predicted labels becomes 2(43-41.6) = 21.4 approximately 2.6 (unchanged). Since Transport and binding proteins had the shortest (orange) bar to begin with, its (orange) bar is eliminated (has zero length) after subtracting its length from all orange bars including itself. This subtraction is equivalent to applying a zoom to the graph that focuses on the five most important features.
+###end p 53
+###begin p 54
+The (gray) reduced prior bars account for the different sizes of the training sets. A similar subtraction of the shortest (gray) reduced prior bar has been performed (i.e. the bar for the class Other categories). The explanation facility also allows the user to change which features are explicitly displayed in the graph.
+###end p 54
+###begin title 55
+The importance of transparency
+###end title 55
+###begin p 56
+The PA Explain mechanism is the most important example of prediction transparency in PA. First, the Explain mechanism can be used to understand how a particular protein prediction was made. Second, it can be used to understand the internal structure of a predictor-how its training data affect its predictions. Prediction transparency is very important for two reasons. First, it is hard to accept predictions unless you understand how they were made. After using the Explain mechanism, you gain confidence that the predictor is working properly. Second, even the best predictors will make wrong predictions. They should not be trusted blindly.
+###end p 56
+###begin p 57
+There are three important situations in which classification-based predictors fail. First, classifiers are only as good as their training data, and the current databases that are used to obtain training data are not perfect. This is why PA clearly labels 'suspicious' training data as probably mislabeled, after it constructs any new classifier. This is another example of transparency in PA. Of course, the user decides on the training data, and whether to include the suspicious sequences in a classifier; PA's role is only to clearly identify the suspicious data. Given PA's feedback on the training data, a more conservative user can retrain a new classifier, without these suspicious sequences. We have found many suspicious sequences while training classifiers.
+###end p 57
+###begin p 58
+###xml 182 183 182 183 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh485f3">3</xref>
+Second, predictors can fail if there is not enough training data to uniquely identify a single prediction class. In PA, this is characterized by a full-classifier graph (e.g. Figure 3) where there are multiple bars with significant probabilities.
+###end p 58
+###begin p 59
+###xml 427 428 427 428 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c9">9</xref>
+Third, predictors can fail due to an inferior classifier algorithm which cannot adequately use the training data to differentiate between query sequences. A trend in ML in general, and recently in bioinformatics, has been always to select the algorithm with the best accuracy. If we had followed that advice we would be using an ANN or SVM classifier in PA (since they have accuracies that are a few percentage points higher) (9). But we are not. The ANN and SVM classifiers are not transparent, which, as argued above, is important. In the production version of PA, we have opted for a classifier with slightly lower accuracy so that we can provide transparent predictions. We believe that this is essential in this domain, where even the best predictors make errors due to bad training data or not enough training data, and these errors must be found.
+###end p 59
+###begin title 60
+SUMMARY
+###end title 60
+###begin p 61
+We have presented Proteome Analyst (PA), a web-based tool for the high-throughput prediction of protein features. In addition to several built-in classifiers and tools for protein annotation, PA supports the construction of custom classification-based predictors. PA's custom classifiers can be for any user-specified ontology and, since classifiers are trained by example, no programming knowledge is required. Notably, using PA's custom classifier features, we have trained and then made available (as a built-in predictor) in PA, the (currently) most accurate and most comprehensive subcellular localization predictor. Furthermore, to increase the user's confidence in the system and to help improve the accuracy of the classifiers, every prediction made by PA can be explained in a transparent way. PA is publicly available at .
+###end p 61
+###begin title 62
+Figures and Tables
+###end title 62
+###begin p 63
+ The top part of a sample PACard.
+###end p 63
+###begin p 64
+ Proteins by ontological class (partial screenshot).
+###end p 64
+###begin p 65
+ Full classifier output for ACEA_ECOLI (partial screenshot).
+###end p 65
+###begin p 66
+ The feature extraction algorithm for a protein sequence in PA.
+###end p 66
+###begin p 67
+ The training and prediction phases of classification.
+###end p 67
+###begin p 68
+ The FASTA-based format of a classifier training file.
+###end p 68
+###begin p 69
+ Information for a trained classifier (partial screenshot).
+###end p 69
+###begin p 70
+ Part of the general function prediction (GeneQuiz ontology) Explain page for ACEA_ECOLI.
+###end p 70
+###begin title 71
+Accuracies and informal sequence/taxonomic coverage of current subcellular localization predictors
+###end title 71
+###begin p 72
+###xml 117 118 117 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh485c9">9</xref>
+Gram-negative bacteria and Gram-positive bacteria are denoted GN and GP respectively. This table is reproduced from (9).
+###end p 72
+###begin title 73
+ACKNOWLEDGEMENTS
+###end title 73
+###begin p 74
+This research was partially funded by research or equipment grants from the Protein Engineering Network of Centres of Excellence, the Natural Sciences and Engineering Research Council of Canada, Alberta Ingenuity Centre for Machine Learning, Sun Microsystems, SGI, and the Alberta Science and Research Authority.
+###end p 74
+###begin title 75
+REFERENCES
+###end title 75
+

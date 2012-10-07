@@ -1,0 +1,1035 @@
+###begin article-title 0
+Analysis of a Splice Array Experiment Elucidates Roles of Chromatin Elongation Factor Spt4-5 in Splicing
+###end article-title 0
+###begin p 1
+###xml 392 416 392 416 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 594 605 594 605 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1, spt4,</italic>
+###xml 610 614 610 614 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 1274 1277 1274 1277 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 386 391 <span type="species:ncbi:4932">yeast</span>
+###xml 392 416 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Splicing is an important process for regulation of gene expression in eukaryotes, and it has important functional links to other steps of gene expression. Two examples of these linkages include Ceg1, a component of the mRNA capping enzyme, and the chromatin elongation factors Spt4-5, both of which have recently been shown to play a role in the normal splicing of several genes in the yeast Saccharomyces cerevisiae. Using a genomic approach to characterize the roles of Spt4-5 in splicing, we used splicing-sensitive DNA microarrays to identify specific sets of genes that are mis-spliced in ceg1, spt4, and spt5 mutants. In the context of a complex, nested, experimental design featuring 22 dye-swap array hybridizations, comprising both biological and technical replicates, we applied five appropriate statistical models for assessing differential expression between wild-type and the mutants. To refine selection of differential expression genes, we then used a robust model-synthesizing approach, Differential Expression via Distance Synthesis, to integrate all five models. The resultant list of differentially expressed genes was then further analyzed with regard to select attributes: we found that highly transcribed genes with long introns were most sensitive to spt mutations. QPCR confirmation of differential expression was established for the limited number of genes evaluated. In this paper, we showcase splicing array technology, as well as powerful, yet general, statistical methodology for assessing differential expression, in the context of a real, complex experimental design. Our results suggest that the Spt4-Spt5 complex may help coordinate splicing with transcription under conditions that present kinetic challenges to spliceosome assembly or function.
+###end p 1
+###begin title 2
+Synopsis
+###end title 2
+###begin p 3
+###xml 159 164 <span type="species:ncbi:9606">human</span>
+###xml 190 195 <span type="species:ncbi:9606">human</span>
+###xml 769 774 <span type="species:ncbi:4932">yeast</span>
+Splicing is a key process for the regulation of gene expression in eukaryotes and is credited as being the main reason for the extraordinary complexity of the human proteome relative to the human genome. Accurate splicing is crucial for normal protein function; aberrant transcripts due to splicing mutations are known causes for 15% of genetic diseases. Therefore, elucidation of splicing mechanisms will not only help in understanding the complexity and diversity of higher organisms, but also potentially aid in new therapeutic strategies for treatments of splicing-related genetic disorders. It has been previously shown that splicing has important links to other steps involved with gene expression. In this study, the authors pursue a genome-wide approach, using yeast-based, splicing-sensitive, DNA microarrays in order to further characterize the roles of select splicing factors. They devise novel statistical and computational methods that enable identification of specific sets of genes that are mis-spliced in the chosen splicing factors. Follow-up investigation of known attributes of the genes so elicited indicates that these factors may help coordinate splicing and transcription in situations where additional energy is required to effect splicing.
+###end p 3
+###begin title 4
+Introduction
+###end title 4
+###begin p 5
+###xml 526 527 526 527 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b01">1</xref>
+###xml 779 780 779 780 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b01">1</xref>
+###xml 934 935 934 935 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b01">1</xref>
+###xml 533 539 <span type="species:ncbi:9606">humans</span>
+###xml 740 745 <span type="species:ncbi:9606">human</span>
+Eukaryotic genes are fragmented into exons by intervening sequences (introns). After a gene is transcribed into pre-mRNA, the introns are removed from the transcript and the exons are joined by the spliceosome. This reaction, splicing, can also be used to create multiple transcripts from a single gene. For example, a particular exon may be included in one version of an mRNA, and skipped in another. This process of alternative splicing is subject to regulation in response to tissue, developmental, and environmental cues [1]. In humans, most genes are subject to splicing and more than half are likely subject to alternative splicing, which is credited as the most important source for the extraordinary enrichment in complexity of the human proteome relative to the genome [1]. Accurate splicing is crucial for normal protein function; aberrant transcripts due to splicing mutations are known causes for 15% of genetic diseases [1]. Therefore, elucidation of splicing mechanisms will not only help us understand the operating mechanisms underneath the functional complexity and diversity of higher eukaryotes, but also aid in new therapeutic strategies for treatments in splicing-related genetic disorders.
+###end p 5
+###begin p 6
+###xml 152 153 152 153 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b02">2</xref>
+###xml 154 155 154 155 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b04">4</xref>
+###xml 275 276 275 276 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b05">5</xref>
+###xml 277 278 277 278 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b06">6</xref>
+###xml 397 398 397 398 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b07">7</xref>
+###xml 399 400 399 400 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b08">8</xref>
+###xml 525 526 525 526 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b02">2</xref>
+###xml 527 528 527 528 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b03">3</xref>
+Although the different steps of gene expression are typically studied in isolation, it is clear that there are important functional links between them [2-4]. For example, the process of capping the 5' end of pre-mRNAs is thought to influence both transcription and splicing [5,6]. Furthermore, the rate of transcription elongation appears to influence splicing and alternative splice site choice [7,8]. In addition, a number of pre-mRNA processing factors are recruited to transcripts via interaction with RNA polymerase II [2,3]. Thus, a comprehensive description of mRNA synthesis will require an understanding between these functional linkages of steps in gene expression.
+###end p 6
+###begin p 7
+###xml 407 408 407 408 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b04">4</xref>
+###xml 409 410 409 410 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b09">9</xref>
+###xml 411 413 411 413 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b11">11</xref>
+###xml 416 440 416 440 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 882 884 882 884 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b12">12</xref>
+###xml 1036 1038 1036 1038 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b13">13</xref>
+###xml 1039 1041 1039 1041 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b14">14</xref>
+###xml 416 440 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 451 456 <span type="species:ncbi:4932">yeast</span>
+###xml 586 591 <span type="species:ncbi:4932">yeast</span>
+###xml 673 678 <span type="species:ncbi:4932">yeast</span>
+###xml 710 716 <span type="species:ncbi:9606">humans</span>
+###xml 758 763 <span type="species:ncbi:4932">yeast</span>
+###xml 1029 1034 <span type="species:ncbi:4932">yeast</span>
+Traditionally, gene expression is studied on an individual gene basis by ad hoc experiments. With the advent of eukaryotic genomic sequences, a global genomic view of mRNA production is achievable, and recently, several large-scale gene expression profiling experiments utilizing microarray technology have provided an unprecedented amount of information regarding the mechanisms underlying its regulation [4,9-11]. Saccharomyces cerevisiae, a simple yeast that has been used as a model to study eukaryotic gene expression, presents a convincing entry point to embark on this task. The yeast genome is completely sequenced and well annotated, and the splicing machinery of yeast is well conserved with that of humans. Among the more than ~5,800 genes in the yeast genome, only about 250 of them possess introns and only a handful have multiple introns or are alternatively spliced [12]. However, these 250 intronic genes give rise to 27% of the transcripts synthesized by the cell, an indication of the importance of splicing in yeast [13,14].
+###end p 7
+###begin p 8
+###xml 14 16 14 16 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b15">15</xref>
+###xml 323 331 323 331 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g001">Figure 1</xref>
+###xml 1011 1013 1011 1013 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b15">15</xref>
+###xml 113 118 <span type="species:ncbi:4932">yeast</span>
+###xml 715 720 <span type="species:ncbi:4932">yeast</span>
+Clark et al. [15] designed a DNA microarray that allows the simultaneous analysis of splicing and mRNA levels in yeast. To discriminate between spliced and unspliced transcripts, oligonucleotide probes on these arrays were designed to detect the splice junctions (SJ), introns, and second exons of intron-containing genes (Figure 1A). SJ are found only in spliced transcripts, whereas introns exist only in unspliced transcripts and splicing intermediates. Second exons are present in both spliced and unspliced transcripts and are good indicators of total transcript level. To detect these different classes of transcripts, the arrays are competitively hybridized with probes derived from control and experimental yeast strains. For several splicing mutants, Clark et al. compared their whole genome splicing data to traditional molecular analyses of a small number of transcripts and found that reliance on only one or two genes as reporters may lead to misinterpretation of the role of a factor in splicing [15]. Thus, the whole genome approach provides a more reliable method for assessing the role of particular factors in splicing.
+###end p 8
+###begin p 9
+###xml 16 17 16 17 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b04">4</xref>
+###xml 92 97 <span type="species:ncbi:4932">yeast</span>
+Burckin et al. [4] recently used splicing-sensitive DNA microarrays to analyze 80 different yeast strains carrying mutations in genes encoding components of the gene expression machinery. Using clustering and machine learning techniques, they compared gene expression patterns in these mutants and discovered functional roles for specific factors at multiple steps in the gene expression pathway, further confirming the coordination and coupling of the machineries along the pathway.
+###end p 9
+###begin p 10
+###xml 28 30 28 30 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b16">16</xref>
+###xml 132 145 132 145 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae</italic>
+###xml 502 504 502 504 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b16">16</xref>
+###xml 645 647 645 647 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b17">17</xref>
+###xml 648 650 648 650 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b20">20</xref>
+###xml 775 779 775 779 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 784 788 784 788 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 867 869 867 869 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b17">17</xref>
+###xml 933 934 933 934 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b04">4</xref>
+###xml 990 994 990 994 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 999 1003 999 1003 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 132 145 <span type="species:ncbi:4932">S. cerevisiae</span>
+Previously, Hartzog et al. [16] found evidence that the chromatin elongation factors Spt4 and Spt5 play a role in RNA processing in S. cerevisiae. Spt4 and Spt5 form a complex that regulates transcription elongation by RNA polymerase II. This complex is conserved across eukaryotes and has been proposed to both facilitate transcription by removing a nucleosomal barrier to transcript elongation and also suppress inappropriate transcription by reassembling nucleosomes behind transcribing polymerase [16]. The recent finding that Spt5 interacts physically and genetically with pre-mRNA capping factors suggests a role for Spt4-Spt5 in capping [17-20]. Because pre-mRNA capping is thought to increase the efficiency of splicing, Lindstrom et al. further analyzed splicing in spt4 and spt5 mutants and found that several genes were not spliced with normal efficiency [17]. In the splicing array study described above, Burckin et al. [4] found extensive but not universal splicing defects in spt4 and spt5 mutants. Interestingly, they also found that the capping enzyme appears to play an essential role in splicing. Thus, their genome-wide analysis of splicing provided particularly striking examples of linkages between steps in gene expression. However, the experimental design of that study precluded identification of specific genes dependent upon particular factors for their splicing.
+###end p 10
+###begin p 11
+###xml 249 260 249 260 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4, spt5,</italic>
+###xml 264 268 264 268 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1</italic>
+###xml 375 379 375 379 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+Such identification is the purpose of our present study. While we also utilize splicing-specific DNA microarrays, we do so in the context of an experimental design that enables elicitation of specific intron-containing genes that are mis-spliced in spt4, spt5, or ceg1 mutants. In addition, we examine the aberrant splicing patterns caused by several phenotypically distinct spt5 mutations that had not been previously examined. Our primary data analytic task is therefore the determination of the set (possibly empty) of genes that have altered expression as reported by the SJ and intron probes. To do this, we assayed each mutant multiple times and then employed a recently devised statistical framework that robustly and efficiently identifies genes exhibiting differential expression (DE) in the mutants.
+###end p 11
+###begin p 12
+###xml 637 639 637 639 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b21">21</xref>
+###xml 655 657 655 657 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b22">22</xref>
+###xml 1005 1007 1005 1007 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b23">23</xref>
+###xml 1262 1264 1262 1264 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b24">24</xref>
+###xml 1265 1267 1265 1267 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b27">27</xref>
+###xml 1333 1334 1333 1334 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 1347 1349 1347 1349 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b28">28</xref>
+###xml 1350 1352 1350 1352 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b30">30</xref>
+Many methods have been advanced for this task of identifying differentially expressed genes. Fold change has been extensively used to yield lists of genes that have altered expression beyond a prescribed threshold. Despite its methodological simplicity and intuitive appeal, fold change lacks a statistical framework (there is no accommodation of expression variation) and is biased toward selecting genes at low expression levels. Another class of frequently used methods treats the task of comparing expression levels in different biological states as a univariate testing problem, employing various corrections for test multiplicity [21]. Kerr et al. [22] propose using traditional analysis of variance (ANOVA) techniques, since these readily handle known sources of variation due to, for example, dye labeling and sample or array replicates. By removing these effects from the estimation of the error term, we achieve a reduction in this term and correspondingly sharper inferences. Wolfinger et al. [23] extend the ANOVA framework by treating some factors, for example, dyes and arrays, as random representatives of a large population (that is, as random effects) resulting in a mixed model. There are several Bayesian alternatives to the above approaches [24-27], as well as some intermediary approaches that yield regularized t statistics [28-30].
+###end p 12
+###begin p 13
+###xml 149 156 149 156 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="sec" rid="s2">Results</xref>
+###xml 331 333 331 333 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b31">31</xref>
+###xml 555 557 555 557 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b32">32</xref>
+###xml 669 672 669 672 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 793 795 793 795 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b32">32</xref>
+###xml 859 862 859 862 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+Our study employs a complex experiment design, featuring 22 dye-swap array hybridizations comprising both biological and technical replications (see Results). As elaborated in the next section, we initially analyzed these data with four ANOVA mixed models and the semiparametric hierarchical mixture model (SHMM) of Newton et al. [31]. Instead of arbitrating between these models and picking a single model on which to base DE declarations, we exploit the fact that all five models are estimating the same quantity and employ a novel synthesizing scheme [32], Differential Expression via Distance Synthesis (DEDS), to derive a list of differentially expressed genes in spt mutants. This method compares favorably with the best individual models, while enjoying improved robustness properties [32]. Further analysis of such genes, whose splicing is altered in spt mutants, reveals common biochemical characteristics and attributes, which may provide new insights into the mechanisms of RNA processing and its connections to transcription.
+###end p 13
+###begin title 14
+Results
+###end title 14
+###begin title 15
+Experimental Design and Data Pre-Processing
+###end title 15
+###begin p 16
+###xml 10 14 10 14 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">SPT4</italic>
+###xml 78 87 78 83 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4&#916;</italic>
+###xml 192 194 188 190 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b16">16</xref>
+###xml 197 201 193 197 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">SPT5</italic>
+###xml 231 235 227 231 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 337 341 333 337 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 435 439 431 435 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">SPT5</italic>
+###xml 463 465 459 461 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b16">16</xref>
+###xml 502 506 498 502 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 570 574 566 570 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">SPT5</italic>
+###xml 590 596 586 592 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;4</italic>
+###xml 601 610 597 606 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;194,</italic>
+###xml 743 752 739 748 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;242,</italic>
+###xml 792 794 788 790 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b33">33</xref>
+###xml 889 891 885 887 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b17">17</xref>
+###xml 1063 1072 1059 1068 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250,</italic>
+###xml 1194 1195 1190 1191 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b06">6</xref>
+###xml 3 8 <span type="species:ncbi:4932">yeast</span>
+In yeast, SPT4 is a non-essential gene encoding a 102-amino-acid protein, and spt4Delta (null) mutants display mutant phenotypes and genetic interactions consistent with an elongation defect [16]. SPT5 encodes a large protein, and spt5 mutations typically display mutant phenotypes and genetic interactions similar to those observed for spt4 mutations, although they are often phenotypically more severe, consistent with the fact that SPT5 is essential for life [16]. In this work, we have analyzed an spt4 null mutation, and three partial loss-of-function mutations in SPT5. Two of these, spt5-4 and spt5-194, encode versions of Spt5 that are defective for binding Spt4 (GAH, J. Yamada, and T. Egelhofer, unpublished data). The third allele, spt5-242, causes a cold-sensitive growth defect [33], and displays splicing and other defects at all temperatures (GAH and TB, unpublished data; [17]). The Spt5-242 protein still binds Spt4, even at the non-permissive temperature (GAH, J. Yamada, and T. Egelhofer, unpublished data). In addition, we include analysis of ceg1-250, a temperature-sensitive mutation that causes rapid inactivation of the capping enzyme at the non-permissive temperature [6].
+###end p 16
+###begin p 17
+###xml 253 261 253 261 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g002">Figure 2</xref>
+###xml 265 267 265 267 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b34">34</xref>
+###xml 413 421 413 421 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g002">Figure 2</xref>
+Two independent mRNA samples were prepared from each mutant, fluorescently labeled, and then hybridized to the splicing arrays competitively with a probe derived from wild-type cells. Experiments were performed using a replicated dye-swap study design (Figure 2A) [34]. Briefly, there were four arrays (A1-A4) for each mutant versus wild-type experiment. The first mRNA sample was hybridized to arrays A1 and A2 (Figure 2B), and the second was hybridized to A3 and A4. In A1 and A3, the mutant mRNA sample was labeled with Cy5 dye, and the wild-type sample was labeled with Cy3. The dye assignment was reversed for arrays A2 and A4. In addition to these 20 mutant arrays (four arrays x five mutants), there were two separate wild-type self-hybridization experiments, in which the wild-type was labeled with both Cy5 and Cy3. These self-hybridizations serve as technical replicates, that is, as controls for variation in labeling and hybridization.
+###end p 17
+###begin p 18
+###xml 52 55 52 55 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg</italic>
+###xml 60 63 60 63 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 182 190 182 190 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g003">Figure 3</xref>
+###xml 469 478 469 478 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250,</italic>
+###xml 587 595 587 595 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+###xml 659 663 659 663 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1</italic>
+###xml 697 706 697 706 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250,</italic>
+###xml 865 873 865 873 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+###xml 924 932 924 932 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+###xml 943 946 943 946 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 999 1007 999 1007 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;194</italic>
+To provide a global view of splicing defects in the ceg and spt mutants, we plotted unnormalized log intensity values for signals from the two channels, mutant against wild-type, in Figure 3. Points that represent individual array features are color coded so that exon, SJ, intron, and intronless gene features can be visually differentiated. Genes lying on the diagonal have a ratio close to 1, and their expression in the mutants is therefore largely unaffected. For ceg1-250, shown in the lower right panel, introns (light blue points) deviate noticeably from the diagonal toward the ceg1-250 axis. This is a clear indication of intron accumulation in the ceg1 mutant. SJ (dark blue points) in ceg1-250, on the other hand, largely display ratios of less than 1, indicating a decrease in SJ formation. Taken together, an accumulation of introns and loss of SJ in ceg1-250 is indicative of a splicing defect. Compared with ceg1-250, the four spt mutants exhibit fewer alterations in splicing, with spt5-194 most severely affected, in agreement with its phenotypic characteristics. A control plot from the wild-type self-hybridization is depicted in the upper left panel. As expected, no separation is observed in introns and SJ, and all points conform closely to the diagonal.
+###end p 18
+###begin p 19
+###xml 92 100 92 100 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g004">Figure 4</xref>
+###xml 273 281 273 281 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+###xml 322 330 322 330 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;194</italic>
+###xml 369 372 369 372 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 798 806 798 806 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g005">Figure 5</xref>
+###xml 1315 1323 1315 1323 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g004">Figure 4</xref>
+###xml 1373 1392 1373 1392 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250, spt5&#8211;194,</italic>
+###xml 1397 1406 1397 1406 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;242,</italic>
+###xml 1780 1782 1780 1782 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b15">15</xref>
+###xml 2031 2033 2031 2033 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">SJ</italic>
+###xml 2054 2057 2054 2057 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">mut</sub>
+###xml 2040 2057 2040 2057 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">SpliceJunction<sub>mut</sub></italic>
+###xml 2072 2074 2072 2074 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">wt</sub>
+###xml 2058 2074 2058 2074 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">SpliceJunction<sub>wt</sub></italic>
+###xml 2081 2084 2081 2084 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">mut</sub>
+###xml 2077 2084 2077 2084 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Exon<sub>mut</sub></italic>
+###xml 2089 2091 2089 2091 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">wt</sub>
+###xml 2085 2091 2085 2091 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Exon<sub>wt</sub></italic>
+###xml 2184 2186 2184 2186 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">IA</italic>
+###xml 2196 2199 2196 2199 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">mut</sub>
+###xml 2190 2199 2190 2199 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Intron<sub>mut</sub></italic>
+###xml 2206 2208 2206 2208 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">wt</sub>
+###xml 2200 2208 2200 2208 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Intron<sub>wt</sub></italic>
+###xml 2215 2218 2215 2218 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">mut</sub>
+###xml 2211 2218 2211 2218 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Exon<sub>mut</sub></italic>
+###xml 2223 2225 2223 2225 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">wt</sub>
+###xml 2219 2225 2219 2225 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Exon<sub>wt</sub></italic>
+Boxplots of normalized ratios of splicing-related probes stratified by mutants are shown in Figure 4. The general trend of the SJ probe ratios shows a shift from the horizontal zero line in the negative direction, signaling a decreased expression of SJ in the mutants. The ceg1-250 mutant showed the largest decrease, and spt5-194 was the most severely affected of the spt mutants. The boxplots of the exon probe ratios display a similar pattern of change-the expression of exon probes was also decreased in the mutants. This is consistent with the idea that the majority of the exon 2 probe signal for a transcript is derived from mRNA, which is stable and long-lived in comparison to pre-mRNA. It is of interest to investigate if the decrease of the SJ probe and exon probe ratios is correlated. Figure 5 displays the scatterplots between ratios of these probes. The upper panel shows evident correlation between SJ and exon ratios. In contrast to the exons and SJ, ratios of the intron probes do not show any shift from the horizontal zero line, but spread for the mutants is nonetheless increased. Furthermore, there is no obvious correlation between the intron and exon ratios. In both plots, however, the spread of the cloud of points is mutant dependent and related to the severity of splicing defects. From Figure 4, it is clear that several of the mutants tested, ceg1-250, spt5-194, and spt5-242, cause strong decreases in exon and SJ signals and, more idiosyncratic, gene-specific changes in intron signals. Do these changes reflect altered transcription, splicing, RNA decay, or a mixture of potential defects? To focus on alterations of splicing efficiency independent of changes in transcription, we used the intron accumulation (IA) and SJ indices of Clark et al. [15], which normalize ratios of intron and SJ signals to the ratios measured for the second exon. The SJ index is the change of the SJ probe signal normalized by the change of overall gene expression level as measured by the related exon probe signal: SJ = log(SpliceJunctionmut/SpliceJunctionwt)/(Exonmut/Exonwt). Similarly, the IA index is obtained as the normalized change of the intron probe signals: IA = (Intronmut/Intronwt)/(Exonmut/Exonwt). Relating changes in the SJ and intron signals to changes in the second exon takes into account changes in overall expression level that may occur as a result of alterations in other steps of gene expression.
+###end p 19
+###begin title 20
+DE Models
+###end title 20
+###begin p 21
+###xml 131 138 131 138 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t001">Table 1</xref>
+###xml 364 372 364 372 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g002">Figure 2</xref>
+###xml 396 397 396 397 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 425 433 425 433 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S (S/A),</italic>
+###xml 452 453 452 453 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 489 497 489 497 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">V (V/S),</italic>
+###xml 540 541 540 541 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 546 547 546 547 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 608 612 608 612 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(G),</italic>
+###xml 621 625 621 625 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(V),</italic>
+###xml 655 659 655 659 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(GV)</italic>
+###xml 750 771 750 771 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="sec" rid="s4">Materials and Methods</xref>
+The experimental design of the splice mutant study motivated the use of four different mixed ANOVA models in addition to the SHMM (Table 1). These were separately applied to the two splicing indices. The four ANOVA models are distinguished by including wild-type self-hybridizations or not and allowing gene-specific heterogeneity or not. The experimental design (Figure 2B)-wherein array effect A is nested in sample effect S (S/A), and sample effect S is in turn nested in mutant effect V (V/S), argues for treating model terms involving S and A as random effects, with the remaining terms involving genes (G), mutants (V), and gene-mutant interactions (GV) being fixed effects. The four models thereby constitute nested, mixed-effect ANOVAs ; see Materials and Methods for fitting details.
+###end p 21
+###begin p 22
+###xml 105 107 105 107 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b31">31</xref>
+###xml 449 453 449 453 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(G),</italic>
+###xml 461 465 461 465 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(V),</italic>
+###xml 495 499 495 499 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(GV)</italic>
+###xml 722 723 722 723 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 736 738 736 738 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b28">28</xref>
+###xml 739 741 739 741 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b30">30</xref>
+###xml 742 744 742 744 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b35">35</xref>
+###xml 991 993 991 993 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b27">27</xref>
+###xml 1240 1248 1240 1248 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g002">Figure 2</xref>
+###xml 1407 1409 1407 1409 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b31">31</xref>
+To complement the ANOVA approaches described above, we also employed the SHMM advanced by Newton et al. [31]. This methodology was selected for the following reasons: (i) the SHMM is non-parametric where there is sufficient information (lots of genes) and parametric where there is limited information (observations per gene), and this synthesis makes for an appropriately balanced strategy; and (ii) as is standard, our ANOVA approaches treat gene (G), mutant (V), and gene-mutant interactions (GV) as fixed effects. Thus, there is no information sharing between genes. The SHMM achieves such sharing and does so in a more principled and flexible manner than some of the ad hoc approaches proposed that yield regularized t-statistics [28,30,35]. The SHMM also has limitations, the foremost of which perhaps is the adequacy of the parametric assumptions. The extent of such assumptions has been appreciably relaxed compared to the preceding fully parametric treatment of Kendziorski et al. [27]. Importantly, diagnostic tools are provided for assumption checking. Additionally, the present implementation supports only two group comparisons. Thus, there is some potential efficiency loss for the nested design employed in the splice study (Figure 2B). Details on the estimation methodology as well as extensive illustration of calibration, diagnostic, and performance aspects are provided in Newton et al. [31].
+###end p 22
+###begin title 23
+Model Synthesis and Selection of Differentially Expressed Genes
+###end title 23
+###begin p 24
+###xml 529 536 529 536 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t002">Table 2</xref>
+###xml 696 697 696 697 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 746 748 746 748 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b32">32</xref>
+Models with heteroscedastic errors accommodate gene-specific variances, but typically, as here, replication is very limited and so the precision of the estimates is compromised. Models imposing homoscedastic errors yield precise estimates of the common error variance, and tests based on many degrees of freedom (df), since they permit combination over the large number of genes. However, the homoscedasticity assumption is both strong and difficult to evaluate. Differences in error df for the different models are presented in Table 2. Note that there are more than 5,000 df for error for the homoscedastic models and only about 20 df for the heteroscedastic models. A comparison of associated p-values from individual measures is provided in [32].
+###end p 24
+###begin p 25
+###xml 91 93 91 93 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b32">32</xref>
+###xml 705 707 705 707 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b32">32</xref>
+###xml 752 773 752 773 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="sec" rid="s4">Materials and Methods</xref>
+DEDS is a novel method combining statistics or summaries that measure the same phenomenon [32]. Rather than trying to arbitrate between models and pick a single model on which to base DE declarations, or informally distilling sets of genes that are differentially expressed under two or more models, we applied DEDS here as a robust means to refine selection of DE genes as furnished by the above five individual models. The simple underlying principle of DEDS is that genes that are highly ranked (as being differentially expressed) by all five models are more likely to be truly differentially expressed than genes that are high only for a single model. Further details concerning DEDS are provided in [32], while an algorithm outline is sketched in Materials and Methods.
+###end p 25
+###begin p 26
+###xml 391 400 391 400 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;242,</italic>
+###xml 416 424 416 424 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g006">Figure 6</xref>
+###xml 761 768 761 768 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t003">Table 3</xref>
+###xml 967 968 967 968 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1055 1063 1055 1063 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g006">Figure 6</xref>
+###xml 1242 1243 1242 1243 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 1608 1616 1608 1616 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g006">Figure 6</xref>
+###xml 1651 1659 1651 1659 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+The task of identifying differentially expressed genes consists of two components: (i) ranking genes in order of evidence for DE; and (ii) declaration of a set of DE genes by thresholding the ranked list. Here, we examine the robustness of DEDS with respect to both components. A comparison of ranking of DE genes by DEDS and individual measures, using an example based on the IA indices of spt5-242, is provided in Figure 6A. Ranks are logged so that correlations of DE genes (low ranks) are more clearly displayed. We see a similar level of concordance between ranks from DEDS and individual models. The numbers of genes identified as differentially expressed by DEDS under false discovery rates (FDR) 0.01 and 0.05 for SJ as well as IA indices are listed in Table 3. To examine the stability of the DE findings, we assessed the impact of scale choice of measures and the interrelated choice of distance metric. We investigated all combinations of (raw, logarithm) p-value scales * (Euclidean, city block) distances. Representative results are shown in Figure 6B. Genes are ordered according to their DE significance by the raw/Euclidean combination, so that the black points are monotone by definition. The dashed gray line marks the 0.05 q-value threshold. The corresponding numbers of declared DE genes for these four combinations range from 145 to 163, of which 139 are common to all four combinations. This demonstrates that, for the splice array experiment, DEDS-based selections of DE genes are largely insensitive to the different scales and distance metrics examined. This concordance, evident in Figure 6, pertains to the IA index and the ceg1-250 mutant. Analogous concordance was observed for the SJ index and the other mutants.
+###end p 26
+###begin p 27
+###xml 131 138 131 138 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t003">Table 3</xref>
+###xml 180 182 180 182 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b15">15</xref>
+###xml 308 316 308 316 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+###xml 349 353 349 353 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 358 362 358 362 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 419 427 419 427 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;194</italic>
+###xml 473 476 473 476 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 491 500 491 496 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4&#916;</italic>
+###xml 572 580 568 576 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="pcbi-0010039-st001">Table S1</xref>
+###xml 280 285 <span type="species:ncbi:4932">yeast</span>
+The observation of greater numbers of genes identified as differentially expressed based on the IA index data than on the SJ data (Table 3) reinforced the finding in Clark et al. [15] that IA indices are a more sensitive indicator for splicing defects. The splicing defect in the yeast capping enzyme mutant ceg1-250 is catastrophic, whereas in the spt4 and spt5 mutants fewer genes exhibit a splicing defect. Overall, spt5-194 is the most severe splicing mutant among all spt mutants, with spt4Delta being the least impaired. The complete list of DE genes is provided in Table S1.
+###end p 27
+###begin title 28
+Validation of DE Genes
+###end title 28
+###begin p 29
+###xml 40 44 40 44 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 49 53 49 53 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 509 521 509 521 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">U3B, RPS25A,</italic>
+###xml 526 533 526 533 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">RPL26A,</italic>
+###xml 584 588 584 588 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 593 597 593 597 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 607 609 607 609 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b17">17</xref>
+###xml 717 725 717 725 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g001">Figure 1</xref>
+###xml 803 811 803 811 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g001">Figure 1</xref>
+The identification of genes affected by spt4 and spt5 mutations using statistically robust methodology offers insight into the function of the Spt4-Spt5 complex, as well as the opportunity to better equate changes in IA with bona fide splicing defects. To validate our findings, we have used quantitative RT-PCR (QPCR) analysis to quantitatively examine five intron-containing genes, as well as two unspliced genes, in all five mutants. We previously performed a qualitative analysis of three of these genes, U3B, RPS25A, and RPL26A, and found that they were inefficiently spliced in spt4 and spt5 mutants [17]. By choosing primers that flank the intron-exon2 junction, we can specifically detect unspliced pre-mRNA (Figure 1B). We also picked primers to detect either the second exon, or spliced mRNA (Figure 1B). As with the microarrays, we can normalize changes in pre-mRNA levels to changes in spliced mRNA or total mRNA (that is, exon2).
+###end p 29
+###begin p 30
+###xml 12 19 12 19 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t004">Table 4</xref>
+###xml 127 130 127 130 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 226 230 226 230 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1</italic>
+###xml 471 475 471 475 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1</italic>
+###xml 706 714 706 714 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="pcbi-0010039-st002">Table S2</xref>
+As shown in Table 4, the results of the RT-PCR analysis generally agreed with the microarray analysis. Strikingly, in the four spt mutants, genes identified by DEDS showed an absolute increase in pre-mRNA levels, while in the ceg1 mutant none of the pre-mRNAs showed an absolute increase as compared to wild-type. After normalizing the pre-mRNA signals to the spliced mRNA or second exon signals to account for potential changes in transcription or transcript stability, ceg1 also showed a splicing defect as predicted by DEDS. Furthermore, the performance of DEDS was superior to the four ANOVA models and equivalent to the SHMM in terms of numbers of false positives and negatives over all five mutants (Table S2).
+###end p 30
+###begin title 31
+Description and Analysis of DE Genes
+###end title 31
+###begin p 32
+###xml 217 218 217 218 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 666 668 664 666 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b36">36</xref>
+###xml 732 734 730 732 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b37">37</xref>
+###xml 831 838 829 836 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t005">Table 5</xref>
+###xml 932 934 930 932 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b15">15</xref>
+###xml 659 664 <span type="species:ncbi:4932">yeast</span>
+There are likely multiple molecular mechanisms by which different genes were differentially expressed in the mutants discussed here. To account for some of these mechanisms, we subdivided the lists of DE genes with a q </= 0.05 (controlling FDR) before further analysis. First, we reasoned that positive and negative changes in IA likely occurred via different molecular mechanisms. Therefore, for each of the five mutants examined, the DE genes were divided into lists of genes with either positive or negative fold change (here, fold change refers to the IA index). Second, because ribosomal protein genes represent a large fraction of all spliced genes in yeast [36], and because they are subject to a common mode of regulation [37], we further subdivided our lists of DE genes into sublists of ribosomal (RP) and non-RP genes (Table 5). Finally, we focused upon the IA index, as it is more sensitive to alterations in splicing [15].
+###end p 32
+###begin p 33
+###xml 8 12 8 12 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 17 21 17 21 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1</italic>
+###xml 154 161 154 161 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t005">Table 5</xref>
+###xml 167 169 167 169 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b36">36</xref>
+For the spt5 and ceg1 mutants, a large majority of the DE genes encoded RP proteins, whereas only ~40% of all intron-containing genes encode RP proteins (Table 5 and [36]). Furthermore, a number of translation and rRNA processing factors are among the non-RP genes found in our analysis, and it is possible that these genes are regulated by the same strategies as the RPs. Interestingly, for those DE genes with a negative fold change-that is, those that were apparently spliced more efficiently-we found no RP genes. This suggests that the genes with a negative or positive fold change in the IA index have distinct dependencies upon Spt4-Spt5 and Ceg1.
+###end p 33
+###begin p 34
+###xml 208 210 208 210 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b36">36</xref>
+###xml 486 488 486 488 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b14">14</xref>
+###xml 630 637 630 637 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t006">Table 6</xref>
+###xml 647 651 647 651 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1</italic>
+###xml 817 820 817 820 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 936 943 936 943 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t006">Table 6</xref>
+###xml 966 972 966 972 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;4</italic>
+###xml 977 985 977 985 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;194</italic>
+###xml 1167 1176 1167 1172 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4&#916;</italic>
+###xml 1181 1189 1177 1185 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;242</italic>
+###xml 134 139 <span type="species:ncbi:4932">yeast</span>
+We next asked if the genes identified in this analysis shared any particular attributes. It has previously been noted that introns in yeast display a bimodal distribution of sizes and positions within genes [36]. RP protein genes have large introns that occur relatively early in a pre-mRNA, whereas non-RP genes typically have smaller introns that occur somewhat later in the mRNA. Furthermore, RP genes are highly transcribed, whereas non-RP genes tend to be less highly transcribed [14]. We therefore compared the transcription rates and size and positions of introns within the DE genes that displayed a positive fold change (Table 6). In the ceg1 mutant, the set of DE genes had no unusual properties other than the non-RP DE genes being transcribed somewhat more frequently than the average non-RP gene. In the spt mutants, intron position of the DE genes was not significantly different from the average for RP and non-RP genes (Table 6). In contrast, in the spt5-4 and spt5-194 mutants, the non-RP DE genes shared attributes of RP genes: they tended to have longer introns and be more highly expressed than the typical non-RP gene. The non-RP DE genes in the spt4Delta and spt5-242 mutants represent an intermediate case; their introns are not significantly longer than those of the typical non-RP intron-containing genes, but they are more highly transcribed.
+###end p 34
+###begin p 35
+###xml 296 303 296 303 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t007">Table 7</xref>
+The DE genes with a negative fold change appear to represent a distinct class of genes. First, they encoded only non-RPs. Second, they resembled the typical non-RP intron-containing genes in that they had short introns; however, they were expressed at even lower levels than the typical non-RPs (Table 7), contrary to the DE genes with positive fold changes. Again, this is consistent with the idea that these genes were differentially expressed for reasons distinct from those leading to DE of genes with a positive fold change.
+###end p 35
+###begin title 36
+Discussion
+###end title 36
+###begin p 37
+###xml 216 218 216 218 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b32">32</xref>
+###xml 704 706 704 706 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b32">32</xref>
+###xml 959 961 959 961 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b32">32</xref>
+In this paper, we showcased splicing array technology and developed methodologies for its analysis in the context of a real, complex experimental design. We applied four ANOVA mixed models and a SHMM, and used DEDS [32] to derive a list of DE genes. The DEDS algorithm synthesizes statistics or methods that estimate the same quantity of interest. The underlying principle behind DEDS is that genes that are highly ranked by different methods are more likely to be truly differentially expressed than genes that rank highly on a single measure. In our previous work, we have evaluated DEDS on diverse datasets, featuring both one-channel Affymetrix oligonucleotide arrays and two-channel spotted arrays [32]. Using a set of spike-in (Affymetrix) datasets, where differentially expressed genes are known, we demonstrated that DEDS compares favorably with the best individual statistics while enjoying robustness properties lacked by the individual statistics [32].
+###end p 37
+###begin p 38
+###xml 121 125 121 125 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 130 134 130 134 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 183 185 183 185 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b17">17</xref>
+###xml 359 360 359 360 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b04">4</xref>
+###xml 742 753 742 753 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">SPT4, SPT5,</italic>
+###xml 757 761 757 761 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">CEG1</italic>
+###xml 903 904 903 904 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b04">4</xref>
+###xml 1195 1203 1195 1203 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+###xml 1209 1216 1209 1216 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t003">Table 3</xref>
+###xml 1247 1256 1247 1252 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4&#916;</italic>
+###xml 1261 1269 1257 1265 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;194</italic>
+###xml 1322 1330 1318 1326 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+###xml 1537 1540 1533 1536 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 1591 1595 1587 1591 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1</italic>
+###xml 1604 1612 1600 1608 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g007">Figure 7</xref>
+###xml 1617 1625 1613 1621 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="pcbi-0010039-st001">Table S1</xref>
+###xml 1632 1640 1628 1636 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;242</italic>
+###xml 1672 1676 1668 1672 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 1906 1910 1902 1906 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 1958 1962 1954 1958 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 2026 2028 2022 2024 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b33">33</xref>
+###xml 2029 2031 2025 2027 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b38">38</xref>
+###xml 2171 2175 2167 2171 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 2245 2255 2241 2251 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">SPT5, SPT4</italic>
+###xml 2353 2359 2349 2355 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;4</italic>
+###xml 2364 2372 2360 2368 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;194</italic>
+###xml 2556 2558 2552 2554 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b39">39</xref>
+###xml 648 653 <span type="species:ncbi:4932">yeast</span>
+Previous to this and other microarray studies, only four genes had been identified and confirmed for splicing defects in spt4 and spt5 mutants using traditional molecular techniques [17]. Recently, Burckin et al. have used splicing-sensitive DNA microarrays to compare patterns of splicing defects across a diverse set of mutations affecting gene expression [4], but this and the previous study lacked a statistical or quantitative framework for rigorous determination of specific genes that were differentially expressed. Here, we have used splicing-sensitive DNA microarrays combined with DEDS to analyze all known intron-containing genes in the yeast genome and to specifically identify those genes whose proper splicing is dependent upon SPT4, SPT5, or CEG1. Despite the differences in experimental goals and designs, the findings of these two studies are nonetheless consistent. In Burckin et al. [4], the analyses using hierarchical clustering and support vector machines showed that the overall impact of the loss of Ceg1 function in vivo is nearly identical to that of bona fide splicing factors, which is in line with the large number of DE genes we found whose splicing is abnormal in ceg1-250 (see Table 3). Also in our previous study, spt4Delta and spt5-194 mutants displayed a lesser splicing defect than the ceg1-250 mutant, which is again consistent with our current findings. Comparison of the lists of DE genes for the five mutants examined here revealed that most of the genes that were differentially expressed in the spt mutants were also differentially expressed in the ceg1 mutant (Figure 7 and Table S1). The spt5-242 mutant differed from the other spt5 mutants in that it did not preferentially affect the splicing of non-RP genes with long introns. We do not understand the mechanistic basis for this observation, although it is consistent with our previous observations that this spt5 mutation is phenotypically distinct from other spt5 alleles and therefore may cause a distinct biochemical defect [33,38]. Our data further suggest that Spt4's contribution to splicing is modest, as only a handful of genes were differentially expressed in the spt4 mutant. This is consistent with the observation that, in contrast to SPT5, SPT4 is not essential for life. Furthermore, this observation suggests that the defects caused by the spt5-4 and spt5-194 mutations extend beyond the Spt4 binding defect we have observed for the Spt5-4 and Spt5-194 proteins. Since there is currently no evidence that Spt4 functions independently of Spt5 [39], these observations suggest that Spt4 assists in, but is not essential for, the functions of Spt4-Spt5 in splicing.
+###end p 38
+###begin p 39
+###xml 38 41 38 41 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 62 70 62 70 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+###xml 359 362 359 362 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 1019 1021 1019 1021 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b40">40</xref>
+###xml 1086 1089 1086 1089 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt</italic>
+###xml 1167 1174 1167 1174 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t007">Table 7</xref>
+###xml 1296 1298 1296 1298 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b16">16</xref>
+###xml 1516 1517 1516 1517 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b07">7</xref>
+###xml 1518 1519 1518 1519 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b08">8</xref>
+The smaller number of DE genes in the spt mutants compared to ceg1-250 may indicate a lesser effect on splicing rather than an effect on a distinct subset of intron-containing genes. It is interesting to note, however, that highly transcribed genes with long introns-that is, RP genes and a subset of non-RP genes with long introns-were most sensitive to the spt mutations. These data suggest that the Spt4-Spt5 complex may play a particular role in coordinating splicing with transcription under conditions that present kinetic challenges to the spliceosome or its assembly, that is, when splice sites are widely separated, increasing the separation in time and space between the synthesis of the 5' and 3' splice sites, or when a gene is highly transcribed, creating the need for rapid and repeated assembly of spliceosomes over one site on a gene. In addition, these data are consistent with recent evidence demonstrating an effect of RNA polymerase II elongation rates on alternative splicing in higher eukaryotes [40]. In contrast, the non-RP genes spliced more efficiently in the spt mutants tend to be transcribed less frequently than the average non-RP gene (Table 7). Thus, as is the case for transcription, the Spt4-Spt5 complex may have both positive and negative effects on splicing [16]. Furthermore, this is consistent with previous observations that altered transcription elongation may lead to increased splicing, presumably due to increased opportunities for recognition of suboptimal splice sites [7,8]. Whether the effects we have measured here are due to altered elongation rates, or they indicate a more direct role of Spt4-Spt5 in splicing is currently under investigation.
+###end p 39
+###begin title 40
+Materials and Methods
+###end title 40
+###begin title 41
+Sample preparation and array hybridization.
+###end title 41
+###begin p 42
+###xml 19 26 19 26 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t008">Table 8</xref>
+###xml 66 68 66 68 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b41">41</xref>
+###xml 162 163 156 157 <sup xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">7</sup>
+###xml 531 533 507 509 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b42">42</xref>
+###xml 686 688 662 664 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b15">15</xref>
+###xml 4 9 <span type="species:ncbi:4932">yeast</span>
+###xml 71 76 <span type="species:ncbi:4932">Yeast</span>
+All yeast strains (Table 8) used were isogenic to S288C and Gal+ [41]. Yeast were grown overnight in rich medium (YPD) at 30 degreesC to early log phase (> 1 x 107 cells/ml), spun down, and resuspended in pre-warmed 39 degreesC media, and allowed to grow at 39 degreesC for 45 min after shift to restrictive temperature. Cells were collected by centrifugation at room temperature for 4 min, washed once with sterile water, flash frozen in liquid nitrogen, and stored at -80 degreesC. Total RNA was isolated by a hot phenol method [42] and quantitated by UV absorbance. Fluorescently labeled probe preparation, hybridization, and data acquisition were performed as previously described [15] using 15 mug of total RNA/sample. For each mutant, RNA was prepared from two independently grown cultures. Each RNA sample was used to probe two arrays, and was labeled with Cy3 for the first array and Cy5 for the second.
+###end p 42
+###begin title 43
+Data normalization and pre-processing.
+###end title 43
+###begin p 44
+###xml 67 72 67 72 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">loess</italic>
+###xml 88 90 88 90 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b43">43</xref>
+To effectively and properly normalize the data, we used non-linear loess normalization [43] based on the subset of intronless genes. After normalization, for each array the four replicates of each SJ, intron, and exon probes were summarized using averages. This was followed by the calculation of SJ and IA indices.
+###end p 44
+###begin title 45
+ANOVA mixed models.
+###end title 45
+###begin p 46
+###xml 201 202 201 202 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 289 290 289 290 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 535 537 535 537 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b22">22</xref>
+###xml 602 604 602 604 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b23">23</xref>
+We applied four different ANOVA mixed models corresponding to all combinations of wild-type versus wild-type (in/out) by gene-specific variance heterogeneity (yes/no). DE is examined by the two-sample t test, when including the two wild-type versus wild-type samples, whereas a one-sample t test is applied when excluding these two samples. Not allowing for gene-specific variance imposes the assumption that all genes exhibit a similar degree of variability, so they can be jointly analyzed using a common estimate of error variance [22]. Conversely, allowing different variances for different genes [23] mandates fitting gene by gene.
+###end p 46
+###begin title 47
+Model specifics.
+###end title 47
+###begin p 48
+###xml 46 50 46 50 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gvsa</sub>
+###xml 45 50 45 50 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Y<sub>gvsa</sub></italic>
+###xml 102 103 102 103 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 105 128 105 120 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g = 1, 2,&#8230;, 254</italic>
+###xml 140 159 132 143 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">1, 2,&#8230;, 263</italic>
+###xml 176 202 160 178 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v (v = 1, 2,&#8230;, 5),</italic>
+###xml 210 222 186 198 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">s (s = 1,2),</italic>
+###xml 233 234 209 210 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 236 244 212 220 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">a = 1,2;</italic>
+Model I-one-sample/homoscedastic errors: Let Ygvsa be the splicing related index, SJ or IA, from gene g (g = 1, 2,em leader, 254 for SJ and 1, 2,em leader, 263 for IA), mutant v (v = 1, 2,em leader, 5), sample s (s = 1,2), and array a (a = 1,2; corresponding to the dye-swap pair). The first model can be represented as
+###end p 48
+###begin p 49
+###xml 13 14 13 14 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">s</sub>
+###xml 23 24 23 24 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">a</sub>
+###xml 32 35 32 35 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gvs</sub>
+###xml 8 36 8 36 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(V/S)<sub>s</sub>, (V/S/A)<sub>a</sub>, (GV/S)<sub>gvs</sub>,</italic>
+###xml 48 52 42 46 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gvsa</italic>
+###xml 48 52 42 46 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink"><italic>gvsa</italic></sub>
+###xml 149 151 143 145 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">, </italic>
+###xml 161 162 151 152 <sup xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 232 239 222 229 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="pcbi-0010039-t009">Table 9</xref>
+###xml 340 342 329 331 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gv</sub>
+###xml 338 342 328 331 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">&#956;<sub>gv</sub></italic>
+###xml 345 347 334 335 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 351 352 339 340 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</sub>
+###xml 350 352 338 340 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">G<sub>g</sub></italic>
+###xml 356 357 344 345 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v</sub>
+###xml 355 357 343 345 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">V<sub>v</sub></italic>
+###xml 362 364 350 352 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gv</sub>
+###xml 360 364 348 352 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">GV<sub>gv</sub></italic>
+###xml 419 420 407 408 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 431 432 419 420 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v</italic>
+###xml 510 511 498 499 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v</italic>
+###xml 521 522 509 510 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+Effects (V/S)s, (V/S/A)a, (GV/S)gvs, and epsilongvsa are assumed to be normally distributed normal variables with zero means and variance components ,  and sigma2, respectively. The derivation of the variance components is shown in Table 9. The remaining effects in the model are fixed effects. The parameter of interest in this model is mugv = mu + Gg + Vv + GVgv, which measures the mean of the SJ/IA indices of gene g in mutant v. The following null hypothesis therefore defines the absence of DE in mutant v and gene g: 
+###end p 49
+###begin p 50
+###xml 38 40 37 39 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gv</italic>
+###xml 38 40 37 39 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink"><italic>gv</italic></sub>
+The variance of the treatment mean mûgv can be computed by the following equation:
+###end p 50
+###begin p 51
+###xml 7 8 7 8 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S</sub>
+###xml 6 8 6 8 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">n<sub>S</sub></italic>
+###xml 18 19 18 19 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">A</sub>
+###xml 17 19 17 19 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">n<sub>A</sub></italic>
+where nS = 2 and nA = 2.
+###end p 51
+###begin p 52
+Model II-one-sample/heteroscedastic errors: Model II is different from Model I by assuming that each gene has its own error distribution, so the model is fitted gene by gene. It can be represented by the following equation:
+###end p 52
+###begin p 53
+###xml 45 47 44 46 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gv</sub>
+###xml 43 47 43 46 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">&#956;<sub>gv</sub></italic>
+###xml 52 53 50 51 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</sub>
+###xml 50 53 49 51 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">&#956;<sub>g</sub></italic>
+###xml 57 58 55 56 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v</sub>
+###xml 56 59 54 57 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">V<sub>v</sub>,</italic>
+###xml 113 114 111 112 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 125 126 123 124 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v</italic>
+###xml 194 195 192 193 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v</italic>
+###xml 205 206 203 204 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+The parameter of interest in this model is mugv = mug + Vv, which measures the mean of the SJ/IA indices of gene g in mutant v. The following null hypothesis defines the absence of DE in mutant v and gene g:
+###end p 53
+###begin p 54
+###xml 38 40 37 39 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gv</italic>
+###xml 38 40 37 39 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink"><italic>gv</italic></sub>
+The variance of the treatment mean mûgv can be computed by the following equation:
+###end p 54
+###begin p 55
+###xml 410 418 410 418 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="pcbi-0010039-g002">Figure 2</xref>
+Model III-two-sample/homoscedastic errors: Model III differs from Model I by including the indices derived from the two wild-type self-hybridizations. Because of this inclusion, the study design is rendered unbalanced. To be more specific, the arrays in the two wild-type self-hybridizations came from the same sample, whereas the samples of four slides related to a mutant were from two distinct samples (see Figure 2B). The model can be represented by the following equation:
+###end p 55
+###begin p 56
+###xml 45 47 44 46 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gv</sub>
+###xml 43 47 43 46 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">&#956;<sub>gv</sub></italic>
+###xml 50 52 49 50 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 56 57 54 55 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</sub>
+###xml 55 57 53 55 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">G<sub>g</sub></italic>
+###xml 61 62 59 60 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v</sub>
+###xml 60 62 58 60 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">V<sub>v</sub></italic>
+###xml 67 69 65 67 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gv</sub>
+###xml 65 69 63 67 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">GV<sub>gv</sub></italic>
+###xml 124 125 122 123 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 136 137 134 135 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v</italic>
+###xml 206 207 204 205 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">m</sub>
+###xml 205 207 203 205 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v<sub>m</sub></italic>
+###xml 217 218 215 216 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+The parameter of interest in this model is mugv = mu + Gg + Vv + GVgv, which measures the mean of the SJ/IA indices of gene g in mutant v. The following null hypothesis defines the absence of DE in mutant vm and gene g compared to the wild-type:
+###end p 56
+###begin p 57
+###xml 38 40 37 39 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gv</italic>
+###xml 38 40 37 39 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink"><italic>gv</italic></sub>
+###xml 94 95 93 94 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S</sub>
+###xml 93 95 92 94 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">n<sub>S</sub></italic>
+###xml 117 118 116 117 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S</sub>
+###xml 116 118 115 117 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">n<sub>S</sub></italic>
+The variance of the treatment mean mûgv can be computed by the following equation:  , where nS = 2 for mutants and nS = 1 for the wild-type. 
+###end p 57
+###begin p 58
+Model IV-two-sample/heteroscedastic errors: Model IV differs from Model II by including the indices derived from the two wild-type self-hybridizations. The model can be represented by the following equation:
+###end p 58
+###begin p 59
+###xml 45 47 44 46 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gv</sub>
+###xml 43 47 43 46 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">&#956;<sub>gv</sub></italic>
+###xml 52 53 50 51 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</sub>
+###xml 50 53 49 51 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">&#956;<sub>g</sub></italic>
+###xml 57 58 55 56 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v</sub>
+###xml 56 59 54 57 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">V<sub>v</sub>,</italic>
+###xml 113 114 111 112 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 125 126 123 124 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v</italic>
+###xml 195 196 193 194 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">m</sub>
+###xml 194 196 192 194 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">v<sub>m</sub></italic>
+###xml 206 207 204 205 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+The parameter of interest in this model is mugv = mug + Vv, which measures the mean of the SJ/IA indices of gene g in mutant v. The following null hypothesis defines the absence of DE in mutant vm and gene g compared to the wild-type:
+###end p 59
+###begin p 60
+###xml 38 40 37 39 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">gv</italic>
+###xml 38 40 37 39 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink"><italic>gv</italic></sub>
+###xml 94 95 93 94 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S</sub>
+###xml 93 95 92 94 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">n<sub>S</sub></italic>
+###xml 117 118 116 117 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S</sub>
+###xml 116 118 115 117 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">n<sub>S</sub></italic>
+The variance of the treatment mean mûgv can be computed by the following equation:  , where nS = 2 for mutants and nS = 1 for the wild-type. 
+###end p 60
+###begin title 61
+SHMM model.
+###end title 61
+###begin p 62
+Implementation of the SHMM model uses the R package EBarrays, available from . The output posterior probabilities for (directional) DE from the package have dual utilities: (i) ranking (genes), and (ii) calibration (providing FDR). We utilized the former for DEDS synthesis.
+###end p 62
+###begin title 63
+DEDS procedures.
+###end title 63
+###begin p 64
+###xml 49 50 49 50 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 67 68 67 68 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 79 80 79 80 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 86 88 86 88 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ij</sub>
+###xml 85 88 85 88 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p<sub>ij</sub></italic>
+###xml 90 91 90 91 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 111 112 103 104 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 114 115 106 107 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 153 154 137 138 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+Fit the five DE models, and assume the resulting p values for gene i and model j are pij (i = 1, 2, em leader, n, j = 1, 2, em leader, 5) in data matrix P.
+###end p 64
+###begin p 65
+###xml 30 31 30 31 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+Locate the most extreme point E as a vector of zeros of length five.
+###end p 65
+###begin p 66
+###xml 20 21 20 21 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 19 21 19 21 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">d<sub>i</sub></italic>
+###xml 38 39 38 39 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 51 54 51 54 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(1)</sub>
+###xml 50 54 50 54 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">d<sub>(1)</sub></italic>
+###xml 60 63 58 61 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(2)</sub>
+###xml 59 63 57 61 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">d<sub>(2)</sub></italic>
+###xml 83 86 69 72 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(n)</sub>
+###xml 82 86 68 72 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">d<sub>(n)</sub></italic>
+Calculate distance di of all genes to E and order d(1) </= d(2) </= em leader </= d(n).
+###end p 66
+###begin p 67
+###xml 9 10 9 10 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+Generate B sets of reference distribution by:
+###end p 67
+###begin p 68
+###xml 22 23 22 23 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+Center the columns of P at mean 0.
+###end p 68
+###begin p 69
+###xml 48 49 48 49 <sup xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">T</sup>
+###xml 41 49 41 49 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">P = UDV<sup>T</sup></italic>
+Compute the singular value decomposition P = UDVT.
+###end p 69
+###begin p 70
+###xml 10 17 10 17 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">P* = PV</italic>
+Calculate P* = PV.
+###end p 70
+###begin p 71
+###xml 7 9 7 9 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Z*</italic>
+###xml 75 77 75 77 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">P*</italic>
+Create Z* by drawing uniform distribution over the range of the columns of P*.
+###end p 71
+###begin p 72
+###xml 15 16 15 16 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Z</italic>
+###xml 15 16 15 16 <bold xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink"><italic>Z</italic></bold>
+###xml 16 17 16 17 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">*</italic>
+###xml 28 29 28 29 <sup xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">T</sup>
+###xml 21 29 21 29 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Z = Z*V<sup>T</sup></italic>
+###xml 59 60 59 60 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Z</italic>
+Back transform Z* by Z = Z*VT to obtain the reference data Z.
+###end p 72
+###begin p 73
+###xml 31 32 31 32 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 27 32 27 32 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">b, d<sub>i</sub></italic>
+For each reference dataset b, di values are calculated and ordered in the way of
+###end p 73
+###begin p 74
+###xml 19 21 19 21 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">i,</italic>
+###xml 131 132 131 132 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 164 165 164 165 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 166 167 166 167 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 165 168 165 168 <sub xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>i</italic>)</sub>
+###xml 178 179 178 179 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 212 213 212 213 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 380 381 380 381 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 416 417 416 417 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 481 490 481 490 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="pcbi-0010039-sg001">Figure S1</xref>
+For a typical gene i, compute the median number of falsely called genes by computing the median number of values among each of the B sets of  that are smaller than d(i); and the q-value (controlling FDR) of gene i is computed as the median of the number of falsely called genes divided by the number of genes called significant. Illustration of determination of the extreme point E when using statistics (instead of p-values), in known null and non-null situations, is provided in Figure S1. 
+###end p 74
+###begin title 75
+Analysis of DE genes.
+###end title 75
+###begin p 76
+Gene annotations were obtained from the Ares lab intron database (), and transcription frequency data was obtained from the Young lab ().
+###end p 76
+###begin p 77
+###xml 491 499 491 499 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="pcbi-0010039-st001">Table S1</xref>
+###xml 784 785 784 785 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 845 846 845 846 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 966 968 966 968 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p-</italic>
+The collection of all intron-containing genes was divided into sets of RP and non-RP genes, and averages and standard deviations were calculated for their transcription frequencies, intron lengths, and intron start sites. Several genes were omitted from these analyses because there was no good data concerning their transcription frequency or intron position or size. In addition, Mtr2, which has multiple, overlapping introns, was considered to have a single intron for this analysis (see Table S1). To determine if the properties of DE genes in a mutant were significantly different from those of all RP or non-RP intron-containing genes, we used a non-parametric resampling method. Briefly, a referent null distribution was generated by first taking 10,000 random samples of size N from the sets of all intron-containing RP or non-RP genes (N is the number of DE RP or non-RP genes for a particular mutant), and then calculating the averages of each sample. The p-value was derived as the percentage within the referent distribution that is more extreme than the observed property.
+###end p 77
+###begin title 78
+QPCR analysis.
+###end title 78
+###begin p 79
+###xml 519 527 518 526 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="pcbi-0010039-st003">Table S3</xref>
+###xml 656 660 655 659 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">OSH3</italic>
+###xml 667 671 666 670 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">OSH3</italic>
+cDNA synthesis for QPCR was performed as described for fluorescently labeled target synthesis, except that equal concentrations of all four deoxyribonucleotides and no Cy dyes were used. Reactions lacking reverse transcriptase were performed to control for genomic DNA contamination. Amplifications were conducted in a Bio-Rad iCycler using iQ SYBR Green Supermix (Bio-Rad, Hercules, California, United States) and 200 muM primer according to the manufacturer's instructions, using the oligonucleotide primers found in Table S3. Representative transcripts were assayed in triplicate. To compare the QPCR with array values, we normalized QPCR values to the OSH3 mRNA. OSH3 was chosen as a suitable reference gene, since the array data indicated that its expression was unchanged in the five mutants used in the comparison.
+###end p 79
+###begin title 80
+Supporting Information
+###end title 80
+###begin title 81
+A Complete List of Differentially Expressed Genes for the Five Mutants in SJ and IA Indices
+###end title 81
+###begin p 82
+(346 KB XLS)
+###end p 82
+###begin p 83
+Click here for additional data file.
+###end p 83
+###begin title 84
+Comparison of the Five Models and DEDS in Terms of Numbers of False Positives/Negatives in the QPCR Tested Five Genes
+###end title 84
+###begin p 85
+(23 KB DOC)
+###end p 85
+###begin p 86
+Click here for additional data file.
+###end p 86
+###begin title 87
+Oligo Sequences Used in the QPCR Validation of the Microarray Analysis
+###end title 87
+###begin p 88
+(14 KB XLS)
+###end p 88
+###begin p 89
+Click here for additional data file.
+###end p 89
+###begin title 90
+Illustration of DEDS Extreme Point Determination
+###end title 90
+###begin p 91
+###xml 58 60 58 60 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b45">45</xref>
+###xml 325 326 325 326 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 624 625 624 625 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 630 631 630 631 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+Application of DEDS in (a) the Affymetrix spike-in data ([45]); (b) the Affymetrix spike-in data with the top 100 DE genes removed to generate a dataset with only null genes. This dataset consists of 12,626 probe sets, 14 of which are spiked in at varying concentrations, and the rest are null. DEDS was applied synthesizing t statistics, fold change, and SAM (Significance Analysis for Microarrays) measures. The diagonal and upper triangle display Q-Q plots and scatterplots of the respective measures, while the lower triangle gives corresponding correlation coefficients. Red spots are differentially expressed by DEDS. E of (t statistic, fold change and SAM) was found to be (171.9, 7.2, 82.34) in panel (a) and at (7.5, 0.5, 3.1) in panel (b).
+###end p 91
+###begin p 92
+(39 KB DOC)
+###end p 92
+###begin p 93
+Click here for additional data file.
+###end p 93
+###begin title 94
+Accession Numbers
+###end title 94
+###begin p 95
+###xml 120 124 120 124 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1</italic>
+###xml 139 145 139 145 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">RPL26A</italic>
+###xml 160 166 160 166 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">RPS25A</italic>
+###xml 246 249 246 249 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">U3B</italic>
+The Saccharomyces Genome Database (SGD; ) accession numbers for the genes and gene products discussed in this paper are ceg1 (S000003098), RPL26A (S000004336), RPS25A (S000003259), SNR17B (U3B) (S000007441), Spt4 (S000003295), Spt5 (S000004470), U3B (S000007441), YDR064W (RPS13) (S000002471), YGR027C (RPS25A) (S000003259), YLR344W (RPL26A) (S000004336), and YOL127W (RPL25) (S000005487).
+###end p 95
+###begin p 96
+This work was supported by grants to GAH from the National Institutes of Health (GM60479) and the University of California Cancer Research Coordinating Committee. LS was supported by a grant from the Packard Foundation. We thank Manny Ares for many stimulating discussions related to this work.
+###end p 96
+###begin title 97
+Abbreviations
+###end title 97
+###begin p 98
+analysis of variance
+###end p 98
+###begin p 99
+differential expression
+###end p 99
+###begin p 100
+Differential Expression via Distance Synthesis
+###end p 100
+###begin p 101
+degrees of freedom
+###end p 101
+###begin p 102
+intron accumulation
+###end p 102
+###begin p 103
+quantitative RT-PCR
+###end p 103
+###begin p 104
+ribosomal
+###end p 104
+###begin p 105
+semiparametric hierarchical mixture model
+###end p 105
+###begin p 106
+splice junction
+###end p 106
+###begin title 107
+References
+###end title 107
+###begin article-title 108
+Alternative pre-mRNA splicing and proteome expansion in metazoans
+###end article-title 108
+###begin article-title 109
+An extensive network of coupling among gene expression machines
+###end article-title 109
+###begin article-title 110
+Integrating mRNA processing with transcription
+###end article-title 110
+###begin article-title 111
+Exploring functional relationships between components of the transcription, splicing and mRNA export machinery by gene expression machinery
+###end article-title 111
+###begin article-title 112
+###xml 56 61 <span type="species:ncbi:4932">yeast</span>
+Conditional inactivation of mRNA capping enzyme affects yeast pre-mRNA splicing in vivo
+###end article-title 112
+###begin article-title 113
+###xml 27 32 <span type="species:ncbi:4932">yeast</span>
+Conditional mutants of the yeast mRNA capping enzyme show that the cap enhances, but is not required for, mRNA splicing
+###end article-title 113
+###begin article-title 114
+###xml 95 119 95 119 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 95 119 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Perturbation of transcription elongation influences the fidelity of internal exon inclusion in Saccharomyces cerevisiae
+###end article-title 114
+###begin article-title 115
+A slow RNA ploymerase II affects alternative splicing in vivo
+###end article-title 115
+###begin article-title 116
+A microarray configuration to quantify expression levels and relative abundance of splice variants
+###end article-title 116
+###begin article-title 117
+###xml 22 27 <span type="species:ncbi:9606">human</span>
+Genome-wide survey of human alternative pre-mRNA splicing with exon junction microarrays
+###end article-title 117
+###begin article-title 118
+Revealing global regulatory features of mammalian alternative splicing using a quantitative microarray platform
+###end article-title 118
+###begin article-title 119
+Splicing goes global
+###end article-title 119
+###begin article-title 120
+###xml 39 44 <span type="species:ncbi:4932">yeast</span>
+Genomic-scale quantitative analysis of yeast pre-mRNA splicing: Implications for splice-site recognition
+###end article-title 120
+###begin article-title 121
+###xml 50 54 <span type="species:ncbi:9689">lion</span>
+###xml 66 71 <span type="species:ncbi:4932">yeast</span>
+A handful of intron-containing genes produces the lion's share of yeast mRNA
+###end article-title 121
+###begin article-title 122
+###xml 42 47 <span type="species:ncbi:4932">yeast</span>
+Genomewide analysis of mRNA processing in yeast using splicing-specific microarrays
+###end article-title 122
+###begin article-title 123
+Transcript elongation on a nucleoprotein template
+###end article-title 123
+###begin article-title 124
+Dual roles for Spt5 in pre-mRNA processing and transcription elongation revealed by identification of Spt5-associated proteins
+###end article-title 124
+###begin article-title 125
+###xml 21 34 <span type="species:ncbi:4896">fission yeast</span>
+Interactions between fission yeast mRNA capping enzymes and elongation factor Spt5
+###end article-title 125
+###begin article-title 126
+Transcription elongation factor hSPT5 stimulates mRNA capping
+###end article-title 126
+###begin article-title 127
+Functional interactions of RNA-capping enzyme with factors that positively and negatively regulate promoter escape by RNA polymerase II
+###end article-title 127
+###begin article-title 128
+Statistical methods for indentifying differentially expressed genes in replicated cDNA microarray experiments
+###end article-title 128
+###begin article-title 129
+Analysis of variance for gene expression microarray data
+###end article-title 129
+###begin article-title 130
+Assessing gene significance from cDNA microarray expression data via mixed models
+###end article-title 130
+###begin article-title 131
+Empirical bayes analysis of a microarray experiment
+###end article-title 131
+###begin article-title 132
+Models for microarray gene expression data
+###end article-title 132
+###begin article-title 133
+On differential variability of expression ratios: Improving statistical inference about gene expression changes from microarray data
+###end article-title 133
+###begin article-title 134
+On parametric empirical Bayes methods for comparing multiple groups using replicated gene expression profiles
+###end article-title 134
+###begin article-title 135
+Replicated microarray data
+###end article-title 135
+###begin article-title 136
+Linear models and empirical Bayes methods for assessing differential expression in microarray experiments
+###end article-title 136
+###begin article-title 137
+A Bayesian framework for the analysis of microarray expression data: Regularized t-test and statistical inferences of gene changes
+###end article-title 137
+###begin article-title 138
+Detecting differential gene expression with a semiparametric hierarchical mixture method
+###end article-title 138
+###begin article-title 139
+Identifying differentially expressed genes from microarray experiments via statistic synthesis
+###end article-title 139
+###begin article-title 140
+###xml 92 116 92 116 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 92 116 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Evidence that Spt4, Spt5, and Spt6 control transcription elongation by RNA polymerase II in Saccharomyces cerevisiae
+###end article-title 140
+###begin article-title 141
+Ratio-based decisions and the quantitative analysis of cDNA microarray images
+###end article-title 141
+###begin article-title 142
+Significance analysis of microarrays applied to the ionizing radiation response
+###end article-title 142
+###begin article-title 143
+###xml 63 87 63 87 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 63 87 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Genome-wide bioinformatic and molecular analysis of introns in Saccharomyces cerevisiae
+###end article-title 143
+###begin article-title 144
+###xml 52 57 <span type="species:ncbi:4932">yeast</span>
+The transcription factor Ifh1 is a key regulator of yeast ribosomal protein genes
+###end article-title 144
+###begin article-title 145
+###xml 104 128 104 128 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 104 128 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Genetic interactions of Spt4-Spt5 and TFIIS with the RNA polymerase II CTD and CTD modifying enzymes in Saccharomyces cerevisiae
+###end article-title 145
+###begin article-title 146
+###xml 31 36 <span type="species:ncbi:9606">human</span>
+Structure-function analysis of human Spt4: Evidence that hSpt4 and hSpt5 exert their roles in transcriptional elongation as parts of the DSIF complex
+###end article-title 146
+###begin article-title 147
+Control of alternative pre-mRNA splicing by RNA Pol II elongation: Faster is not always better
+###end article-title 147
+###begin article-title 148
+###xml 36 60 36 60 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 36 60 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Construction of a set of convenient Saccharomyces cerevisiae strains that are isogenic to S288C
+###end article-title 148
+###begin article-title 149
+Efficient association of U2 snRNPs with pre-mRNA requires an essential U2 RNA structural element
+###end article-title 149
+###begin article-title 150
+Normalization for cDNA microarray data: A robust composite method addressing single and multiple slide systematic variation
+###end article-title 150
+###begin article-title 151
+Dissecting the regulatory circuitry of a eukaryotic genome
+###end article-title 151
+###begin article-title 152
+Summaries of Affymetrix GeneChip probe level data
+###end article-title 152
+###begin title 153
+Figures and Tables
+###end title 153
+###begin title 154
+Splicing Array Probe and RT-PCR Primer Design
+###end title 154
+###begin p 155
+###xml 287 289 287 289 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b15">15</xref>
+(A) Probe design of the splicing array. There are three oligonucleotide probes for each intron-containing gene: intron (red), splice-junction (blue), and exon (green). In addition, there are also about 800 probes for intronless genes (yellow). This figure is modified from Clark et al. [15].
+###end p 155
+###begin p 156
+(B) Primer design of RT-PCR. Primers are chosen to flank the intron-exon2 junction and the second exon or spliced mRNA.
+###end p 156
+###begin title 157
+Graphical Representation of Designs
+###end title 157
+###begin p 158
+(A) In this representation, vertices correspond to target mRNA samples and edges to hybridizations between two samples. By convention, we place the green-labeled sample at the tail and the red-labeled sample at the head of the arrow.
+###end p 158
+###begin p 159
+###xml 48 49 48 49 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 63 65 63 65 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S,</italic>
+###xml 70 71 70 71 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 93 94 93 94 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">V</italic>
+###xml 128 131 128 131 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(S)</italic>
+(B) Nested design of the experiment. The effect A is nested in S, and S is in turn nested in V. Note that there are two samples (S) for each mutant, but only one sample for the wild-type.
+###end p 159
+###begin title 160
+Scatterplots of the Logarithm Intensities of Splicing-Related Probes
+###end title 160
+###begin p 161
+Points are color-coded as indicated.
+###end p 161
+###begin title 162
+Boxplots of Normalized Ratios of Splicing-Related Probes Stratified by Mutants
+###end title 162
+###begin p 163
+Splice-junction and exon probe ratios show a shift from the horizontal zero line in the negative direction, whereas intron probe ratios are centered at zero.
+###end p 163
+###begin title 164
+Scatterplots of Normalized Ratios of Splicing-Related Probes
+###end title 164
+###begin p 165
+Points are color-coded by their mutant identity. Gray horizontal and vertical reference lines indicate zero expression ratios.
+###end p 165
+###begin title 166
+Analysis of DE Gene Ranking and Selection by DEDS
+###end title 166
+###begin p 167
+###xml 160 168 160 168 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;242</italic>
+(A) A comparison of ranking of DE genes by DEDS and individual measures. Plotted are a scatterplot matrix of DE gene rankings by the five models and DEDS using spt5-242 IA indices. Ranks are logged so that correlations of DE genes (low ranks) are more clearly displayed.
+###end p 167
+###begin p 168
+###xml 245 246 245 246 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 332 333 332 333 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+(B) Sensitivity of DEDS declarations of DE to choice of scale and distance metric. Genes, ordered according to their DE significance by the raw/Euclidean combination (so that the black points are monotone by definition) are plotted against DEDS q-values for all four scale/distance combinations. The dashed gray line marks the 0.05 q-value threshold.
+###end p 168
+###begin title 169
+Venn Diagram of DE Genes from Different Mutants
+###end title 169
+###begin p 170
+###xml 38 42 38 42 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 51 69 51 69 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">(spt5&#8211;194, spt5&#8211;4,</italic>
+###xml 74 84 74 84 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5&#8211;242).</italic>
+###xml 164 165 164 165 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 172 173 172 173 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">&lt;</italic>
+###xml 189 193 189 193 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 234 238 234 238 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 269 273 269 273 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5</italic>
+###xml 278 286 278 286 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+###xml 292 295 292 295 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p &lt;</italic>
+###xml 304 309 304 309 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5,</italic>
+###xml 314 318 314 318 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 323 325 323 325 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p&lt;</italic>
+###xml 334 338 334 338 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt4</italic>
+###xml 340 345 340 345 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">spt5,</italic>
+###xml 350 358 350 358 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">ceg1&#8211;250</italic>
+###xml 363 365 363 365 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p&lt;</italic>
+(A) compares DE genes among the three spt5 mutants (spt5-194, spt5-4, and spt5-242). Statistical test shows that the common 43 genes are highly significant, with a p-value < 0.001. In (B), spt5 refers to the 43 common genes among all spt5 mutants. The overlaps between spt5 and ceg1-250 (40, p < 0.001), spt5, and spt4 (8, p< 0.001), spt4, spt5, and ceg1-250 (7, p< 0.001) are all significant.
+###end p 170
+###begin p 171
+Summary of the Five Competing DE Models
+###end p 171
+###begin p 172
+Degrees of Freedom for the ANOVA Mixed Models
+###end p 172
+###begin p 173
+Number of DE in SJ and IA Indices
+###end p 173
+###begin p 174
+QPCR Validation DE Microarray Data
+###end p 174
+###begin p 175
+Fold change corresponds to the log-ratio of pre-/spliced mRNA. Numbers in bold text highlight concordance between the QPRC and microarray (DEDS) analysis.
+###end p 175
+###begin p 176
+###xml 0 1 0 1 <sup xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">a</sup>
+a Genes identified as DE using DEDS.
+###end p 176
+###begin p 177
+###xml 0 1 0 1 <sup xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">b</sup>
+b Genes identified as non-DE using DEDS and whose QPCR fold changes are within the (-1, 1) thresholds.
+###end p 177
+###begin p 178
+Distribution of DE Genes
+###end p 178
+###begin p 179
+Fold change corresponds to the IA index value, which is the normalized change of intron probe signals. RP, ribosomal genes; non-RP, non-ribosomal genes.
+###end p 179
+###begin p 180
+Properties of DE Genes with a Positive Fold Change (Average)
+###end p 180
+###begin p 181
+###xml 141 143 141 143 <xref xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="pcbi-0010039-b44">44</xref>
+###xml 322 330 322 330 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p &lt; 0.05</italic>
+Start is the nucleotide position in ORF where intron begins; mRNA/h is the number of times a gene is transcribed per hour (as determined in [44]). Numbers in parentheses are associated median absolute deviations. Numbers in bold, italic text are significantly different from the corresponding value for all introns at the p < 0.05 level.
+###end p 181
+###begin p 182
+Properties of DE Genes with a Negative Fold Change (Average)
+###end p 182
+###begin p 183
+###xml 116 117 116 117 <italic xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+Numbers in bold, italic text are significantly different from the corresponding value for all non-RP introns at the p < 0.05 level. Numbers in parentheses are associated median absolute deviations.
+###end p 183
+###begin p 184
+###xml 0 5 <span type="species:ncbi:4932">Yeast</span>
+Yeast Strains
+###end p 184
+###begin p 185
+Derivation of Variance Components for Model I
+###end p 185
+###begin p 186
+###xml 0 20 0 20 <bold xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Competing interests.</bold>
+Competing interests. The authors have declared that no competing interests exist.
+###end p 186
+###begin p 187
+###xml 0 21 0 21 <bold xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">Author contributions.</bold>
+Author contributions. GAH and MRS conceived and designed the experiments. TAB performed the experiments. YX, YHY, and MRS analyzed the data. YHY, LS, and GAH contributed reagents/materials/analysis tools. YX, YHY, TAB, GAH, and MRS wrote the paper.
+###end p 187
+###begin p 188
+Citation: Xiao Y, Yang YH, Burckin TA, Shiue L, Hartzog GA, et al. (2005) Analysis of a splice array experiment elucidates roles of chromatin elongation factor Spt4-5 in splicing. PLoS Comput Biol 1(4): e39.
+###end p 188
+

@@ -1,0 +1,734 @@
+###begin article-title 0
+A Fully Atomistic Model of the Cx32 Connexon
+###end article-title 0
+###begin p 1
+Analyzed the data: SP FM FZ. Wrote the paper: SP FM. Other: Performed computer simulations: FZ. Conceived, designed and performed computer simulations and models: SP.
+###end p 1
+###begin p 2
+Connexins are plasma membrane proteins that associate in hexameric complexes to form channels named connexons. Two connexons in neighboring cells may dock to form a "gap junction" channel, i.e. an intercellular conduit that permits the direct exchange of solutes between the cytoplasm of adjacent cells and thus mediate cell-cell ion and metabolic signaling. The lack of high resolution data for connexon structures has hampered so far the study of the structure-function relationships that link molecular effects of disease-causing mutations with their observed phenotypes. Here we present a combination of modeling techniques and molecular dynamics (MD) to infer side chain positions starting from low resolution structures containing only Calpha atoms. We validated this procedure on the structure of the KcsA potassium channel, which is solved at atomic resolution. We then produced a fully atomistic model of a homotypic Cx32 connexon starting from a published model of the Calpha carbons arrangement for the connexin transmembrane helices, to which we added extracellular and cytoplasmic loops. To achieve structural relaxation within a realistic environment, we used MD simulations inserted in an explicit solvent-membrane context and we subsequently checked predictions of putative side chain positions and interactions in the Cx32 connexon against a vast body of experimental reports. Our results provide new mechanistic insights into the effects of numerous spontaneous mutations and their implication in connexin-related pathologies. This model constitutes a step forward towards a structurally detailed description of the gap junction architecture and provides a structural platform to plan new biochemical and biophysical experiments aimed at elucidating the structure of connexin channels and hemichannels.
+###end p 2
+###begin title 3
+Introduction
+###end title 3
+###begin p 4
+###xml 352 355 340 343 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Yeager1">[1]</xref>
+###xml 357 360 345 348 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Harris1">[2]</xref>
+###xml 486 489 474 477 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Kumar1">[3]</xref>
+###xml 588 591 576 579 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Cascio1">[4]</xref>
+###xml 710 713 698 701 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Milks1">[5]</xref>
+###xml 976 979 964 967 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Kumar1">[3]</xref>
+Intercellular gap junction (IGJ) channels are ubiquitous components of higher organisms that permit the direct exchange of ions and molecules up to a molecular mass of approximately1 kDa between neighboring cells and thus play fundamental functions in intercellular communication between the vast majority of cell types (for comprehensive reviews, see [1], [2]). IGJ channels are formed by the end-to-end non-covalent docking of two hexameric oligomers, named hemichannels or connexons [3], each provided by one of the two neighboring cells. Each one of the six subunits, named connexins [4], in the annular assembly of a connexon, comprises four hydrophobic transmembrane (TM) segments, designated TM1 to TM4 [5]. N- and C-terminal tails and one connecting loop are found within the connexin cytoplasmic region, whereas the remaining two extracellular loops permit hemichannel docking and formation of a full intercellular channel that excludes the extracellular environment [3].
+###end p 4
+###begin p 5
+###xml 81 84 81 84 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Eiberger1">[6]</xref>
+###xml 237 240 237 240 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Gerido1">[7]</xref>
+###xml 447 450 447 450 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Bergoffen1">[8]</xref>
+###xml 57 62 <span type="species:ncbi:10090">mouse</span>
+###xml 67 72 <span type="species:ncbi:9606">human</span>
+Over 20 different connexin genes have been identified in mouse and human genomes [6] and spontaneous mutations in these genes have been linked to the pathogenesis of several diseases, including disorders of the heart, skin, ear and lens [7]. In particular mutations of GJB1, the gene which encodes connexin 32 (Cx32), have been implicated in some forms of the X-linked Charcot-Marie-Tooth (CMTX) disease, an inherited sensory and motor neuropathy [8].
+###end p 5
+###begin p 6
+###xml 235 238 235 238 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Sosinsky1">[9]</xref>
+###xml 388 392 388 392 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Unger1">[10]</xref>
+###xml 458 462 458 462 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 819 823 815 819 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Oshima1">[12]</xref>
+###xml 858 861 854 857 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Sosinsky1">[9]</xref>
+###xml 898 902 894 898 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 994 998 990 994 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Skerrett1">[13]</xref>
+###xml 999 1003 995 999 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Kronengold2">[16]</xref>
+###xml 581 589 <span type="species:ncbi:9606">patients</span>
+Although a considerable effort has been devoted to elucidating structural determinants and to clarify structure/function relationships of these channels, only medium- to low-resolution structures have been obtained so far (reviewed in [9]). Major contributions towards the structural determination of gap junctions have been provided by electron cryomicroscopy of channels formed by Cx43 [10]. Based on a more accurately resolved structure, Fleishman et al. [11] proposed a model for the arrangement of Calpha carbon atoms in the TM helices which, owing to the wealth of data from patients with naturally occurring CMTX mutations, were mapped onto the amino acid sequence of Cx32. This choice is supported by the high degree of sequence homology in TM domains of different connexins, suggesting similar TM architecture [12]. However, it has been pointed out [9] that the structure proposed in ref. [11] may not represent a consensus model owing to disagreements in several experimental reports [13]-[16]. Indeed, corrections to the assignment of the helix orientations are expected due to the poor vertical resolution (approximately2 nm) of the electron density map.
+###end p 6
+###begin p 7
+###xml 164 168 160 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 635 639 631 635 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Bicego1">[17]</xref>
+###xml 903 907 899 903 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Hernandez1">[18]</xref>
+###xml 1012 1033 1008 1029 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Streptomyces Lividans</italic>
+###xml 1094 1101 1090 1097 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s001">Text S1</xref>
+###xml 1194 1203 1190 1199 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s002">Figure S1</xref>
+###xml 1314 1318 1310 1314 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Guidoni1">[19]</xref>
+We have recently applied molecular modeling and simulation techniques to construct an atomic model of the TM part of a connexon, based on published Calpha scaffold [11]. Despite the shortcomings due to carrying out molecular dynamics (MD) simulations in the absence of an explicit membrane environment, our TM model provided important structural insights into the effects of the point mutation methionine to threonine at position 34 of Cx26 (Cx26M34T) within the TM phase of the connexon. The model prediction that this mutation leads to a constriction of the channel pore accords with experimental data obtained by various techniques [17]. A similar model of the wild type Cx26 IGJ channel, combined with use of the Renkin's equation, predicted a value for the unitary permeability of Cx26 to cAMP that is in agreement with the experimental estimate obtained by a novel method based on FRET microscopy [18]. The application of our modeling procedure to the well-resolved structure of the potassium channel from Streptomyces Lividans (KcsA), taken as a control case (see Supporting Information Text S1), provided root mean fluctuations per residue of nearly 2 A (see Supplementary Information, Figure S1), in line with the results obtained by previous theoretical studies within explicit membrane-like environment [19].
+###end p 7
+###begin p 8
+###xml 457 458 457 458 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 563 565 563 565 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ii</italic>
+In this article, we report the construction of the first model of a full connexon within a phospholipid bilayer. Our primary aim was obviating limitations present in our original design that, in the absence of modeled extracellular and cytoplasmic loops, lacked connectivity between the TM helices. Prediction of the side chain positions allowed us to re-evaluate the relative orientation of the TM helices. Our calculations provide new molecular insights (i) on the role played by specific amino acids in keeping the correct folding of individual connexins and (ii) on the nature of the protein-protein interactions that hold together the quaternary structure of the connexon. These goals have been achieved by devising a practical protocol that combines modeling techniques with MD to produce interpretable protein models from a set of Calpha coordinates corresponding to low resolution structures.
+###end p 8
+###begin title 9
+Results
+###end title 9
+###begin title 10
+MD drives the modeled system to a stable state
+###end title 10
+###begin p 11
+###xml 70 79 70 79 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g001">Figure 1a</xref>
+###xml 181 185 181 185 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Unger1">[10]</xref>
+###xml 187 191 187 191 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 863 872 863 872 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g001">Figure 1b</xref>
+###xml 1341 1345 1341 1345 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-FaraldoGomez1">[20]</xref>
+By construction, the overall structural determinants of the connexon (Figure 1a) meet those of recombinant, C-terminal truncated, Cx43 channels obtained by cryo-electron microscopy [10], [11]. Molecular mechanics protocols lead to conformations corresponding to local energy minima in the proximity of the starting configuration. We opted instead for MD simulations since temperature effects intrinsic in this technique avoid trapping by shallow local minima, and thus permit the entire complex to explore better the energy landscape. In the course of the MD simulations performed on the Cx32 model, the TM region featured RMSD deviations from the initial conformation ranging from 0.1 up to 0.2 nm for individual connexins, indicative of a very stable behavior. RMSD values for the whole connexin stabilized around 0.3 nm after a simulation time of nearly 5 ns (Figure 1b). The differences between the RMSD calculated over the TM domain of the connexon and those of the separated connexins indicates that the structure of the helix bundles remains stable while global quaternary structure rearrangements take place in the course of the simulation. The observed dynamical behavior is in agreement with a general analysis of the convergence achieved by MD simulations of different membrane proteins within a time window of the order of 10 ns [20].
+###end p 11
+###begin title 12
+Overview of the connexon model in a membrane patch and dynamical behavior.
+###end title 12
+###begin p 13
+a) Cartoon of the side view of the connexon. Each connexin is depicted with different colors. The central connexin is additionally colored by structure: pink for helices, white for coils and light pink for beta-strands. The phospholipid membrane, embedding the hemi-channel, is represented in gray. Four phospholipids randomly chosen are colored by atom. b) Root mean square deviations (RMSD) calculated over the Calpha atoms of the whole connexon (black) and over the sole TM domain of the connexon (red). Individual RMSD traces of each of the six connexin TM domains are practically indistinguishable and remain below 0.17 nm (lower traces). c) Structural superposition between initial (red) and final (blue) conformers. The Tyr151 residues that delineate the maximum constriction point of the channel pore are shown in space filling mode. d) Minimum diameter of the pore measured as the distance between the OH atoms of opposite Tyr151 in different connexins, averaged over the three possible pairs. The nearly horizontal red dotted line corresponds to a linear fit over the entire simulation, with slope of -0.004 and an y-ordinate of 1.45 nm. e) Stereo view of the rigid docking of the Calpha models by Fleishman et al. (red tube) and ours (blue tube) onto the electron microcopy map of Cx43 for the TM part of one connexin seen from the membrane side. Calpha atoms are also shown.
+###end p 13
+###begin title 14
+Pore size
+###end title 14
+###begin p 15
+###xml 86 90 86 90 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Unger1">[10]</xref>
+###xml 195 204 195 204 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g001">Figure 1c</xref>
+###xml 251 255 251 255 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Pore</sub>
+###xml 421 425 421 425 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Pore</sub>
+###xml 488 497 488 497 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g001">Figure 1d</xref>
+###xml 652 656 640 644 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Gong1">[21]</xref>
+###xml 693 696 669 672 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Sosinsky1">[9]</xref>
+###xml 735 739 711 715 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Unger1">[10]</xref>
+###xml 932 936 908 912 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Pore</sub>
+###xml 1081 1085 1045 1049 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Bicego2">[22]</xref>
+###xml 1600 1604 1564 1568 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Hernandez1">[18]</xref>
+The reported maximum constriction point of the gap junction sits within the TM domain [10]. Consistently, the pore diameter predicted by our model has its narrowest point at the level of Tyr151 (Figure 1c), resulting in an average internal diameter, dPore, calculated between opposite OH moieties that fluctuated during the MD simulation from 1.1 to 1.7 nm. A linear fit gives a nearly horizontal line (slope -0.004) at dPore = 1.4 nm, underlining the good convergence for the TM domain (Figure 1d). Considering intrinsic fluctuations, this value agrees well with the range from approximately1.1 nm estimated by perfusion of polyethylene glycol probes [21] to approximately1.5 nm estimated by [9] based on cryoelectron microscopy data [10]. Our results point to a highly mobile behavior of the channel, originating from quaternary structure oscillations as well as side chain mobility of the single residues. Indeed, if an average dPore size of approximately1.4 nm is assumed, fluctuations are needed to account for the passage of larger fluorescent tracers such as Alexa Fluor594 [22] that have a minimum (non solvated) diameter of nearly 1.6 nm. Thus, our simulations suggest that large permeating molecules may slowly creep through gap-junction channels exploiting positional rearrangements of the connexin subunits powered by thermal energy. In so doing, they unavoidably interact with pore residues. These interactions, together with geometrical constraints, will therefore be the key determinants of the molecular permeability to larger solutes, including key metabolites and second messengers [18].
+###end p 15
+###begin title 16
+Comparison with electron microscopy map
+###end title 16
+###begin p 17
+###xml 172 179 168 175 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 261 265 257 261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 395 404 391 400 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g001">Figure 1e</xref>
+###xml 664 673 660 669 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g001">Figure 1e</xref>
+Aimed to compare the gross geometrical determinants of our model against the raw experimental data we performed a rigid fit of the Calpha atoms of the final (averaged, see Methods section) connexon structure, using the same cryoelectron microscopy data of ref. [11]. Small deviations were found respect to the original model in the positions of TM3, which slightly moved towards the pore lumen (Figure 1e). The mismatch in the pitch of helix TM2 is described in the next paragraph. Although the map is too coarse to permit meaningful quantitative comparisons, visual inspection of the best fits indicates that both models match equally well the experimental data (Figure 1e).
+###end p 17
+###begin title 18
+Orientation and structure of the TM2 helix
+###end title 18
+###begin p 19
+###xml 54 58 54 58 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 254 258 250 254 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 839 846 835 842 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0002614-t001">Table 1</xref>
+###xml 969 973 965 969 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 1214 1225 1210 1221 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g002">Figure 2a,b</xref>
+###xml 1290 1294 1286 1290 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+In the original assignment by Fleishman and coworkers [11], the relative rotation angles of the alpha helices fitted into the density map were estimated by analysis of evolutionary conservation and hydrophobicity of amino-acid residues. Thus TM2 in ref. [11] occupies the most peripheral position within each of the six connexins, facing the membrane lipid phase, and consequently it is the only helix not involved in inter-connexin interactions. However, 6 out of 13 TM2 residues reported to be involved in CMTX disease (see  and linked refs. therein) are exposed to the hydrophobic phase, suggesting that an alternative orientation is possible. Therefore, we sought to explore different helical orientations that would increase the contact area between TM2 and the rest of the four helix bundle, and reduce the inter-helical gap volume (Table 1). Using rigid docking techniques, we obtained a different orientation for TM2, rotated nearly 180 degrees respect to ref. [11], which presents a higher degree of surface complementarity. In our model only 3 residues involved in CMTX disease, namely, Leu81, Ser85 and Leu89 face the lipid phase, and thus, do not contribute to the formation of inter helical contacts. Figure 2a,b show a comparison between TM2 in our structure and that of ref. [11].
+###end p 19
+###begin title 20
+Side view of the connexin four-helix bundle for different orientations of the TM2 helix.
+###end title 20
+###begin p 21
+###xml 37 41 37 41 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+a) TM2 (red) oriented as proposed in [11]. The ribbons representing the other three TM helices are colored in yellow (TM1), green (TM3) and orange (TM4). TM2 residues involved in CMTX disease, according to the Swiss-Prot database (entry code P08034), are represented with sticks. Residues Arg32 (TM1) and Glu142 (TM3), which form a salt bridge exposed to the pore lumen are shown for reference. b) Same as (a) but with the TM2 orientation proposed in this work. c) RMSD fit between the initial and average conformation during the last 5 ns of simulation (white). White dashed lines highlight the kink introduced by Pro87 in TM2.
+###end p 21
+###begin title 22
+Surface complementarities between different orientations of TM2.
+###end title 22
+###begin p 23
+###xml 60 64 56 60 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+The model as obtained from the original Calpha coordinates ([11] PBD entry code 1TXH) and the one obtained in this work are referred as Model A and B respectively.
+###end p 23
+###begin p 24
+Accessible surface area.
+###end p 24
+###begin p 25
+Defined as = Gap Volume/Interface ASA
+###end p 25
+###begin p 26
+###xml 207 217 207 217 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s3">Discussion</xref>
+This new orientation proposed for TM2 is supported by the exhaustive analysis of disease-causing mutations within the segment from Arg75 to Val95, both in Cx32 and in its highly homologous isoform Cx26 (see Discussion).
+###end p 26
+###begin p 27
+###xml 340 344 340 344 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ri1">[23]</xref>
+###xml 373 377 373 377 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 464 468 460 464 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Unger1">[10]</xref>
+###xml 654 663 646 655 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g002">Figure 2c</xref>
+###xml 870 874 862 866 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ri1">[23]</xref>
+###xml 1069 1079 1061 1071 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s003">Figure S2a</xref>
+Although the low resolution map does not show any obvious kinks in the TM domain, residues Leu83 through Pro87 defined a "proline kink" (PK) segment in a model of isolated TM2, where hydrogen bonding of Thr86 to the backbone carbonyl of Ile82 causes a 37 degrees bending of the helix that corresponds functionally to the channel open state [23]. The model proposed in ref. [11] was constructed by fitting canonical, i.e. straight, alpha-helices to the map in ref. [10] and thus shows no sign of a PK in TM2. MD relaxation in our model retrieved the PK early in the simulation, and stabilized around an average bend angle of 16+/-5 degrees (mean+/-S.D.) (Figure 2c). This more conservative estimate arises as a consequence of the constraints imparted to TM2 by its protein and membrane environment. Obviously, these constraints were not present in the isolated TM2 model [23]. Along the MD trajectory, we observed the formation of H-bond interactions between the Thr86 and the backbone carbonyl of Ile82, as well as between Ser85 and the backbone carbonyl of Leu81 (see Figure S2a), confirming their stabilizing role in TM2 bending.
+###end p 27
+###begin title 28
+Main determinants of connexon stability associated to electrostatic interactions
+###end title 28
+###begin p 29
+###xml 204 208 204 208 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Horovitz1">[24]</xref>
+###xml 210 214 210 214 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Hendsch1">[25]</xref>
+###xml 411 418 411 418 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0002614-t002">Table 2</xref>
+Inspection of the MD simulation trajectory reveals the formation of four salt bridges within each single connexin chain. Since energy gain upon formation of solvent-exposed charged groups is rather small [24], [25], it is expected that these interactions may break and form dynamically due to competition with the solvent. Nevertheless, bond occurrence was characterized by relatively prolonged time intervals (Table 2), indicating that salt bridges may play an important role in stabilizing the connexins fold.
+###end p 29
+###begin title 30
+###xml 87 95 87 95 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g003">figure 3</xref>
+Selected salt bridge interactions calculated over the 12 ns of MD simulation (see also figure 3).
+###end title 30
+###begin p 31
+###xml 103 112 103 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g003">Figure 3a</xref>
+###xml 325 329 325 329 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Oshima2">[26]</xref>
+###xml 434 438 434 438 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Oshima2">[26]</xref>
+###xml 664 671 664 671 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0002614-t002">Table 2</xref>
+###xml 1230 1234 1230 1234 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Chen1">[27]</xref>
+The first two salt-bridges are formed between Arg75 (TM2) with Glu residues at the extracellular side (Figure 3a), namely Glu41 (TM1) and Glu186 (TM4). The occurrence of these interactions accords with the complete connexon dissociation observed upon solubilization in dodecyl maltoside for the Cx26R75D and Cx26R75W mutants [26]. In apparent controversy, the Cx26R75A mutant seems to fold correctly and exhibits detergent resistance [26]. A possible explanation for this behavior is the presence of neighboring Lys187. During our simulations, this residue interacted with solvent/phospholipid molecules, but also established fluctuating salt bridges with Glu186 (Table 2). It can therefore be speculated that the stabilizing effect of the salt bridges between Arg75 and Glu186/Glu41 can be partially rescued by Lys187 in the presence of a small residue such as Ala that may confer local structural flexibility. Furthermore, connexons affected by the Cx26R75W mutation are sufficiently stable to form functional hemichannels in membranes although their properties differ from those of wild type Cx26 hemichannels, thus the absence of gap-junctional communication imparted by this mutation is not due to lack of connexon stability [27] but may result from confined structural distortions due to missing electrostatic stabilization between Glu41 and Glu186. This may destabilize docking between apposed connexons, resulting in defective gap junction channels.
+###end p 31
+###begin title 32
+Main electrostatic interactions from representative snapshots of the MD simulation.
+###end title 32
+###begin p 33
+a) Salt bridge network between Arg75 (TM2) and Glu41 (near TM1)-Glu186 (near TM4) located at the outer leaflet of the plasma membrane. b) Interaction between Arg22 (TM1)- Glu208 (TM4) at the inner leaflet of the membrane. c) Salt bridge formed by Arg32 (TM1) and Glu146 (TM3), located nearly in the middle of the membrane and facing the pore lumen. d) The scheme highlights the putative influence of above interaction in keeping the folding of the connexin.
+###end p 33
+###begin p 34
+###xml 95 104 95 104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g003">Figure 3b</xref>
+###xml 235 239 235 239 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ressot1">[28]</xref>
+The third salt bridge is formed between Arg22 (TM1) and Glu208 (TM4), at the cytoplasmic side (Figure 3b). This interaction, which is present in more than 50% of the simulation is consistent with R22G and R22P being missense mutations [28].
+###end p 34
+###begin p 35
+###xml 123 132 123 132 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g003">Figure 3c</xref>
+###xml 264 268 264 268 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman2">[29]</xref>
+###xml 379 388 379 388 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g003">Figure 3d</xref>
+The fourth salt bridge between Arg32 (TM1) and Glu146 (TM3) occurs midway through the membrane, exposed to the pore lumen (Figure 3c). The formation of these two salt-bridges has been recently validated by double compensatory mutants (K22E, E209R and R32E, E146R) [29]. Hence these strong inter-helix electrostatic interactions may contribute to tie together helices TM1 to TM4 (Figure 3d).
+###end p 35
+###begin title 36
+Hydrophobic interactions
+###end title 36
+###begin p 37
+###xml 12 20 12 20 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g004">Figure 4</xref>
+###xml 65 66 65 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 71 72 71 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 113 114 113 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 138 139 138 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 483 484 483 484 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 558 559 558 559 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 564 565 564 565 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 666 667 666 667 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 686 687 686 687 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 689 696 689 696 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0002614-t003">Table 3</xref>
+As shown in Figure 4, contacts between adjacent connexins, named A and B, are mediated by helices TM1 and TM3 in A, and by TM3 and TM4 in B. As previously observed, TM2 is the only helix that does not participate in inter-connexin contacts. In our simulations, these were essentially of hydrophobic nature and no firmly established electrostatic interactions were detected between adjacent connexins within the TM region. The average interface area between connexon subunits is 540 A2, with 15 % and 7 % of polar atoms in the interfaces of connexin subunits A and B, respectively. Notably, several aromatic residues are located within the interface (two in connexin A and 5 in connexin B, Table 3), which could further strengthen the quaternary complex through aromatic-aromatic stacking interactions.
+###end p 37
+###begin title 38
+Inter connexin surface.
+###end title 38
+###begin p 39
+###xml 138 145 138 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0002614-t003">Table 3</xref>
+Open-book representation of the average connexin dimer. The thick residues are those involved in protein-protein interactions reported in Table 3. Ribbons are colored by position going from red, to green and to blue from the center of the dimer.
+###end p 39
+###begin title 40
+Residues belonging to the TM region of the inter-connexin interface.
+###end title 40
+###begin p 41
+###xml 43 44 43 44 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 61 69 61 69 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g004">figure 4</xref>
+Accessible surface area (ASA) is given in A2 units. See also figure 4
+###end p 41
+###begin title 42
+Covariance matrix
+###end title 42
+###begin p 43
+###xml 286 290 286 290 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Rod1">[30]</xref>
+###xml 577 586 577 586 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g005">Figure 5a</xref>
+###xml 618 627 618 627 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g005">Figure 5b</xref>
+###xml 809 818 809 818 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g005">Figure 5a</xref>
+###xml 1324 1334 1324 1334 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s003">Figure S2b</xref>
+###xml 1735 1739 1735 1739 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Nelis1">[31]</xref>
+###xml 1823 1832 1823 1832 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g003">Figure 3b</xref>
+Given the potential relevance of the structural fluctuations, we turned our attention to the study of the normalized covariance matrix (CM) along the MD trajectory. This study may reveal the occurrence of correlated motions between segments of the proteins that are not directly linked [30]. The normalized CM is symmetrical and ranges from -1 to 1 for anti correlated and fully correlated motions, respectively. To ease data interpretation, we calculated the CM over the TM domain. Furthermore, we reduced the redundancy in the representation by averaging over each connexin (Figure 5a) and over each connexin dimer (Figure 5b). This allowed us to examine, respectively, interactions within individual connexins and inter-connexin interactions between adjacent proteins. The diagonal values of the matrix in Figure 5a correspond to autocorrelation, which is obviously unitary, whereas the off-diagonal elements gauge interactions between distinct residues of the same connexin protein. The averaged CM values range from 0.45 to 1, indicating highly correlated motions. However, correlation is higher among TM1, 3 and 4, whereas the kink imparted by Pro87 to TM2 (see above) reduces correlation. The lowest degree of correlation occurs at Trp77, whose bulky side chain is completely exposed to the exterior of the connexon (Figure S2b). Correlation peaks indicate strong interactions among residues reported to be involved in CMTX, namely: Arg22, Ser26 and Phe29 (TM1) with Trp132, Thr134 (TM3) and His94 (TM2), all located at the cytoplasmic side. Other important correlation peaks signal interactions of Thr134 (TM3) with Ala207 (TM4) and Ala39 (TM1) with Phe149 (TM3). Of notice, mutations A39P, A39V and F149I are involved in CMTX [31]. Finally, Arg22 (TM1) and Glu208 (TM4) are correlated by salt bridge interactions (Figure 3b).
+###end p 43
+###begin title 44
+Normalized covariance matrix averaged over the six TM domains.
+###end title 44
+###begin p 45
+Dark and light regions correspond to high and low correlation values respectively. White lines indicate the separation between helices. Numbers on the axes indicate the first residue of each of the TM helices, ticks are drawn every two residues. Major correlation islands commented in the text are indicated with dotted circles. To avoid redundancy, the blocks corresponding to interactions within four helices of one single connexin (a) and to interactions of helices belonging to adjacent connexins (b) are presented.
+###end p 45
+###begin p 46
+###xml 33 42 33 42 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g005">Figure 5b</xref>
+###xml 404 413 404 413 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g005">Figure 5b</xref>
+###xml 812 816 812 816 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Nelis1">[31]</xref>
+###xml 830 834 830 834 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Kelley1">[32]</xref>
+###xml 929 933 929 933 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Beltramello1">[33]</xref>
+The generally lower CM values in Figure 5b indicate weaker dimeric interactions. The largest peak is centered on Val152, at the extracellular end of TM3, which is a contact point with Val38 and, to a lesser extent, with Val35 in the TM1 of the adjacent connexin. Similarly, the quaternary assembly produces islands of high correlation between the C-terminal parts of TM1, TM3 and the N-terminals of TM4 (Figure 5b). The region surrounding the mid point of TM2 shows a less obvious behavior. The broad maximum is centered on Val84, which shows remarkable spatial covariance with residues belonging to other helices of contiguous protein subunits, with peaks at Phe31 (TM1), Tyr135 (TM3), Phe145 (TM3) and Val152 (TM3), despite the lack of direct contacts. This outcome accords with subtle mutations like Cx32V84I [31] and Cx26V84L [32] imparting a pathological phenotypes without major alteration in the unitary ionic conductance [33].
+###end p 46
+###begin title 47
+Discussion
+###end title 47
+###begin p 48
+###xml 467 471 467 471 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Sansom1">[34]</xref>
+Reaching near-atomic resolution for the structure of biologically important macromolecules, such as integral membrane proteins, is still a challenging task despite progress in specimen-preparation techniques. In the case of connexins, breaching the resolution limits of 5-10 A is likely to require several years. In this interim period, molecular simulations substantiated by the wealth of molecular biology data existing in the literature may provide valuable tools [34] that, akin to a computational nanoscope, permit to derive images of complex and otherwise inaccessible biomolecular systems.
+###end p 48
+###begin p 49
+###xml 672 679 668 675 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s001">Text S1</xref>
+The structural model presented here is the first attempt to provide an atomistic view for the TM domain of a connexon assembly within a realistic membrane, solvent and ionic environment. Our model, which relies on the assignment of the Calpha scaffold into a low resolution map, is in agreement with a variety of experimental data derived from mutagenesis analyses, as discussed below, although small deviations from the real structure cannot be excluded at present. Comparison with the test case of the KcsA potassium channel suggest that possible errors associated to our assignments are upper bounded by the dimensions of single amino acids (see Supporting Information Text S1).
+###end p 49
+###begin p 50
+###xml 113 117 113 117 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Nunn1">[35]</xref>
+###xml 158 162 158 162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Kovacs1">[36]</xref>
+###xml 258 262 258 262 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 392 396 392 396 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman2">[29]</xref>
+###xml 598 607 598 607 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0002614-g002">Figure 2a</xref>
+###xml 616 620 616 620 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 1262 1266 1262 1266 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ri1">[23]</xref>
+###xml 941 944 <span type="species:ncbi:9606">Man</span>
+Different assignments of the hydrophobic domains M1-M4 to the four helices in the cryo-EM map have been proposed [35]. Among them (reviewed in Kovacs et al., [36]), experimental data provide strong support for the positioning of TM3 and TM4 proposed in ref. [11]. That configuration is also consistent with TM1 forming a salt bridge between its Arg32 and Glu146 in TM3 (of the same connexin) [29]. However, data regarding the orientation of TM2 are of far less straightforward interpretation. Indeed, in contrast to M3 and M4, the residues in M1 and M2 are homogeneously conserved (as noted in the Figure 2a of ref. [11]) so that the orientation around their principal axis cannot be determined reliably on the basis of conservation alone. Our choice for the TM2 orientation is based on the analysis of disease-associated mutants and polymorfisms of Cx32, and the closely related Cx26 (see , ,  and at NCBI's Online Mendelian Inheritance in Man server ). Of notice, the TM2 of Cx32 and Cx26 differ by only two amino acids: Ser78 and Leu83 in Cx32 which are respectively replaced by Ala78 and Phe83 in Cx26. Chimerical Cx32 channels, obtained by substitution of a mutant TM2 from Cx26, show that this helix plays a critical role and is involved in voltage gating [23]. Hereafter we summarize the salient features of our analysis.
+###end p 50
+###begin p 51
+###xml 178 182 178 182 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Silander1">[37]</xref>
+###xml 184 188 184 188 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Tan1">[38]</xref>
+###xml 317 321 317 321 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Richard1">[39]</xref>
+###xml 628 632 621 625 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Goodenough1">[40]</xref>
+###xml 851 857 844 850 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">per se</italic>
+###xml 934 938 927 931 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Chen1">[27]</xref>
+###xml 1145 1155 1138 1148 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s003">Figure S2c</xref>
+###xml 1363 1367 1356 1360 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Unger1">[10]</xref>
+###xml 246 254 <span type="species:ncbi:9606">patients</span>
+Mutation of Arg75 to Trp in Cx32 (Cx32R75W), at the junction between the first extracellular loop (E1) and TM2, has twice been implicated in X-linked Charcot-Marie-Tooth disease [37], [38]. The corresponding mutation, Cx26R75W, has been found in patients with dominant autosomal deafness and palmoplantar keratoderma [39]. No other dominant mutations are found along the TM2 helix of Cx26. It has been suggested that the highly non-conservative amino acid substitution of a Trp into the interface between the alpha-helical TM2 region and the rigid beta-sheet forming E1 is likely to alter the secondary structure of the protein [40]. However, functional studies have recently determined that the absence of gap-junctional communication is due to defects in the assembly of mutant hemichannels into full gap-junction channels, whereas the hemichannels per se retain partial channel activity when examined in the unpaired configuration [27]. Consistent with these findings, TM2 in our model has Arg75 pointing towards the interior of the connexin four-helix bundle, in good position to form a double salt bridge interaction with Glu41 and Glu186 (Figure S2c). Thus we conclude that neutralization of the positive charge at position 75 generates important rearrangements at the extracellular side of the TM segment, near the maximum constriction zone of the channel [10].
+###end p 51
+###begin p 52
+###xml 84 88 84 88 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Carrasquillo1">[41]</xref>
+###xml 184 188 184 188 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Bruzzone1">[42]</xref>
+###xml 328 332 328 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Skerrett1">[13]</xref>
+###xml 445 455 445 455 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s003">Figure S2b</xref>
+###xml 643 647 643 647 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Locke1">[43]</xref>
+Proceeding along TM2 we meet Trp77. The recessive mutation Cx26W77R causes deafness [41] and prevents the formation of homotypic junctional channels in heterologous expression systems [42]. Accordingly, of the 48 cysteine substitutions made at Cx32 only W77C and two others (W133C, and T134C) resulted in nonfunctional channels [13]. We can rationalize these outcomes by noting that this is the only Trp near the extracellular membrane leaflet (Figure S2b) and, in our model, it lies in good position to establish specific interactions with cholesterol molecules, which may play a role in connexins trafficking or plasma membrane localization [43].
+###end p 52
+###begin p 53
+###xml 236 240 236 240 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Bruzzone1">[42]</xref>
+###xml 611 621 611 621 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s003">Figure S2d</xref>
+Although modification of several residues in TM2 may critically affect the permeability properties of the channel, this is not the case for Leu83 in Cx32 and the corresponding residue, Phe83, in Cx26. Indeed, Cx26F83L is a polymorphism [42]. In our model Leu83 is packed against Ser198 (TM4), which is frequently substituted among different connexin isoforms by other small residues, such as Ala, leaving enough space to accommodate the L83F mutation. Indeed, replacement of the Phe side chain in our model does not generate steric contacts at all, consistent with the lack of phenotypes for this substitution (Figure S2d).
+###end p 53
+###begin p 54
+###xml 174 178 174 178 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Rouger1">[44]</xref>
+###xml 203 210 203 210 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0002614-t002">Table 2</xref>
+###xml 288 292 288 292 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Kelley1">[32]</xref>
+###xml 421 422 421 422 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 422 426 422 426 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Beltramello1">[33]</xref>
+###xml 482 484 482 484 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2+</sup>
+###xml 723 727 723 727 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Skerrett1">[13]</xref>
+###xml 825 829 825 829 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Bicego1">[17]</xref>
+###xml 1090 1100 1090 1100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s003">Figure S2e</xref>
+###xml 1183 1184 1183 1184 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 1426 1430 1426 1430 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Park1">[45]</xref>
+In stark contrast, the next residue in the line, Val84, is invariant in all connexins. Cx32V84I is a physicochemically moderate mutation that was found to cause CMTX disease [44] (see also Supplementary Table 2 at ) whereas Cx26V84L is a rare mutation associated to nonsindromic deafness [32]. It leaves the unitary ionic conductance of homotypic Cx26 channels unaffected but has a deep impact on the permeability to InsP3[33], a second messenger that plays numerous key roles in Ca2+ homeostasis. Leu is slightly bulkier than Val, and our model places Val84 facing the helix bundle in close contact with Met34 (TM1). Mutations of Met34 to smaller residues (Ala, Thr) lead to a progressive reduction of unitary conductance [13]. We have recently shown that Cx26M34T is a pathogenic mutation implicated in hereditary deafness [17]. Hence we speculate that, in a sort of domino effect, substitution of Val84 by bulkier residues, such as Leu or Ile, may distort the tertiary structure through clashes with Met34, forcing TM1 to further expose its positively charged Arg32 into the pore lumen (Figure S2e). This would modify the possible interaction of Arg32 with negatively charged InsP3 molecules traversing the pore, ensuing in a reduced unitary permeability for this second messenger. Replacing Val84 with the smaller Ala should not trigger these changes. Indeed, the related mutation Cx26V84A is classified as a polymorphism [45], consistent with this conclusion.
+###end p 54
+###begin p 55
+###xml 144 145 144 145 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 143 145 143 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">V<sub>j</sub></italic>
+###xml 161 165 161 165 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Janssen1">[46]</xref>
+###xml 167 171 167 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Abrams1">[47]</xref>
+###xml 192 196 192 196 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ri1">[23]</xref>
+###xml 317 321 317 321 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ri1">[23]</xref>
+###xml 548 558 548 558 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s003">Figure S2a</xref>
+###xml 643 647 643 647 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Lee1">[48]</xref>
+Mutations in the next two polar residues, Ser85 and Thr86, have been reported to reduce open channel probability at null junctional potential, Vj = 0 (Cx32S85C, [46], [47] and Cx32T86A/V/L/N, [23]). For Thr86, this outcome has been interpreted as due to the loss of hydrogen bonding to the backbone carbonyl of Ile82 [23]. In our model, Ser85 and Thr86 point towards the lipid phase and form H-bonds with the carbonyl oxygen of, respectively, Leu81 and Ile82 one helix turn above. Similar features were detected in the course of our MD simulation (Figure S2a). Interestingly, early compilations of the Cx26 sequence reported a Ser at codon 86 [48], see also: ), implying that T86S, which maintains intact the H-bonding capabilities, is simply a polymorphism.
+###end p 55
+###begin p 56
+###xml 218 222 218 222 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ri1">[23]</xref>
+###xml 224 228 224 228 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Oh1">[49]</xref>
+###xml 350 354 350 354 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ressot2">[50]</xref>
+###xml 812 816 808 812 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-McGregor1">[51]</xref>
+###xml 202 209 <span type="species:ncbi:8355">Xenopus</span>
+Next, mutation Cx32P87A is yet another cause of the CMTX disease; nonetheless it forms functional channels with properties that differ mildly from those of wild-type controls when expressed in pairs of Xenopus oocytes [23], [49]. The subtle effects of P87A suggest that the phenotype is caused by impaired exchange of solutes larger than simple ions [50]. Furthermore, exchanging Pro with Val rather than Ala at codon 87 prevents expression of junctional currents in oocytes, suggesting that a progressive raise in the side chain bulkiness at position 87 may cause increasing levels of distortion in the tertiary and/or quaternary structure. However, the conformations of Val in alpha-helical environments are restricted to one rotamer population due to steric hindrances with the backbone of the preceding turn [51]; hence, an alternative possibility is that the conformational restriction of the Val side chain imparts local rigidity to the alpha-helix.
+###end p 56
+###begin p 57
+###xml 154 158 154 158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Beltramello1">[33]</xref>
+###xml 198 202 198 202 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Frei1">[52]</xref>
+###xml 312 316 312 316 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Zhang1">[53]</xref>
+###xml 356 360 356 360 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Common1">[54]</xref>
+###xml 374 378 374 378 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Nelis2">[55]</xref>
+Pathological effects have been reported for other residues of Cx26 along TM2, with a periodicity of nearly 3-4 residues (see ). Thus, similar to Cx26V84L [33], the deafness-linked Cx26A88S mutation [52] specifically affects the intercellular exchange of larger molecules but leaves the ionic permeability intact [53]. Two other related mutations, Cx30A88V [54] and Cx32A88V [55] are respectively associated with hydrotic ectodermal displasia, a skin disorder, and CMTX.
+###end p 57
+###begin p 58
+###xml 127 131 127 131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Zelante1">[56]</xref>
+###xml 192 202 192 202 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s003">Figure S2f</xref>
+###xml 294 298 294 298 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Nelis1">[31]</xref>
+Mutation of the next residue, Leu89, to Ile (as in Cx26L89I) results in simple polymorphisms without known deleterious effects [56], in agreement with its orientation towards the lipid phase (Figure S2f). However, Cx32L89P has been reported to be related with inherited peripheral neuropathies [31]; indeed Leu substitution with Pro is more severe, having the potential to alter the helical structure of TM2.
+###end p 58
+###begin p 59
+###xml 50 54 50 54 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Nelis1">[31]</xref>
+###xml 118 122 118 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Murgia1">[57]</xref>
+###xml 124 128 124 128 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Snoeckx1">[58]</xref>
+###xml 248 252 248 252 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Thonnissen1">[59]</xref>
+###xml 310 314 310 314 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Bruzzone1">[42]</xref>
+###xml 351 355 351 355 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ressot2">[50]</xref>
+###xml 755 759 755 759 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Palmada1">[60]</xref>
+###xml 1032 1042 1032 1042 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s003">Figure S2g</xref>
+Mutations at Leu90 are associated to CMTX in Cx32 [31], and to hearing loss in Cx26 varying from moderate to profound [57], [58]. In expression studies, Cx26L90P proteins were detected by immunofluorescence at contacting HeLa cell plasma membranes [59] but failed to induce the formation of homotypic channels [42]. The same fate occurred to Cx32L90H [50]. Cx26L90P mutant channels inserted into the plasma membrane of oocytes at a degree similar to wild type Cx26 but failed to induce any measurable macroscopic current; yet, co-expression of mutant and wild type channels, resembling the situation of heterozygous individuals, did not significantly affect the electrophysiological properties of the wild type Cx26, consistent with a recessive phenotype [60]. In summary, these results indicate that the above mutations at codon 90 do not prevent protein targeting to the plasma membrane, but severely compromise homotypic channel function. In our model Leu90 is packed within the hydrophobic environment of the four helix bundle (Figure S2g). Thus the introduction of a polar residue, as in the L90H mutation, may significantly distort the tertiary structure of individual connexins. As observed above, important changes to the secondary structure of TM2 are also expected in the L90P mutation due to the introduction of Pro that may destabilize the helical conformation near the cytoplasmic mouth of the pore.
+###end p 59
+###begin p 60
+###xml 46 50 46 50 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ressot2">[50]</xref>
+###xml 60 64 60 64 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Beltramello1">[33]</xref>
+###xml 610 614 610 614 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Abrams1">[47]</xref>
+###xml 791 795 791 795 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Abrams1">[47]</xref>
+###xml 1127 1137 1127 1137 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s003">Figure S2h</xref>
+The V95M mutation affects similarly both Cx32 [50] and Cx26 [33] producing channels that insert in the plasma membrane but are electrically silent. V95M occurs at the interface of TM2 with the cytoplasmic loop, which is thought to be an important determinant of pH sensitivity. The previous residue, His94, also belongs to this interface and, consistently, Cx32H94Y mutants did not induce measurable conductance when paired in the homotypic configuration. This outcome has been ascribed to the high probability for at least one of the two hemichannels of being closed regardless of the transjunctional voltage [47]. Interestingly, the Cx32H94Q mutation produces functional channels that differ from wild type Cx32 only in the kinetics of the currents evoked by transjunctional voltage steps [47]. In agreement with this result, our orientation of TM2 packs both His94 and Val95 inside the helix bundle. Substitution of the bulkier Tyr at position 94 on the final averaged structure leads to important clashes. Instead no structural perturbation results from Gln replacing His at codon 94, which retains H-bonding capabilities (Figure S2h). Similarly, the longer side chain of Met at position 95 could push TM1 towards the channel lumen, obstructing the pore.
+###end p 60
+###begin p 61
+In summary, although the low resolution of the electron microscopy data hinder the possibility of a definitive assignment for TM2 orientation, the one proposed here is supported by extensive mutational analysis, providing putative structure-based rationales for the effects of 16 mutants/polymorphisms along TM2 reported in nearly 30 independently published papers based on a variety of experimental techniques. More detailed structural determination or ad hoc molecular biology experiments are required to definitively solve this issue.
+###end p 61
+###begin p 62
+We hope that the model presented here may constitute a structural scaffold to rationalize also the effects of other point mutations leading to pathological phenotypes. Furthermore, this theoretical framework, or possible future refinements, may aid the design of new experiments aimed at elucidating the structure/function relationships in gap junction channels. It may additionally guide the design of novel mutants with impaired conducting or folding capabilities as a tool for selectively knocking down or knocking out connexin function. Possible extensions concern comparative modeling studies aimed at clarifying the determinants of differences among connexin isoforms.
+###end p 62
+###begin title 63
+Methods
+###end title 63
+###begin title 64
+Structural model of the TM section of Cx32
+###end title 64
+###begin p 65
+###xml 124 128 120 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 295 299 291 295 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Case1">[61]</xref>
+###xml 113 118 <span type="species:ncbi:10090">mouse</span>
+As mentioned above, the atomic model of the TM portion of Cx32 was constructed on the basis of a Calpha model of mouse Cx32 [11] (PDB entry code: 1TXH). The Cartesian coordinates of the remaining atoms of each residue were added in their canonical conformation using the XLEAP module of AMBER 8 [61]. This procedure generated a fully atomistic model of the TM portion of Cx32 affected by a number of steric clashes and internal tensions, corresponding to a high energy state. In this configuration, the system has a marked tendency to explode driven by van der Waals repulsions among the newly introduced side chain atoms. To overcome this problem, we devised a protocol based on MD, which allows the side chains to explore the available conformational space satisfying the restrictions imposed by the protein environment.
+###end p 65
+###begin title 66
+Structural relaxation
+###end title 66
+###begin p 67
+###xml 611 612 603 604 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 929 933 921 925 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Tsui1">[62]</xref>
+###xml 987 991 979 983 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Cornell1">[63]</xref>
+###xml 1193 1195 1185 1187 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 1201 1206 1193 1198 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Shake</italic>
+###xml 1259 1263 1251 1255 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Ryckaert1">[64]</xref>
+Starting from the initial, unstable, set of all-atoms coordinates, the system underwent 20 ps of unconstrained MD, yielding large geometrical distortions. To recover the original Calpha coordinates while simultaneously finding new positions for the side chain atoms, compatible with a low energy state for the whole system, we carried out three successive rounds of constrained MD of 100 ps each, in some analogy to a simulated annealing process. Thus the TM Calpha carbons were pulled back towards their original positions by harmonic constraints whose stiffness constants were set to 0.1, 1 and 10 [kcal/mol-A2] in the first, second and third round, respectively. Thereafter the system underwent full energy minimization (EM), first in the presence of constraints and then unconstrained. Throughout this initial stage, EM and MD simulations were performed in the presence of implicit solvent with the Generalized Born approach [62] implemented in AMBER 8 using the Amber94 force field [63] with the following settings: cutoff distance, 1.8 nm; time-step, 2 fs; salt concentration, 0.15 M; dielectric constant, 78; temperature, 100 K using Langevin dynamics with a collision frequency of 2 ps-1. The Shake algorithm was used to constraint all chemical bonds [64].
+###end p 67
+###begin p 68
+###xml 101 122 101 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Streptomyces Lividans</italic>
+###xml 203 207 203 207 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Doyle1">[65]</xref>
+###xml 626 635 622 631 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pone.0002614.s002">Figure S1</xref>
+The reliability of this procedure was verified on the structure of the Potassium channel (KcsA) from Streptomyces Lividans, one of the best characterized ionic channels, solved by X-ray crystallography ([65], PDB entry code:1BL8). To this end, we used the protocol outlined above to attempt the reconstruction of the all-atoms structure starting from the sole Calpha positions (see Supplementary Information). The resulting model yielded very excellent agreement, with a root mean square deviation calculated over all the heavy atoms below 2,5 A and root mean square fluctuations of the side chains of 2,1 A (s.d. 0,7 A) (see Figure S1), i.e., values comparable to standard MD simulations using well resolved structures.
+###end p 68
+###begin p 69
+A comment is in order on the fact that the reliability of the above described procedure may depend strongly on the initial coordinates of the Calpha atoms fitted into the low resolution electronic map. Therefore after initial relaxation of the atomistic model of the connexon we sought to reassess the positions of the TM helices within the connexin bundle.
+###end p 69
+###begin title 70
+Re-evaluation of the TM2 packing within the helix bundle
+###end title 70
+###begin p 71
+###xml 360 364 360 364 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Jackson1">[66]</xref>
+###xml 671 675 659 663 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+Since the overall reciprocal orientation of helices TM1, 3 and 4 has strong experimental support, we reassessed TM2 orientation based on a criterion that maximized surface complementarities after the initial MD relaxation. To this end we performed rigid docking of TM2 onto the all-atoms scaffold provided by helices TM1, TM3 and TM4 using the program 3D-Dock [66]. Among the several configurations sampled, we adopted the solution with the highest surface complementarity and appropriate orientation relative to the membrane plane. The results corresponds to a approximately180 degrees rotation of TM2 about the helix axis relative to the configuration reported in ref. [11].
+###end p 71
+###begin title 72
+Construction of the hydrophilic loops
+###end title 72
+###begin p 73
+###xml 258 262 254 258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Purnick1">[67]</xref>
+###xml 469 473 462 466 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Foote1">[68]</xref>
+###xml 599 603 592 596 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Unger1">[10]</xref>
+###xml 753 757 746 750 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Sali1">[69]</xref>
+###xml 759 763 752 756 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Sali2">[70]</xref>
+###xml 1026 1036 1019 1029 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">reasonable</italic>
+Having achieved a stable structure for the TM domain, we undertook the construction of the remaining part of the connexon. In each connexin, the N-terminal residues from 1 to 10 were modeled as alpha-helices, based on NMR results derived from Cx26 fragments [67]. Residues 49 to 56 and 61 to 67, belonging to the first extra cellular loop, and residues 166 to 170 and 177 to 181, belonging to the second extra cellular loop, were modeled as double layered beta-strands [68]. The C-terminal loop was truncated at Ala221 in accord with the deletion mutant used for the structural studies performed by [10]. The remaining residues for which no structural information is available were generated using the loop refinement option of the program Modeller 8.0 [69], [70] while keeping the TM domain spatially constrained. It must be noticed that, although an effort has been made to stick to the fragmentary structural data available, the starting conformation used for the hydrophilic loops correspond, at most, to an energetically reasonable conformation. Indeed, loops have been included for the sole purpose of providing a rough estimate of the elastic coupling, viscosity and long-range electrostatic contribution of their respective charged residues to the structure and dynamics of the TM domain.
+###end p 73
+###begin title 74
+MD simulations in a membrane environment
+###end title 74
+###begin p 75
+###xml 154 158 154 158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Pantano1">[71]</xref>
+###xml 689 693 689 693 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Muller1">[72]</xref>
+###xml 722 723 722 723 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;</sup>
+###xml 749 750 749 750 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+</sup>
+###xml 753 754 753 754 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;</sup>
+###xml 1014 1018 1014 1018 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Berendsen1">[73]</xref>
+###xml 1083 1087 1083 1087 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Darden1">[74]</xref>
+###xml 1237 1238 1237 1238 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 1363 1364 1363 1364 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+The model of the full Cx32 connexon was inserted in a pre-stabilized membrane patch of palmytoil phosphatidyl choline (POPC) phospholipids; see reference [71] for details on the parameterization and stabilization of the bilayer. Phospholipid molecules within 0.2 nm of any protein atom were removed (173 in total). The protein-membrane system was solvated with 36699 TIP3P water molecules generating a simulation box of 11.7 nmx11.7 nmx12 nm. Rectangular periodic boundary conditions were used throughout. These dimensions yielded a distance between consecutive connexon images on the membrane plane comparable to that observed in real connexon plaques measured by atomic force microscopy [72]. Twenty-nine neutralizing Cl- counterions and fifteen K+ Cl- pairs were added to the solution, yielding an approximately physiological salt concentration. The whole system underwent energy minimization and 1.7 ns of MD stabilization. Temperature and pressure were kept constant using Berendsen's thermostat and barostat [73] at 300 K and 1 atm, respectively. Particle Mesh Ewald summation [74] was used for long range electrostatic interactions with a cut off of 0.8 nm for the direct interactions. Loose harmonic constraints of 0.1 kcal/mol-A2 were applied to the N and P atoms of the phospholipids heads during the first 0.2 ns. Harmonic constraints of 0.5 kcal/mol-A2 were applied to the Calpha atoms of the TM domain of the proteins to avoid spurious distortions during the initial thermalization and pressurization of the system. Thereafter these constraints were linearly reduced to zero during the first 0.5 ns. Then, 1 ns of unconstrained MD was performed to fully stabilize the system. Finally, 12 ns of MD were carried out and used for analysis.
+###end p 75
+###begin title 76
+Calculated properties
+###end title 76
+###begin p 77
+###xml 307 314 303 310 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0002614-t001">Table 1</xref>
+###xml 1346 1350 1338 1342 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Pantano2">[75]</xref>
+###xml 1625 1629 1617 1621 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Humphrey1">[76]</xref>
+The TM domain of Cx32 was defined as the collection of the following segments: residues from 19 to 40, 76 to 96, 131 to 152 and 189 to 209. Positional root mean square deviations (RMSD) were calculated on the Calpha atoms from the starting configuration of the solvated system. The salt bridges reported in Table 1 were considered within a cutoff distance of 0.35 nm between acceptor and donor and 120 degrees for the donor-H-acceptor angle. Since the time-evolution of each connexin is not constrained by symmetry operations, small structural and dynamic deviations are expected from one polypeptide chain to another. However, since all proteins composing the channel are indistinguishable, quantities reported in this article were calculated as averages over the MD trajectory and over the six proteins. The structure regarded as "final" was calculated as the time average over the last 5 ns of the MD trajectories and as the spatial average over the TM region of the six connexins. The structure resulting from the averaging was optimized by EM. A similar procedure was applied to derive an average connexin dimer, which was used to calculate the interface residues between contiguous connexins at the Protein-Protein interaction server available at . The normalized covariance matrix of the Calpha atoms in the TM domain was calculated as in [75]. The distance between OH atoms of Tyr151, corresponding to the maximum constriction of the pore, were calculated between pairs of residues in opposite M3 helices in the connexon and averaged over the three possible opposite pairs. Molecular drawings were performed with VMD [76].
+###end p 77
+###begin title 78
+Comparison with Electron Density map
+###end title 78
+###begin p 79
+###xml 57 61 53 57 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Fleishman1">[11]</xref>
+###xml 158 162 154 158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0002614-Wriggers1">[77]</xref>
+###xml 378 394 374 390 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">codebook vectors</italic>
+The Calpha scaffolds of our final model and that of ref. [11] were fitted against the electron density map, kindly provided by Julio Kovacs, using Situs 2.3 ([77], ), a package for fitting high resolution models into low resolution maps. Using this computational tool one is able to map the tridimensional determinants of both the map and the model to a small number of points (codebook vectors). The two sets of codebook vectors are superimposed to find the best fit, after an exhaustive search in the translational and rotational degrees of freedom. The rigid docking fit was performed using 12 codebook vectors for both Calpha models as well as for the electron density map.
+###end p 79
+###begin title 80
+Supporting Information
+###end title 80
+###begin p 81
+(0.03 MB DOC)
+###end p 81
+###begin p 82
+Click here for additional data file.
+###end p 82
+###begin p 83
+Reconstruction and structural relaxation of the KcsA potassium channel from its Ca atoms. Global RMS deviations vs. time calculated using the crystallographic structure as reference. The four shoulders in the curve correspond to the time points in which constraints are applied (20 ps) or increased (120, 220 and 320 ps respectively). The inset shows the RMS fluctuations calculated for each residue. The four polypeptide chains are indicated by different colors. The thick lines near the abscissa indicate the helical elements in the structure. The molecular drawings show least square superposition between the crystallographic (starting) structure and the reconstructed model after 20 ps, 120 ps, 220 ps and 320 ps of simulation, respectively.
+###end p 83
+###begin p 84
+(4.34 MB TIF)
+###end p 84
+###begin p 85
+Click here for additional data file.
+###end p 85
+###begin p 86
+Figures S2a and S2c to S2h. Location and interactions of residues along TM2 taken from the averaged structure of the whole connexon. Figure S2b. The exposed side chain of Trp77 is in contact with the membrane phospholipids, i.e., in good position to interact with cholesterol molecules (not present in the simulation). Shown is a representative snapshot from the MD trajectory.
+###end p 86
+###begin p 87
+(8.19 MB TIF)
+###end p 87
+###begin p 88
+Click here for additional data file.
+###end p 88
+###begin p 89
+We thank Julio Kovacs for providing us the EM map of Cx43, Roberto Bruzzone for critical reading of the manuscript and Nir Ben-Tal for useful discussions.
+###end p 89
+###begin title 90
+References
+###end title 90
+###begin article-title 91
+Structure of gap junction intercellular channels.
+###end article-title 91
+###begin article-title 92
+Emerging issues of connexin channels: biophysics fills the gap.
+###end article-title 92
+###begin article-title 93
+The gap junction communication channel.
+###end article-title 93
+###begin article-title 94
+###xml 91 94 <span type="species:ncbi:10116">rat</span>
+Physical characterization of gap junction membrane connexons (hemi-channels) isolated from rat liver.
+###end article-title 94
+###begin article-title 95
+Topology of the 32-kd liver gap junction protein determined by site-directed antibody localizations.
+###end article-title 95
+###begin article-title 96
+###xml 22 27 <span type="species:ncbi:10090">mouse</span>
+###xml 32 37 <span type="species:ncbi:9606">human</span>
+Connexin genes in the mouse and human genome.
+###end article-title 96
+###begin article-title 97
+Connexin disorders of the ear, skin, and lens.
+###end article-title 97
+###begin article-title 98
+Connexin mutations in X-linked Charcot-Marie-Tooth disease.
+###end article-title 98
+###begin article-title 99
+Structural organization of gap junction channels.
+###end article-title 99
+###begin article-title 100
+Three-dimensional structure of a recombinant gap junction membrane channel.
+###end article-title 100
+###begin article-title 101
+A Calpha model for the transmembrane alpha helices of gap junction intercellular channels.
+###end article-title 101
+###begin article-title 102
+###xml 33 38 <span type="species:ncbi:9606">human</span>
+Three-dimensional structure of a human connexin26 gap junction channel reveals a plug in the vestibule.
+###end article-title 102
+###begin article-title 103
+Identification of amino acid residues lining the pore of a gap junction channel.
+###end article-title 103
+###begin article-title 104
+Identification of a pore lining segment in gap junction hemichannels.
+###end article-title 104
+###begin article-title 105
+Pore-lining residues identified by single channel SCAM studies in Cx46 hemichannels.
+###end article-title 105
+###begin article-title 106
+Single-channel SCAM identifies pore-lining residues in the first extracellular loop and first transmembrane domains of Cx46 hemichannels.
+###end article-title 106
+###begin article-title 107
+Pathogenetic role of the deafness-related M34T mutation of Cx26.
+###end article-title 107
+###begin article-title 108
+Unitary permeability of gap junction channels to second messengers measured by FRET microscopy.
+###end article-title 108
+###begin article-title 109
+Potassium and sodium binding to the outer mouth of the K+ channel.
+###end article-title 109
+###begin article-title 110
+Conformational sampling and dynamics of membrane proteins from 10-nanosecond computer simulations.
+###end article-title 110
+###begin article-title 111
+Size selectivity between gap junction channels composed of different connexins.
+###end article-title 111
+###begin article-title 112
+Selective defects in channel permeability associated with Cx32 mutations causing X-linked Charcot-Marie-Tooth disease.
+###end article-title 112
+###begin article-title 113
+The role of a conserved proline residue in mediating conformational changes associated with voltage gating of Cx32 gap junctions.
+###end article-title 113
+###begin article-title 114
+Strength and co-operativity of contributions of surface salt bridges to protein stability.
+###end article-title 114
+###begin article-title 115
+Do salt bridges stabilize proteins? A continuum electrostatic analysis.
+###end article-title 115
+###begin article-title 116
+###xml 55 60 <span type="species:ncbi:9606">human</span>
+Roles of Met-34, Cys-64, and Arg-75 in the assembly of human connexin 26. Implication for key amino acid residues for channel formation and function.
+###end article-title 116
+###begin article-title 117
+Mechanism of the defect in gap-junctional communication by expression of a connexin 26 mutant associated with dominant deafness.
+###end article-title 117
+###begin article-title 118
+X-linked dominant Charcot-Marie-Tooth neuropathy (CMTX): new mutations in the connexin32 gene.
+###end article-title 118
+###begin article-title 119
+The structural context of disease-causing mutations in gap junctions.
+###end article-title 119
+###begin article-title 120
+Correlated motion and the effect of distal mutations in dihydrofolate reductase.
+###end article-title 120
+###begin article-title 121
+Mutations in the peripheral myelin genes and associated genes in inherited peripheral neuropathies.
+###end article-title 121
+###begin article-title 122
+Novel mutations in the connexin 26 gene (GJB2) that cause autosomal recessive (DFNB1) hearing loss.
+###end article-title 122
+###begin article-title 123
+Impaired permeability to Ins(1,4,5)P3 in a mutant connexin underlies recessive hereditary deafness.
+###end article-title 123
+###begin article-title 124
+Molecular simulations and lipid-protein interactions: potassium channels and other membrane proteins.
+###end article-title 124
+###begin article-title 125
+Transmembrane alpha-helices in the gap junction membrane channel: systematic search of packing models based on the pair potential function.
+###end article-title 125
+###begin article-title 126
+Molecular modeling and mutagenesis of gap junction channels.
+###end article-title 126
+###begin article-title 127
+Screening for connexin 32 mutations in Charcot-Marie-Tooth disease families with possible X-linked inheritance.
+###end article-title 127
+###begin article-title 128
+Novel mutations in the connexin 32 gene associated with X-linked Charcot-Marie tooth disease.
+###end article-title 128
+###begin article-title 129
+###xml 17 22 <span type="species:ncbi:9606">human</span>
+Mutations in the human connexin gene GJB3 cause erythrokeratodermia variabilis.
+###end article-title 129
+###begin article-title 130
+Connexins, connexons, and intercellular communication.
+###end article-title 130
+###begin article-title 131
+Two different connexin 26 mutations in an inbred kindred segregating non-syndromic recessive deafness: implications for genetic studies in isolated populations.
+###end article-title 131
+###begin article-title 132
+Loss-of-function and residual channel activity of connexin26 mutations associated with non-syndromic deafness.
+###end article-title 132
+###begin article-title 133
+Lipid rafts prepared by different methods contain different connexin channels, but gap junctions are not lipid rafts.
+###end article-title 133
+###begin article-title 134
+Charcot-Marie-Tooth disease with intermediate motor nerve conduction velocities: characterization of 14 Cx32 mutations in 35 families.
+###end article-title 134
+###begin article-title 135
+Connexin26 mutations associated with nonsyndromic hearing loss.
+###end article-title 135
+###begin article-title 136
+Connexin32 gene mutations in X-linked dominant Charcot-Marie-Tooth disease (CMTX1).
+###end article-title 136
+###begin article-title 137
+Functional alterations in gap junction channels formed by mutant forms of connexin 32: evidence for loss of function as a pathogenic mechanism in the X-linked form of Charcot-Marie-Tooth disease.
+###end article-title 137
+###begin article-title 138
+###xml 91 96 <span type="species:ncbi:9606">human</span>
+Transcriptional downregulation of gap-junction proteins blocks junctional communication in human mammary tumor cell lines.
+###end article-title 138
+###begin article-title 139
+Changes in permeability caused by connexin 32 mutations underlie X-linked Charcot-Marie-Tooth disease.
+###end article-title 139
+###begin article-title 140
+Connexin32 mutations associated with X-linked Charcot-Marie-Tooth disease show two distinct behaviors: loss of function and altered gating properties.
+###end article-title 140
+###begin article-title 141
+Analysis of the relationship between side-chain conformation and secondary structure in globular proteins.
+###end article-title 141
+###begin article-title 142
+Connexin 26 mutations in cases of sensorineural deafness in eastern Austria.
+###end article-title 142
+###begin article-title 143
+Gap junction-mediated intercellular biochemical coupling in cochlear supporting cells is required for normal cochlear functions.
+###end article-title 143
+###begin article-title 144
+###xml 22 27 <span type="species:ncbi:9606">human</span>
+Functional studies of human skin disease- and deafness-associated connexin 30 mutations.
+###end article-title 144
+###begin article-title 145
+Mutation analysis of the connexin 32 (Cx32) gene in Charcot-Marie-Tooth neuropathy type 1: identification of five new mutations.
+###end article-title 145
+###begin article-title 146
+Connexin26 mutations associated with the most common form of non-syndromic neurosensory autosomal recessive deafness (DFNB1) in Mediterraneans.
+###end article-title 146
+###begin article-title 147
+Cx26 deafness: mutation analysis and clinical variability.
+###end article-title 147
+###begin article-title 148
+GJB2 mutations and degree of hearing loss: a multicenter study.
+###end article-title 148
+###begin article-title 149
+###xml 0 5 <span type="species:ncbi:9606">Human</span>
+Human connexin26 (GJB2) deafness mutations affect the function of gap junction channels at different levels of protein expression.
+###end article-title 149
+###begin article-title 150
+###xml 56 64 <span type="species:ncbi:9606">patients</span>
+Loss of function mutations of the GJB2 gene detected in patients with DFNB1-associated hearing impairment.
+###end article-title 150
+###begin article-title 151
+Amber 8 0, University of California, San Francisco
+###end article-title 151
+###begin article-title 152
+Theory and applications of the generalized Born solvation model in macromolecular simulations.
+###end article-title 152
+###begin article-title 153
+A second generation force field for the simulation of proteins, nucleic acids, and organic molecules.
+###end article-title 153
+###begin article-title 154
+Numerical integration of the Cartesian equations of motion of a system with constraints: molecular dynamics of n-Alkanes.
+###end article-title 154
+###begin article-title 155
+The structure of the potassium channel: molecular basis of K+ conduction and selectivity.
+###end article-title 155
+###begin article-title 156
+Rapid refinement of protein interfaces incorporating solvation: application to the docking problem.
+###end article-title 156
+###begin article-title 157
+Structure of the amino terminus of a gap junction protein.
+###end article-title 157
+###begin article-title 158
+The pattern of disulfide linkages in the extracellular loop regions of connexin 32 suggests a model for the docking interface of gap junctions.
+###end article-title 158
+###begin article-title 159
+Comparative protein modelling by satisfaction of spatial restraints.
+###end article-title 159
+###begin article-title 160
+Modeling mutations and homologous proteins.
+###end article-title 160
+###begin article-title 161
+The role of phosphorylation on the structure and dynamics of phospholamban: a model from molecular simulations.
+###end article-title 161
+###begin article-title 162
+Conformational changes in surface structures of isolated connexin 26 gap junctions.
+###end article-title 162
+###begin article-title 163
+Molecular dynamics with coupling to an external bath.
+###end article-title 163
+###begin article-title 164
+Particle Mesh Ewald: an N log(N) method for Ewald sums in large systems.
+###end article-title 164
+###begin article-title 165
+###xml 34 39 <span type="species:ncbi:11676?0.8769782024484921">HIV-1</span>
+Molecular dynamics simulations on HIV-1 Tat.
+###end article-title 165
+###begin article-title 166
+VMD: visual molecular dynamics.
+###end article-title 166
+###begin article-title 167
+Situs: A package for docking crystal structures into low-resolution maps from electron microscopy.
+###end article-title 167
+###begin p 168
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing Interests: </bold>
+Competing Interests: The authors have declared that no competing interests exist.
+###end p 168
+###begin p 169
+###xml 0 9 0 9 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding: </bold>
+Funding: This work has been funded by grants to F.M. from Fondazione Cariparo (Progetti di Eccellenza 2006), Telethon Italy (GGP05131) and the European commission FP6 Integrated Project EuroHear (LSHG-CT-20054-512063) under the Sixth Research Frame Program of The European Union. Computer simulations were performed at the CINECA supercomputer center thanks to computer-time grants from the Italian CNISM (Consorzio Nazionale Interuniversitario per le Scienze fisiche della Materia).
+###end p 169
+

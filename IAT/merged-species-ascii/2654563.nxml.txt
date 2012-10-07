@@ -1,0 +1,779 @@
+###begin article-title 0
+Better estimation of protein-DNA interaction parameters improve prediction of functional sites
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+Characterizing transcription factor binding motifs is a common bioinformatics task. For transcription factors with variable binding sites, we need to get many suboptimal binding sites in our training dataset to get accurate estimates of free energy penalties for deviating from the consensus DNA sequence. One procedure to do that involves a modified SELEX (Systematic Evolution of Ligands by Exponential Enrichment) method designed to produce many such sequences.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 42 50 42 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 173 182 173 182 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vitro </italic>
+###xml 305 310 305 310 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 753 761 753 761 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1249 1263 1249 1263 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium</italic>
+###xml 42 49 <span type="species:ncbi:562">E. coli</span>
+###xml 753 760 <span type="species:ncbi:562">E. coli</span>
+###xml 1249 1263 <span type="species:ncbi:90371">S. typhimurium</span>
+We analyzed low stringency SELEX data for E. coli Catabolic Activator Protein (CAP), and we show here that appropriate quantitative analysis improves our ability to predict in vitro affinity. To obtain large number of sequences required for this analysis we used a SELEX SAGE protocol developed by Roulet et al. The sequences obtained from here were subjected to bioinformatic analysis. The resulting bioinformatic model characterizes the sequence specificity of the protein more accurately than those sequence specificities predicted from previous analysis just by using a few known binding sites available in the literature. The consequences of this increase in accuracy for prediction of in vivo binding sites (and especially functional ones) in the E. coli genome are also discussed. We measured the dissociation constants of several putative CAP binding sites by EMSA (Electrophoretic Mobility Shift Assay) and compared the affinities to the bioinformatics scores provided by methods like the weight matrix method and QPMEME (Quadratic Programming Method of Energy Matrix Estimation) trained on known binding sites as well as on the new sites from SELEX SAGE data. We also checked predicted genome sites for conservation in the related species S. typhimurium. We found that bioinformatics scores based on SELEX SAGE data does better in terms of prediction of physical binding energies as well as in detecting functional sites.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+We think that training binding site detection algorithms on datasets from binding assays lead to better prediction. The improvements in accuracy came from the unbiased nature of the SELEX dataset rather than from the number of sites available. We believe that with progress in short-read sequencing technology, one could use SELEX methods to characterize binding affinities of many low specificity transcription factors.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 434 435 434 435 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 618 619 618 619 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 620 621 620 621 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 920 921 920 921 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 1088 1094 1088 1090 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963; </italic>
+###xml 1103 1104 1099 1100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 1109 1116 1105 1112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 1135 1136 1131 1132 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 1109 1116 <span type="species:ncbi:562">E. coli</span>
+Understanding regulatory circuits controlling gene expression is one of the fundamental problems in modern biology. Gene expression is controlled at many different levels but control of transcription is one of the main steps of regulation. One of the best understood control mechanisms is the binding of transcription factors (TFs) to the regulatory sites on DNA in a sequence-specific manner, which affects transcription initiation [1]. The important problem of locating the binding sites for specific TFs, and thus identifying the genes they regulate, has attracted much attention from the bioinformatics community [2,3]. Different methods have been employed for abstracting patterns or "motifs" from the sequences that bind particular TFs leading to predictions of likely binding sites in the genome of the organism under study. Factors regulating multiple genes often have binding motifs low in information content [4], making the task of prediction harder. Examples of such highly pleiotropic proteins range from global regulators in prokaryotes (e. g. CAP, LRP, FIS, IHF, H-NS, HU, sigma factors [5] in E. coli) to Hox proteins [6], important in metazoan development.
+###end p 9
+###begin p 10
+###xml 58 59 58 59 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 60 61 60 61 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 208 209 208 209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 226 228 226 228 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 234 241 234 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 259 261 259 261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 314 316 314 316 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 630 632 630 632 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 633 635 633 635 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 804 806 804 806 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 807 809 807 809 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 234 241 <span type="species:ncbi:562">E. coli</span>
+###xml 252 257 <span type="species:ncbi:4932">yeast</span>
+Experimental approaches to locating binding sites on DNA [7,8], have uncovered numerous binding sites for various factors. However, looking at the databases devoted to such regulatory sites, like DPInteract [9] and RegulonDB [10] for E. coli, SCPD for yeast [11] and TRANSFAC for many higher eukaryotic organisms [12], it is obvious that, for most pleiotropic TFs targeting a large number (100-1000) of genes, the number of known sites is still a small fraction of all the functional sites. A high-throughput version of the chromatin immunoprecipitation method, commonly known as the "ChIP on chip", has been introduced recently [13-15]. In principle, this method locates binding sites genome-wide. However, the resolution is limited to several hundred bases and requires further bioinformatic analysis [16,17].
+###end p 10
+###begin p 11
+###xml 83 92 83 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vitro </italic>
+###xml 202 204 202 204 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 786 788 786 788 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 907 909 907 909 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 958 966 958 966 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1066 1068 1066 1068 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 1069 1071 1069 1071 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 958 965 <span type="species:ncbi:562">E. coli</span>
+An alternative approach would be to find the DNA binding specificity of a TF by an in vitro method and then use the binding motif to search the genome for putative sites. One of these methods is SELEX [18], which is often used to find the strongest binding sites (sequences close to the consensus) from a library consisting of randomly generated oligonucleotides. However, a TF can often function at binding sites that are far weaker than the consensus. Therefore, to characterize the binding preferences of a TF, we need to identify many of these potential weak binding sites and to estimate the parameters describing the statistical distribution of those sequences. The appropriate modification of the SELEX procedure needed to achieve this goal is based on the SELEX-SAGE procedure [19]. Analysis of the conditions under which we get a significant number of intermediate strength sites was performed in [20]. We will use this procedure on the pleiotropic E. coli factor CAP. An alternative to this technology would have been to use DNA chips for protein binding [21,22]. Currently, for transcription factors with long binding sites (e.g. CAP site which is roughly 22 nt), it is common practice to use genomic sequences rather than random libraries in DNA chips. This has its advantages but also might lead to uncertainties regarding the genomic background model in the final statistical analysis.
+###end p 11
+###begin p 12
+###xml 216 218 216 218 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 219 221 219 221 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 222 223 222 223 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+To abstract a motif from the sequences found by the modified SELEX process, we need a computational method: a supervised algorithm, trained on a set of binding sites identified directly by experimental measurements [23,24,9]. We will compare different supervised methods for extraction of parameters and use CAP targets as a benchmark.
+###end p 12
+###begin p 13
+###xml 106 108 106 108 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 109 111 109 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 196 197 196 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 378 379 378 379 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 380 382 380 382 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 725 727 725 727 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 782 784 782 784 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+The widely used bioinformatic tool for quantitatively describing such motifs is the weight matrix method [25-29]. Setting the threshold correctly is essential for the quality of predictions (see [9] for an example of strong threshold dependence). However, optimization of the threshold is a non-trivial problem, resolving which is one of the goals of this study. We have shown [4,30] that using the physically correct expression for binding probability, with saturation effects built in, leads to a more accurate estimate for the binding energy and provides a practically useful solution to the problem of classifier threshold choice. The resulting method, Quadratic Programming Method of Energy Matrix Estimation or QPMEME [30], turns out to be a one-class support vector machine [31].
+###end p 13
+###begin p 14
+In this paper we do the following:
+###end p 14
+###begin p 15
+(i) Perform high throughput, low stringency SELEX experiments.
+###end p 15
+###begin p 16
+(ii) Analyze SELEX experiments and extract parameters for models of sequence-dependent TF/DNA interactions by using QPMEME and its extensions.
+###end p 16
+###begin p 17
+###xml 13 22 13 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vitro </italic>
+(iii) Verify in vitro affinity predicted by models built on SELEX data by electrophoretic mobility shift assay.
+###end p 17
+###begin p 18
+###xml 28 35 28 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 28 35 <span type="species:ncbi:562">E. coli</span>
+(v) Identify CAP targets in E. coli.
+###end p 18
+###begin p 19
+(vi) Compare various predicted sites from different methods to see their functional conservation among gram-negative facultative anaerobes.
+###end p 19
+###begin title 20
+Results and discussion
+###end title 20
+###begin title 21
+SAGE SELEX study of CAP
+###end title 21
+###begin p 22
+###xml 38 40 38 40 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+We followed the SELEX-SAGE procedure [19]. After extracting a large number of sequences, we passed these sequences through a quality filter to find sequences that were likely to have been bound by a CAP dimer in the random region of the SELEX pool. We were left with 69 sequences at the end.
+###end p 22
+###begin title 23
+Analysis of sequences from SAGE SELEX study
+###end title 23
+###begin p 24
+###xml 85 87 85 87 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 297 298 297 298 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 303 304 303 304 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 305 306 305 306 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 328 335 311 314 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 328 335 311 314 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 335 342 314 315 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949;</italic>
+###xml 342 349 315 318 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 342 349 315 318 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 349 350 318 319 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 350 357 319 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 350 357 319 322 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 372 373 337 338 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 373 380 338 341 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 373 380 338 341 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 410 411 371 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 411 414 372 375 <sup xmlns:xlink="http://www.w3.org/1999/xlink">th </sup>
+###xml 422 428 383 385 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 440 441 397 398 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 448 449 405 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 449 456 406 409 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 449 456 406 409 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 464 465 417 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 465 472 418 421 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 465 472 418 421 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 501 508 450 451 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949;</italic>
+###xml 508 515 451 454 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 508 515 451 454 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 572 578 511 513 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 596 597 531 532 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 605 612 540 541 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949;</italic>
+###xml 612 619 541 544 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 612 619 541 544 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 669 674 594 599 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E(S) </italic>
+###xml 720 721 645 646 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 750 751 675 676 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 752 753 677 678 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 754 755 679 680 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 753 756 678 681 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>j</italic>)</sup>
+###xml 806 807 729 730 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 808 809 731 732 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 807 810 730 733 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>j</italic>)</sup>
+###xml 812 814 735 737 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 824 825 747 748 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 848 849 771 772 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 850 851 773 774 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 852 853 775 776 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 851 854 774 777 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>j</italic>)</sup>
+###xml 1004 1010 925 927 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 1025 1026 942 943 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1026 1031 943 944 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+###xml 1026 1031 943 944 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>&#945;</italic></sub>
+###xml 1114 1115 1027 1028 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+The maximum-likelihood method for distributions with sharp cutoffs was described in [30]. In particular circumstances, the parameter estimation method becomes a support vector machine, and the resulting algorithm, QPMEME, can be used to determine the binding energy of the protein to the sequence S, as E(S) = summation operatorialpha epsilonialpha Sialpha . The variable Sialpha is defined as follows: if the ith base is alpha in sequence S, then Sialpha = 1 and Sialpha = 0 otherwise. The parameter epsilonialpha is the contribution to the binding free energy from base alpha being at position i. These epsilonialpha parameters are chosen to minimize the variance of E(S) over the background distribution of sequences S, subject to the constraints E(S(j)) </= -1 for the set of example binding sequences S(j), j = 1, ..., N. Sequences satisfying E(S(j)) </= -1 are then declared to be binding sites. In practice, the base frequencies are taken to be independent and the probability of finding the base alpha is taken to be palpha. The quantity to be minimized is given by , subject to the constraints , for each i.
+###end p 24
+###begin p 25
+###xml 60 67 60 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949;</italic>
+###xml 67 73 61 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945;</italic>
+###xml 67 73 61 63 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945;</italic></sub>
+###xml 364 365 354 355 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w</italic>
+###xml 365 372 355 358 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 365 372 355 358 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 379 380 365 366 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 380 386 366 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945;</italic>
+###xml 380 386 366 368 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945;</italic></sub>
+###xml 388 390 370 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Np</italic>
+###xml 390 395 372 373 <sub xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sub>
+###xml 405 406 383 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w</italic>
+###xml 406 413 384 387 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 406 413 384 387 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 420 421 394 395 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 423 429 397 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 489 490 459 460 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 490 493 460 463 <sup xmlns:xlink="http://www.w3.org/1999/xlink">th </sup>
+###xml 504 509 474 475 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+###xml 746 753 712 719 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 966 967 932 933 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 985 986 951 952 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 1004 1005 970 971 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 1026 1027 992 993 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">4</xref>
+###xml 746 753 <span type="species:ncbi:562">E. coli</span>
+The QPMEME algorithm was used to produce an energy matrix, [epsilonialpha], using the set of 49 known CAP binding sites from the DPinteract database. An energy matrix was also constructed using the binding sites identified by the SELEX procedure described below. Weight matrices were also constructed for both the known sites and the SELEX sites using the formula wialpha = log [fialpha/(Npalpha)], where wialpha is the i, alpha component of the weight matrix and  is the frequency of the ith base being alpha. The background probabilities for G and C are taken to be the same. The same applies to the background probabilities for A and T. For both algorithms, the background GC content was taken to be 0.43 (the GC content of non-ORF regions in E. coli) when constructing energy matrices from the known sites, and was taken to be 0.5 when constructing energy matrices from SELEX sites. For the weight matrices/energy matrices used in the study, see Additional file 1, Additional file 2, Additional file 3 and Additional file 4.
+###end p 25
+###begin title 26
+###xml 14 23 14 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vitro </italic>
+Prediction of in vitro affinity of binding sites
+###end title 26
+###begin p 27
+###xml 199 200 199 200 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K</italic>
+###xml 200 201 200 201 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 200 201 200 201 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>d</italic></sub>
+###xml 204 205 204 205 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K</italic>
+###xml 205 207 205 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d </italic>
+###xml 205 207 205 207 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>d </italic></sub>
+###xml 362 363 362 363 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 411 412 411 412 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 631 638 631 632 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949;</italic>
+###xml 638 645 632 635 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i&#945; </italic>
+###xml 638 645 632 635 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i&#945; </italic></sub>
+###xml 705 706 695 696 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K</italic>
+###xml 706 707 696 697 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 706 707 696 697 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>d</italic></sub>
+###xml 953 954 943 944 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 1243 1244 1233 1234 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K</italic>
+###xml 1244 1245 1234 1235 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 1244 1245 1234 1235 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>d</italic></sub>
+The energy matrices constructed using each of the methods allows one to assign an estimated binding energy to a given site. The correlation of these estimated binding energies with the values of log(Kd), Kd being the dissociation constant, measured for the seven sites (TBS1-6 and the Lac site) as described in the materials and methods section is shown in Fig. 1. From the summary of the correlations in Table 1, it is apparent that the SELEX procedure produced significantly better information about the binding characteristics of CAP than were available using the known sites, while using QPMEME to infer the binding parameters epsilonialpha produced better correlation with the measured values of log(Kd) when used with the SELEX data set. The p-values associated with the correlation coefficients (namely the probabilities of getting a correlation coefficient that is greater than or equal to that value for random i. i. d. gaussian data) in table 1 are as follows: r = 0.48 => p = 13.8%, r = 0.71 => p = 3.7%, r = 0.86 => p = 0.65%. The best correlation coefficient, obtained for QPMEME trained on SELEX data, r = 0.86, represents very significant but less than perfect correlation. However, one has to remember that the measurements of Kd's themselves have a certain amount of error. Therefore, even with perfect predictive power, we would not get a correlation coefficient of one.
+###end p 27
+###begin p 28
+###xml 60 61 60 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K</italic>
+###xml 61 62 61 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 61 62 61 62 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>d</italic></sub>
+Correlation coefficient of inferred binding energy with log(Kd)
+###end p 28
+###begin p 29
+###xml 0 80 0 80 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Estimated binding energy versus log(Kd) with different training sets and methods</bold>
+Estimated binding energy versus log(Kd) with different training sets and methods. (A) Binding energies inferred using weight matrix method applied to known sites from literature. (B) Binding energies inferred using QPMEME method applied to known sites in literature. (C) Binding energies inferred using weight matrix method applied to SELEX sites obtained by this study. (D) Binding energies inferred using QPMEME method applied to SELEX sites obtained by this study.
+###end p 29
+###begin p 30
+Note that the number of sequences used from the SELEX data is comparable to the number of biological CAP binding sites used in weight matrix determination. This observation suggests that the improvement is due to unbiased sampling of binding sequences and not due to the greater number of sites used.
+###end p 30
+###begin title 31
+###xml 56 64 56 64 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 68 82 68 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium</italic>
+###xml 56 63 <span type="species:ncbi:562">E. coli</span>
+###xml 68 82 <span type="species:ncbi:90371">S. typhimurium</span>
+Comparison of binding energies of orthologous sites for E. coli and S. typhimurium
+###end title 31
+###begin p 32
+###xml 214 222 214 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 530 545 530 545 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium </italic>
+###xml 564 572 564 572 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 214 221 <span type="species:ncbi:562">E. coli</span>
+###xml 530 544 <span type="species:ncbi:90371">S. typhimurium</span>
+###xml 564 571 <span type="species:ncbi:562">E. coli</span>
+Without evolutionary pressure to keep the binding energy constant over time, the binding energy of the orthologous site will drift towards the average binding energy, which is set to zero in our convention. For an E. coli site which is estimated to be a strong binding site, the vast majority of mutations will result in a weaker estimated binding energy. This has the consequence that, even if the true binding energy is conserved, a poor method of estimating binding energies will probably assign a weaker binding energy to the S. typhimurium orthologs of those E. coli sites with the strongest estimated binding energy.
+###end p 32
+###begin p 33
+###xml 15 16 15 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 21 29 21 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 37 52 37 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium </italic>
+###xml 62 64 62 64 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S'</italic>
+###xml 112 119 112 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949;</italic>
+###xml 164 172 158 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949; </italic>
+###xml 21 28 <span type="species:ncbi:562">E. coli</span>
+###xml 37 51 <span type="species:ncbi:90371">S. typhimurium</span>
+For each site, S, in E. coli with an S. typhimurium ortholog, S', and for each estimation of the energy matrix, epsilon, one can define the drift of S according to epsilon as:
+###end p 33
+###begin p 34
+
+###end p 34
+###begin p 35
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 7 9 7 9 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 11 19 11 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949; </italic>
+###xml 21 22 15 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 24 25 18 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 25 27 19 21 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 29 37 23 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949; </italic>
+###xml 39 42 27 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S' </italic>
+###xml 105 107 93 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P </italic>
+###xml 108 109 96 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 109 110 97 98 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 111 112 99 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 112 113 100 101 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 136 137 120 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 183 185 167 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 201 203 183 185 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 221 222 203 204 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 222 224 204 206 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s </italic>
+###xml 222 224 204 206 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>s </italic></sub>
+###xml 268 283 250 265 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium </italic>
+###xml 268 282 <span type="species:ncbi:90371">S. typhimurium</span>
+Where E1 = epsilon * S, E2 = epsilon * S' and  is the standard deviation of the conditional distribution P (E2|E1). The function Theta (x) is the Heaviside theta function which 1 for x >/= 0 and 0 for x < 0. The quantity Ds measures how much the binding energy of the S. typhimurium site has apparently weakened compared to a measure of how much it would be expected to drift if there were no evolutionary pressure to sustain it.
+###end p 35
+###begin p 36
+###xml 103 111 103 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 143 158 143 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium </italic>
+###xml 176 177 176 177 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 243 250 243 250 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 318 325 318 325 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo</italic>
+###xml 370 385 370 385 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium </italic>
+###xml 455 456 455 456 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 548 556 548 556 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 103 110 <span type="species:ncbi:562">E. coli</span>
+###xml 143 157 <span type="species:ncbi:90371">S. typhimurium</span>
+###xml 243 250 <span type="species:ncbi:562">E. coli</span>
+###xml 370 384 <span type="species:ncbi:90371">S. typhimurium</span>
+###xml 548 555 <span type="species:ncbi:562">E. coli</span>
+For each of the four estimations of the energy parameters, the total drift for the highest-scoring 200 E. coli binding sites with orthologs in S. typhimurium is shown in table 2. False positives, that is, candidate binding sites identified in E. coli, on the basis of inferred binding energy, which are not functional in vivo, would not be expected to have orthologs in S. typhimurium with significant binding energy. The overall drift indicated in table 2 then receives contributions from both the false positives picked up during the scan of the E. coli genome, and from functional sites whose estimated binding energy differs from the actual binding energy.
+###end p 36
+###begin p 37
+###xml 29 37 29 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 29 36 <span type="species:ncbi:562">E. coli</span>
+Total drift of 200 strongest E. coli binding sites for different methods
+###end p 37
+###begin p 38
+###xml 8 10 8 10 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2a</xref>
+###xml 15 17 15 17 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2b</xref>
+Figures 2a and 2b show the amounts of drift of individual candidate sites ordered according to drift for the energy parameters inferred from the SELEX training set and the training set consisting of the known sites, respectively. Overall, the binding parameters inferred using QPMEME systematically indicated less drift than the parameters inferred using the weight matrix, with the best overall performance when the SELEX data set was used to train the algorithm.
+###end p 38
+###begin p 39
+###xml 46 54 46 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 58 73 58 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium </italic>
+###xml 0 123 0 123 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Drift in estimated CAP binding energy between <italic>E. coli </italic>and <italic>S. typhimurium </italic>sorted in ascending order plotted against the rank</bold>
+###xml 46 53 <span type="species:ncbi:562">E. coli</span>
+###xml 58 72 <span type="species:ncbi:90371">S. typhimurium</span>
+Drift in estimated CAP binding energy between E. coli and S. typhimurium sorted in ascending order plotted against the rank. (A) Using energies estimated by weight matrix or QPMEME based on know sites. (B) Using energies estimated by weight matrix or QPMEME based on the SELEX sites. Note that, for QPMEME estimates based on SELEX data, the energy drift stays low for many sites, as would be expected of most functional CAP targets.
+###end p 39
+###begin title 40
+Conclusion
+###end title 40
+###begin p 41
+###xml 447 449 447 449 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 756 758 756 758 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 749 754 <span type="species:ncbi:4932">yeast</span>
+Our purpose in this analysis was to show that indeed with the appropriate kind of training data, one could improve the ability to predict physical and functional binding. This is in marked contrast to the general feeling in the biology community that many pleoitropic transcription factors bind at too many places and that it is hopeless to try to get functional sites out of motif searches. Recently there were ChIP-chip experiments done on CAP [32]. The conclusion of the study was that CAP is physically bound at many thousands of places in the genome. We saw, however, from the comparative study, that stronger binding sites are significantly conserved, indicating selective pressure. These results are in agreement with similar studies done in yeast [33] based on DNA chip data.
+###end p 41
+###begin p 42
+###xml 686 688 686 688 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+One of the main goals of the experimental procedure was to gather specificity data for a transcription factor (TF) at concentrations comparable to the cellular abundances. One disadvantage of doing the selection experiment with very high abundance of TF is that it is possible to select sequences where the likely binding site partially overlaps with the primer. For low abundances the sites bound tend to be in the variable (meaning, the N28) region, because binding partially to the primer in any window requires enough free energy to be prohibitive. For high abundance, the threshold for tolerance of such energetic costs is higher. We believe that, in the original SELEX SAGE work [19], the TF abundance is still low enough so that the "primer contamination" problem is avoided. However, when using this method for a genuinely pleiotropic TF at cellular concentrations, one would face the primer contamination problem we describe here.
+###end p 42
+###begin p 43
+###xml 233 235 233 235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+One possible resolution of this problem is computational. We could develop a more complex probability model allowing for the primer contribution and utilize the full data set. We could do this by generalizing the model in reference [30], and allowing binding in different windows on a longer sequence. However, to settle the question of whether SELEX data sets provide any advantage, we decided to focus on small number of sequences where the binding is likely to be in the random or N28 part. The number of SELEX sequences used for training is comparable to the number of biologically known sites. Hence, the improvement in prediction should be from better sampling of sequences in the dataset rather than from the sample size. The use of the full data set requires a new computational method, which would be a promising subject for future research.
+###end p 43
+###begin p 44
+###xml 317 319 317 319 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 428 430 428 430 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+In this study, we only used sequence data for estimating the parameters related to the motif. We measured relative affinities (inverse of dissociation constants) to test the accuracy of our predictions. As has been shown, combining SELEX with quantitative affinity measurements leads to even better predictive power [34]. Our reason for focusing solely on sequence data is that we foresee developments in short-read sequencing [35] which is expected to lead to a readily available inexpensive technology for generating large SELEX data sets.
+###end p 44
+###begin p 45
+###xml 320 322 320 322 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 477 479 477 479 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 725 727 725 727 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 728 730 728 730 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 800 802 800 802 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 1172 1174 1172 1174 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+In the last few years, we have seen considerable activity that centers around biophysical aspects of gene regulation. The push has come from two different ends. On the one hand, detailed structural modeling of protein-DNA interactions has been used to calculate sequence dependent protein DNA interaction free energies [36]. The insights from structural considerations could guide the appropriate parametrization of knowledge-based bioinformatic motif discovery tools as well [37]. On the other hand, Hidden Markov Models, which can be thought of as one dimensional statistical mechanics models of multiple proteins binding on DNA, have been applied to study multiple binding sites for protein complexes in a stretch of DNA [38,39]. This approach has been extended to nucleosome positioning as well [40]. The remarkable success of these approaches seems to suggest that much could be done with an accurate biophysical description of protein-DNA interaction in the context of gene regulation. Precise characterization of the probabilistic protein DNA interaction code is a crucial element of such a description. As technologies for massively parallel signature sequencing [35] become more accurate, large scale SELEX studies for determining the interaction code would become more and more feasible.
+###end p 45
+###begin title 46
+Methods
+###end title 46
+###begin title 47
+Purification of CAP
+###end title 47
+###begin p 48
+###xml 81 83 81 83 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 298 300 298 300 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+His6-tagged CAP protein was expressed using BL21DE3 cells harboring pAKCRP-HIS6 [41] and purified under native conditions using Ni-NTA Agarose, with slight modifications. Specifically, the elutions were performed with an Imidazole step gradient, with steps of of 60, 100, 200 and 400 mM Imidazole [42]. The pure fractions were dialyzed against a buffer containing 20 mM Tris.cl pH 8.0, 0.1 mM EDTA, 50 mM Nacl, 10% glycerol, 1 mM DTT and 0.1 mM PMSF.
+###end p 48
+###begin title 49
+High throughput low stringency SELEX for CAP
+###end title 49
+###begin p 50
+###xml 0 9 0 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">In vitro </italic>
+###xml 125 127 125 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 798 801 <span type="species:ncbi:9685">Cat</span>
+In vitro selection, amplification and cloning of TF-binding sites for CAP were implemented using a modified SELEX procedure [18]. 25 nM CAP was used to select binding sequences from a random DNA library N(28) flanked by the PCR primer sequences 5'-CTGTATGTCGAGATCTA-3' and 5'-TAGATCTCCTAACCGA-3', with Bgl II sites. The ds DNA library was added as a competitor along with 10,000 CPM of a radiolabeled medium-strength CAP binding sequence, 5'-TTATGGAAGAGATATCACATTT-3', flanked by additional primer sequences, 5'-GTATGTCGAGATCTATCCAT-3' and 5'-TAATTTAGATCTCCTAACCG-3', to the left and the right, respectively. A library of random sequence oligos was obtained from Invitrogen and used as a template for primer extension with a 3' primer to make a double stranded library using TaqPro DNA polymerase (Cat No: CB-4050-7 from Denville Scientific Inc.). The resulting double stranded random library was added as a competitor to 50 nm CAP protein incubated with the radiolabeled medium strength CAP binding site. For the later rounds 25 nm CAP protein was used. The amount of library DNA was titrated until 50-80% of the radiolabeled complex was competed away. This was continued for 4 rounds.
+###end p 50
+###begin p 51
+For each round, after electrophoresis, the DNA-protein complexes were eluted using diffusion buffer from Qiagen (0.5 M ammonium acetate, 10 mM magnesium acetate, 1 mM EDTA, pH 8.0, 0.1% SDS) O/N at 37degreesC. The DNA was ethanol-precipitated and then PCR amplified. for 25 cycles. The cycling conditions were as follows. The initial denaturation was at 94degreesC for one minute. 25 cycles of amplification with 94degreesC for 30 secs, 40degreesC for one minute and 70degreesC for one minute followed the initial step. At the end, there was final primer extension at 74degreesC for 5 minutes and then a final hold at 4degreesC.
+###end p 51
+###begin title 52
+Concatenation, cloning and sequencing
+###end title 52
+###begin p 53
+###xml 143 145 143 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 241 243 241 243 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+###xml 784 786 784 786 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+###xml 929 931 929 931 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 960 968 960 968 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. Coli </italic>
+###xml 1206 1209 <span type="species:ncbi:9685">Cat</span>
+To obtain a large number of binding sequences, we concatenated the selected binding sequences to increase the sequencing throughput following [19]. The procedure for concatenation and cloning closely follows the SAGE procedure described in [43]. After the fourth round, the DNA was digested with BglII and gel purified using 4.5% regular agarose gels run in 1x TAE. The 36 mer band was cut out from gel and sliced further into very tiny pieces using a scalpel and extracted using quantum prep Freeze N Squeeze DNA Gel Extraction Spin columns (catalog 732-6166) from Bio-Rad laboratories. The purified 36-mers were then further spun through a microcon YM-10 from Millipore to eliminate further primer contamination and also to concentrate the sample. The concatenation procedure from [43] was followed. The concatemers (600-1200 base pair fragments) were gel purified and cloned into a BamH1 site of a pZero-1 vector (Invitrogen)[19] and transformed into DH10B E. Coli cells. The colonies were PCR amplified and were run on 1.5% gel to verify the fragment length. The colonies which contained insert sizes in the range of 600-1.2 kb were selected for sequencing. 5 ul of the PCR was treated with ExoSAP-IT, Cat.No 78201 from USB, incubated at 37degreesC for 15 minutes and inactivated by incubating at 85degreesC for 15 minutes. The reaction was cooled on ice and 3-4 ul of this was used for sequencing. The sequencing reaction was carried out using the M13 forward primer for 25 cycles (96degreesC for 10 secs, 50degreesC for 5 secs and 60degreesC for 4 minute and hold at 4degreesC). The reactions were cleaned using a CleanSEQ dye-terminator removal reagent from Agencourt Bioscience Corporation following the manufacturer's protocol. The samples were sent out for sequencing to Sequencing and Genotyping Core Facility, Genomics and Proteomics Core Laboratories, University of Pittsburgh.
+###end p 53
+###begin title 54
+EMSA of various CAP binding sites predicted from QPMEME of known binding sites
+###end title 54
+###begin p 55
+###xml 116 124 116 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 189 196 189 196 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 116 123 <span type="species:ncbi:562">E. coli</span>
+###xml 189 196 <span type="species:ncbi:562">E. coli</span>
+Electrophoretic Mobility Shift Assays (EMSA) for CAP were carried out for several putative CAP binding sites in the E. coli genome as well as for one known CAP site and one generic site in E. coli. The putative CAP sites were chosen for an earlier unpublished study which aimed to estimate the false positive rate of QPMEME predictions based on known biologically functional binding sites. The sequences of the oligonucleotides are:
+###end p 55
+###begin p 56
+###xml 3 33 3 33 <bold xmlns:xlink="http://www.w3.org/1999/xlink">TAAAAAGTGTGACCCGGTTCACGTAGCGAT</bold>
+5'-TAAAAAGTGTGACCCGGTTCACGTAGCGAT-3' (TBS1),
+###end p 56
+###begin p 57
+###xml 3 33 3 33 <bold xmlns:xlink="http://www.w3.org/1999/xlink">GAATTCCTGCGCCTTTGCTCACAATCCAGA</bold>
+5'-GAATTCCTGCGCCTTTGCTCACAATCCAGA-3' (TBS2),
+###end p 57
+###begin p 58
+###xml 3 33 3 33 <bold xmlns:xlink="http://www.w3.org/1999/xlink">TAAATATCGAGATAACGATCACAAAAACGA</bold>
+5'-TAAATATCGAGATAACGATCACAAAAACGA-3' (TBS3),
+###end p 58
+###begin p 59
+###xml 3 33 3 33 <bold xmlns:xlink="http://www.w3.org/1999/xlink">GAAATTATGGAAGAGATATCACATTTCTAT</bold>
+5'-GAAATTATGGAAGAGATATCACATTTCTAT-3' (TBS4),
+###end p 59
+###begin p 60
+###xml 3 33 3 33 <bold xmlns:xlink="http://www.w3.org/1999/xlink">ATGCTAACGCGATTCCGCTCAAAAATCAGT</bold>
+5'-ATGCTAACGCGATTCCGCTCAAAAATCAGT-3' (TBS5),
+###end p 60
+###begin p 61
+###xml 3 33 3 33 <bold xmlns:xlink="http://www.w3.org/1999/xlink">AGATCAATTTGATCTACATCTCTTTAACCA</bold>
+5'-AGATCAATTTGATCTACATCTCTTTAACCA-3'(TBS6),
+###end p 61
+###begin p 62
+###xml 3 33 3 33 <bold xmlns:xlink="http://www.w3.org/1999/xlink">CCTAATGAGTGAGCTAACTCACATTAATTG</bold>
+5'-CCTAATGAGTGAGCTAACTCACATTAATTG-3' (Lac site),
+###end p 62
+###begin p 63
+###xml 3 33 3 33 <bold xmlns:xlink="http://www.w3.org/1999/xlink">GTCGCTGTTTTCCCGCCCGGTGTACGCCAC</bold>
+5'-GTCGCTGTTTTCCCGCCCGGTGTACGCCAC-3' (Non-CAP site).
+###end p 63
+###begin p 64
+###xml 170 175 170 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947;</italic>
+###xml 335 340 331 332 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947;</italic>
+The oligonucleotides (both top and bottom strand) were obtained from Integrated DNA Technologies, INC. The top strand oligonucleotide (50 pmol) was 5'-end labeled using [gamma-32P] ATP and T4 polynucleotide Kinase (New England Biolabs) according to the manufacturer's instructions. The labeled strand was purified from unincorporated [gamma-32P] ATP using microspin G-50 column (Amersham Biosciences). A two-fold of unlabeled bottom strands were annealed to the 10 picomoles of top strand by heating the two at 95degreesC for 5 minutes and allowing them to cool gradually to room temperature overnight. The resulting double stranded radio-labelled DNA fragments (10,000 CPM) were incubated with various concentrations of CAP (0, 0.01, 0.1, 1, 10,100, 1000 nM) in a total volume of 20 ul containing 20 mM Tris-HCl, pH 8.0, 40 mM NaCl, 4 mM MgCl2, 0.1 mM EDTA, I mM DTT, 10 ug/ml sheared salmon sperm DNA, 0.2 mM cAMP and 6% glycerol. The complexes were fractionated using electrophoresis on a native 8% polyacrylamide (37.5:1) gel containing 2% glycerol, 0.1 mM cAMP in 1x TBE. The running buffer contained 2% glycerol and 20 uM cAMP in 1x TBE. The resulting gels were processed for analysis on a Molecular Dynamics Phosphoimager.
+###end p 64
+###begin title 65
+Preprocessing of sequence data
+###end title 65
+###begin p 66
+###xml 497 498 497 498 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">5</xref>
+96 concatemers were sequenced. For each of the concatemers, the subsequences consisting of between 24 and 32 nucleotides surrounded by restriction sites were extracted. Each occurrence of TAGATCTA was considered to be a restriction site, in addition to GGATCTA when it appeared before all of the other restriction sites and TAGATCC when it appeared after all of the other restriction sites. In all, 591 subsequences were extracted, along with their flanking restriction sites [see Additional file 5].
+###end p 66
+###begin p 67
+###xml 487 488 487 488 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+Each of the subsequences was then examined to determine whether CAP binding to the primer rather than the sequence from the random library contributed to the extraction of the sequence. The restriction sites were replaced by the original PCR primer sequences 5'-CTGTATGTCGAGATCTA-3' and 5'-TAGATCTCCTAACCGA-3', and the resulting sequences were scanned using an energy matrix constructed from 49 known CAP binding sites (and their reverse complements) taken from the DPInteract database [9]. The energy matrix was constructed using the QPMEME algorithm as described below. The matrix was used to assign estimated binding energies, or binding scores, to each subsequence of length 22. Sequences whose highest-scoring candidate binding site overlapped with the PCR primers were discarded, leading to a set of 94 sequences which contained a candidate CAP binding site within the subsequence from the random library. From the 94 sequences, 62 unique sites were extracted by selecting the site within the sequence, which was assigned the highest score by the energy matrix. Of these, 56 sites which had scores significantly beyond the threshold of -1 set by the algorithm were identified as candidate CAP binding sites while the remaining 6 sites, which were separated in energy from the rest of the sites by a significant gap, and which all scored below the threshold, were considered to have been selected due to non-specific binding and discarded.
+###end p 67
+###begin p 68
+The presence of sequences that are likely to have primers contributing to the binding of the TF, nearly 84% of the original dataset, seems unavoidable given that we perform selection at a high abundance of TF. We tried designing new primers that allow the least amount of binding, given our previous knowledge of CAP binding motif. We found that the condition of avoidance of a certain motif often makes the primer sequences self-similar leading to single stranded self-complementing loops. The combination of computational constraints like high free energy cost of partial overlap with the CAP binding motif, appropriate melting temperature, absence of self-looping and aperiodicity generated very few possibilities, and experiments using those computationally generated sequences had problems at stages past the SELEX steps. As a result, we decided to use the primers mentioned above, and use only a smaller subset of the data.
+###end p 68
+###begin title 69
+SVM applied to SELEX data
+###end title 69
+###begin p 70
+###xml 19 21 19 21 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+###xml 101 103 101 103 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+###xml 145 147 145 147 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O </italic>
+###xml 150 151 150 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 151 154 151 154 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(1)</sup>
+###xml 156 157 156 157 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 157 160 157 160 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(2)</sup>
+###xml 167 168 167 168 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 169 170 169 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 168 171 168 171 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>N</italic>)</sup>
+We solve the dual [44] of the variance optimization problem mentioned above. We construct the matrix M in terms of the set of observed sequences O = {S(1), S(2), ..., S(N)} as follows:
+###end p 70
+###begin p 71
+###xml 41 43 41 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+Let us define the elements of the matrix M as,
+###end p 71
+###begin p 72
+
+###end p 72
+###begin p 73
+###xml 11 12 11 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 12 22 12 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;&#946; </italic>
+###xml 12 22 12 15 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>&#945;&#946; </italic></sub>
+###xml 24 25 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 25 31 18 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 25 31 18 20 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>&#945; </italic></sub>
+###xml 31 36 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#948;</italic>
+###xml 36 45 21 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;&#946;</italic>
+###xml 36 45 21 23 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>&#945;&#946;</italic></sub>
+###xml 84 89 62 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947;</italic>
+###xml 89 91 63 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a </italic>
+###xml 89 91 63 65 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>a </italic></sub>
+###xml 106 108 78 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a </italic>
+###xml 118 119 90 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+where  and Palphabeta = palpha deltaalphabeta. We minimize , subject to constraints gammaa >/= 0 for each a = 1, ..., N.
+###end p 73
+###begin p 74
+###xml 98 99 98 99 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 112 117 112 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947;</italic>
+###xml 117 119 113 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a </italic>
+###xml 117 119 113 115 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>a </italic></sub>
+###xml 164 166 160 162 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 195 197 191 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink">V </italic>
+###xml 201 203 197 199 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H </italic>
+###xml 206 208 202 204 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 211 212 206 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink">V</italic>
+###xml 213 221 208 210 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949; </italic>
+###xml 223 225 212 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 309 311 298 300 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H </italic>
+###xml 354 355 343 344 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 356 357 345 346 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 355 358 344 347 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>a</italic>)</sup>
+###xml 393 398 382 383 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947;</italic>
+###xml 398 399 383 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 398 399 383 384 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>a</italic></sub>
+The relation between the primal and the dual solution is given by . At the optimal point, for any a, such that, gammaa > 0, we have  = -1. If we think of sequences S as vectors in a vector space V and H = {x in V|epsilon * x = -1} a hyperplane separating the binding sequences from the non-binding ones, then H is "supported" by those observed sequences S(a), which corresponds to non-trivial gammaa.
+###end p 74
+###begin p 75
+###xml 15 16 15 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 16 22 16 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 16 22 16 18 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>&#945; </italic></sub>
+###xml 50 56 46 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 60 61 51 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 63 64 54 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C</italic>
+###xml 66 67 57 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 69 70 60 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 145 146 136 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 146 152 137 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 146 152 137 139 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>&#945; </italic></sub>
+###xml 202 208 189 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+For SELEX data palpha is taken to be 0.25 for all alpha in {A, C, G, T}. In the case where biological binding sites are used as input to QPMEME, palpha is set according to the frequency with which base alpha appears in the genomic background (in this case the non-ORF regions of the genome).
+###end p 75
+###begin title 76
+Phylogenetic footprinting
+###end title 76
+###begin p 77
+###xml 24 32 24 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 107 121 107 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium</italic>
+###xml 165 167 165 167 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+###xml 194 209 194 209 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium </italic>
+###xml 556 563 556 563 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 724 725 724 725 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">6</xref>
+###xml 24 31 <span type="species:ncbi:562">E. coli</span>
+###xml 107 121 <span type="species:ncbi:90371">S. typhimurium</span>
+###xml 194 208 <span type="species:ncbi:90371">S. typhimurium</span>
+###xml 271 278 <span type="species:ncbi:562">E. coli</span>
+###xml 556 563 <span type="species:ncbi:562">E. coli</span>
+Intergenic regions from E. coli were aligned to orthologous regions in the genome of the related bacterium S. typhimurium, in a manner similar to that described in [45]. An intergenic region in S. typhimurium was considered to be orthologous to a corresponding region in E. coli if the genes flanking the regions had the same names and relative orientation in both species. The regions were aligned using the ClustalW alignment program (reference) with the default parameters. This yielded 1,628 alignments from the full set of 3,475 intergenic regions in E. coli. 1,452 of the alignments contained an aligned sequence of length 22 or more, and were thus sufficiently long to contain a CAP binding site [see Additional file 6].
+###end p 77
+###begin p 78
+###xml 123 131 123 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 205 220 205 220 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium </italic>
+###xml 234 249 234 249 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium </italic>
+###xml 273 281 273 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 370 385 370 385 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium </italic>
+###xml 123 130 <span type="species:ncbi:562">E. coli</span>
+###xml 205 219 <span type="species:ncbi:90371">S. typhimurium</span>
+###xml 234 248 <span type="species:ncbi:90371">S. typhimurium</span>
+###xml 273 280 <span type="species:ncbi:562">E. coli</span>
+###xml 370 384 <span type="species:ncbi:90371">S. typhimurium</span>
+As described above, several methods were used to identify candidate CAP binding sites within the intergenic regions of the E. coli genome. For those candidate sites, which were located in a region with an S. typhimurium ortholog, the S. typhimurium sequence aligned to the E. coli site was extracted. In the cases when there were no gaps in the alignment, the extracted S. typhimurium sequence could be assigned an estimated binding energy using either a weight matrix or a QPMEME energy matrix.
+###end p 78
+###begin title 79
+Authors' contributions
+###end title 79
+###begin p 80
+VHN performed all the experimental work. RAO contributed to the analysis of the binding sites that originated from the SELEX-SAGE data set. Both VHN and RAO helped in preparation of the manuscript. AMS designed and coordinated the experimental and bioinformatic aspects of the project and prepared the manuscript.
+###end p 80
+###begin title 81
+Supplementary Material
+###end title 81
+###begin title 82
+Additional file 1
+###end title 82
+###begin p 83
+###xml 0 55 0 55 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Weight matrix extracted from DPInteract database sites.</bold>
+Weight matrix extracted from DPInteract database sites. The conventional weight matrix, obtained from the known CAP sites in the DPInteract database, is provided. The matrices are in tab-separated format with the order of the columns being A, T, G and C.
+###end p 83
+###begin p 84
+Click here for file
+###end p 84
+###begin title 85
+Additional file 2
+###end title 85
+###begin p 86
+###xml 0 55 0 55 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Energy matrix extracted from DPInteract database sites.</bold>
+Energy matrix extracted from DPInteract database sites. The energy matrix, obtained by using QPMEME on known CAP sites in the DPInteract database, is provided. The matrices are in tab-separated format with the order of the columns being A, T, G and C.
+###end p 86
+###begin p 87
+Click here for file
+###end p 87
+###begin title 88
+Additional file 3
+###end title 88
+###begin p 89
+###xml 0 47 0 47 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Weight matrix extracted from the SELEX dataset.</bold>
+Weight matrix extracted from the SELEX dataset. The conventional weight matrix, based on SELEX data presented in this paper, is provided. The matrices are in tab-separated format with the order of the columns being A, T, G and C.
+###end p 89
+###begin p 90
+Click here for file
+###end p 90
+###begin title 91
+Additional file 4
+###end title 91
+###begin p 92
+###xml 0 47 0 47 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Energy matrix extracted from the SELEX dataset.</bold>
+Energy matrix extracted from the SELEX dataset. The energy matrix, obtained by training QPMEME on SELEX data presented in thin paper, is provided. The matrices are in tab-separated format with the order of the columns being A, T, G and C.
+###end p 92
+###begin p 93
+Click here for file
+###end p 93
+###begin title 94
+Additional file 5
+###end title 94
+###begin p 95
+###xml 0 16 0 16 <bold xmlns:xlink="http://www.w3.org/1999/xlink">SELEX sequences.</bold>
+SELEX sequences. This file contains the 591 usable SELEX sequences (including flanking sequences) used in the study.
+###end p 95
+###begin p 96
+Click here for file
+###end p 96
+###begin title 97
+Additional file 6
+###end title 97
+###begin p 98
+###xml 37 45 37 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 49 63 49 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium</italic>
+###xml 0 64 0 64 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Aligned intergenic sequences between <italic>E. coli </italic>and <italic>S. typhimurium</italic>.</bold>
+###xml 190 198 190 198 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 202 216 202 216 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. typhimurium</italic>
+###xml 37 44 <span type="species:ncbi:562">E. coli</span>
+###xml 49 63 <span type="species:ncbi:90371">S. typhimurium</span>
+###xml 190 197 <span type="species:ncbi:562">E. coli</span>
+###xml 202 216 <span type="species:ncbi:90371">S. typhimurium</span>
+Aligned intergenic sequences between E. coli and S. typhimurium. The gzip compressed tar file includes the clustalw output and the sequences used in the study comparing CAP binding sites in E. coli and S. typhimurium.
+###end p 98
+###begin p 99
+Click here for file
+###end p 99
+###begin title 100
+Acknowledgements
+###end title 100
+###begin p 101
+We thank Boris Shraiman for his role in the conception of the project and for collaboration in early stages of the work. W. Walter Lorenz provided a detailed SAGE protocol as well as invaluable advice on the procedure. We also thank Richard Ebright for the expression plasmids. This work was partially supported by an NHGRI grant R01HG03470.
+###end p 101
+###begin article-title 102
+Discovery and modeling of transcriptional regulatory regions
+###end article-title 102
+###begin article-title 103
+Mining genome databases to identify and understand new gene regulatory systems
+###end article-title 103
+###begin article-title 104
+Specificity and robustness in transcription control networks
+###end article-title 104
+###begin article-title 105
+###xml 93 114 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+A comprehensive library of DNA-binding site matrices for 55 proteins applied to the complete Escherichia coli K-12 genome
+###end article-title 105
+###begin article-title 106
+###xml 69 85 <span type="species:ncbi:562">Escherichia coli</span>
+RegulonDB (version 2.0): a database on transcriptional regulation in Escherichia coli
+###end article-title 106
+###begin article-title 107
+###xml 33 38 <span type="species:ncbi:4932">yeast</span>
+###xml 39 63 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+SCPD: a promoter database of the yeast Saccharomyces cerevisiae
+###end article-title 107
+###begin article-title 108
+TRANSFAC: an integrated system for gene expression regulation
+###end article-title 108
+###begin article-title 109
+###xml 29 34 <span type="species:ncbi:4932">yeast</span>
+Genomic binding sites of the yeast cell-cycle transcription factors SBF and MBF
+###end article-title 109
+###begin article-title 110
+Genome-wide location and function of DNA binding proteins
+###end article-title 110
+###begin article-title 111
+###xml 39 63 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Transcriptional regulatory networks in Saccharomyces cerevisiae
+###end article-title 111
+###begin article-title 112
+An algorithm for finding protein-DNA binding sites with applications to chromatin-immunoprecipitation microarray experiments
+###end article-title 112
+###begin article-title 113
+Transcriptional regulatory code of a eukaryotic genome
+###end article-title 113
+###begin article-title 114
+###xml 74 90 <span type="species:ncbi:10665">bacteriophage T4</span>
+Systematic evolution of ligands by exponential enrichment: RNA ligands to bacteriophage T4 DNA polymerase
+###end article-title 114
+###begin article-title 115
+High-throughput SELEX SAGE method for quantitative modeling of transcription-factor binding sites
+###end article-title 115
+###begin article-title 116
+Quantitative modeling and data analysis of SELEX experiments
+###end article-title 116
+###begin article-title 117
+Quantifying DNA-protein interactions by double-stranded DNA arrays
+###end article-title 117
+###begin article-title 118
+Exploring the DNA-binding specificities of zinc fingers with DNA microarrays
+###end article-title 118
+###begin article-title 119
+MATRIX SEARCH 1.0: a computer program that scans DNA sequences for transcriptional elements using a database of weight matrices
+###end article-title 119
+###begin article-title 120
+Organization and function of transcription regulatory elements
+###end article-title 120
+###begin article-title 121
+Computer methods to locate signals in nucleic acid sequences
+###end article-title 121
+###begin article-title 122
+Quantitative analysis of the relationship between nucleotide sequence and functional activity
+###end article-title 122
+###begin article-title 123
+Selection of DNA binding sites by regulatory proteins. Statistical-mechanical theory and application to operators and promoters
+###end article-title 123
+###begin article-title 124
+Identifying protein-binding sites from unaligned DNA fragments
+###end article-title 124
+###begin article-title 125
+Specificity, free energy and information content in protein-DNA interactions
+###end article-title 125
+###begin article-title 126
+A biophysical approach to transcription factor binding site discovery
+###end article-title 126
+###begin article-title 127
+Estimating the support of a high-dimensional distribution
+###end article-title 127
+###begin article-title 128
+###xml 31 47 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 99 106 <span type="species:ncbi:562">E. coli</span>
+Studies of the distribution of Escherichia coli cAMP-receptor protein and RNA polymerase along the E. coli chromosome
+###end article-title 128
+###begin article-title 129
+Precise physical models of protein-DNA interaction from high-throughput data
+###end article-title 129
+###begin article-title 130
+Combining SELEX with quantitative assays to rapidly obtain accurate models of protein-DNA interactions
+###end article-title 130
+###begin article-title 131
+Advanced sequencing technologies: methods and goals
+###end article-title 131
+###begin article-title 132
+Analyzing protein-DNA recognition mechanisms
+###end article-title 132
+###begin article-title 133
+Non-additivity in protein-DNA binding
+###end article-title 133
+###begin article-title 134
+###xml 98 108 <span type="species:ncbi:7227">Drosophila</span>
+Computational detection of genomic cis-regulatory modules applied to body patterning in the early Drosophila embryo
+###end article-title 134
+###begin article-title 135
+Stubb: a program for discovery and analysis of cis-regulatory modules
+###end article-title 135
+###begin article-title 136
+A genomic code for nucleosome positioning
+###end article-title 136
+###begin article-title 137
+Site-specific incorporation of fluorescent probes into protein: hexahistidine-tag-mediated fluorescent labeling with (Ni(2+):nitrilotriacetic Acid (n)-fluorochrome conjugates
+###end article-title 137
+###begin article-title 138
+Ni+-affinity purification of untagged cAMP receptor protein
+###end article-title 138
+###begin article-title 139
+Serial analysis of gene expression
+###end article-title 139
+###begin article-title 140
+###xml 83 99 <span type="species:ncbi:562">Escherichia coli</span>
+Evolutionary comparisons suggest many novel cAMP response protein binding sites in Escherichia coli
+###end article-title 140
+

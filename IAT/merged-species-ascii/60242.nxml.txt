@@ -1,0 +1,599 @@
+###begin article-title 0
+A computational approach to identify genes for functional RNAs in genomic sequences
+###end article-title 0
+###begin p 1
+###xml 95 113 95 113 <email xmlns:xlink="http://www.w3.org/1999/xlink">srholbrook@lbl.gov</email>
+To whom correspondence should be addressed. Tel: +1 510 486 4305; Fax: +1 510 486 6059; Email: srholbrook@lbl.gov
+###end p 1
+###begin p 2
+###xml 385 401 385 401 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 385 401 <span type="species:ncbi:562">Escherichia coli</span>
+Currently there is no successful computational approach for identification of genes encoding novel functional RNAs (fRNAs) in genomic sequences. We have developed a machine learning approach using neural networks and support vector machines to extract common features among known RNAs for prediction of new RNA genes in the unannotated regions of prokaryotic and archaeal genomes. The Escherichia coli genome was used for development, but we have applied this method to several other bacterial and archaeal genomes. Networks based on nucleotide composition were 80-90% accurate in jackknife testing experiments for bacteria and 90-99% for hyperthermophilic archaea. We also achieved a significant improvement in accuracy by combining these predictions with those obtained using a second set of parameters consisting of known RNA sequence motifs and the calculated free energy of folding. Several known fRNAs not included in the training datasets were identified as well as several hundred predicted novel RNAs. These studies indicate that there are many unidentified RNAs in simple genomes that can be predicted computationally as a precursor to experimental study. Public access to our RNA gene predictions and an interface for user predictions is available via the web.
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin p 4
+###xml 223 224 223 224 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c1">1</xref>
+###xml 225 226 225 226 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c2">2</xref>
+The value of genomic DNA sequence data is dependent on the algorithms and software available for interpretation and analyses of the nucleotide strings. For example, software packages such as Glimmer, GeneMark and GeneScan (1,2) are widely used to identify protein open reading frames (ORFs), while FASTA, BLAST and PSI-BLAST infer protein function from sequence homology. The ability to locate all or most protein ORFs in genomic sequences has led to the entire field of proteomics and the ability to monitor protein expression and function during cellular processes.
+###end p 4
+###begin p 5
+ In contrast to the numerous successful programs and algorithms for identifying protein genes and coding sequences, virtually no computational methods are available for identifying novel genes for stable, functional RNAs (fRNAs) or regulatory elements in mRNA that control translation or stability. The major reason for this is that the signals used for finding protein genes, start and stop codons, the triplet amino acid code and ribosome-binding (Shine-Dalgarno) sequences, are not present in RNA genes. Other signals, such as promoters, terminators and processing sites, are not easily recognizable and thereby are unreliable indicators.
+###end p 5
+###begin p 6
+###xml 160 161 160 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c3">3</xref>
+###xml 162 163 162 163 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c5">5</xref>
+###xml 337 338 337 338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c6">6</xref>
+###xml 430 431 430 431 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c7">7</xref>
+###xml 432 433 432 433 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c8">8</xref>
+###xml 450 451 450 451 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c9">9</xref>
+###xml 721 723 721 723 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c10">10</xref>
+###xml 852 868 852 868 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 982 984 982 984 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c11">11</xref>
+###xml 1019 1021 1019 1021 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c12">12</xref>
+###xml 714 719 <span type="species:ncbi:4932">yeast</span>
+###xml 852 868 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 1080 1085 <span type="species:ncbi:10090">mouse</span>
+ Currently, RNA genes are found in genomic sequences by their sequence or structural homology to known RNAs. Programs such as tRNAscan-SE, FAStRNA and Snoscan (3-5) utilize conserved elements of sequence and structure to identify tRNAs and snoRNAs. Genes for other known RNAs can often be located by sequence homology or motif searches (6). Folding free energy has been used to predict structured RNA elements as potential fRNAs (7,8). The Pol3scan (9) program uses a combination of polymerase III binding and terminator recognition sites together with base pairing motifs to find eukaryotic tRNAs. Identification of consensus polymerase III promoters has been used to guide an experimental search for new RNAs in yeast (10) that was successful in identifying several expressed RNAs. Recently, a comparative genomics study of the intergenic regions of Escherichia coli and other related genomes predicted the presence of 19 novel RNAs that were confirmed by biochemical experiment (11). Finally, an experimental study (12) has identified 201 potential new small RNAs expressed in mouse brain.
+###end p 6
+###begin p 7
+ There is, however, no general computational approach to locating novel functional RNA sequences that lack sequence or structure homology to one of the limited number of known RNA types. Computational prediction of fRNAs in genomic sequences would allow experimental testing of expression levels, functional assay by deletion or mutagenesis, structural analysis and identification of protein or nucleic acid interaction partners. These untranslated fRNAs have also been referred to as non-coding RNA (ncRNA), small RNAs (sRNA, smRNA), untranslated and small non-messenger RNA (snmRNA). We will continue to refer to them as fRNA throughout this paper.
+###end p 7
+###begin p 8
+ Our working hypothesis is that characteristic signals exist in the sequences of fRNAs that are distinguishable from, and in contrast to, sequences of non-coding regions of the genome. Non-coding regions are defined as those regions of the genome excluding protein genes and RNA genes, along with their promoters and terminators. We expect that the evolutionary forces responsible for the diversity of sequences of non-coding regions will lead to a different sequence distribution than that of either protein or RNA coding regions.
+###end p 8
+###begin p 9
+###xml 459 464 <span type="species:ncbi:9606">human</span>
+ We propose to extract these signals from sequences of known fRNAs and non-coding regions using machine learning methods, specifically computational neural networks (NNs) and support vector machines (SVMs), and to apply these learned rules to the prediction of novel fRNAs among the currently unannotated regions of the genome. We present here our initial studies with prokaryotes and archaea, but the same approach is applicable to eukaryotes, including the human genome.
+###end p 9
+###begin title 10
+MATERIALS AND METHODS
+###end title 10
+###begin title 11
+Software
+###end title 11
+###begin p 12
+###xml 97 99 97 99 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c13">13</xref>
+###xml 122 127 122 127 <sup xmlns:xlink="http://www.w3.org/1999/xlink">light</sup>
+###xml 122 127 122 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink"><sup>light</sup></italic>
+###xml 137 139 137 139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c14">14</xref>
+###xml 309 311 309 311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c15">15</xref>
+All neural network simulations and testing were done with the locally developed BIOPROP program (13). We have used the SVMlight program (14) for all support vector machine calculations. Large-scale calculations of the free energy of folding were made using a local program based on the Vienna RNA package () (15).
+###end p 12
+###begin title 13
+Genome sequences
+###end title 13
+###begin p 14
+###xml 77 83 77 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 106 112 106 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 195 216 195 216 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Mycoplasma genitalium</italic>
+###xml 218 242 218 242 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Methanococcus jannaschii</italic>
+###xml 244 261 244 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis</italic>
+###xml 263 285 263 285 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Haemophilus influenzae</italic>
+###xml 290 313 290 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Deinococcus radiodurans</italic>
+###xml 360 381 360 381 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Pyrococcus horikoshii</italic>
+###xml 491 512 491 512 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Mycoplasma pneumoniae</italic>
+###xml 542 554 542 554 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.pneumoniae</italic>
+###xml 77 83 <span type="species:ncbi:562">E.coli</span>
+###xml 106 112 <span type="species:ncbi:562">E.coli</span>
+###xml 195 216 <span type="species:ncbi:2097">Mycoplasma genitalium</span>
+###xml 218 242 <span type="species:ncbi:2190">Methanococcus jannaschii</span>
+###xml 244 261 <span type="species:ncbi:1423">Bacillus subtilis</span>
+###xml 263 285 <span type="species:ncbi:727">Haemophilus influenzae</span>
+###xml 290 313 <span type="species:ncbi:1299">Deinococcus radiodurans</span>
+###xml 360 381 <span type="species:ncbi:53953">Pyrococcus horikoshii</span>
+###xml 491 512 <span type="species:ncbi:2104">Mycoplasma pneumoniae</span>
+###xml 542 554 <span type="species:ncbi:2104">M.pneumoniae</span>
+Genome sequences and annotations were taken from their original sources. The E.coli sequence was from the E.coli genome project at the University of Wisconsin-Madison (). The genome sequences of Mycoplasma genitalium, Methanococcus jannaschii, Bacillus subtilis, Haemophilus influenzae and Deinococcus radiodurans were from the TIGR microbial database (), the Pyrococcus horikoshii genome sequence was from the National Institute of Technology and Evaluation (NITE), Tokyo, Japan () and the Mycoplasma pneumoniae sequence from the Heidelberg M.pneumoniae project ().
+###end p 14
+###begin title 15
+Compilation of sequence databases
+###end title 15
+###begin p 16
+###xml 61 67 61 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 181 187 181 187 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 210 212 210 212 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c16">16</xref>
+###xml 323 329 323 329 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 354 360 354 360 <italic xmlns:xlink="http://www.w3.org/1999/xlink"> et al</italic>
+###xml 363 365 363 365 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c17">17</xref>
+###xml 386 387 386 387 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gke536tb1">1</xref>
+###xml 61 67 <span type="species:ncbi:562">E.coli</span>
+###xml 181 192 <span type="species:ncbi:83333">E.coli K-12</span>
+###xml 323 329 <span type="species:ncbi:562">E.coli</span>
+We chose to formulate and test our predictive methods on the E.coli genome as the most well-studied bacterium in terms of both genome structure and function. The M52 version of the E.coli K-12 genome sequence (16) was used to compile a database of fRNA and non-annotated sequences. The well-characterized fRNA sequences of E.coli as compiled by Wassarman et al. (17) are shown in Table 1. The sequences of these RNA molecules served as positive examples from which we derived parameters for machine learning. The 'non-coding', or intergenic, sequences were obtained by removing all protein and known fRNA coding regions from the genome along with a buffer of 50 residues on both the 5' and 3' sides so as to remove possible promoter, terminator and other untranslated control elements. Sequences in both strands were removed when there was a protein or RNA coding region on either strand.
+###end p 16
+###begin p 17
+ It is inherent in the nature of our problem, discovering possible RNA genes in non-annotated genomic DNA, that the 'non-coding' data will actually contain some real RNA genes. However, we assume that only a small fraction of the non-annotated sequences correspond to 'coding' sequences of RNA genes and we are therefore justified in using the non-annotated sequence as negative examples of RNA genes in machine learning. We make this assumption realizing that our non-coding database is somewhat contaminated with currently unknown RNA genes. After making our initial predictions, we filter our database in an iterative manner, removing strongly predicted genes and retraining in order to 'purify' our non-coding database.
+###end p 17
+###begin p 18
+###xml 14 20 14 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 154 155 154 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gke536tb1">1</xref>
+###xml 583 589 571 577 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 14 20 <span type="species:ncbi:562">E.coli</span>
+###xml 583 589 <span type="species:ncbi:562">E.coli</span>
+ The complete E.coli genome consists of 4 697 221 nt on each strand (9 394 442 total). After removal of all protein coding genes, RNA coding genes (Table 1) and flanking regions, 337 662 nt remained on each strand for a total of 675 324 non-coding nucleotides. Our known RNA dataset consists of 41 697 nt. In order to remove bias from the database, duplicate RNA sequences were removed, leaving one copy of each rRNA and tRNA. This reduced the RNA database to 8400 nt. Thus, the non-coding database is approximately80 times as large as the number of unique RNA coding nucleotides in E.coli.
+###end p 18
+###begin p 19
+ Each RNA and non-annotated intergenic sequence was then divided into sequence windows of 80 residues with a 40 nt overlap between windows (i.e. each window slides 40 residues along the sequence). This window size was initially chosen to correspond to the size of tRNAs. Testing with different sized windows and overlaps showed that this choice was optimal for both prediction accuracy and computational speed. A window of <40 residues at the end of the sequence was omitted from the calculations. A total of 7705 windows from each strand (15 410 total) were partitioned from the non-coding sequences, while 188 unique RNA sequence windows were available from the known RNA sequences (after removing redundant RNAs). Of these 188 windows, 38.3% were from 23S rRNA, 26.6% from miscellaneous small RNAs, 20.2% from 16S rRNA, 13.3% from tRNA and 1.6% from 5S rRNA.
+###end p 19
+###begin p 20
+###xml 377 383 377 383 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 377 383 <span type="species:ncbi:562">E.coli</span>
+ The large disparity in non-coding to RNA coding sequence windows presented a problem for neural network training, where the number of training examples of each type should be similar. One answer to this problem is to compile multiple datasets each having the same sequences from RNA genes, but with different non-coding sequences. To test this approach we made five datasets (E.coli 1-5) using the same 188 RNA coding windows but with a different unique set of 188 windows extracted randomly from the non-coding sequences. These five datasets were independently used to train and test neural networks and support vector machines and to predict novel RNA genes. An advantage of this approach is that predictions can be checked for agreement between the different networks, thus reducing false positives.
+###end p 20
+###begin title 21
+Selection and calculation of input parameters for machine learning
+###end title 21
+###begin p 22
+###xml 194 196 194 196 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c18">18</xref>
+We have previously demonstrated that machine learning methods based on the composition, transition frequency and sequence distribution of amino acids can be used successfully in the prediction (18) of protein folding class from sequence alone. We therefore tested these parameters for their ability to discriminate sequence windows extracted from fRNAs from those arising from non-coding regions. Composition was represented as percent nucleotide composition, %A, %G, %C and %T (%U). Transition, represented in proteins as the alternation between hydrophobic and hydrophilic amino acids, was parameterized for RNA simply as the percentage of each dinucleotide present in the sequence window (i.e. %AA, %AG, etc.). Since we are using sequence windows rather than complete gene sequences as our prediction unit, the use of sequence distribution parameters does not apply.
+###end p 22
+###begin p 23
+###xml 262 264 262 264 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c19">19</xref>
+###xml 273 275 273 275 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c20">20</xref>
+###xml 338 340 338 340 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c21">21</xref>
+###xml 341 343 341 343 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c22">22</xref>
+###xml 358 360 358 360 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c23">23</xref>
+###xml 547 549 547 549 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c16">16</xref>
+###xml 550 552 550 552 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c24">24</xref>
+###xml 650 652 650 652 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c25">25</xref>
+###xml 653 655 653 655 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c26">26</xref>
+###xml 741 743 741 743 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c27">27</xref>
+###xml 952 954 952 954 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c28">28</xref>
+###xml 1009 1015 1009 1015 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 1044 1056 1042 1054 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.jannaschii</italic>
+###xml 1145 1151 1141 1147 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 1169 1181 1163 1175 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.jannaschii</italic>
+###xml 1009 1015 <span type="species:ncbi:562">E.coli</span>
+###xml 1044 1056 <span type="species:ncbi:2190">M.jannaschii</span>
+###xml 1145 1151 <span type="species:ncbi:562">E.coli</span>
+###xml 1169 1181 <span type="species:ncbi:2190">M.jannaschii</span>
+ As a supplement and complement to these compositional parameters we considered an additional set of parameters describing the occurrence frequency of sequence motifs commonly found as RNA structural elements. These included the well-known sequence motifs UNCG (19), GNRA (20) and CUYG (R, purine; Y, pyrimidine) found in RNA tetraloops (21,22) and the AAR (23) subsequence of the tetraloop receptor motif. In addition, the DNA sequence CTAG (RNA = CUAG) that occurs rarely in bacterial protein genes and non-coding regions compared to RNA genes (16,24) was included. Despite many studies and hypotheses regarding the basis of this sequence anomaly (25,26), the reasons for this bias are unclear, although it may have some structural basis (27). The final parameter of this set was the calculated free energy of folding for the RNA sequence window. This parameter was chosen based on calculations showing the average calculated free energy of folding (28) of the sequence windows corresponding to known RNAs (E.coli, -2.70 +/- 0.52 kcal/80 nt; M.jannaschii, -3.68 +/- 0.72) to be lower than that calculated from the non-coding sequence windows (E.coli, -2.06 +/- 0.85; M.jannaschii, -1.34 +/- 0.66).
+###end p 23
+###begin p 24
+ The twenty 'compositional' parameters (four for percent nucleotide composition, 16 for percent dinucleotide composition or transition) and the six 'structural motif' parameters described above were calculated for all sequence windows and used in training and testing of neural networks and support vector machines and for prediction of novel RNA genes by the trained computational machines.
+###end p 24
+###begin title 25
+Neural network architecture
+###end title 25
+###begin p 26
+All neural networks used in training, testing and prediction were of the back-propagation, feed-forward type with a single hidden layer. The 20 input 'composition' parameters were used for testing and training of a neural network with three hidden nodes, while a separate neural network of similar architecture was trained and tested using the six 'structural motif' parameters.
+###end p 26
+###begin p 27
+###xml 333 334 333 334 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gke536f1">1</xref>
+ In order to optimize prediction, the predictions (output activities) from the composition and structural motif networks were used as input to a third neural network (voting network), which is trained to make a final decision as to whether a sequence window belongs to a RNA gene. The overall network architecture is shown in Figure 1.
+###end p 27
+###begin title 28
+RESULTS AND DISCUSSION
+###end title 28
+###begin title 29
+###xml 43 49 43 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 43 49 <span type="species:ncbi:562">E.coli</span>
+Neural networks for RNA gene prediction in E.coli
+###end title 29
+###begin p 30
+###xml 215 221 215 221 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 253 254 253 254 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gke536tb2">2</xref>
+###xml 393 394 393 394 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 394 399 394 395 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 528 530 524 526 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c29">29</xref>
+###xml 215 221 <span type="species:ncbi:562">E.coli</span>
+Networks were tested by a full jackknife procedure (removing one example at a time, retraining, testing on the single example, then averaging over all examples). The results of the jackknife testing experiments for E.coli (dataset 1) are shown in Table 2. These results are evaluated in terms of the contingency matrix (true and false positives and negatives), the correlation coefficient and Qalpha (average of the percentage of correctly predicted positive windows and the percentage of correctly predicted negative windows) (29).
+###end p 30
+###begin p 31
+###xml 52 53 52 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 53 58 53 54 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+ The composition network has a prediction accuracy, Qalpha, of >85%, while the structural motif network alone predicts RNA genes with slightly over 81% accuracy. However, the voting network, which takes into account both composition and structural parameters, performs best, with 92% accuracy over all examples, rising to 93.5% for the strongest predictions. Notably, at least one window of every RNA in our dataset was predicted in testing experiments.
+###end p 31
+###begin p 32
+###xml 31 37 31 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 172 173 172 173 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 173 178 173 174 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 308 309 304 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 309 314 305 306 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 389 390 381 382 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gke536tb3">3</xref>
+###xml 31 37 <span type="species:ncbi:562">E.coli</span>
+ We also tested a further four E.coli datasets (each with the same RNA examples and a different set of non-coding examples) using the same jackknife procedure. The average Qalpha for the composition network was 82.9%, whilst that for the structural motif network was 75.7%. The voting network has an average Qalpha of 89.4%. The same pattern is seen in the correlation coefficients (Table 3), with the voting network having the highest correlation (average over five datasets, 0.789), followed by the composition network (correlation coefficient 0.658), with the weakest correlation for the network based on structural motifs (correlation 0.522).
+###end p 32
+###begin p 33
+###xml 99 105 99 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 296 302 296 302 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 99 105 <span type="species:ncbi:562">E.coli</span>
+###xml 296 302 <span type="species:ncbi:562">E.coli</span>
+ To evaluate the effect of dataset contamination (RNA sequences within the non-coding data) in the E.coli datasets, any negative windows that were strongly predicted to be positive in both the structural and compositional nets were removed and the networks retrained. Removal of 10 examples from E.coli dataset 1 and 14 examples from dataset 3 led to improvements in the final testing accuracy of approximately2.2 and 1.6%, respectively. These examples were then tested by both retrained networks from which they had been omitted and all 24 examples were predicted to be RNA genes by both networks.
+###end p 33
+###begin p 34
+###xml 329 330 329 330 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 330 335 330 331 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+ To further examine the effect of contamination, two additional experiments were undertaken. In the first, any window that was predicted positive by any of the trained networks was removed from the negative set. Retraining using the same positives and a random set of these 'absolute negatives' gave a significant improvement in Qalpha (96.8% compared to the previous 92.0%) and, as expected, there were no false positives.
+###end p 34
+###begin p 35
+###xml 120 122 120 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c30">30</xref>
+###xml 313 315 313 315 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#8211;3</sup>
+###xml 374 375 374 375 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 375 380 375 376 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+ In the second experiment all of the negative windows used in training sets 1-5 were searched for homology using BLAST (30). Any window that showed any homology to any other sequence in the NR database was removed from the negative set (homology was determined as any window that had a BLAST expectation value <10-3). When this network was retrained again an improvement in Qalpha was seen (95.5%) and a reduction in the number of false positives was noticed (8 compared to 15).
+###end p 35
+###begin p 36
+###xml 610 616 610 616 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 610 616 <span type="species:ncbi:562">E.coli</span>
+ The high prediction accuracy for each of the networks and datasets illustrates that neural networks are able to learn to distinguish between RNA genes and non-coding regions with high accuracy using either structural or compositional parameters as input. It is also apparent that a voting network incorporating output from both structural and global composition networks is the most accurate and predicts the greatest percent of the data at all threshold levels. We thus feel justified in using a voting network trained with the architecture and parameters described above to search the intergenic regions of E.coli for novel fRNAs.
+###end p 36
+###begin title 37
+###xml 38 44 38 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 38 44 <span type="species:ncbi:562">E.coli</span>
+Neural network prediction results for E.coli
+###end title 37
+###begin p 38
+###xml 43 49 43 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 291 297 291 297 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 541 547 541 547 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 43 49 <span type="species:ncbi:562">E.coli</span>
+###xml 291 297 <span type="species:ncbi:562">E.coli</span>
+###xml 541 547 <span type="species:ncbi:562">E.coli</span>
+Using the trained voting network from each E.coli network and compiling the results we found that 285 sequence windows were predicted in all networks to belong to RNA genes in strand 1 and 277 windows to RNA genes in strand 2, out of the 15 410 intergenic sequence windows in each strand of E.coli (1.8%). Since many of these predicted windows are consecutive, the actual number of RNA genes predicted is smaller. If consecutive windows and cross-strand predictions are taken into account, approximately 370 novel fRNAs are predicted in the E.coli genome.
+###end p 38
+###begin p 39
+###xml 108 114 108 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 131 133 131 133 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c31">31</xref>
+###xml 247 249 247 249 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#8211;5</sup>
+###xml 495 517 495 517 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella typhimurium</italic>
+###xml 565 572 565 572 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli.</italic>
+###xml 782 802 782 802 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Citrobacter freundii</italic>
+###xml 822 835 822 835 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S.typhimurium</italic>
+###xml 886 892 886 892 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 897 907 897 907 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C.freundii</italic>
+###xml 108 122 <span type="species:ncbi:83334">E.coli O157:H7</span>
+###xml 495 517 <span type="species:ncbi:90371">Salmonella typhimurium</span>
+###xml 565 571 <span type="species:ncbi:562">E.coli</span>
+###xml 782 802 <span type="species:ncbi:546">Citrobacter freundii</span>
+###xml 822 835 <span type="species:ncbi:90371">S.typhimurium</span>
+###xml 886 892 <span type="species:ncbi:562">E.coli</span>
+###xml 897 907 <span type="species:ncbi:546">C.freundii</span>
+ It was also noted that a number of the predicted RNA genes have strong sequence homology to regions in the E.coli O157:H7 genome (31) as determined using a BLAST search (homology was determined as any window that had a BLAST expectation value <10-5). The non-coding sequence between bases 2151201 and 2151760 is analogous to a region of the O157:H7 genome over 523 of 546 bases and is strongly predicted over four windows in this region. Many predicted genes were also homologous to regions of Salmonella typhimurium and other bacterial genomes closely related to E.coli. The putative gene between bases 4177162 and 4177523, which is strongly predicted over three windows, is identical for a 50 nt section to a region of the O157:H7 genome; it is also conserved for 55 of 56 nt in Citrobacter freundii and 52 of 54 nt of S.typhimurium. It is part of a ribosomal protein operon in both E.coli and C.freundii.
+###end p 39
+###begin p 40
+###xml 17 23 17 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 493 499 493 499 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 546 559 546 559 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S.typhimurium</italic>
+###xml 17 23 <span type="species:ncbi:562">E.coli</span>
+###xml 493 499 <span type="species:ncbi:562">E.coli</span>
+###xml 546 559 <span type="species:ncbi:90371">S.typhimurium</span>
+ Of the putative E.coli RNA genes predicted by the trained networks, many clustered either together or with known RNAs. A striking example is observed in the spacer regions between tRNA genes found in several tRNA operons. In one operon consisting of lysine and valine tRNA genes, each of five intergenic regions is predicted as an RNA gene. These spacers are similar in sequence, as shown by multiple sequence alignment, can fold into a similar secondary structure and have homologs in other E.coli tRNA operons and in related organisms such as S.typhimurium.
+###end p 40
+###begin p 41
+###xml 138 139 138 139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gke536tb4">4</xref>
+###xml 172 176 172 176 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tyrT</italic>
+###xml 187 193 187 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 230 232 230 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c32">32</xref>
+###xml 376 382 376 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 456 462 456 462 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 674 676 674 676 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c33">33</xref>
+###xml 187 193 <span type="species:ncbi:562">E.coli</span>
+###xml 376 382 <span type="species:ncbi:562">E.coli</span>
+###xml 456 462 <span type="species:ncbi:562">E.coli</span>
+ A search of the literature revealed a number of fRNAs that were not included in the original training set. These are summarized in Table 4. A small RNA of 171 nt from the tyrT operon of E.coli has been experimentally identified (32) and proposed to have a modulatory effect on stringent response. The sequence windows corresponding to this RNA were strongly predicted by all E.coli networks to be a fRNA. A number of the known DNA repeat sequences in the E.coli genome are also predicted by the neural networks to be RNA genes. The predictions included the TRIP repeat, a 266 nt sequence, and the QUAD repeat, a 165 nt sequence, both previously speculated to be RNA genes (33).
+###end p 41
+###begin p 42
+###xml 5 8 5 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">crp</italic>
+###xml 29 31 29 31 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c34">34</xref>
+###xml 197 203 197 203 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 240 242 237 239 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c35">35</xref>
+###xml 326 330 323 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink">RepI</italic>
+###xml 337 339 334 336 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c36">36</xref>
+###xml 486 487 483 484 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gke536tb4">4</xref>
+###xml 197 203 <span type="species:ncbi:562">E.coli</span>
+ The crp divergent RNA gene (34), which regulates expression, was identified as a 94 nt RNA and was successfully predicted. RQ120, a 120 nt RNA that was identified as a recombinant RNA produced in E.coli in the presence of Qbeta replicase (35) was successfully identified. Finally, a small RNA that inhibits expression of the RepI gene (36) of plasmid R1162 was also successfully identified by our networks. Further examples of successfully predicted known fRNAs are indicated in Table 4. In future iterations of RNAGENiE these examples can be used in the training set to improve accuracy.
+###end p 42
+###begin p 43
+###xml 79 85 79 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 116 122 116 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink"> et al</italic>
+###xml 125 127 125 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c11">11</xref>
+###xml 321 327 321 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 886 892 874 880 <italic xmlns:xlink="http://www.w3.org/1999/xlink"> et al</italic>
+###xml 895 897 883 885 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c11">11</xref>
+###xml 79 85 <span type="species:ncbi:562">E.coli</span>
+###xml 321 327 <span type="species:ncbi:562">E.coli</span>
+ Using comparative genomics to identify conserved intergenic sequences between E.coli and related genomes, Wassarman et al. (11) have postulated the presence of 26 potential new RNA genes. Twenty-five expressed RNAs corresponding to these sequences were verified by northern blot and microarray analysis to be present in E.coli. Nineteen of these RNAs appear to be non-messenger while the remaining six appeared to code for putative ORFs. Using RNAGENiE we correctly predicted 17 of these 19 novel RNA genes (approximately90%) with at least one sequence window. One site of disagreement corresponds to a region in which RNAs were predicted and found to be partially overlapping on opposite strands of the genome. While we correctly predict an RNA coding region on the Watson strand we do not find any signal on the Crick strand. Finally, another intergenic region was found by Wassarman et al. (11) to contain two adjacent RNA genes, while we predict only the first one. It is possible that in this case there is only a single larger expressed RNA that appears as two sequences after processing.
+###end p 43
+###begin title 44
+Training and testing neural networks in other genomes
+###end title 44
+###begin p 45
+###xml 122 133 122 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B.subtilis </italic>
+###xml 139 151 139 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.genitalium</italic>
+###xml 158 170 158 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.pneumoniae</italic>
+###xml 176 189 176 189 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D.radiodurans</italic>
+###xml 199 211 199 211 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H.influenzae</italic>
+###xml 251 263 251 263 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.jannaschii</italic>
+###xml 273 285 273 285 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P.horikoshii</italic>
+###xml 298 299 298 299 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gke536tb3">3</xref>
+###xml 122 132 <span type="species:ncbi:1423">B.subtilis</span>
+###xml 134 136 <span type="species:ncbi:1423">Bs</span>
+###xml 139 151 <span type="species:ncbi:2097">M.genitalium</span>
+###xml 153 155 <span type="species:ncbi:2097">Mg</span>
+###xml 158 170 <span type="species:ncbi:2104">M.pneumoniae</span>
+###xml 172 174 <span type="species:ncbi:2104">Mp</span>
+###xml 176 189 <span type="species:ncbi:1299">D.radiodurans</span>
+###xml 191 193 <span type="species:ncbi:1299">Dr</span>
+###xml 199 211 <span type="species:ncbi:727">H.influenzae</span>
+###xml 213 215 <span type="species:ncbi:727">Hi</span>
+###xml 251 263 <span type="species:ncbi:2190">M.jannaschii</span>
+###xml 265 267 <span type="species:ncbi:2190">Mj</span>
+###xml 273 285 <span type="species:ncbi:53953">P.horikoshii</span>
+###xml 287 289 <span type="species:ncbi:53953">Ph</span>
+We have applied the prediction scheme described above to and tested it on several other organisms, including the bacteria B.subtilis (Bs), M.genitalium (Mg), M.pneumoniae (Mp) D.radiodurans (Dr) and H.influenzae (Hi) and the hyperthermophilic archaea M.jannaschii (Mj) and P.horikoshii (Ph) (Table 3).
+###end p 45
+###begin p 46
+###xml 91 92 91 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 92 97 92 93 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 70 72 <span type="species:ncbi:1423">Bs</span>
+###xml 77 79 <span type="species:ncbi:727">Hi</span>
+###xml 306 308 <span type="species:ncbi:1299">Dr</span>
+ The best performance on jackknife testing of the prokaryotes was for Bs and Hi, which had Qalpha scores of 97.2 and 98.1%, respectively. These two genomes have a relatively high G+C content in their RNA gene sequences compared to the overall G+C content in their genomes, 1.26 and 1.34, respectively. The Dr genome, which performed least well on testing (88.8% correct), had the lowest G+C ratio of all genomes tested, 0.85.
+###end p 46
+###begin p 47
+###xml 151 152 151 152 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 152 157 152 153 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 1 3 <span type="species:ncbi:2097">Mg</span>
+###xml 8 10 <span type="species:ncbi:2104">Mp</span>
+###xml 59 61 <span type="species:ncbi:2097">Mg</span>
+###xml 88 90 <span type="species:ncbi:2104">Mp</span>
+###xml 141 143 <span type="species:ncbi:2097">Mg</span>
+###xml 173 175 <span type="species:ncbi:2104">Mp</span>
+###xml 209 211 <span type="species:ncbi:2097">Mg</span>
+###xml 232 234 <span type="species:ncbi:2104">Mp</span>
+###xml 274 276 <span type="species:ncbi:2104">Mp</span>
+###xml 320 322 <span type="species:ncbi:2097">Mg</span>
+ Mg and Mp have small and highly related genomes, with the Mg genome almost a subset of Mp. Testing of neural networks for RNA prediction in Mg gave a Qalpha of 90% and for Mp 92%. When the network trained on Mg was used to predict Mp RNAs, it was 89.3% accurate, while the Mp networks were 89.7% accurate in predicting Mg RNAs. This cross-prediction between organisms suggests that we may be able to predict RNA genes in many organisms from related species rather than having to make individual networks for each organism.
+###end p 47
+###begin p 48
+###xml 110 111 110 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 111 116 111 112 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 271 273 267 269 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c37">37</xref>
+###xml 499 500 495 496 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gke536f2">2</xref>
+###xml 511 512 507 508 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 512 517 508 509 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 686 688 678 680 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c37">37</xref>
+###xml 27 29 <span type="species:ncbi:2190">Mj</span>
+###xml 34 36 <span type="species:ncbi:53953">Ph</span>
+###xml 415 417 <span type="species:ncbi:2190">Mj</span>
+###xml 434 436 <span type="species:ncbi:53953">Ph</span>
+###xml 797 799 <span type="species:ncbi:1423">Bs</span>
+###xml 804 806 <span type="species:ncbi:727">Hi</span>
+###xml 864 866 <span type="species:ncbi:2097">Mg</span>
+ The prediction of RNAs in Mj and Ph, both hyperthermophilic archaeal organisms, was extremely accurate, with Qalpha values of 99.6 and 94.4%, respectively. As observed for prokaryotes, this accuracy may partly arise from the relatively high overall G+C content of RNAs (37) in these hyperthermophiles relative to the rest of the genome. The ratio of G+C content in the RNA genes to overall genomic G+C content for Mj is 2.05 and for Ph 1.58. To further examine this relationship, we show in Figure 2 a plot of Qalpha versus G+C ratio for all genomes we have studied. As can be seen, there is a high degree of correlation for most organisms, indicating, as suggested by Rivas and Eddy (37), that high G+C content is a key indicator of RNA genes. However, three genomes are well off the line, with Bs and Hi having a higher prediction correlation than expected and Mg lower than expected based strictly on G+C content. Clearly, other factors than composition must be taken into account to successfully discriminate between RNA genes and non-coding DNA in these organisms.
+###end p 48
+###begin title 49
+RNA gene prediction in other prokaryotes and archaea
+###end title 49
+###begin p 50
+###xml 667 673 667 673 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 824 825 824 825 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gke536tb5">5</xref>
+###xml 667 673 <span type="species:ncbi:562">E.coli</span>
+After verification of neural network performance, predictions are made for all intergenic sequence windows of each genome as to whether they code for a fRNA. Each prediction is associated with an activity or strength of prediction that is related to the likelihood that the prediction is correct. Thus some sequences are more confidently predicted than other sequences. Consecutive predicted sequences define an RNA that is larger than the sequence window of 80 residues. We have applied this procedure for the prediction of fRNAs for each of the genomes listed and identified many putative fRNAs. These predicted RNAs are stored in a database on our web site. As in E.coli, several predicted RNAs not included in our original database have been identified and characterized in the literature. These are summarized in Table 5 and described below.
+###end p 50
+###begin p 51
+###xml 90 92 90 92 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c38">38</xref>
+###xml 58 60 <span type="species:ncbi:2104">Mp</span>
+###xml 86 88 <span type="species:ncbi:2097">Mg</span>
+###xml 226 228 <span type="species:ncbi:2104">Mp</span>
+###xml 233 235 <span type="species:ncbi:2097">Mg</span>
+ A new small RNA gene (200 bp) was recently discovered in Mp, along with a homolog in Mg (38). These RNAs were not included in our training set. The RNAs are expressed with high copy number and due to its conservation between Mp and Mg, the authors speculate that it is likely to be a fRNA. The trained neural networks for each organism successfully predicted the corresponding gene, with each network strongly predicting the most highly conserved region of the putative RNA sequences.
+###end p 51
+###begin p 52
+###xml 128 130 128 130 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c39">39</xref>
+###xml 171 174 171 174 <italic xmlns:xlink="http://www.w3.org/1999/xlink">rsr</italic>
+###xml 211 224 211 224 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D.radiodurans</italic>
+###xml 89 91 <span type="species:ncbi:1299">Dr</span>
+###xml 211 224 <span type="species:ncbi:1299">D.radiodurans</span>
+ Four small RNAs, also not included in our database, were found to be expressed from the Dr genome in response to UV radiation (39). These RNAs bind to the product of the rsr gene (Ro autoantigen ortholog) from D.radiodurans. One of these RNAs was identified as having structural and sequence similarities to eukaryotic YRNAs. When these sequences were tested, it was found that three of the four RNAs had at least one sequence window predicted as a fRNA.
+###end p 52
+###begin p 53
+###xml 64 66 64 66 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c40">40</xref>
+###xml 42 44 <span type="species:ncbi:2190">Mj</span>
+###xml 304 306 <span type="species:ncbi:2190">Mj</span>
+###xml 311 313 <span type="species:ncbi:53953">Ph</span>
+ snoRNAs have recently been identified in Mj and other archaea (40) using the Snoscan program. Our program fared reasonably well with these predicted guide RNAs that anneal to rRNA. Each snoRNA is only approximately56 nt in length and so is just a single sequence window. Out of a total of 59 snoRNAs in Mj and Ph our program predicted 35. Their small size and the fact that snoRNAs require rRNA as a template to fold into their functional form suggests that special paramaterization may be necessary to predict these types of RNAs.
+###end p 53
+###begin title 54
+Support vector machines
+###end title 54
+###begin p 55
+###xml 120 122 120 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c41">41</xref>
+###xml 421 422 421 422 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gke536tb6">6</xref>
+An alternative approach to classification problems by machine learning uses the so-called support vector machine (SVM) (41). Using the structural motif-based and compositional parameters described above as input, we created a combined input pattern file from which we have calculated SVMs to classify the sequence windows as to whether they are part of fRNAs or not. The results of this classification are shown in Table 6 for all organisms. These results were obtained using either a third degree polynomial or a radial basal kernel function and are all comparable to, although somewhat less accurate than, the neural network results.
+###end p 55
+###begin title 56
+Contributions of neural network input parameters to prediction
+###end title 56
+###begin p 57
+###xml 475 481 475 481 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 561 567 561 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 574 580 574 580 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 475 481 <span type="species:ncbi:562">E.coli</span>
+###xml 561 567 <span type="species:ncbi:562">E.coli</span>
+###xml 574 580 <span type="species:ncbi:562">E.coli</span>
+The weights linking nodes in the computational neural networks can be analyzed to assess which input parameters are most important in making a prediction of a sequence window as belonging to an RNA gene or not. In this manner, a physical basis for the predictions may be discovered and less informative parameters can be removed. In order to simplify this analysis, the networks were retrained as perceptrons, with no hidden nodes. We have conducted such an analysis for two E.coli training sets using the known RNA dataset and two different negative datasets (E.coli 1 and E.coli 2).
+###end p 57
+###begin p 58
+ For the composition network, the nucleotide compositions of G and T are most significant, as indicated by the weights, with %G favoring and %T disfavoring prediction as an RNA gene. Likewise, the dinucleotide compositions most important are %CT, %GT and %GG, which support RNA gene prediction, and %GC and %AT, which oppose it.
+###end p 58
+###begin p 59
+ Analysis of the structural motif network showed that the largest weights were for links corresponding to the GNRA and CUAG occurrence frequency and the calculated free energy of folding. Increases in each of these parameters (more negative free energy of folding) favors prediction as an RNA gene. The UNCG, AAR (tetraloop receptor) and CUYG sequence frequencies are associated with low weights and are therefore less important for prediction.
+###end p 59
+###begin p 60
+ Finally, the voting net, in agreement with the accuracy of the individual structure net and composition net, much more strongly weights the composition network (greater than 2:1) relative to the structure network.
+###end p 60
+###begin p 61
+###xml 444 445 444 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 445 450 445 446 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+ To further analyze the effect of individual parameters, the networks were retrained leaving out each parameter in turn from both the structural motif and compositional networks. The results from these modified networks were fed forward into a voting net that was also retrained. The most significant observation was that removal of the free energy term had a major effect on predictive accuracy of the structural motif network alone, lowering Qalpha by >5%. However, this omission did not affect the results of the voting network significantly, reflecting the robustness of the parameters.
+###end p 61
+###begin p 62
+ To ensure that the neural networks were not being trained to recognize just tRNA or rRNA (the majority of the training set) but were instead recognizing some broad general parameters of all RNA genes, cross-prediction experiments were undertaken. In three experiments, either all the tRNA windows, all the windows from 23S rRNA or all the windows from the small fRNA genes were excluded from training and then the trained weights were used to predict the excluded windows. In all three cases the results supported generalization of the trained networks. In the case of tRNA, 21 tRNAs were excluded (corresponding to 25 windows). At the lowest threshold 18 of the 21 tRNAs were predicted (21 of 25 windows, 84% correct). For the 23S rRNA, 72 windows were excluded and from the trained set 62 windows were predicted to code for RNA (86% correct).
+###end p 62
+###begin p 63
+ Analysis of the predictions with the other small RNAs excluded showed that six of 11 excluded RNAs (26 of the 50 windows) were predicted. This shows that there is cross-prediction between different classes of fRNAs. However, including all the known small RNAs in the input data trains the neural nets on as diverse a dataset as possible, allowing it to recognize new members of the fRNA family. This is shown by an increase in the prediction level from 50% when all small RNAs are excluded up to the 88% seen in the full input set.
+###end p 63
+###begin p 64
+###xml 17 19 17 19 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c37">37</xref>
+ Rivas and Eddy (37) state that the calculated stability of most fRNA secondary structures is not sufficiently different from the predicted stability of a random sequence of the same composition to be useful as an RNA gene finding approach. However, if tRNAs are excluded, these authors also show that fRNAs generally do have higher thermodynamic stabilities compared to random sequences, but that this difference is small. Our approach does not compare calculated stability of fRNAs to random sequences, but rather to non-coding sequences that have biases of their own. Our results indicate that together with sequence motifs known to occur commonly in RNA molecules, the calculated free energy of folding can improve prediction of known RNAs when compared to the use of composition alone. We agree with Rivas and Eddy that base composition is the key factor in distinguishing RNA genes from non-coding sequences, but our results suggest that in some cases RNAs can be identified using structural parameters, including free energy of folding.
+###end p 64
+###begin title 65
+Combined species prediction
+###end title 65
+###begin p 66
+###xml 173 174 173 174 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gke536tb3">3</xref>
+###xml 288 289 288 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 289 294 289 290 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 382 383 378 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 383 388 379 380 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 226 228 <span type="species:ncbi:2190">Mj</span>
+###xml 231 233 <span type="species:ncbi:53953">Ph</span>
+To test the species-specific bias of our predictive approach, a number of networks were trained using combined data from different organisms. The results are shown in Table 3. One set consisting of both sets of archaeal data (Mj + Ph) performed very well upon jackknife testing, having a Qalpha of 96%. The two trials using combined sets of bacterial data performed less well, with Qalpha < 90%. This indicates that common features may describe and distinguish RNA genes for the hyperthermophilic archaea, but distantly related bacteria may encode RNA genes with different characteristics that require species-specific networks for discrimination. Further experiments with more genomes are necessary to definitively answer this question.
+###end p 66
+###begin title 67
+Prediction of fRNA regions in mRNA
+###end title 67
+###begin p 68
+###xml 360 362 360 362 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c42">42</xref>
+The success discussed above in predicting RNA genes suggested the possibility that the same or similar algorithms could be used to predict other fRNA regions, such as the untranslated control regions (UTRs) of some mRNAs that are also generally highly structured. We tested this idea on an evolutionarily conserved RNA stem-loop in the 5'-UTR of RNase E mRNA (42). This regulatory element was strongly predicted by our method, with the boundaries well defined by the prediction.
+###end p 68
+###begin p 69
+###xml 25 28 25 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+###xml 119 125 119 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 125 129 125 129 <italic xmlns:xlink="http://www.w3.org/1999/xlink">fdhF</italic>
+###xml 141 143 141 143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gke536c43">43</xref>
+ We have also tested the cis-acting mRNA element called the selenocysteine insertion sequence (SECIS) occurring in the E.colifdhF gene mRNA (43). This 42 nt sequence, which forms a stem-loop structure, was strongly predicted as a fRNA region by our program.
+###end p 69
+###begin p 70
+ Clearly, extensive testing remains to be done to determine whether the same or related prediction methods can be used to identify all fRNAs, be they individual genes or control regions of mRNA.
+###end p 70
+###begin title 71
+CONCLUSIONS
+###end title 71
+###begin p 72
+###xml 356 362 356 362 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 364 376 364 376 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.genitalium</italic>
+###xml 378 390 378 390 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.pnuemoniae</italic>
+###xml 395 408 395 408 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D.radiodurans</italic>
+###xml 356 362 <span type="species:ncbi:562">E.coli</span>
+###xml 364 376 <span type="species:ncbi:2097">M.genitalium</span>
+###xml 395 408 <span type="species:ncbi:1299">D.radiodurans</span>
+The results described above clearly show that RNA genes can be identified with high confidence in bacterial and archaeal genomes using a machine learning approach based on differences in compositional and structural parameters present in known RNAs compared to non-coding sequences. In addition to cross-validation testing, strongly predicted sequences in E.coli, M.genitalium, M.pnuemoniae and D.radiodurans, not included in the training datasets, have been experimentally characterized and reported in the literature as expressed fRNAs. Further credibility is given to our predictions by the observation that these sequences are highly conserved among closely related genomes, whereas non-coding sequences are not. We also make the preliminary observation that control regions in untranslated mRNA can be identified as fRNAs. Further studies are necessary to characterize the extent of these elements and the accuracy of their prediction.
+###end p 72
+###begin p 73
+###xml 239 241 <span type="species:ncbi:2190">Mj</span>
+###xml 246 248 <span type="species:ncbi:53953">Ph</span>
+ Although many parameters are important in assignment of a sequence as part of an RNA gene, one major discriminator of genes appears to be the local G+C ratio. Thus, prediction accuracy is greater in genomes, such as the hyperthermophiles Mj and Ph, which have a much higher G+C composition in the RNA genes than in the overall genome. This bias is likely due to their requirement for heat-stable structures in their fRNAs.
+###end p 73
+###begin p 74
+ Analysis of the input patterns from the fRNA using cluster analysis showed that the patterns did not contain any discernible clusters. This indicates that we have not produced a machine learning method that mimics certain classes or families of fRNAs but rather that we have trained our learning machines to recognize certain characteristics that are inherent in all fRNAs. However, our experience with the archeal snoRNAs shows that there are still some classes which contain signals sufficiently different from the general class that they are not consistently recognized. However, as more fRNAs are identified the learning machines will be trained on a wider variety of fRNAs and will thus be able to recognize broader parameters in fRNAs and so better encompass outliers.
+###end p 74
+###begin p 75
+###xml 230 252 230 252 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Caenorhabditis elegans</italic>
+###xml 223 228 <span type="species:ncbi:4932">yeast</span>
+###xml 230 252 <span type="species:ncbi:6239">Caenorhabditis elegans</span>
+###xml 257 262 <span type="species:ncbi:9606">human</span>
+ We have begun studies with a variety of other parameters to optimize RNA gene prediction in prokaryotes and archaea. We are also extending this approach to the identification of novel fRNAs in eukaryotic organisms such as yeast, Caenorhabditis elegans and human. Although these organisms will have a larger database of known RNAs for machine learning, additional complications such as the intron/exon structure of genes must be considered.
+###end p 75
+###begin title 76
+Availability
+###end title 76
+###begin p 77
+These programs are implemented and accessible on the World Wide Web through the RNAGENiE interface (). Here users type or paste a sequence of interest into a text window. The program then divides the data into windows of the appropriate size, converts them to the proper input parameters and performs a prediction using the stored neural network weights. The results from RNAGENiE are then emailed to the users giving scores corresponding to the likelihood of any window being part of an RNA gene.
+###end p 77
+###begin title 78
+Figures and Tables
+###end title 78
+###begin p 79
+###xml 599 600 599 600 <italic xmlns:xlink="http://www.w3.org/1999/xlink">W</italic>
+###xml 600 602 600 602 <sub xmlns:xlink="http://www.w3.org/1999/xlink">ij</sub>
+ Architecture of computational neural networks used for the prediction of fRNAs. Input parameters are supplied to structural motif (six input nodes) and compositional (20 input nodes) neural networks as described in the text. Each of these networks utilizes a middle layer of hidden nodes (three hidden nodes in each network). The output activities from the structural and compositional networks are used as input to the voting network (one hidden node) that makes the ultimate prediction as to whether the sequence window is part of a fRNA. The strength of the links between nodes are the weights (Wij) indicated in the figure.
+###end p 79
+###begin p 80
+###xml 0 1 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 1 6 1 2 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 154 167 150 163 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D.radiodurans</italic>
+###xml 174 180 170 176 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 187 199 183 195 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.pneumoniae</italic>
+###xml 206 218 202 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P.horikoshii</italic>
+###xml 228 240 224 236 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.jannaschii</italic>
+###xml 420 430 416 426 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B.subtilis</italic>
+###xml 437 449 433 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H.influenzae</italic>
+###xml 459 471 455 467 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M.genitalium</italic>
+###xml 154 167 <span type="species:ncbi:1299">D.radiodurans</span>
+###xml 169 171 <span type="species:ncbi:1299">Dr</span>
+###xml 174 180 <span type="species:ncbi:562">E.coli</span>
+###xml 187 199 <span type="species:ncbi:2104">M.pneumoniae</span>
+###xml 201 203 <span type="species:ncbi:2104">Mp</span>
+###xml 206 218 <span type="species:ncbi:53953">P.horikoshii</span>
+###xml 220 222 <span type="species:ncbi:53953">Ph</span>
+###xml 228 240 <span type="species:ncbi:2190">M.jannaschii</span>
+###xml 242 244 <span type="species:ncbi:2190">Mj</span>
+###xml 420 430 <span type="species:ncbi:1423">B.subtilis</span>
+###xml 432 434 <span type="species:ncbi:1423">Bs</span>
+###xml 437 449 <span type="species:ncbi:727">H.influenzae</span>
+###xml 451 453 <span type="species:ncbi:727">Hi</span>
+###xml 459 471 <span type="species:ncbi:2097">M.genitalium</span>
+###xml 473 475 <span type="species:ncbi:2097">Mg</span>
+Qalpha plotted against the ratio of G+C content in the fRNAs to the overall genomic G+C content. The trend line and correlation coefficient are shown for D.radiodurans (Dr), E.coli (Ec), M.pneumoniae (Mp), P.horikoshii (Ph) and M.jannaschii (Mj). There is a strong correlation between the G+C content for these organisms and the ability of RNAGENiE to predict fRNA. For the three remaining organisms that were examined, B.subtilis (Bs), H.influenzae (Hi) and M.genitalium (Mg), the correlation is not so strong. In the majority of cases RNAGENiE performs better than expected due to the influence of additional parameters to composition.
+###end p 80
+###begin title 81
+###xml 10 16 10 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 10 16 <span type="species:ncbi:562">E.coli</span>
+ fRNAs in E.coli
+###end title 81
+###begin p 82
+Total nucleotides of RNA 41 697.
+###end p 82
+###begin title 83
+###xml 59 65 59 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 59 65 <span type="species:ncbi:562">E.coli</span>
+ Testing of neural networks for prediction of RNA genes in E.coli
+###end title 83
+###begin p 84
+###xml 78 79 78 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 79 84 79 80 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</sup>
+###xml 129 135 125 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink"> et al</italic>
+TP, true positive; FP, false positive; FN, false negative; TN, true negative; Qalpha, average percent correct as defined in Baldi et al. (29); CC, correlation coefficient (29).
+###end p 84
+###begin title 85
+ Compiled neural network results for all organisms
+###end title 85
+###begin title 86
+###xml 16 22 16 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 16 22 <span type="species:ncbi:562">E.coli</span>
+ Known fRNAs in E.coli predicted with RNAGENiE
+###end title 86
+###begin title 87
+ Other known fRNAs predicted with RNAGENiE
+###end title 87
+###begin title 88
+ SVM results
+###end title 88
+###begin p 89
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">a</sup>
+aKernel function used in SVM: RBE, radial basal equation; 3degrees, third degree polynomial.
+###end p 89
+###begin p 90
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">b</sup>
+bSimilar to neural network jackknife testing, in which selected examples are removed, the SVM retrained and a prediction made for the removed example. Estimated error is the average of all of these tests.
+###end p 90
+###begin p 91
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">c</sup>
+cRecall is the probability that a known example (training example) is classified correctly.
+###end p 91
+###begin p 92
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">d</sup>
+dPrecision is the probability that an unknown example (testing example) is classified correctly.
+###end p 92
+###begin title 93
+ACKNOWLEDGEMENTS
+###end title 93
+###begin p 94
+We acknowledge the contribution of Chris Mayor in program and web site development and Chris Ding for his assistance and computational tests using support vector machines. Thanks are also due to Richard Meraz for critical reading of this manuscript and advice on machine learning methods and Adam Arkin for use of his program for cluster analysis. The authors also acknowledge Lawrence Berkeley National Laboratory and the Department of Energy for early support of this research through the Laboratory Directed Research and Development Program.
+###end p 94
+

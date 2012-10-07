@@ -1,0 +1,976 @@
+###begin article-title 0
+###xml 98 105 98 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 98 105 <span type="species:ncbi:562">E. coli</span>
+The TAO-Gen Algorithm for Identifying Gene Interaction Networks with Application to SOS Repair in E. coli
+###end article-title 0
+###begin p 1
+We would like to thank T. Darden, S. Roel, and N. Walker for helpful comments and advices.
+###end p 1
+###begin p 2
+The authors declare they have no competing financial interests.
+###end p 2
+###begin p 3
+###xml 1026 1042 1026 1042 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 1026 1042 <span type="species:ncbi:562">Escherichia coli</span>
+One major unresolved issue in the analysis of gene expression data is the identification and quantification of gene regulatory networks. Several methods have been proposed for identifying gene regulatory networks, but these methods predominantly focus on the use of multiple pairwise comparisons to identify the network structure. In this article, we describe a method for analyzing gene expression data to determine a regulatory structure consistent with an observed set of expression profiles. Unlike other methods this method goes beyond pairwise evaluations by using likelihood-based statistical methods to obtain the network that is most consistent with the complete data set. The proposed algorithm performs accurately for moderate-sized networks with most errors being minor additions of linkages. However, the analysis also indicates that sample sizes may need to be increased to uniquely identify even moderate-sized networks. The method is used to evaluate interactions between genes in the SOS signaling pathway in Escherichia coli using gene expression data where each gene in the network is over-expressed using plasmids inserts.
+###end p 3
+###begin p 4
+###xml 860 877 860 877 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b2-ehp0112-001614">Eisen et al. 1995</xref>
+###xml 879 897 879 897 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b19-ehp0112-001614">Tamayo et al. 1999</xref>
+###xml 922 938 922 938 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b11-ehp0112-001614">Kerr et al. 2000</xref>
+###xml 975 993 975 993 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b14-ehp0112-001614">Pilpel et al. 2001</xref>
+###xml 1235 1253 1235 1253 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b1-ehp0112-001614">Akutsu et al. 2000</xref>
+###xml 1332 1351 1332 1351 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4-ehp0112-001614">Gardner et al. 2003</xref>
+###xml 1379 1399 1379 1399 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b3-ehp0112-001614">Friedman et al. 2000</xref>
+###xml 1401 1422 1401 1422 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8-ehp0112-001614">Hartemink et al. 2002</xref>
+###xml 1443 1462 1443 1462 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10-ehp0112-001614">Johnson et al. 2004</xref>
+Gene expression microarrays (gene chips) have revolutionized biology by generating vast amounts of data roughly quantifying the level of mRNA expression for thousands of genes in a single sample. The analysis of these data is extraordinarily complex, resulting in a shift in biology from predominantly qualitative evaluations to quantitative approaches. With microarray technologies, scientists are forming global views of the structural and dynamic changes in genome activity during different phases in a cell's development and following exposure to external stimulants such as environmental agents or growth factors. These views describe the molecular working of a complex information processing system: the living cell. Numerous methods have already been proposed for the analysis of gene expression data. The most commonly used methods rely on clustering (Eisen et al. 1995; Tamayo et al. 1999), significance testing (Kerr et al. 2000) and sequence motif identification (Pilpel et al. 2001). These methods do not readily reproduce gene expression networks but are more focused on the fundamental linkage between pairs of genes. Other investigators have proposed methods to identify gene regulatory networks using Boolean networks (Akutsu et al. 2000) where each gene has one of only two states (on and off), regression methods (Gardner et al. 2003), Bayesian network models (Friedman et al. 2000; Hartemink et al. 2002) and other methods (Johnson et al. 2004).
+###end p 4
+###begin p 5
+###xml 137 154 137 154 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b13-ehp0112-001614">Pesch et al. 2004</xref>
+###xml 183 203 183 203 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b20-ehp0112-001614">Toraason et al. 2004</xref>
+###xml 229 246 229 246 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b18-ehp0112-001614">Suter et al. 2004</xref>
+###xml 277 303 277 303 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b16-ehp0112-001614">Schonwalder and Olden 2003</xref>
+###xml 305 329 305 329 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b17-ehp0112-001614">Simmons and Portier 2002</xref>
+###xml 331 349 331 349 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b23-ehp0112-001614">Waters et al. 2003</xref>
+The use of genomics data in the evaluation of health hazards and risks has received considerable attention focusing on priority setting (Pesch et al. 2004), biomarker identification (Toraason et al. 2004), hazard identification (Suter et al. 2004), and dose-response analysis (Schonwalder and Olden 2003; Simmons and Portier 2002; Waters et al. 2003). If genomics is to play a direct role in dose-response assessment, there will be a need for methods that provide a direct, quantitative assessment of changes in gene expression as a function of dose and changes in toxicity as a function of changes in gene expression. Developing and modeling gene interaction networks can be quantitative and provide direct dose-response data for use in risk assessment. They also are an excellent means of identifying agents that provide identical changes in expression across a broad spectrum of genes and help link agents on the basis of similar mechanistic changes.
+###end p 5
+###begin p 6
+Bayesian networks are well suited for inferring genetic interactions because of their ability to model causal influence between genes linked as a network and because they are an effective method for modeling the joint density of all variables in a system. However, the approaches suggested to date have generally focused on conversion of gene expression data to discrete states and have avoided the use of formal statistical methods for quantifying the joint density of the resulting parameters.
+###end p 6
+###begin p 7
+In this article we describe a method for inferring an "optimal" gene interaction network from microarray-based gene expression data. Unlike other network identification methods, the analytical approach presented here uses the actual measured observations on gene expression (rather than discretized data) and incorporates prior distributions for all parameters in the gene interaction network model. The method encompasses model selection theory from Bayesian regression to find gene network structures suitable for given data sets. Computer simulations presented in this article demonstrate that the proposed method is capable of identifying networks, given the sample size is sufficiently large. For small networks the limited number of replicates used for most microarray studies available today are adequate; for larger networks other options are discussed.
+###end p 7
+###begin title 8
+Materials and Methods
+###end title 8
+###begin p 9
+###xml 0 8 0 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f1-ehp0112-001614">Figure 1</xref>
+###xml 121 122 121 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 182 183 182 183 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 224 225 224 225 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 225 226 225 226 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 225 226 225 226 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 231 232 229 230 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 231 232 229 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 255 256 253 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 326 327 324 325 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 372 373 368 369 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 372 373 368 369 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 443 444 439 440 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">.</italic>
+###xml 449 450 445 446 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 497 498 493 494 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 761 762 757 758 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 886 887 882 883 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 902 903 898 899 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 903 904 899 900 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 903 904 899 900 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 1129 1130 1125 1126 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1130 1131 1126 1127 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1130 1131 1126 1127 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 1139 1140 1133 1134 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 1145 1146 1137 1138 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1169 1170 1161 1162 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 1173 1174 1165 1166 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 1189 1190 1181 1182 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 1190 1191 1182 1183 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1190 1191 1182 1183 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 1234 1235 1226 1227 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">f</italic>
+###xml 1235 1237 1227 1229 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Xi</sub>
+###xml 1235 1237 1227 1229 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>Xi</sub></italic>
+###xml 1238 1239 1230 1231 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 1239 1240 1231 1232 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1239 1240 1231 1232 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 1241 1243 1233 1235 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pa</italic>
+###xml 1243 1244 1235 1236 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 1243 1244 1235 1236 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>n</sub></italic>
+###xml 1245 1246 1237 1238 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 1246 1247 1238 1239 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1246 1247 1238 1239 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 1253 1254 1243 1244 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1253 1254 1243 1244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 1262 1264 1252 1254 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pa</italic>
+###xml 1264 1265 1254 1255 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 1264 1265 1254 1255 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>n</sub></italic>
+###xml 1266 1267 1256 1257 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 1267 1268 1257 1258 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1267 1268 1257 1258 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 1350 1351 1340 1341 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 1367 1368 1357 1358 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 1388 1389 1376 1377 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1388 1389 1376 1377 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 1429 1430 1417 1418 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 1499 1500 1487 1488 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 1545 1547 1533 1535 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pa</italic>
+###xml 1547 1548 1535 1536 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 1547 1548 1535 1536 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>n</sub></italic>
+###xml 1549 1550 1537 1538 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 1550 1551 1538 1539 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1550 1551 1538 1539 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+Figure 1 illustrates the general structure of a four gene regulatory system where the linkage between expression of gene i and expression of its parents (indirect regulators to gene i) is described by weighting the function wi (etai), where the subscript i denotes that this weighting function pertains to the control of gene i expression by all genes linked to it and etai denotes the vector of parameters defining the functional relationship. Let N be a directed acyclic graph which consists of p vertices (genes). Each edge is also assumed to include information about the linkage between genes (i.e., activation, as in the case for the linkage between expression of gene 1 and expression of gene 4, or suppression, expression of genes 3 and 4). In essence, N is a discrete random variable that takes on any of the different acyclic network structures that are possible for a set of p genes. Define Xi to be the random variable corresponding to the measured relative level of gene expression (the expression level of a target gene for an "exposed" group to the expression level of the same gene in a "control" group) for gene Gi, 1 </= i </= p. For a given network, N = n, and for each Xi, define the conditional density function, fXi(Xi|pan(Xi), etai) where pan(Xi) denotes the set of vertices corresponding to the parents of expression for gene i in the network n with parameters etai. All networks in the support space for N are assumed to satisfy the Markov property where expression of gene i is independent of all genes not included in pan(Xi). Application of the Markov property and imposition of the acyclic restriction allow decomposition of the joint density function into
+###end p 9
+###begin p 10
+###xml 10 11 8 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">=</italic>
+###xml 16 17 12 13 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 17 18 13 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 22 23 16 17 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 23 30 17 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, . . .</italic>
+###xml 34 35 26 27 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</sub>
+###xml 34 35 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>p</sub></italic>
+where eta = (eta1, eta2, . . . etap) is the set of all parameters in the network.
+###end p 10
+###begin p 11
+###xml 79 80 79 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 84 85 84 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 105 106 105 106 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 105 106 105 106 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>x</italic></underline>
+###xml 110 111 110 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 111 113 111 113 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ik</sub>
+###xml 111 113 111 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>ik</sub></italic>
+###xml 114 115 114 115 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 114 115 114 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 115 130 115 122 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">= 1,2,&#8230;</sub>
+###xml 130 131 122 123 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</sub>
+###xml 130 131 122 123 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>p</sub></italic>
+###xml 131 132 123 124 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</sub>
+###xml 132 133 124 125 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 132 133 124 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 133 147 125 131 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">= 1,2&#8230;</sub>
+###xml 147 148 131 132 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</sub>
+###xml 147 148 131 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>m</sub></italic>
+###xml 155 156 139 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 250 251 234 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 250 251 234 235 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>x</italic></underline>
+###xml 251 252 235 236 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 251 252 235 236 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 256 257 240 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 257 259 241 243 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ik</sub>
+###xml 257 259 241 243 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>ik</sub></italic>
+###xml 260 261 244 245 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 260 261 244 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 261 276 245 252 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">= 1,2 &#8230;</sub>
+###xml 276 277 252 253 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</sub>
+###xml 276 277 252 253 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>m</sub></italic>
+###xml 335 336 311 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 402 403 378 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 426 428 402 404 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pa</italic>
+###xml 428 429 404 405 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 428 429 404 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>n</sub></italic>
+###xml 430 431 406 407 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 431 432 407 408 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 431 432 407 408 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 437 438 413 414 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 438 441 414 417 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ijk</sub>
+###xml 438 441 414 417 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>ijk</sub></italic>
+###xml 442 443 418 419 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 442 443 418 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 443 458 419 426 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">= 1,2,&#8230;</sub>
+###xml 458 460 426 428 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pi</sub>
+###xml 458 460 426 428 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>pi</sub></italic>
+###xml 460 461 428 429 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</sub>
+###xml 461 462 429 430 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 461 462 429 430 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 462 476 430 436 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">=1,2 &#8230;</sub>
+###xml 476 477 436 437 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</sub>
+###xml 476 477 436 437 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>m</sub></italic>
+###xml 484 485 444 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 485 486 445 446 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 485 486 445 446 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 521 522 481 482 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 559 560 519 520 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 559 560 519 520 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>X</italic></underline>
+###xml 641 642 601 602 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 641 642 601 602 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>x</italic></underline>
+###xml 642 643 602 603 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+Gene expression data, for the purposes of this analysis, can be expressed as a p by m matrix of the form x = [xik]i= 1,2,em leaderp,k= 1,2em leaderm where m is the number of observations (samples analyzed for gene expression) taken for each gene and xi = [xik]k= 1,2 em leaderm is the vector of all observations of expression for gene i. The observed gene expression levels for the parent set for gene i in vector notation is pan(xi) = [xijk]j= 1,2,em leaderpi,k=1,2 em leaderm where pi is the number of parents for gene i. Similarly define the random vector X. Then, conditional on the parameters and the model, the likelihood of the data, x, is given by
+###end p 11
+###begin p 12
+###xml 169 171 169 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n*</italic>
+The goal of our analysis is the identification of the "best" network structure using gene expression data. Our criterion for the best network is defined as the network, n*, from the set of all acyclic networks that maximizes the posterior likelihood of the network,
+###end p 12
+###begin p 13
+###xml 29 35 29 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N = n|</italic>
+###xml 35 36 35 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 35 36 35 36 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>x</italic></underline>
+The posterior probability Pr(N = n|x) is given by
+###end p 13
+###begin p 14
+###xml 9 14 9 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N = n</italic>
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">f</italic>
+###xml 21 24 21 22 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</sub>
+###xml 24 25 22 23 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 24 25 22 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 29 30 25 26 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 29 30 25 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 76 77 72 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 85 86 79 80 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 85 86 79 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 112 113 104 105 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 112 113 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+where Pr(N = n) and fetai(etai) are derived from the prior distributions of N and etai respectively, and the etai are assumed independent.
+###end p 14
+###begin p 15
+###xml 208 209 208 209 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+Several methods are available for assigning prior information to the distribution of countable networks for a given set of genes. One approach, which is used here, is to assume no prior knowledge by choosing N to be uniformly distributed (equal probability) over the space of all possible acyclic networks. By this assumption the solution to Equation 3 is identical to finding the maximum of the log of the product term in Equation 4 over the parameter space; that is the solution to Equation 3 is identical to
+###end p 15
+###begin p 16
+This equation is similar to the maximum likelihood estimator in classical statistical theory, but weighted over the prior densities for the parameters in the model. A clear benefit of this approach is that one does not need to estimate the model parameters while finding the best network because the integration removes those parameters from the final solution. A possible criticism of this approach is that the assumption of a uniform prior for network structure fails to completely exploit the prior knowledge of which networks are of greatest interest. This is most certainly true, but in light of our limited understanding of gene interaction networks, this appears to be a reasonable choice for a first step in network identification. When available, prior knowledge can be incorporated into this algorithm or modified algorithms to limit the space of networks to be searched; this is the solution to a different problem and will be discussed in a subsequent report.
+###end p 16
+###begin p 17
+###xml 34 35 34 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 35 36 35 36 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 35 36 35 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 40 41 38 39 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 40 41 38 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 106 107 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+Many possible weighting functions wi(etai) can be used to relate the relative level of expression of gene i to the relative levels of expression of its parents. The analysis presented here uses a log-linear model
+###end p 17
+###begin p 18
+###xml 19 20 19 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 20 21 20 21 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 36 37 36 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 37 39 37 39 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">th</sup>
+###xml 55 56 55 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 56 60 56 57 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;</underline>
+###xml 60 61 57 58 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 60 61 57 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 69 72 63 66 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">iji</sub>
+###xml 69 72 63 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>iji</sub></italic>
+###xml 73 75 67 69 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1&#215;</sub>
+###xml 75 78 69 72 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pi,</sub>
+###xml 75 78 69 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>pi,</sub></italic>
+###xml 90 91 78 79 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 90 91 78 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 305 324 293 312 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12-ehp0112-001614">Kikuchi et al. 2003</xref>
+###xml 326 353 314 341 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b22-ehp0112-001614">Voit and Radivoyevitch 2000</xref>
+where the notation ij refers to the jth parent of gene ibetai = [betaiji]1xpi, and epsiloni is a random variable with mean 0. From a mechanistic basis, using a model linear in the logarithms of the expression levels is equivalent to approximating the full nonlinear system by equations in power-law form (Kikuchi et al. 2003; Voit and Radivoyevitch 2000).
+###end p 18
+###begin p 19
+###xml 140 153 131 144 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9-ehp0112-001614">Hastings 1970</xref>
+Given prior distributions for the epsilon's and the beta's for all genes, the Markov-Chain Monte-Carlo (MCMC) method developed by Hastings (Hastings 1970) makes it possible to estimate a solution to Equation 5 and identify the "best" network. It is possible, under further restrictions, to obtain a closed form solution to the argument in Equation 5. The advantage of this approach in the framework of this article is that the entire network space can be searched exhaustively to find the best network for small networks like the ones in our simulation studies.
+###end p 19
+###begin p 20
+###xml 51 69 51 69 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b5-ehp0112-001614">Gelman et al. 1995</xref>
+###xml 94 95 88 89 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 94 95 88 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 95 96 89 90 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">|</italic>
+###xml 101 102 91 92 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 101 102 91 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 102 103 92 93 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 106 112 96 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Normal</italic>
+###xml 114 115 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 121 122 107 108 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 121 122 107 108 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 122 123 108 109 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 126 130 112 113 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;</underline>
+###xml 130 131 113 114 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 130 131 113 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 131 132 114 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">|</italic>
+###xml 137 138 116 117 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 137 138 116 117 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 138 139 117 118 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 142 148 121 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Normal</italic>
+###xml 149 150 128 129 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 149 150 128 129 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>b</italic></underline>
+###xml 150 151 129 130 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 150 151 129 130 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 158 159 133 134 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 158 159 133 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 159 160 134 135 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 160 161 135 136 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 161 162 136 137 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 161 162 136 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 162 164 137 139 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 175 176 146 147 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 175 176 146 147 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 176 177 147 148 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 180 185 151 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Gamma</italic>
+###xml 186 187 157 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">v</italic>
+###xml 187 188 158 159 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 192 193 163 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">v</italic>
+###xml 193 194 164 165 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 199 200 170 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">v</italic>
+###xml 200 201 171 172 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 203 204 174 175 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">v</italic>
+###xml 204 205 175 176 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+As is common in Bayesian linear regression theory (Gelman et al. 1995), we assume that epsiloni|sigmai2 ~ Normal(0, sigmai2), betai|sigmai2 ~ Normal(bi, sigmai2Ai-1) and sigmai2 ~ Gamma(v0/2, v1/2), v0, v1 approximately 0. These priors do not assume additional or specific information (in Bayesian parlance these are uninformative priors) and thus would be applicable for many cases. Simple algebra then results in:
+###end p 20
+###begin p 21
+###xml 35 36 31 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 36 37 32 33 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 36 37 32 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 43 45 39 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pa</italic>
+###xml 45 46 41 42 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 45 46 41 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>n</sub></italic>
+###xml 47 48 43 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 47 48 43 44 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>x</italic></underline>
+###xml 48 49 44 45 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 48 49 44 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 54 56 50 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pa</italic>
+###xml 56 57 52 53 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 56 57 52 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>n</sub></italic>
+###xml 58 59 54 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 58 59 54 55 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>x</italic></underline>
+###xml 59 60 55 56 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 59 60 55 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 62 63 58 59 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</sup>
+###xml 62 63 58 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sup>T</sup></italic>
+###xml 68 69 64 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 69 70 65 66 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 69 70 65 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 76 77 72 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 76 77 72 73 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>x</italic></underline>
+###xml 77 78 73 74 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 77 78 73 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 82 84 78 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pa</italic>
+###xml 84 85 80 81 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 84 85 80 81 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>n</sub></italic>
+###xml 86 87 82 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 86 87 82 83 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>x</italic></underline>
+###xml 87 88 83 84 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 87 88 83 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 90 91 86 87 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</sup>
+###xml 90 91 86 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sup>T</sup></italic>
+###xml 91 92 87 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 92 93 88 89 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 92 93 88 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 93 95 89 91 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 103 104 99 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 107 108 103 104 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 164 165 160 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 168 170 164 166 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n|</italic>
+###xml 170 171 166 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 170 171 166 167 <underline xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>x</italic></underline>
+where Gamma is the gamma function, Ai = ln[pan(xi)]ln[pan(xi)]T and Bi = ln[xi]ln[pan(xi)]TAi-1. Given N = n, this equation allows for the direct calculation of Pr(N = n|x). This formula is specific to these priors, but similar formulae might be derived for other cases.
+###end p 21
+###begin p 22
+###xml 21 22 21 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 209 210 209 210 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sup>
+###xml 257 258 257 258 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 333 334 333 334 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 336 337 336 337 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</sup>
+###xml 336 337 336 337 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sup>p</sup></italic>
+###xml 337 338 337 338 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(</sup>
+###xml 338 339 338 339 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</sup>
+###xml 338 339 338 339 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sup>p</sup></italic>
+###xml 339 342 339 342 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1)</sup>
+###xml 431 434 431 434 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">469</sup>
+###xml 660 677 660 677 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b15-ehp0112-001614">Press et al. 1989</xref>
+Any single gene in a p = 4 gene network has 8 possible sets of parents (no parents, 3 single parents, 3 double parents, all other genes), hence the total number of networks including cyclic networks would be 84 = 4,096 networks of which 543 are acyclic. As p increases, the total number of networks increases as the squared power of p(2p(p-1)) resulting in a very large network space to evaluate for larger networks (e.g., ~ 4 x 10469 for a 40-gene network). Many different types of searching algorithm could be used to limit the number of networks to be evaluated for Equation 6; through trial and error, the following modified simulated annealing algorithm (Press et al. 1989) appears to work. We will refer to this method as the TAO-Gen (Theoretical Algorithm for identifying Optimal GENe interaction networks) algorithm.
+###end p 22
+###begin p 23
+The TAO-Gen algorithm has 7 basic steps:
+###end p 23
+###begin p 24
+###xml 37 38 34 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 151 155 131 132 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#950;</sup>
+###xml 155 156 132 133 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 155 156 132 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 156 158 133 135 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">=0</sub>
+###xml 158 159 135 136 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</sub>
+###xml 158 159 135 136 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>p</sub></italic>
+###xml 159 161 136 138 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sub>
+###xml 161 162 138 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</italic>
+###xml 162 163 139 140 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 162 163 139 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 191 192 168 169 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</sub>
+###xml 191 192 168 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>p</sub></italic>
+###xml 192 193 169 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</italic>
+###xml 193 194 170 171 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 193 194 170 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 229 230 206 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 259 260 233 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 338 339 312 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 466 467 437 438 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 475 476 444 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 554 555 521 522 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 591 592 558 559 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+Search conditions: Restrict to zeta< p, the maximum number of parents for any one gene and calculate the value of Equation 6 for all summation operatorzetai=0p-1Ci parent combinations, where pCi is the binomial coefficient (When p is relatively small, zeta = p-1 can be chosen and the entire network space is evaluated in this step. When p is even moderately large (> 10), assuming zeta = 4 or 5 will substantially reduce the computational burden). Specify a number t (0 </= t </= 1) governing the probability of local versus global switching in step 4 (t = 0 implies only global switching, t = 1 implies only local switching).
+###end p 24
+###begin p 25
+###xml 21 22 21 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 86 87 86 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 87 88 87 88 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 87 88 87 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 92 93 92 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 93 94 93 94 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 93 94 93 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 94 95 94 95 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 95 96 95 96 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 96 97 96 97 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 96 97 96 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 97 98 97 98 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 98 99 98 99 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 99 100 99 100 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 99 100 99 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 100 101 100 101 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 101 102 101 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 102 104 102 104 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kp</sub>
+###xml 102 104 102 104 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>kp</sub></italic>
+###xml 259 260 259 260 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 260 261 260 261 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 260 261 260 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 261 262 261 262 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 304 305 304 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 305 306 305 306 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 305 306 305 306 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 306 307 306 307 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+For the initial step k = 0, randomly select an order in which genes enter the network Gk = (Gk1Gk2Gk3Gkp) and build a starting network choosing the parents for each gene that maximize Equation 6 while keeping the network acyclic (i.e., choose the parents for Gk1 that are optimal first, then parents for Gk2 that are optimal, etc.)
+###end p 25
+###begin p 26
+###xml 79 80 79 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</italic>
+###xml 80 81 80 81 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 80 81 80 81 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+Calculate the posterior likelihood (Equation 4) for this network and denote it Lk.
+###end p 26
+###begin p 27
+###xml 33 34 33 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">u</italic>
+###xml 34 35 34 35 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 44 51 38 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">uniform</italic>
+###xml 99 100 93 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">u</italic>
+###xml 100 101 94 95 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 104 105 98 99 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 165 166 159 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 171 172 165 166 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">l</italic>
+###xml 223 224 217 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 224 225 218 219 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 224 225 218 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 225 227 219 221 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1</sub>
+###xml 228 229 222 223 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 228 229 222 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 232 233 226 227 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 233 234 227 228 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 233 234 227 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 234 235 228 229 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</sub>
+###xml 235 236 229 230 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">l</sub>
+###xml 235 236 229 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>l</sub></italic>
+###xml 241 242 235 236 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 242 243 236 237 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 242 243 236 237 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 243 245 237 239 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1</sub>
+###xml 246 247 240 241 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">l</sub>
+###xml 246 247 240 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>l</sub></italic>
+###xml 250 251 244 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 251 252 245 246 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 251 252 245 246 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 252 253 246 247 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</sub>
+###xml 253 254 247 248 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 253 254 247 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 345 346 339 340 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 375 376 369 370 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 376 377 370 371 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 376 377 370 371 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 377 381 371 375 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">|1,1</sub>
+###xml 384 385 378 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 385 386 379 380 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 385 386 379 380 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 386 387 380 381 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</sub>
+###xml 387 388 381 382 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 387 388 381 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 388 390 382 384 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">|1</sub>
+###xml 392 393 386 387 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 393 394 387 388 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 393 394 387 388 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 394 398 388 392 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">|1,2</sub>
+###xml 401 402 395 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 402 403 396 397 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 402 403 396 397 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 403 404 397 398 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</sub>
+###xml 404 405 398 399 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 404 405 398 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 405 418 399 404 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">|2,&#8230;,</sub>
+###xml 418 419 404 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 419 420 405 406 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 419 420 405 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 420 423 406 409 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1,</sub>
+###xml 423 424 409 410 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</sub>
+###xml 423 424 409 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>m</sub></italic>
+###xml 424 425 410 411 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;</sub>
+###xml 425 426 411 412 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 425 426 411 412 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 426 428 412 414 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1</sub>
+###xml 431 432 417 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 432 433 418 419 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 432 433 418 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 433 446 419 424 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,1,&#8230;,</sub>
+###xml 446 447 424 425 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 447 448 425 426 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 447 448 425 426 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 448 451 426 429 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1,</sub>
+###xml 451 452 429 430 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</sub>
+###xml 451 452 429 430 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>m</sub></italic>
+###xml 455 456 433 434 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 456 457 434 435 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 456 457 434 435 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 457 458 435 436 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</sub>
+###xml 458 459 436 437 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 458 459 436 437 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 490 491 468 469 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 491 492 469 470 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 491 492 469 470 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 492 494 470 472 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1</sub>
+Generate a uniform random number u1 epsilon uniform (0,1) to determine the type of permutation. if u1 < t, the permutation occurs between two randomly chosen genes, j and l, switching the two genes for the next permutation Gk+1,j = Gk,l and Gk+1,l = Gk,j). Otherwise, make the second half of the set of genes, starting from randomly chosen gene j, appear first in the order (Gk|1,1 = Gk,j|1, Gk|1,2 = Gk,j|2,em leader,Gk+1,m-j+1 = Gk,1,em leader,Gk+1,m = Gk,j). Thus form a new gene order, Gk+1.
+###end p 27
+###begin p 28
+###xml 52 53 52 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</italic>
+###xml 53 55 53 55 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k+</sub>
+###xml 53 55 53 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k+</sub></italic>
+###xml 55 56 55 56 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 84 85 84 85 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 84 85 84 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 85 88 85 88 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+ 1</sub>
+###xml 116 117 116 117 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 116 117 116 117 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 117 119 117 119 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1</sub>
+###xml 123 124 123 124 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 123 124 123 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 137 138 137 138 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 137 138 137 138 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 138 140 138 140 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1</sub>
+###xml 185 186 185 186 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">u</italic>
+###xml 186 187 186 187 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 196 203 190 197 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">uniform</italic>
+###xml 216 217 210 211 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">u</italic>
+###xml 217 218 211 212 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 224 225 216 217 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 224 225 216 217 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 225 227 217 219 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1</sub>
+###xml 229 230 221 222 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 229 230 221 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 238 239 230 231 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 238 239 230 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 239 241 231 233 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1</sub>
+###xml 252 253 244 245 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 252 253 244 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 253 255 245 247 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1</sub>
+###xml 259 260 251 252 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 259 260 251 252 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+Calculate a new posterior likelihood of the network Lk+1 associated with the order Gk+ 1 , as in steps 2 and 3. If Lk+1 > Lk, then keep Gk+1. Otherwise generate a uniform random number u2 epsilon uniform (0,1)and if u2 </= Lk+1/Lk, keep Gk+1 else set Gk+1 = Gk.
+###end p 28
+###begin p 29
+Return to step 4 and iterate.
+###end p 29
+###begin p 30
+###xml 77 78 77 78 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 78 79 78 79 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 81 82 81 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 82 83 82 83 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+Choose the network with the highest posterior probability from the sequence (G0, G1,em leader).
+###end p 30
+###begin p 31
+###xml 104 117 104 117 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9-ehp0112-001614">Hastings 1970</xref>
+###xml 182 199 182 199 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b15-ehp0112-001614">Press et al. 1989</xref>
+This algorithm combines aspects of the Metropolis algorithm used for Markov-Chain Monte-Carlo sampling (Hastings 1970), with the simulated annealing algorithm used for optimization (Press et al. 1989). In essence it represents a new form of genetic algorithm aimed at networks in which mutations occur in each cycle as either base-pair switches or large translocations. It may be possible under certain fixed conditions to analytically determine the degree to which the TAO-Gen algorithm reduces the number of networks to be evaluated and the efficiency with which it finds the correct solution. This is left as a separate exercise; instead, simulation studies were used to address these issues as discussed in "Results."
+###end p 31
+###begin title 32
+Gene Expression Data Set
+###end title 32
+###begin p 33
+###xml 0 21 0 21 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4-ehp0112-001614">Gardner et al. (2003)</xref>
+###xml 107 123 107 123 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 305 309 305 309 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 352 356 352 356 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 450 453 450 453 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ssb</italic>
+###xml 499 505 499 505 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, recF</italic>
+###xml 543 549 543 549 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, dinI</italic>
+###xml 592 599 592 599 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, umuDC</italic>
+###xml 723 727 723 727 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoD</italic>
+###xml 778 784 778 784 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, rpoH</italic>
+###xml 835 836 835 836 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 841 845 841 845 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 986 993 986 993 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 1480 1484 1480 1484 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 1485 1489 1485 1489 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1634 1638 1633 1637 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1768 1789 1767 1788 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4-ehp0112-001614">Gardner et al. (2003)</xref>
+###xml 2161 2165 2160 2164 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 2177 2198 2176 2197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4-ehp0112-001614">Gardner et al. (2003)</xref>
+###xml 2265 2266 2264 2265 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 2268 2269 2267 2268 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 107 123 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 986 993 <span type="species:ncbi:562">E. coli</span>
+Gardner et al. (2003) developed a gene-regulatory network for a nine-gene subnetwork of the SOS pathway in Escherichia coli. The nine genes (all gene names and locators, in parentheses following gene name, are from the EcoGene database () they focused on were the principal mediators of the SOS response, recA (recombinase gene A, locator EC10823) and lexA (lambda excision gene A, locator EC10533); genes with known involvement in the SOS response, ssb (single strand binding gene, locator EC10976), recF (recombinase gene F, locator EC10828), dinI (damage inducible gene I, locator EC12670), umuDC (UV mutator gene, locator EC11057); and three sigma factor genes whose function in SOS response is not clearly identified, rpoD (RNA polymerase factor subunit D, locator EC10896), rpoH (RNA polymerase factor subunit H, locator EC10897), and rpoS (RNA polymerase factor subunit S, locator EC10510). To quantify the subnetwork, they applied a set of nine transcriptional perturbations to E. coli cells in which each perturbation overexpressed a different one of the nine genes in the SOS network. Using an arabinose-controlled episomal expression plasmid, they grew the cells in batch cultures for 5.5 hr after the addition of arabinose, then measured relative change in message for their nine target genes using quantitative real-time polymerase chain reaction. In addition to the nine perturbed cultures, they also produced two additional cultures, one in which a double plasmid (lexA/recA) was incorporated into the cells and another in which 0.75 mug/mL of mitomycin C (MMC) was added to the culture to stimulate gene expression of recA. The resulting data set with 11 samples of relative changes in gene expression for the nine target genes is given in Table S1 in Gardner et al. (2003). In addition to the nine target genes, the nine plasmid constructs were added to the modeling as fixed stimulators of each of their respective genes to mimic changes in gene expression induced by insertion of the ten plasmid constructs. A separate stimulation by MMC was also included but with links to all genes in the network to determine if the predominant linkage to recA assumed by Gardner et al. (2003) was evident in the data. The exact model linking genes for sample k (k = 1,2, em leader11) is given by
+###end p 33
+###begin p 34
+###xml 11 12 8 9 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 10 13 7 10 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i<sub>j</sub>i</sub>
+###xml 10 13 7 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i<sub>j</sub>i</sub></italic>
+###xml 42 43 39 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I</italic>
+###xml 43 45 40 42 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ik</sub>
+###xml 43 45 40 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>ik</sub></italic>
+###xml 90 91 87 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 126 127 123 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 162 163 155 156 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 162 163 155 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 227 228 220 221 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 228 230 221 223 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">th</sup>
+###xml 271 272 264 265 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 272 273 265 266 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 272 273 265 266 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 365 366 357 358 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 377 378 365 366 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 377 378 365 366 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 434 435 422 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+where betaiji is as described previously, Iik is an indicator variable equal to 1 if gene i has an inserted plasmid in sample k and is equal to 0 otherwise, alphai is the magnitude of increase in gene expression induced in the ith gene by the plasmid when it is present, Mk is the relative change (relative to the standard of 0.5 mug/mL) in MMC exposure for sample k, and gammai is the magnitude of change in gene expression for gene i as a function of the relative change in MMC.
+###end p 34
+###begin title 35
+Simulation Results
+###end title 35
+###begin p 36
+Data were simulated for a given network by sampling from the assumed error distributions and priors for a given model situation. To simulate a network, genes highest on the parental list were simulated first and the simulated values were used to simulate daughters, etc. Different starting points and different priors were used to estimate parameters in both the simulated data and the SOS data; these had no impact on the final results provided the priors chosen were uninformative.
+###end p 36
+###begin title 37
+Results
+###end title 37
+###begin p 38
+###xml 71 81 71 81 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA, lexA</italic>
+###xml 83 118 83 118 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ssb, recF, dinI, umuDC, rpoD, rpoH,</italic>
+###xml 123 127 123 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 153 160 153 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 369 373 369 373 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 378 382 378 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 471 479 471 479 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 630 637 630 637 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 702 706 702 706 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 711 715 711 715 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 717 725 717 725 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f3-ehp0112-001614">Figure 3</xref>
+###xml 1031 1035 1031 1035 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1137 1141 1137 1141 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 1292 1296 1292 1296 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dinI</italic>
+###xml 1387 1391 1387 1391 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 1533 1541 1533 1541 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 1612 1617 1612 1617 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">umuDC</italic>
+###xml 1619 1623 1619 1623 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dinI</italic>
+###xml 1628 1631 1628 1631 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ssb</italic>
+###xml 1672 1676 1672 1676 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1735 1743 1735 1743 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 1759 1763 1759 1763 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1870 1874 1870 1874 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 1876 1880 1876 1880 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+###xml 1882 1887 1882 1887 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">umuDC</italic>
+###xml 1889 1893 1889 1893 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH</italic>
+###xml 1898 1901 1898 1901 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ssb</italic>
+###xml 1932 1936 1932 1936 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoD</italic>
+###xml 1985 1988 1985 1988 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ssb</italic>
+###xml 1993 1997 1993 1997 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 2019 2022 2019 2022 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpo</italic>
+###xml 2043 2047 2043 2047 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+###xml 2058 2063 2058 2063 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">umuDC</italic>
+###xml 2068 2072 2068 2072 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH</italic>
+###xml 2083 2086 2083 2086 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ssb</italic>
+###xml 2088 2095 2088 2095 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="t1-ehp0112-001614">Table 1</xref>
+###xml 2198 2206 2198 2206 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 2277 2300 2277 2300 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b21-ehp0112-001614">Toyoshiba et al. (2004)</xref>
+###xml 2354 2358 2354 2358 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+###xml 2376 2384 2376 2384 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 2416 2417 2416 2417 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 153 160 <span type="species:ncbi:562">E. coli</span>
+###xml 630 637 <span type="species:ncbi:562">E. coli</span>
+The TAO-Gen algorithm was applied to real time PCR data on nine genes (recA, lexA, ssb, recF, dinI, umuDC, rpoD, rpoH, and rpoS) from the SOS pathway in E. coli as described above. Data consisted of 11 separate relative changes in gene expression: 9 samples for which a plasmid was inserted for one of the nine genes, a single construct for a combination of two genes (lexA and recA), and a modification of the culture (1.5 x increase in mitomycin C) in wild-type cells. Figure 2 illustrates the optimal gene interaction network identified by the TAO-Gen algorithm for these data. It is generally believed that the SOS regulon in E. coli is predominantly under the control of the products of the genes lexA and recA. Figure 3 illustrates a literature-based linkage map between genes in the SOS response for the repair of DNA damage. When genotoxins, such as ultraviolet radiation and MMC, damage DNA base nucleotides, the replication process is activated and a region of single-stranded DNA (ssDNA) is formed. RecA (the product of recA) coats ssDNA, signaling the SOS response. RecA/ssDNA stimulates degradation of LexA (the products of lexA), which is a repressor of RecA in the normal repair process. This inactivation of LexA affects other genes involved directly in SOS response, such as dinI, and downstream genes involved in DNA replication, cell division and mutagenesis, such as rpoS (Beuning 2004; Janion 2001; Lindner 2004; Lusetti 2002; McKenzie 2000; Rangarajan 2002). The results from the TAO-Gen algorithm are given in Figure 2 and support this role for LexA with significant repressor activity on umuDC, dinI and ssb. In contrast, RecA, the gene product of recA, is expected to serve as an activator of the SOS regulon. Figure 2 indicates that recA serves as a central node in the regulation of genes in the SOS pathway, showing significant activation of lexA, recF, umuDC, rpoH and ssb and significant repression of rpoD. There are four remaining significant linkages: ssb and rpoS repress and activate rpoD, respectively, and recF activates umuDC and rpoH activates ssb. Table 1 provides summary information on the parameter estimates estimated by treating the identified network (Figure 2) as known and quantifying the linkages between genes by the method of Toyoshiba et al. (2004). With the exception of the plasmid-induced change in recF, all linkages in Figure 2 are statistically significant (p < 0.05).
+###end p 38
+###begin p 39
+###xml 187 188 187 188 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 220 224 220 224 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+###xml 243 244 243 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 274 278 274 278 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH</italic>
+###xml 385 390 385 390 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA,</italic>
+###xml 554 558 554 558 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 661 665 661 665 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 737 741 737 741 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH</italic>
+###xml 746 750 746 750 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 846 850 846 850 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 852 856 852 856 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dinI</italic>
+###xml 861 866 861 866 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">umuDC</italic>
+An indicator variable was used to separate data with and without plasmid insertion for each gene. For all nine genes, plasmid inserts increased mRNA levels ranging from a nonsignificant (p = 0.31) 1.06-fold increase for recF to a significant (p < 0.01) 28-fold increase for rpoH. Changes in the level of MMC had significant effects on eight of the nine genes, the sole exception being lexA, which did not appear to be directly affected by changes in MMC. This finding is in contrast to what was believed to be the presumed transcriptional target of MMC, recA. It was previously suggested that all other MMC-induced changes in transcription are mediated through recA. In this analysis the largest impacts of MMC on transcription were for rpoH and rpoS (an ~12.3-fold increase in activity for each doubling of the MMC level) followed by effects on recA, dinI and umuDC (approximately a 1.9-fold increase in activity for each doubling of MMC level).
+###end p 39
+###begin p 40
+###xml 18 26 18 26 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 62 70 62 70 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f3-ehp0112-001614">Figure 3</xref>
+###xml 154 158 154 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 173 177 173 177 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 202 207 202 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">umuDC</italic>
+###xml 212 215 212 215 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ssb</italic>
+###xml 309 313 309 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 342 347 342 347 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA,</italic>
+###xml 397 401 397 401 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 405 410 405 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">umuDC</italic>
+###xml 415 418 415 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ssb</italic>
+###xml 420 424 420 424 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH</italic>
+###xml 473 476 473 476 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ssb</italic>
+###xml 497 501 497 501 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 571 575 571 575 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 580 584 580 584 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoD</italic>
+###xml 890 908 890 908 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b6-ehp0112-001614">Gerard et al. 1999</xref>
+###xml 910 926 910 926 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7-ehp0112-001614">Gill et al. 2000</xref>
+Our best network (Figure 2) and the literature-based network (Figure 3) support the notion that the activation of the SOS system is through activation of recA. Increases in recA result in activation of umuDC and ssb, critical components in the activation of repair of single-strand DNA damage. An increase in recA also induces an increase in lexA, which serves to suppress the activity induced by recA in umuDC and ssb. rpoH appears to serve as an independent activator of ssb with signaling from recA and possibly other genes not included in the network. Finally, while rpoS and rpoD seem to be linked to the network, they appear to be under control of other genes in the network rather than exerting control over the SOS response. Recent articles hypothesized possible roles for roles for RpoS, LexA and RecA in global stress gene regulation, but clear conclusions are not yet available (Gerard et al. 1999; Gill et al. 2000).
+###end p 40
+###begin p 41
+###xml 412 416 412 416 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dinI</italic>
+###xml 557 561 557 561 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH</italic>
+###xml 566 571 566 571 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS;</italic>
+###xml 646 655 646 655 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH-rpoS</italic>
+###xml 801 805 801 805 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 809 813 809 813 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 815 819 815 819 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 823 828 823 828 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">umuDC</italic>
+###xml 833 837 833 837 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+###xml 841 846 841 846 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">umuDC</italic>
+###xml 1056 1060 1056 1060 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 1064 1068 1064 1068 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoD</italic>
+###xml 1318 1334 1318 1334 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH, rpoS, rpod</italic>
+With such a small number of samples (11) relative to the number of genes involved (9), it is likely that the resulting model is overly sensitive to any one data set. To evaluate this, we applied the TAO-Gen analysis to 11 data sets in which one sample from the original data was eliminated. Generally, removing a sample resulted in deletion of a connection rather than inclusion of new connections. Removing the dinI plasmid insert had no impact on the resulting network; removing the double plasmid insert only added a single additional connection between rpoH and rpoS; and removing the MMC sample (no plasmid insert) removed only one linkage (rpoH-rpoS). All other sample removals resulted in two to five changes in the network with no more than one additional linkage in any case. Three linkages (recA to lexA, lexA to umuDC and recF to umuDC) remained unchanged for all sample deletions; all others were simply eliminated once or twice for specific sample deletions with the exceptions of recA to rpoH, which was removed in four sample deletions, and rpoS to rpoD which was removed in one sample deletion and switched direction for three sample deletions. All additional linkages (there were six sample deletions with one additional linkage in each case) included at least one of the stationary phase regulators (rpoH, rpoS, rpod), suggesting the linkage between this class of genes and the SOS pathway may be too distant to quantify. Generally, with the exception of linkages to and between the stationary phase regulators, the model was fairly stable across deletions of single samples from the data set.
+###end p 41
+###begin title 42
+Discussion
+###end title 42
+###begin p 43
+###xml 25 33 25 33 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 81 102 81 102 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4-ehp0112-001614">Gardner et al. (2003)</xref>
+###xml 1007 1011 1007 1011 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+###xml 1169 1170 1169 1170 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1206 1209 1206 1209 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ssb</italic>
+###xml 1220 1224 1220 1224 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1229 1233 1229 1233 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+###xml 1235 1239 1235 1239 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1251 1255 1251 1255 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 1260 1264 1260 1264 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH</italic>
+###xml 1266 1270 1266 1270 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dinI</italic>
+###xml 1281 1285 1281 1285 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1287 1292 1287 1292 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">umuDC</italic>
+###xml 1297 1301 1297 1301 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 1303 1307 1303 1307 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH</italic>
+###xml 1319 1324 1319 1324 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoD,</italic>
+###xml 1329 1333 1329 1333 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 1345 1349 1345 1349 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+###xml 1637 1641 1637 1641 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 1646 1650 1646 1650 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH</italic>
+###xml 1654 1658 1654 1658 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1722 1726 1722 1726 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+The network presented in Figure 2 is substantially smaller than that proposed by Gardner et al. (2003) Using their NIR (network identification by multiple regression) algorithm, they identified a network with 45 linkages (excluding changes due to MMC or the plasmids) compared with our network with only 13 gene linkages. There are significant differences between the NIR and TAO-Gen algorithms that directly impact affect these findings. In the NIR algorithm, parents for each gene are discovered independently of the other genes by finding the five parents that maximize the usual likelihood of the data given the model. The choice of five parents is somewhat arbitrary, and the use of the data multiple times for each gene overstates the information available. In addition each gene is allowed to be a parent of itself, creating a singularity in the model that results in most other parents having no significant impact on any given gene expression level. Of the 36 linkages (six parents were chosen for recF) identified by the NIR algorithm, all nine genes have significant linkages with themselves as parents. Of the remaining 27 linkages, only 9 are significant (p < 0.05 by a Wald test) as follows: ssb activates recA and recF, recA suppresses lexA and rpoH, dinI activates recA, umuDC and rpoS, rpoH suppresses rpoD, and rpoS suppresses recF. The TAO-Gen algorithm, in contrast, restricts the network to acyclic linkages and uses the full likelihood (all of the data simultaneously) to find the best network. Of the 9 significant linkages identified by the NIR algorithm, the TAO-Gen algorithm identified only the suppression of lexA and rpoH by recA. The significant findings by the NIR algorithm do not identify recA as a key controlling gene in the network whereas the TAO-Gen algorithm does.
+###end p 43
+###begin p 44
+###xml 36 57 36 57 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4-ehp0112-001614">Gardner et al. (2003)</xref>
+###xml 377 385 377 385 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 523 527 523 527 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dinI</italic>
+###xml 532 536 532 536 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 590 611 590 611 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b21-ehp0112-001614">Toyoshiba et al. 2004</xref>
+###xml 809 817 809 817 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 868 889 868 889 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4-ehp0112-001614">Gardner et al. (2003)</xref>
+Mathematically the data obtained by Gardner et al. (2003) does not have sufficient statistical support to identify a cyclical network. The data required to estimate parameters in a cyclical network must contain observations at different time points to estimate the dynamic characteristics of a cyclic network. To directly compare the Gardner et al. network to the one shown in Figure 2, the Gardner et al. network was made acyclic by removing the linkages for genes as their own parents and by removing the linkage between dinI and lexA. When the Bayesian estimation algorithm was applied (Toyoshiba et al. 2004), the posterior log-likelihood for this model had a mean value of 329.2 compared with 354.7 from the model identified by the TAO-Gen algorithm, suggesting a considerably better fit of the model in Figure 2 to the data. Using the "known model" suggested by Gardner et al. (2003), the resulting mean of the posterior log-likelihood was 311.0, also suggesting a serious lack of fit.
+###end p 44
+###begin p 45
+###xml 29 37 29 37 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 117 124 117 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 235 239 235 239 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 444 452 444 452 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 764 768 764 768 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+###xml 772 776 772 776 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 857 861 857 861 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 907 911 907 911 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+###xml 962 964 962 964 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ln</italic>
+###xml 117 124 <span type="species:ncbi:562">E. coli</span>
+So is the model presented in Figure 2 a better representation of the gene interaction network for the SOS pathway in E. coli? The resulting network has identified the significant gene linkages seen in the data. It correctly identifies recA as playing the major role in control of this pathway and provides estimates of the steady-state linkage between these genes. The interpretation of the values estimated for the parameters linking genes in Figure 2 does not preclude that the network could be dynamic with substantial feedback; such a possibility is likely. But given the data available, this network identifies the key linkages that exist as the network changes from one steady-state to another. What this means can be explained by example. The activation of recF by recA has a mean value of 0.393. This implies that, if the steady-state expression of recA doubles, then the steady-state expression of recF would fold increase by the exponential of 0.393 x ln(2) or 1.32-fold. Singular changes in any gene in the network can easily be used to calculate new steady-state conditions for the network.
+###end p 45
+###begin p 46
+###xml 336 344 336 344 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f1-ehp0112-001614">Figure 1</xref>
+###xml 405 412 405 412 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="t2-ehp0112-001614">Table 2</xref>
+###xml 526 534 526 534 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f1-ehp0112-001614">Figure 1</xref>
+###xml 982 989 982 989 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="t2-ehp0112-001614">Table 2</xref>
+Illustrating that one can achieve a network from a given data set does not assess the reliability of a new algorithm. A better method is to evaluate the probability of choosing the correct network using data from a known network. Monte Carlo simulation was used to generate 100,000 artificial gene expression arrays from the network in Figure 1 using four different sets of model parameters as defined in Table 2. When the algorithm is applied to these data, the resulting optimal network is identical to the network shown in Figure 1 in all four cases. This illustrates that the algorithm is consistent for extremely large data sets. To assess the behavior of the algorithm for small samples, the four sets of 100,000 artificial arrays were subdivided into 1,000 data sets of 100 arrays, 2,000 data sets of 50 arrays, 4,000 data sets of 25 arrays, and 10,000 data sets of 10 arrays. For each data set, the algorithm was applied and an optimal network chosen; the results appear in Table 2.
+###end p 46
+###begin p 47
+###xml 89 96 89 96 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="t2-ehp0112-001614">Table 2</xref>
+###xml 351 358 351 358 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="t2-ehp0112-001614">Table 2</xref>
+###xml 613 620 613 620 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="t2-ehp0112-001614">Table 2</xref>
+###xml 622 623 622 623 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="t1-ehp0112-001614">1</xref>
+There are 543 possible acyclic networks that can arise from a combination of four genes. Table 2 summarizes the frequency (from 543 total networks) seen for various network structures (column 3 is the correct structure). For example, with 100 arrays in the sample, the correct network is chosen 922/100 = 92% of the time for parameter set A (row 1 of Table 2). Generally, with 100 replicate arrays, the search algorithm is better than 92% effective in finding the right network. The most common error in finding an array for this sample size is to add an additional linkage between gene 2 and gene 4 (column 8 in Table 2, 1-8%). When the sample size is halved to 50 arrays, accuracy drops to between 86 and 93%, with the same additional linkage being the most common mistake (2-9%). With only 25 arrays, accuracy is still between 70 and 80%, with most of the errors occurring for the same additional linkage (4-8%), single deletions of linkages (3-4%), or reversals of individual linkages (2-3%). Replicate samples consisting of just 10 arrays surprisingly find the correct network 32-38% of the time, with 30-40% of the errors being additional linkages, single linkage removal, or single linkage reversals. The simulations suggest the algorithm generally detects networks having very close topologies to the correct one even if the sample number is severely diminished.
+###end p 47
+###begin p 48
+###xml 212 219 212 219 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="t2-ehp0112-001614">Table 2</xref>
+As noted in "Materials and Methods," the algorithm being used to find the best network is intended as an approximation for using the posterior likelihood to identify the best network. In the last four columns of Table 2, the correct network has the best posterior likelihood in every case for which it is the optimal network. In addition the algorithm works well at placing the correct network into the top three networks, ranging from about 99% for samples involving 100 arrays to 58% for samples consisting of 10 arrays. These simulations suggest that the best directed acyclic network does not necessarily mean that all the links are real or that they are causal. Conversely, they do suggest that the limitations inherent to small sample sizes could be reduced by considering not only the best network, but several of the best networks and using other resources, such as knowledge of the existing pathways, to decide which makes the most sense.
+###end p 48
+###begin p 49
+###xml 133 141 133 141 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f1-ehp0112-001614">Figure 1</xref>
+###xml 202 210 202 210 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f4-ehp0112-001614">Figure 4</xref>
+###xml 380 382 380 382 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sup>
+###xml 556 563 556 563 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="t3-ehp0112-001614">Table 3</xref>
+###xml 677 682 <span type="species:ncbi:9606">child</span>
+These results were expanded to look at an eight-gene network, effectively a combination of two four-gene networks similar to that in Figure 1, where gene 2 activates gene 5 and gene 3 activates gene 8 (Figure 4). In this case it is computationally impossible to conduct the exhaustive search as in the four-gene case because the number of acyclic networks is approximately 78 x 1013. Instead, 1,000 data sets were randomly generated for each sample case (100, 50, 25, 10) and the TAO-Gen algorithm was applied to identify a best network for each data set. Table 3 shows the numbers of connections detected by the algorithm, where the rows and columns correspond to parents and child genes, respectively. For example, the algorithm detected the incorrect path from gene 1 to gene 2 only three times in 1,000 data sets with 100 samples. The red elements show the true connections. For 100 replicate samples (microarrays), the TAO-Gen algorithm identified the correct network in 95% of the cases. As before, the deviations from the correct model were all cases of adding an additional linkage or removing a single linkage. As the sample size dropped to 50, 25 and 10, the correct network was identified 76, 30 and 1% of the time, respectively. Even though the performance in finding the fully correct network became poor, the linkages in the correct network were generally properly identified with high frequency, again indicating that the cases where the network was incorrect generally involved single or double alterations in the pathways of the network. The simulation using eight genes accentuates the importance of study design and prior knowledge about gene linkages in trying to find the best network to explain the data.
+###end p 49
+###begin p 50
+###xml 630 651 630 651 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b21-ehp0112-001614">Toyoshiba et al. 2004</xref>
+Many issues remain to be studied. It is unclear whether the TAO-Gen algorithm works better or worse than other algorithms in identifying gene interaction networks. The main problem arises because other algorithms have not used computer simulations to examine model specifity to directly address this issue. Also, the use of acyclic models to develop gene interaction networks is somewhat limited. A fully dynamic model using time-dependent differential equations could be used with the TAO-Gen algorithm provided multitime point data were available; the method would simply need to link models across time as suggested elsewhere (Toyoshiba et al. 2004) or use dynamic Bayesian networks. Here we assume samples are independent; in time-course data, that would not necessarily be the case and the error structure between samples would need to be altered (in Equation 4 and subsequent derivations) to account for the longitudinal nature of such data. In any case the analysis would certainly require more data than are generally available. Perhaps the biggest advantage of using a Bayesian-linked analysis algorithm would occur when prior knowledge, based on known biologic linkages such as those derived from bioinformatic evaluations of transcription sequences, is used to limit the range of networks to be explored. The TAO-Gen algorithm could work in these situations but would need to be modified to use a prior different than the uniform prior used in this case.
+###end p 50
+###begin title 51
+Conclusion
+###end title 51
+###begin p 52
+###xml 155 162 155 162 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 282 301 282 301 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4-ehp0112-001614">Gardner et al. 2003</xref>
+###xml 428 432 428 432 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 483 487 483 487 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 155 162 <span type="species:ncbi:562">E. coli</span>
+In this article we have presented the TAO-Gen algorithm for identifying gene interaction networks. The algorithm was applied to data on the SOS pathway in E. coli to identify gene linkages. The resulting network is shown to be superior to a network derived by the NIR algorithm in (Gardner et al. 2003) both biologically and statistically. Unlike the NIR algorithm, this algorithm identified a statistically significant role of recA in controlling the SOS pathway; the linkages from recA in the NIR-derived network were generally not significant. To demonstrate the accuracy of the algorithm for varying sample sizes, a simulation study was performed. It was found that for moderate-size networks the algorithm performs accurately, with most errors being minor additions or deletions of a single linkage. However, the simulations do suggest that sample sizes need to be increased if large networks are to be identified and quantified using gene expression data.
+###end p 52
+###begin title 53
+References
+###end title 53
+###begin article-title 54
+Algorithms for inferring qualitative models of biological networks
+###end article-title 54
+###begin article-title 55
+Cluster analysis and display of genome-wide expression pattens
+###end article-title 55
+###begin article-title 56
+Using Bayesian networks to analyze expression data
+###end article-title 56
+###begin article-title 57
+Inferring genetic networks and identifying compound mode of action via expression profiling
+###end article-title 57
+###begin article-title 58
+###xml 8 29 8 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli RpoS</italic>
+###xml 31 35 31 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LexA</italic>
+###xml 40 44 40 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H-NS</italic>
+###xml 8 24 <span type="species:ncbi:562">Escherichia coli</span>
+Role of Escherichia coli RpoS, LexA and H-NS global regulators in metabolism and survival under aerobic, phosphate-starvation conditions
+###end article-title 58
+###begin article-title 59
+###xml 110 126 110 126 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 110 126 <span type="species:ncbi:562">Escherichia coli</span>
+A comparative study of global stress gene regulation in response to overexpression of recombinant proteins in Escherichia coli
+###end article-title 59
+###begin article-title 60
+Bayesian methods for elucidating genetic regulatory networks
+###end article-title 60
+###begin article-title 61
+Monte Carlo sampling methods using Markov chains and their applications
+###end article-title 61
+###begin article-title 62
+Unraveling gene-gene interactions regulated by ligands of the aryl hydrocarbon receptor
+###end article-title 62
+###begin article-title 63
+Analysis of variance for gene expression microarray data
+###end article-title 63
+###begin article-title 64
+Dynamic modeling of genetic networks using genetic algorithm and S-system
+###end article-title 64
+###begin article-title 65
+Challenges to environmental toxicology and epidemiology: where do we stand and which way do we go?
+###end article-title 65
+###begin article-title 66
+Identifying regulatory networks by combinatorial analysis of promoter elements
+###end article-title 66
+###begin article-title 67
+Environmental health moves into the 21st century
+###end article-title 67
+###begin article-title 68
+Toxicogenomics: the new frontier in risk analysis
+###end article-title 68
+###begin article-title 69
+Toxicogenomics in predictive toxicology in drug development
+###end article-title 69
+###begin article-title 70
+Interpreting patterns of gene expression with self-organizing maps: methods and application to hematopoietic differentiation
+###end article-title 70
+###begin article-title 71
+Applying new biotechnologies to the study of occupational cancer-a workshop summary
+###end article-title 71
+###begin article-title 72
+Gene interaction network suggests dioxin induces a significant linkage between Ah-receptor and retinoic acid receptor beta
+###end article-title 72
+###begin article-title 73
+Biochemical systems analysis of genome-wide expression data
+###end article-title 73
+###begin article-title 74
+###xml 34 39 <span type="species:ncbi:9606">human</span>
+The impact of new technologies on human population studies
+###end article-title 74
+###begin title 75
+Figures and Tables
+###end title 75
+###begin title 76
+A simple gene interaction network consisting of four genes.
+###end title 76
+###begin title 77
+###xml 53 60 53 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 53 60 <span type="species:ncbi:562">E. coli</span>
+Network linkages of key genes in the SOS response in E. coli as identified by the TAO-Gen algorithm.
+###end title 77
+###begin title 78
+###xml 68 75 68 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 68 75 <span type="species:ncbi:562">E. coli</span>
+A literature-based linkage map between genes in the SOS response in E. coli. The map represents inducible genes/proteins in the SOS response for repair from DNA damage. Black lines indicate pathways in the normal repair process and red lines with arrows activation/induction due to an exposure to damaging agents. Recombination and repair, DNA damage-inducible protein, nucleotide excision repair, error-prone repair, and stationary-phase regulator have family molecules in each box. Green circles are genes used for the analysis.
+###end title 78
+###begin title 79
+###xml 74 81 74 81 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="t3-ehp0112-001614">Table 3</xref>
+A hypothetical eight gene network used for the Monte-Carlo simulations in Table 3. The numbers attached to the arrows show linear parameters, where positive numbers correspond to up-regulations and negative numbers down-regulations.
+###end title 79
+###begin p 80
+###xml 107 114 107 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 166 174 166 174 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f2-ehp0112-001614">Figure 2</xref>
+###xml 107 114 <span type="species:ncbi:562">E. coli</span>
+Estimated means, standard deviations and percentage above 0 for all interactions in SOS response genes for E. coli identified as linked by the TAO-Gen algorithm (see Figure 2).
+###end p 80
+###begin p 81
+###xml 97 98 97 98 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</sup>
+###xml 97 98 97 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sup>a</sup></italic>
+###xml 97 98 97 98 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table-fn" rid="tfn1-ehp0112-001614"><italic><sup>a</sup></italic></xref>
+Results from 100,000 Monte Carlo simulations of four hypothetical four-gene networks (A, B, C, D)a describing the ability of the TAO-Gen algorithm to specify the correct network.
+###end p 81
+###begin p 82
+###xml 8 10 5 7 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">14</sub>
+###xml 22 24 16 18 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sub>
+###xml 36 38 27 29 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">23</sub>
+###xml 50 52 38 40 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">34</sub>
+###xml 66 67 50 51 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 75 76 55 56 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 84 85 60 61 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 93 94 65 66 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sub>
+(A) beta14 = 2.0, beta13 = 0.8, beta23 = 0.8, beta34 = -1.3, sigma1 = sigma2 = sigma3 = sigma4 = 1.0
+###end p 82
+###begin p 83
+###xml 8 10 5 7 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">14</sub>
+###xml 22 24 16 18 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sub>
+###xml 36 38 27 29 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">23</sub>
+###xml 50 52 38 40 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">34</sub>
+###xml 66 67 50 51 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 75 76 55 56 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 84 85 60 61 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 93 94 65 66 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sub>
+(B) beta14 = 2.0, beta13 = 0.8, beta23 = 0.8, beta34 = -5.0, sigma1 = sigma2 = sigma3 = sigma4 = 1.0
+###end p 83
+###begin p 84
+###xml 8 10 5 7 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">14</sub>
+###xml 22 24 16 18 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sub>
+###xml 36 38 27 29 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">23</sub>
+###xml 50 52 38 40 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">34</sub>
+###xml 66 67 50 51 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 75 76 55 56 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 84 85 60 61 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 93 94 65 66 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sub>
+(C) beta14 = 2.0, beta13 = 0.8, beta23 = 0.8, beta34 = -1.3, sigma1 = sigma2 = sigma3 = sigma4 = 1/3
+###end p 84
+###begin p 85
+###xml 8 10 5 7 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">14</sub>
+###xml 22 24 16 18 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sub>
+###xml 36 38 27 29 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">23</sub>
+###xml 50 52 38 40 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">34</sub>
+###xml 66 67 50 51 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 75 76 55 56 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 84 85 60 61 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 93 94 65 66 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sub>
+(D) beta14 = 2.0, beta13 = 0.8, beta23 = 0.8, beta34 = -5.0, sigma1 = sigma2 = sigma3 = sigma4 = 1/3
+###end p 85
+###begin p 86
+###xml 0 0 0 0 <inline-graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="ehp0112-001614f12.jpg" mimetype="image"/>
+
+###end p 86
+###begin p 87
+###xml 164 172 164 172 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="f1-ehp0112-001614">Figure 3</xref>
+Number (percent) of linkages between two genes identified by the TAO-Gen algorithm in 1,000 Monte Carlo simulations of the hypothetical eight-gene network shown in Figure 3.
+###end p 87
+###begin p 88
+Linkage that exists in the original simulated model.
+###end p 88
+

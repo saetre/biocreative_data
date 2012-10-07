@@ -1,0 +1,338 @@
+###begin article-title 0
+Octamer-primed sequencing technology: development of primer identification software
+###end article-title 0
+###begin p 1
+###xml 139 144 <span type="species:ncbi:9606">Human</span>
+###xml 199 204 <span type="species:ncbi:9606">Human</span>
+To whom correspondence should be addressed. Tel: +1 713 743 2686; Fax: +1 713 743 2636; Email: shardin@uh.edu Present address: Gangwu Mei, Human Genome Sequencing Center, Department of Molecular and Human Genetics, Baylor College of Medicine, One Baylor Plaza, Room N1521, Houston, TX 77030, USA
+###end p 1
+###begin p 2
+###xml 1126 1131 1126 1127 <bold xmlns:xlink="http://www.w3.org/1999/xlink">&#916;</bold>
+###xml 1131 1132 1127 1128 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Octamer sequencing technology (OST) is a primer-directed sequencing strategy in which an individual octamer primer is selected from a pre-synthesized octamer primer library and used to sequence a DNA fragment. However, selecting candidate primers from such a library is time consuming and can be a bottleneck in the sequencing process. To accelerate the sequencing process and to obtain high quality sequencing data, a computer program, electronic OST or eOST, was developed to automatically identify candidate primers from an octamer primer library. eOST integrates the base calling software PHRED to provide a quality assessment for target sequences and identifies potential primer binding sites located within a high quality target region. To increase the sequencing success rate, eOST includes a simple dynamic folding algorithm to automatically calculate the free energy and predict the secondary structure within the template in the vicinity of the octamer-binding site. Several parameters were found to be important, including base quality threshold, the window size of the template sequence segment, and the threshold DeltaG value. OST, coupled with the eOST software, can be used to sequence short DNA fragments or in the finishing assembly stage of large-scale sequencing of genomic DNA.
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin title 4
+General approach to DNA sequencing
+###end title 4
+###begin p 5
+###xml 255 256 255 256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c1">1</xref>
+DNA sequencing strategies can be divided into two major classes: directed and random. In random or shotgun DNA sequencing, a large DNA fragment such as genomic DNA is physically sheared and randomly inserted into bacteriophage or plasmid cloning vectors (1). Clones are randomly selected and sequenced and the original DNA sequence is reconstructed by computer assembly. Currently, shotgun sequencing is almost exclusively used for sequencing large DNA regions (>20 kb, e.g. genomic clones) and is considered inefficient for sequencing small DNA regions. However, since a shotgun approach typically yields >90% coverage of the original DNA fragment and leaves multiple gaps at the computer assembly stage, obtaining the final few percent of desired sequences requires a disproportionate effort and usually involves a primer-directed strategy as a critical final step for gap closure to complete the sequence project.
+###end p 5
+###begin p 6
+###xml 123 124 123 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c2">2</xref>
+A directed or primer walking sequencing strategy is used not only in gap closure in large-scale sequencing of genomic DNA (2), but also as a very common and efficient approach for sequencing small DNA fragments (1-3 kb), such as cDNA clones. Primer walking utilizes oligonucleotides that anneal to the DNA template at a unique location to function as a start site for chain extension by DNA polymerase. Such an approach requires a fragment of known sequence, either a standard vector sequencing primer site or a target DNA site, to design the binding primer. The sequence information obtained from the initial sequencing reaction is used to determine the primer binding site for the next sequencing reaction. These steps are repeated until the complete sequence is determined. Because such a primer-based strategy involves repeated sequencing steps from known into unknown DNA regions, the process has the advantage of minimizing the generation of redundant sequence data. Also, it does not require multiple cloning steps or subsequent template preparations.
+###end p 6
+###begin p 7
+Thus, a directed sequencing strategy provides potential advantages, i.e. higher efficiency, less redundancy, fewer cloning steps, and straightforward data assembly. However, primer walking requires that a new oligonucleotide is synthesized for each round of sequencing. The necessity of designing and synthesizing new primers, coupled with the expense and the turn-around time for synthesis of these primers, has limited the routine application of primer walking for sequencing large DNA fragments.
+###end p 7
+###begin p 8
+###xml 246 247 246 247 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c3">3</xref>
+###xml 248 249 248 249 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c5">5</xref>
+To eliminate the requirement for custom primer synthesis for each reaction, researchers have proposed developing a high throughput, primer-based DNA sequencing strategy that is dependent on primers selected from a pre-synthesized primer library (3-5). This primer library would reduce the cost of synthesizing specific primers for each sequencing reaction and save the time involved in designing and synthesizing these new primers.
+###end p 8
+###begin p 9
+###xml 257 258 257 258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c6">6</xref>
+###xml 303 304 303 304 <sup xmlns:xlink="http://www.w3.org/1999/xlink">8</sup>
+###xml 613 614 613 614 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c6">6</xref>
+###xml 615 616 615 616 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c8">8</xref>
+An octamer primer library was determined to be optimal, since an octamer is the shortest primer that reliably generates cycle sequencing data and provides sufficient specificity in sequencing reactions using double-stranded DNA templates as large as 20 kb (6). A complete octamer library would include 48 (65 536) primers, although not all octamers produce high quality sequence data. The identification of a subset of octamers, characterized by both efficient priming and frequent occurrence, and the optimization of octamer-primed reaction chemistry made possible the practical utilization of a primer library (6-8). However, after implementing the use of an octamer library, we recognized the need for a computer program to automatically identify candidate primers for subsequent sequencing reactions. Therefore, we developed the computer analysis components required for efficient library use.
+###end p 9
+###begin p 10
+###xml 386 387 386 387 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c7">7</xref>
+This software, electronic OST (eOST), integrates the base calling software PHRED in order to identify high quality sequence regions. Integration with base calling software eliminates the time and labor cost associated with manual editing of target sequences and provides a quality assessment for each base. Additionally, since template secondary structure impacts OST reaction success (7), an analysis of the strengths of predicted structures was incorporated into this octamer identification software.
+###end p 10
+###begin p 11
+###xml 240 241 236 237 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 610 615 <span type="species:ncbi:9606">human</span>
+To increase the OST success rate, eOST was also used to determine several parameters that improve sequence quality, including the base quality threshold, the window size of the template sequence segment, and the threshold point of the DeltaG value. Furthermore, parameters were refined to improve the correlation between the stability of secondary structure of the template around the priming site and the success or failure rate of the sequencing reaction. Thus, eOST identifies the optimal octamer primers to use in subsequent sequencing reactions. By combining speed and reagent cost savings with minimized human intervention, eOST has become an integral component of OST.
+###end p 11
+###begin title 12
+MATERIALS AND METHODS
+###end title 12
+###begin title 13
+Operating system for computation
+###end title 13
+###begin p 14
+###xml 216 217 216 217 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c9">9</xref>
+###xml 218 220 218 220 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c10">10</xref>
+A Macintosh operating system is coupled with an ABI PRISM 377 DNA Sequencer to collect the raw data from the sequencer. The raw data files are transferred to a UNIX operating system. The base calling software PHRED (9-10), installed on a UNIX system, is used to determine the base quality value for each base in the sequence. Based on our algorithm, a computer program, eOST, was written and compiled in the C language. The present version of eOST runs on a UNIX operating system (Sun Solaris 2.5.1).
+###end p 14
+###begin title 15
+Octamer sequencing reactions
+###end title 15
+###begin p 16
+###xml 85 86 85 86 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c7">7</xref>
+Octamer-primed sequencing reactions were performed as described in Jones and Hardin (7).
+###end p 16
+###begin title 17
+Octamer library nomenclature
+###end title 17
+###begin p 18
+###xml 55 56 55 56 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c8">8</xref>
+###xml 464 465 464 465 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 523 524 523 524 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+The library size was reduced from 7168 to 970 members (8). The resulting sequences of the library primers are stored in two files with three fields in each file: primer number (index in the octamer primer library), primer ID or primer name, and sequence. Each of the files contains 485 members; one file stores the primers with index 1-485, and the other contains the corresponding complementary octamer primers indexed from 486 to 970. For example, primer number m in the first file is the complement of primer number 485+m in the second file. If there are changes in the octamer library, the user can make the corresponding change in this file instead of rewriting the eOST code.
+###end p 18
+###begin title 19
+eOST schema
+###end title 19
+###begin p 20
+###xml 46 47 46 47 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gnd022f1">1</xref>
+An overview of the eOST design is shown (Fig. 1) and is discussed in detail in the following sections.
+###end p 20
+###begin p 21
+###xml 0 34 0 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Using PHRED base calling software.</italic>
+###xml 160 161 160 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c8">8</xref>
+Using PHRED base calling software. Sequencing reaction conditions have been identified in which octamers prime reactions only from perfectly matched templates (8). A major source of reaction failure occurs when the primer is derived from an unreliable sequence (i.e. errors in the sequence are translated to the primer which fails to bind to the template), making it critical to consider the quality of the underlying sequence before selecting a primer. Since sequence quality can vary dramatically due to poor quality template, limitations of the base calling software or decay in sequence data quality near the end of the read length, it is critical to consider the quality of the underlying sequence before selecting an octamer.
+###end p 21
+###begin p 22
+###xml 231 232 231 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c9">9</xref>
+###xml 233 235 233 235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c10">10</xref>
+To incorporate this consideration into the eOST automated octamer identification program, we have incorporated the base quality statistics generated by the PHRED base calling software to indicate the reliability of each base call (9,10). The PHRED numerical indication of base quality is used to eliminate low quality sequences that may be unreliable, and does not require viewing the trace display. Our default quality value cut-off is a PHRED value of 20, which implies that there is a 1% chance that the base call is not correct. This value can, however, be modified by the user if more or less stringent criteria are desired.
+###end p 22
+###begin p 23
+###xml 95 96 95 96 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c9">9</xref>
+###xml 97 99 97 99 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c10">10</xref>
+###xml 385 386 385 386 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c9">9</xref>
+###xml 387 389 387 389 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c10">10</xref>
+###xml 511 512 511 512 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c9">9</xref>
+###xml 513 515 513 515 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c10">10</xref>
+PHRED base quality evaluation begins with the trace file collected by the automated sequencer (9,10). A set of four traces, one for each of the four bases of DNA, is stored in a binary output trace file by the Perkin-Elmer/ABI software. PHRED reads this DNA trace data, calls bases, assigns quality values to the bases, and writes the base calls and quality values to the output file (9,10). After calling bases, PHRED writes the sequence and the quality values for each base to separate files in FASTA format (9,10).
+###end p 23
+###begin p 24
+###xml 0 43 0 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Identifying a high quality template region.</italic>
+###xml 287 288 287 288 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c2">2</xref>
+###xml 619 620 619 620 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c2">2</xref>
+###xml 997 998 997 998 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c2">2</xref>
+Identifying a high quality template region. The two files written by PHRED, a sequence file that contains the template sequence and a quality file that contains the corresponding integer quality values for each base in the sequence, are used to identify the region for primer selection (2). Each template in the sequence file is clipped to determine a single good region for primer selection. The clipping algorithm works as follows: a sequence window of specified size (in base pairs) moves inward from the edge of the template and stops when there are less than a specified number of low quality bases in the window (2). Bases with quality below the minimum acceptable quality value (cut-off value 20) specified in the preference file are considered bad. Regions are further designated either 'good', for a high quality sequence, or 'bad', for a low quality sequence. The effect of this algorithm is to exclude runs of low quality sequence at the leading and trailing edges of individual reads (2). For each good region, the code then identifies all the candidate octamer primers from the octamer library.
+###end p 24
+###begin p 25
+###xml 0 38 0 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Identifying candidate octamer primers.</italic>
+Identifying candidate octamer primers. eOST analyzes the high quality sequence region for matches with octamers in the library, using alignment settings that required a 100% match and an 8 base overlap. The search stops when all candidate primers are selected and when the search region is exhausted. eOST next analyzes these candidates to determine how many times they occur in the template (within the known sequence). After a sequence is fully analyzed, the identified primers are output to a 'primers' file with the primer name, sequence, position in the template, and times present in the template. After the candidate primers are identified, template regions centered around the octamer-binding site are stored in memory for analysis of potential secondary structures.
+###end p 25
+###begin p 26
+###xml 0 56 0 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Computing the stability of template secondary structure.</italic>
+###xml 170 171 170 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c7">7</xref>
+Computing the stability of template secondary structure. There is a correlation between predicted local template secondary structure and OST reaction success or failure (7). Several factors may influence the efficiency with which a homologous DNA sequence can act as a primer for enzymatic sequencing, including poor accessibility of the primer to the template due to template secondary structure, inefficient extension by the polymerase, and multiple site binding. Thus, a better understanding of the relationship of the primary DNA sequence to the template secondary structure and its effect on primer extension by DNA polymerase should reduce the incidence of reaction failure through a more informed choice of candidate primers.
+###end p 26
+###begin p 27
+###xml 149 151 149 151 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c11">11</xref>
+###xml 668 670 668 670 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c12">12</xref>
+It is well established that under a given set of solution conditions, the relative stability of a DNA duplex structure depends on its base sequence (11). More specifically, the stability of a DNA duplex appears to depend primarily on the identity of the nearest neighbor bases. The overall stability and the melting behavior of any DNA duplex structure can be predicted from its primary sequence, making it possible to calculate the stability of predicted secondary structures within the template. A DNA folding algorithm, which was used to determine self-complementarity of oligonucleotides, was introduced to compute the stability of potential secondary structures (12). The specific template region surrounding the primer location was used to compute the stability of predicted secondary structures in the immediate vicinity of the candidate primer.
+###end p 27
+###begin p 28
+###xml 196 198 196 198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c12">12</xref>
+The template was analyzed for potential inhibitory secondary structures using an algorithm that identifies regions of self-complementarity and determines the free energy values for these regions (12). A segment of the template can theoretically be folded in many different ways. Each folding stage is associated with a free energy value. The lower the energy value, the higher the secondary structure stability of that template region. The lowest free energy for each priming site is listed in the data output file. At each priming site, a template segment of 50 bases is selected (reasons for specifying 50 bases are detailed below) and all the different folding stages are calculated.
+###end p 28
+###begin p 29
+###xml 356 357 356 357 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 412 413 412 413 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 418 419 418 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 477 478 477 478 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 499 500 499 500 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 570 571 570 571 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 578 579 578 579 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 966 967 962 963 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+eOST uses a simple dynamic folding strategy to generate all possible potential stem-loop structures. Folding the 5'-terminus toward the 3'-terminus and increasing the amount of overlap by a single base generates each stem-loop structure. Base pairing is analyzed as eOST progressively moves from the 5'-end towards the 3'-end. As an example, with position P of this segment of the sequence, base pairing between P and P+1 is examined. If base complementarity is observed, then P is complementary to P+1. Then, similarly, eOST continues checking the base pairing between P-1 and P+2, keeping track of the number of consecutive bases that are complementary. The base pairing process is repeated until a mismatch is identified. The length of continuous complementarity defines the length of the stem in the stem-loop structure. If the size of the stem is equal to or greater than three, then this stem-loop structure is considered significant and the free energy (DeltaG) value for stability of this stem-loop structure is calculated. All the information related to this stem-loop structure is stored in data structure in memory. This information includes stem base, stem size, loop size, and location of the stem in the selected segment of template sequence. The folding process is repeated by single base shifts to generate all possible simple stem-loop structures within the entire template sequence region. Using this folding strategy, each 'hairpin structure' stored in memory is considered significant.
+###end p 29
+###begin p 30
+###xml 234 235 230 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 271 272 263 264 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 348 349 336 337 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 529 535 517 523 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al.</italic>
+###xml 537 539 525 527 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c11">11</xref>
+###xml 597 598 581 582 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 711 712 691 692 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 844 845 820 821 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 916 917 888 889 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Both the stem and the loop impact on the stability of the hairpin structure. Information stored in memory for each structure includes the duplex length, duplex sequence, and loop size. eOST uses this information to calculate the DeltaG value for each structure. The DeltaG value for each stem-loop structure is considered to be the sum of the DeltaG values of the duplex and the loop. First, the DNA stability of the stem in the hairpin structure is calculated using nearest neighbor thermodynamic values determined by Breslauer et al. (11). The second part of the calculation determines the DeltaG value of the loop in the stem-loop structure (as per OLIGO 5.0; Molecular Biology Insights Inc.). Both the DeltaG value and the position of each predicted stem-loop structure are stored in memory. Subsequently, these data are sorted by the DeltaG values of all the possible stem-loop structures, with the lowest DeltaG value for each position being the most likely stable structure for that template region.
+###end p 30
+###begin p 31
+###xml 0 24 0 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">eOST default parameters.</italic>
+###xml 113 114 109 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 230 231 222 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 357 358 345 346 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+eOST default parameters. Based on a statistical analysis of reaction successes and failures with associated DeltaG values, the best predictor of reaction outcome uses a 50 base template window (centered on the primer) with a DeltaG value of -5.0 kcal/mol (addressed below in detail). The user can identify a primer from the candidate primer list whose DeltaG value is in the working category. If there are two or more of these primers, the user selects the most appropriate primer by comparing the location of the priming sites in the template.
+###end p 31
+###begin title 32
+RESULTS
+###end title 32
+###begin title 33
+Correlation between stability of predicted secondary structure and OST reaction success
+###end title 33
+###begin p 34
+###xml 81 82 81 82 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c7">7</xref>
+###xml 171 203 171 203 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila melanogaster timeless</italic>
+###xml 171 194 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+eOST software was tested on a sequence that was previously determined using OST (7). The template for this sequence is a double-stranded plasmid containing 4993 bp of the Drosophila melanogaster timeless upstream region, and is referred to as the Re2 project.
+###end p 34
+###begin p 35
+###xml 189 190 189 190 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c7">7</xref>
+###xml 471 472 467 468 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 682 683 678 679 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c7">7</xref>
+###xml 983 985 979 981 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c13">13</xref>
+After completing the Re2 project, we found that five octamer primer pairs occurred twice in the Re2 template and that three of these five pairs were used to determine sequence information (7). Surprisingly, five of these six octamers produced high quality sequence information, indicating that they preferentially initiated the reaction from a single site, despite the fact that two primer-binding sites were present in the template. By comparing the local template DeltaG values of these primers, we noted that local secondary structure differences could explain the dramatic variation in the priming efficiency of the same octamer at different priming sites in the same template (7). A correlation was seen between the site from which sequence information was primed and a low potential for hairpin formation in the bases surrounding the octamer-priming site. Subsequently, similar observations were reported by researchers performing modified, isotopic octamer-primed sequencing (13).
+###end p 35
+###begin p 36
+###xml 422 423 418 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 437 438 433 434 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gnd022tb1">1</xref>
+###xml 487 488 483 484 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gnd022tb1">1</xref>
+###xml 507 508 499 500 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 636 637 628 629 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gnd022tb1">1</xref>
+###xml 752 753 740 741 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 880 881 868 869 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gnd022tb1">1</xref>
+###xml 1074 1075 1062 1063 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gnd022tb1">1</xref>
+###xml 1104 1105 1088 1089 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 1308 1309 1288 1289 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+The observation that template secondary structure could impact on priming ability led us to closely examine the correlation between predicted secondary structure and priming extension efficiency. This correlation between predicted hairpin strength and failure of the OST reaction is supported by additional analysis of the Re2 project. A total of 63 OST reaction results are listed and sorted by the predicted lowest DeltaG value (Table 1, left) or by reaction success or failure (Table 1, right). The DeltaG values determined for 49 of 63 primer sites were greater than -5.0 kcal/mol (i.e. weaker secondary structure predicted) (Table 1). In this group, 42 of 49 OST reactions generated sequence data, while seven of 49 OST reactions failed. The DeltaG values determined for 14 of 63 primer sites were less than -5.0 kcal/mol (i.e. stronger secondary structure predicted) (Table 1). Eleven of these 14 OST reactions failed, while three OST reactions in this group succeeded. There is a correlation between predicted free energy value and reaction success or failure (Table 1B). Also, the threshold DeltaG value is around -5.0 kcal/mol. Thus, in the current version of eOST, this threshold is used as a critical point to predict reaction success or failure. The user can examine and reset the threshold DeltaG value after collecting more OST reaction data.
+###end p 36
+###begin title 37
+Effect of the window size of the template segment on eOST prediction
+###end title 37
+###begin p 38
+As previously stated, eOST was applied in the Re2 project for selection of candidate primers from an optimal octamer library. Sixty-three octamer primers were selected for use in sequencing reactions without calculating free energy values of the target template surrounding the primer-binding sites. Of these octamers, 45 generated high quality sequences with a sequencing success rate of 71%, while 18 failed to generate sequence data.
+###end p 38
+###begin p 39
+###xml 235 236 231 232 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 326 327 322 323 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gnd022tb2">2</xref>
+###xml 498 499 490 491 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 687 688 675 676 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 872 873 856 857 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 1054 1055 1034 1035 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 1241 1242 1217 1218 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 1425 1426 1397 1398 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 1614 1615 1582 1583 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 1804 1805 1768 1769 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+To examine the effect of template window size on the free energy value, eOST was used to calculate this value at the potential primer-binding site for these same 63 primers using different template window sizes. For simplicity, a DeltaG value of -5 kcal/mol was used to predict reaction success or failure (displayed in Table 2). This analysis enabled us to identify the optimal template window size associated with the greatest predictive value. Using a 35 base window size, 56 octamers with DeltaG > -5 kcal/mol were predicted to generate sequence information. The experimental results produced 44 (79%) successful OST reactions and 12 failed reactions. While seven octamers with DeltaG < -5 kcal/mol were predicted to fail, the experimental results produced six (86%) failed OST reactions and one successful reaction. Using a 50 base window size, 49 octamers with DeltaG > -5 kcal/mol were predicted to generate sequence data. The experimental results produced 42 (86%) successful OST reactions and seven failed reactions. Fourteen octamers with DeltaG < -5 kcal/mol were predicted to fail. The experimental results produced 11 (79%) failed OST reactions and three successful reactions. Using a 75 base window size, 28 octamers with DeltaG > -5 kcal/mol were predicted to generate sequence data. The experimental results produced 24 (86%) successful OST reactions and four failed reactions. Thirty-five octamers with DeltaG < -5 kcal/mol were predicted to fail, but the experimental results produced 14 (40%) failed OST reactions and 21 successful reactions. Using a 100 base window size, 24 octamers with DeltaG > -5 kcal/mol were predicted to generate sequence information. The experimental results produced 22 (92%) successful OST reactions and two failed reactions. Thirty-nine octamers with DeltaG < -5 kcal/mol were predicted to fail, but the experimental results produced 16 (41%) failed OST reactions and 13 successful reactions.
+###end p 39
+###begin p 40
+###xml 171 172 167 168 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+These results demonstrate that increasing the window size to select candidate primers increases the sequencing success rate and the number of primers with calculated DeltaG < -5 kcal/mol. However, the number of octamers that are predicted to fail but which still generate sequence data increases. To reach an optimal balance between selectivity and sensitivity, a window size of 50 was chosen as an optimal parameter for primer selection. At this window size eOST provides a high success rate of 86% (compared to 79% with window size 35), as well as a high predicted failure rate of 79% (compared to 40 and 41% for window sizes 75 and 100, respectively).
+###end p 40
+###begin title 41
+DISCUSSION
+###end title 41
+###begin p 42
+###xml 187 192 <span type="species:ncbi:9606">human</span>
+We have adapted octamer primer-based sequencing to a format that is more compatible with automation. The ultimate goal is to maximally automate the sequencing process, thereby minimizing human intervention, reducing labor costs, and accelerating the whole sequencing process. The development of eOST is another step towards this goal.
+###end p 42
+###begin p 43
+###xml 1381 1382 1377 1378 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+eOST was developed to automatically identify candidate primers from an on-hand octamer primer library for use in subsequent sequencing reactions. This program has been used as a tool to identify octamer primers for primer walking sequencing of a DNA template. eOST integrates the base calling software PHRED to identify candidate primer-binding sites located within a high quality target sequence. However, if the user has an accurate sequence, eOST is able to accept as input the sequence without a quality file. In fact, a version of eOST that accepts and analyzes sequence files in FASTA format is accessible via the web (URL http://www.hgsc.bcm.tmc.edu/~gmei/susan ). Subsequently, eOST automatically calculates the stability of predicted secondary structures within the template in the vicinity of the octamer-binding site. The time consumed for each trace file varies with both the length of the sequence file and the number of candidate primers present within the template. On average, it takes between 30 and 60 s for each template to finish primer selection. The output files contain the primer library identification number, the primer sequence, the position of the 5' base in the primer within the template, the strand with which the primer will pair, the number of times this primer occurs in the template, the PHRED values for the template-pairing bases, and the DeltaG value of the template segment(s). The web-accessible version of eOST provides this information with the exception of the PHRED-related analysis.
+###end p 43
+###begin title 44
+###xml 26 31 26 27 <bold xmlns:xlink="http://www.w3.org/1999/xlink">&#916;</bold>
+###xml 31 32 27 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Determining the threshold DeltaG value
+###end title 44
+###begin p 45
+###xml 216 217 212 213 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 582 583 574 575 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+To increase OST sequencing success rate, eOST was also used to identify and optimize several parameters, including the base quality threshold, the optimal window size of the template sequence, and the threshold DeltaG value, as criteria to identify octamers that are most likely to bind to the template and generate high quality sequencing data. We have refined parameters to improve the correlation between the stability of the secondary structure of the template around the octamer-binding site and the success or failure rate of the sequencing reaction. We demonstrate that DeltaG > -5.0 kcal/mol is a good predictor of OST reaction success. This user-set value may be changed as additional data are collected.
+###end p 45
+###begin p 46
+###xml 370 371 366 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 1065 1066 1061 1062 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gnd022f2">2</xref>
+Currently, the simple dynamic folding algorithm in the eOST software is used to calculate the free energy and to predict the secondary structure of a DNA segment. The data indicate that the free energy value is useful for predicting the impact of a potential DNA template secondary structure on primer extension ability. First, a correlation between the calculated DeltaG value and the success rate of primer extension was observed; Re2 analysis suggests a threshold value of -5 kcal/mol for predicting OST reaction outcome. Secondly, the site-specific binding efficiency of primers with double binding sites located in the same template implies that the secondary structure of the template plays an important role in either (or both) binding of primer to the specific site or extension by the DNA polymerase. Thirdly, by applying a simple folding algorithm to calculate the free energy across the Re2 sequence, some regions that have a low free energy and high potential to form secondary structure are located and associated with increased reaction failure (Fig. 2). However, it must be noted that some octamer-binding sites either directly associated with strong predicted secondary structures or located in template regions predicted to form secondary structures are able to prime sequence data. Experiments are in progress to understand this observation.
+###end p 46
+###begin title 47
+###xml 45 50 45 46 <bold xmlns:xlink="http://www.w3.org/1999/xlink">&#916;</bold>
+###xml 50 51 46 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Identifying optimal template window size for DeltaG calculation
+###end title 47
+###begin p 48
+###xml 664 666 664 666 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c11">11</xref>
+###xml 885 886 885 886 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gnd022tb3">3</xref>
+As mentioned, a segment of DNA sequence can theoretically be folded in many different ways and each folding stage is associated with a defined free energy value. The lower the energy value, the greater the stability of the secondary structure for that segment. The eOST program lists the lowest free energy value for a particular template segment containing each primer-binding site in the output file. Each template segment of 50 bases encompassing the primer-binding site is selected and the free energy values for the different folding stages are calculated. The current version of the eOST program calculates these values by determining both nearest neighbor (11) and loop contributions (as per OLIGO 5.0; Molecular Biology Insights Inc.). In fact, by decreasing the template segment window size from 100 to 50 bases, eOST increases the predictive value for the Re2 project (Table 3). Specifically, the percentage of reactions that were predicted to fail but were successful decreased from 59 to 21%. Although the predicted success rate decreased slightly (from 92 to 86%), the number of reactions predicted to succeed increased from 24 to 49.
+###end p 48
+###begin p 49
+###xml 216 217 216 217 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gnd022f3">3</xref>
+###xml 228 229 228 229 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gnd022tb4">4</xref>
+The template window can be moved relative to the octamer-binding site. In fact, we have observed a significant change in the free energy value by shifting the 50 base window 10 or 20 bases to the right or left (Fig. 3 and Table 4). These free energy value changes should allow us to determine the best way to position the window for analysis. Future work can determine whether a better predictor of reaction outcome is obtained by averaging values determined for particular window positions.
+###end p 49
+###begin title 50
+Uses for eOST
+###end title 50
+###begin p 51
+###xml 117 118 117 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c8">8</xref>
+###xml 215 220 <span type="species:ncbi:9606">Human</span>
+In our previous report, an octamer library provided sufficient coverage to sequence both genomic and cDNA sequences (8). This may now be especially important for gap closure in genomic templates, given the shift in Human Genomic sequencing strategy brought about by private sequencing efforts. Effectively, this shift promotes increased throughput of new sequence information with a corresponding decrease in sequence confidence. Therefore, investigators interested in a particular genomic region may need to confirm the sequence before proceeding with their experiments. Additionally, as genome projects near completion, eOST could be used as a rapid and cost-effective alternative for gap closure using octamer-appropriate templates, and in the finishing phase of genomic DNA sequencing. eOST can be modified to analyze multiple sequences in parallel. eOST and OST, when combined, will allow researchers to accomplish these needs rapidly and relatively inexpensively.
+###end p 51
+###begin p 52
+###xml 510 512 510 512 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c14">14</xref>
+###xml 513 515 513 515 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gnd022c15">15</xref>
+###xml 48 53 <span type="species:ncbi:9606">Human</span>
+###xml 394 399 <span type="species:ncbi:9606">human</span>
+###xml 466 471 <span type="species:ncbi:9606">human</span>
+The characterization of gene information in the Human Genome Project relies heavily on expressed sequence tags (ESTs). ESTs are generated from a single DNA sequencing pass from either or both ends of a cloned cDNA. They are typically short (average 200-400 bp), generally of lower-quality data, and only contribute limited information about each clone. As the pace of hunting for and analyzing human genes accelerates, large-scale efforts to systematically sequence human full-length cDNA clones are reported (14,15). eOST could also be incorporated into large-scale sequencing of cDNA clones in the final assembly stage. Additionally, eOST could be used to manage a library comprised of longer primers or to determine whether our observation of the impact of template secondary structures applies to longer primers.
+###end p 52
+###begin title 53
+Figures and Tables
+###end title 53
+###begin p 54
+ eOST schema.
+###end p 54
+###begin p 55
+###xml 17 18 13 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 300 301 292 293 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 337 338 329 330 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+ Graphic of DeltaG values determined across the top strand of the Re2 sequence. The value for the first 50 base window was determined, the window was moved 10 bases, and the value for the next 50 base window was calculated. This process was continued until the entire sequence was analyzed. The DeltaG value (kcal/mol) is plotted on the y-axis. vertical line indicates the position of a successful primer and x indicates the position of a failed primer.
+###end p 55
+###begin p 56
+###xml 46 47 42 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 149 150 141 142 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 217 218 205 206 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 228 229 212 213 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 313 314 293 294 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 324 325 300 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+ Schematic view of window placement. The DeltaG values shown in Table 4 were calculated using 50 base template windows centered on the octamer (DeltaG3), that shifted the window 20 or 10 bases left of this site (DeltaG1 or DeltaG2, respectively) or that shifted the window 10 or 20 bases right of this site (DeltaG4 or DeltaG5, respectively).
+###end p 56
+###begin title 57
+Re2 project summary
+###end title 57
+###begin p 58
+###xml 108 109 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 329 330 321 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 440 441 428 429 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 454 455 438 439 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 541 542 521 522 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Primer location, sequence, name, number of occurrences in the Re2 project, eOST predicted free energy (DeltaG) value (kcal/mol), and OST experimental result are indicated. The experimental results are shown as 1 or 0, where 1 indicates OST reaction success and 0 indicates reaction failure. (Left) Sorted by eOST calculated DeltaG value and then by experimental result. (Right) Sorted by experimental result and then by eOST predicted DeltaG value. DeltaG was calculated by eOST using a 50 base window. *, previously predicted template DeltaG lists values determined using template windows sizes of 75-100 bases (7). Primer names may differ from those previously reported, however, octamer sequences can be compared. N/A indicates that the primer was not previously analyzed.
+###end p 58
+###begin title 59
+###xml 28 29 24 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Re2 project summary of DeltaG values determined using different template window sizes
+###end title 59
+###begin p 60
+###xml 66 67 62 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Primer location, sequence, name, eOST predicted free energy (DeltaG) value using the indicated template window size (kcal/mol), eOST prediction of reaction success (1) or failure (0), and OST experimental results are indicated.
+###end p 60
+###begin title 61
+Determination of the overall predictive value using different template window sizes
+###end title 61
+###begin p 62
+###xml 104 105 100 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Analysis summary of the Re2 sequencing project using different segment window sizes. Raw data with DeltaG values are shown in Table 2. Reaction prediction indicates the number of reactions (of the 63 Re2 reactions) that are predicted to succeed or fail, based on the indicated template window size. No. of successful OST reactions indicates the number of reactions (of 63) in which the octamer primed the reaction. No. of failed OST reactions indicates the number of reactions (of 63) in which the octamer did not prime the reaction. Percent correct prediction is determined by dividing the number of successful OST reactions by the predicted number of successful reactions (e.g. for the 50 base window, 42/49 = 86%) or by dividing the number of failed OST reactions by the predicted number of failed reactions (11/14 = 79%).
+###end p 62
+###begin title 63
+###xml 28 29 24 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Re2 project summary of DeltaG values determined using different template window placements
+###end title 63
+###begin p 64
+###xml 52 53 48 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 143 144 135 136 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 416 417 404 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Primer location, sequence, and name are shown. DeltaG values were calculated for 50 base windows of the template centered on the octamer (DeltaG3) or shifted as described in Figure 3. The experimental results are shown as 1 and 0, where 1 indicates reaction success and 0 indicates reaction failure. Data are sorted by experimental results and then by increasing strength of the predicted secondary structures (DeltaG3 value).
+###end p 64
+###begin title 65
+ACKNOWLEDGEMENTS
+###end title 65
+###begin p 66
+The authors are grateful to Paul Hardin, Wei Yu, and Anelia Kraltcheva for critically reading the manuscript, and to Hardin laboratory members for helpful discussions. This work was supported by the NIH (grant R29-HG01151 to S.H.H.).
+###end p 66
+###begin title 67
+REFERENCES
+###end title 67
+

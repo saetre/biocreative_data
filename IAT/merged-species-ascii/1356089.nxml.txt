@@ -1,0 +1,814 @@
+###begin article-title 0
+Computational Analysis and Prediction of the Binding Motif and Protein Interacting Partners of the Abl SH3 Domain
+###end article-title 0
+###begin p 1
+###xml 1518 1523 <span type="species:ncbi:9606">human</span>
+Protein-protein interactions, particularly weak and transient ones, are often mediated by peptide recognition domains, such as Src Homology 2 and 3 (SH2 and SH3) domains, which bind to specific sequence and structural motifs. It is important but challenging to determine the binding specificity of these domains accurately and to predict their physiological interacting partners. In this study, the interactions between 35 peptide ligands (15 binders and 20 non-binders) and the Abl SH3 domain were analyzed using molecular dynamics simulation and the Molecular Mechanics/Poisson-Boltzmann Solvent Area method. The calculated binding free energies correlated well with the rank order of the binding peptides and clearly distinguished binders from non-binders. Free energy component analysis revealed that the van der Waals interactions dictate the binding strength of peptides, whereas the binding specificity is determined by the electrostatic interaction and the polar contribution of desolvation. The binding motif of the Abl SH3 domain was then determined by a virtual mutagenesis method, which mutates the residue at each position of the template peptide relative to all other 19 amino acids and calculates the binding free energy difference between the template and the mutated peptides using the Molecular Mechanics/Poisson-Boltzmann Solvent Area method. A single position mutation free energy profile was thus established and used as a scoring matrix to search peptides recognized by the Abl SH3 domain in the human genome. Our approach successfully picked ten out of 13 experimentally determined binding partners of the Abl SH3 domain among the top 600 candidates from the 218,540 decapeptides with the PXXP motif in the SWISS-PROT database. We expect that this physical-principle based method can be applied to other protein domains as well.
+###end p 1
+###begin title 2
+Synopsis
+###end title 2
+###begin p 3
+###xml 837 842 <span type="species:ncbi:9606">human</span>
+One of the central questions of molecular biology is to understand how signals are transduced in the cell. Intracellular signal transduction is mainly achieved through cascades of protein-protein interactions, which are often mediated by peptide-binding modular domains, such as Src Homology 2 and 3 (SH2 and SH3). Each family of these domains binds to peptides with specific sequence and structural characteristics. To reconstruct the protein-protein interaction networks mediated by modular domains, one must identify the peptide motifs recognized by these domains and understand the mechanism of binding specificity. These questions are challenging because the domain-peptide interactions are usually weak and transient. Here, the authors took a physical-principles approach to address these difficult questions for the SH3 domain of human protein Abl, which binds to peptides containing the PXXP motif (where P is proline and X is any amino acid). They generated a position-specific scoring matrix to represent the binding motif of the Abl SH3 domain. Analysis on the binding free energy components suggested insights into how the binding specificity is achieved. Most known protein interacting partners of the Abl SH3 domain were correctly identified using the position-specific scoring matrix, and other potential interacting partners were also suggested.
+###end p 3
+###begin title 4
+Introduction
+###end title 4
+###begin p 5
+###xml 354 355 354 355 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b001">1</xref>
+###xml 674 675 674 675 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b002">2</xref>
+###xml 676 677 676 677 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b006">6</xref>
+###xml 918 919 915 916 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b007">7</xref>
+###xml 921 922 918 919 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b008">8</xref>
+###xml 984 985 981 982 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b009">9</xref>
+###xml 1164 1166 1161 1163 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b010">10</xref>
+###xml 1545 1546 1542 1543 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 1552 1553 1549 1550 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 1596 1598 1593 1595 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sub>
+###xml 1635 1637 1632 1634 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sub>
+###xml 1640 1642 1637 1639 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;2</sub>
+###xml 1645 1647 1642 1644 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sub>
+###xml 1650 1651 1647 1648 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 1654 1655 1651 1652 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 1658 1660 1655 1657 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2,</sub>
+###xml 1666 1667 1663 1664 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 1741 1742 1738 1739 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b002">2</xref>
+###xml 1894 1896 1891 1893 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sub>
+###xml 515 520 <span type="species:ncbi:9606">human</span>
+The interactions between protein domains and their peptide ligands play critical roles in signal transduction and many other key biological processes. Because domain-peptide interactions are usually weak and transient, and often depend upon post-translational modification, they tend to be under-represented in high-throughput and computational studies [1], thus highlighting the need to develop new methods to identify these interactions. The Src Homology 3 (SH3) domain is the most abundant modular domain in the human proteome and presents in a wide variety of proteins, such as kinases, lipases, GTPases, and adaptor proteins, to orchestrate diverse cellular processes [2-6]. SH3 domains are 50-70 amino acids long and consist of five beta-strands arranged into two sheets packed at right angles. They recognize the proline-rich peptides with the consensus motif PXXP (where P is proline and X is any amino acid) [7, 8] that forms a left-handed poly-proline type II (PPII) helix [9]. Depending on the position of the positive residue in the peptide sequence, the majority of SH3 ligands fall into two classes that bind to the protein in opposite orientations [10]: N-terminal to C-terminal (class I) or C-terminal to N-terminal (class II). Class I peptides typically consist of a core motif of RXLPX#P (where # is usually a hydrophobic residue), whereas the class II peptides contain a core motif of PX#PXR. In class I peptides, the proline residues in bold occupy the sites in the hydrophobic pocket that are normally referred as position P0 and P3, while the Arg residue occupies position P-3 (the positions are often dubbed as P-3, P-2, P-1, P0, P1, P2, and P3 from N-terminal to C-terminal, namely from R to P, in the motif RXLPX#P [2]). A notable variance of this motif is the one recognized by the Abl SH3 domain, which contains a tyrosine or a large hydrophobic residue at position P-3.
+###end p 5
+###begin p 6
+###xml 116 118 116 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b010">10</xref>
+###xml 665 667 665 667 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b011">11</xref>
+###xml 669 671 669 671 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b012">12</xref>
+###xml 978 980 978 980 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b013">13</xref>
+###xml 989 991 989 991 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b014">14</xref>
+###xml 1003 1005 1003 1005 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b015">15</xref>
+The binding specificity of a specific SH3 domain is determined by the flanking residues around the core motif PXXP [10]. Understanding the molecular basis of the specificity for each SH3 domain and identifying the sequence motif it recognizes are crucial to reconstruct the complete protein-protein interaction networks mediated by SH3 domains. Both experimental and computational methods have been developed to tackle this problem. Peptide library screening is often used to determine the binding motif of a SH3 domain, in which the binding peptides are sequenced and aligned to generate a frequency matrix representing the amino acid preference at each position [11, 12]. Bias may be introduced by not completely sampling all possible peptides, not quantitatively weighting the contribution of peptides to the matrix based on their binding strength and/or not distinguishing peptides bound to the SH3 domain in different binding modes. Computational methods such as Scansite [13], SPOT [14], and VIP [15] methods have been developed to predict interacting proteins of a domain. The performance of Scansite totally depends on the accuracy of the frequency matrix determined by the peptide library experiments. SPOT is limited by the relatively small number of residue contact pairs between SH3 domains and peptides. The performance of the VIP method can be improved if more conformational sampling is done and more rigorous binding energy prediction method, including the conformational energy change and the desolvation contribution upon peptide binding, is applied.
+###end p 6
+###begin p 7
+###xml 168 170 168 170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b016">16</xref>
+###xml 498 500 498 500 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b017">17</xref>
+###xml 932 934 932 934 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b018">18</xref>
+###xml 936 938 936 938 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b019">19</xref>
+###xml 1391 1392 1391 1392 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sup>
+###xml 76 81 <span type="species:ncbi:9606">human</span>
+In this study, we analyzed the binding specificity of the SH3 domain of the human protein Abl. The Molecular Mechanics/Poisson-Boltzmann Solvent Area (MM/PBSA) method [16] was first applied to calculate the binding free energies between the Abl SH3 domains and 35 ten-residue-long peptides (15 binders and 20 non-binders). As a validation of the MM/PBSA method on the domain-peptide system, the calculated binding free energies of the 15 known binders correlated well with the experimental values [17] and were distinct from those of the non-binders. Analysis of the molecular dynamics (MD) trajectories and binding free energy components shed light into understanding the mechanism of the binding specificity of the Abl SH3 domain. The residue preference at each position of the peptide ligand was then studied systematically by single position mutation and MM/PBSA calculations, which we call the virtual mutagenesis (VM) method [18, 19]. A single position mutation free energy profile (SPMFEP) was established from such analysis to quantitatively represent the binding motif and was in good agreement with the experimental measurements. We used SPMFEP as a scoring matrix to search the SWISS-PROT database for potential binding partners of the Abl SH3 domain. Most experimentally determined binding proteins of the Abl SH3 domain were ranked in the top 600 candidates among about 6.2 x 107 decapeptides in the database and many promising candidates were also suggested.
+###end p 7
+###begin title 8
+Results
+###end title 8
+###begin title 9
+Molecular Basis of the Binding Specificity of the Abl SH3 Domain
+###end title 9
+###begin title 10
+The calculated binding free energies correlate well with the experimental values.
+###end title 10
+###begin p 11
+###xml 189 196 189 196 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t001">Table 1</xref>
+###xml 201 209 201 209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020001-g001">Figure 1</xref>
+###xml 361 362 361 362 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 541 548 541 548 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t001">Table 1</xref>
+###xml 638 639 634 635 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 639 642 635 638 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ele</sub>
+###xml 721 722 713 714 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 722 724 714 716 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PB</sub>
+###xml 761 762 749 750 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 762 765 750 753 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">vdw</sub>
+###xml 845 846 829 830 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 846 849 830 833 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">vdw</sub>
+###xml 1308 1309 1288 1289 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1309 1312 1289 1292 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ele</sub>
+###xml 1319 1320 1295 1296 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1320 1323 1296 1299 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">vdw</sub>
+###xml 1330 1331 1302 1303 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1331 1333 1303 1305 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PB</sub>
+###xml 1344 1345 1312 1313 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1345 1347 1313 1315 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SA</sub>
+###xml 1488 1489 1452 1453 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1489 1492 1453 1456 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ele</sub>
+###xml 1622 1623 1582 1583 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1623 1626 1583 1586 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">vdw</sub>
+###xml 1634 1635 1590 1591 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1635 1637 1591 1593 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SA</sub>
+###xml 1680 1681 1632 1633 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1681 1684 1633 1636 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ele</sub>
+###xml 1692 1693 1640 1641 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1693 1695 1641 1643 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PB</sub>
+###xml 1804 1805 1752 1753 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 1888 1889 1836 1837 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+We first evaluated the performance of the MM/PBSA method on calculating the binding free energies of the Abl SH3 domain and its peptide ligands (15 binders and 20 non-binders). As shown in Table 1 and Figure 1, the calculated relative binding free energies of the 15 known binders show good correlation with the experimental values (the correlation coefficient r and standard deviation [SD] are 0.82 and 1.7, respectively). We then analyzed the free energy components to search for the dominant factor that dictates the binding specificity (Table 1). As the favorable electrostatic interaction between the peptide and the SH3 domain DeltaEele is canceled by the unfavorable electrostatic contribution to desolvation DeltaGPB, the van der Waals interaction DeltaEvdw is the most favorable component of the binding free energy. The favorable DeltaEvdw is mainly from the interactions between the conserved proline residues of the PXXP motif and the hydrophobic surface that is formed by Tyr7, Phe9, Trp36, Tyr52, and Pro49 of the Abl SH3 domain and conserved in almost all SH3 domains. To investigate which energetic factor determines the relative binding affinities of these 15 binders, we compared the correlations between the measured binding free energies and each of the four free energy components, DeltaEele, DeltaEvdw, DeltaGPB, and DeltaGSA. None of these components shows good correlation with the experimental values and the largest correlation coefficient is only 0.43 for DeltaEele, which suggests that no individual free energy component dominates the binding specificity. We then analyzed the non-polar (DeltaEvdw + DeltaGSA) and the electrostatic contribution (DeltaEele + DeltaGPB) to the binding free energy. The electrostatic contribution correlates well with the binding free energies (r = 0.73, SD = 1.6) while the non-polar contribution does not show any correlation (r = -0.32, SD = 2.0). It suggests that the binding preference of these peptides is mainly determined by the electrostatic contribution to binding.
+###end p 11
+###begin p 12
+###xml 78 79 74 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 79 87 75 83 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">conf_pep</sub>
+###xml 103 104 99 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 139 140 131 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 140 143 132 135 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ele</sub>
+###xml 150 151 138 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 151 154 139 142 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">vdw</sub>
+###xml 161 162 145 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 162 164 146 148 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PB</sub>
+###xml 171 172 151 152 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 172 174 152 154 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SA</sub>
+###xml 185 186 161 162 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 186 194 162 170 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">conf_pep</sub>
+###xml 243 244 219 220 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 312 313 288 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 488 490 464 466 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b020">20</xref>
+###xml 492 494 468 470 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b021">21</xref>
+We also found that the conformational change of the peptide upon binding DeltaEconf_pep was important (r = 0.54, SD =1.8). The sum of DeltaEele, DeltaEvdw, DeltaGPB, DeltaGSA, and DeltaEconf_pep correlates well with the binding free energies (r = 0.79, SD =1.8) whereas the sum of the first four terms does not (r = 0.52). Our calculations highlight the crucial effect of the change of the conformational energy of peptide to the affinities, which is not always appropriately considered [20, 21]. Inclusion of the conformational entropy -TDeltaS in the free energy calculation only slightly improves the correlation coefficient from 0.79-0.82, which suggests that the conformational entropy is not the determinant factor of the binding specificity of the binders.
+###end p 12
+###begin p 13
+###xml 124 132 124 132 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st001">Table S1</xref>
+###xml 224 232 224 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020001-g002">Figure 2</xref>
+The binding free energies and the free energy components for the 20 non-binders of the Abl SH3 domain were also calculated (Table S1). Two distributions of the binding free energies for binders and non-binders are distinct (Figure 2), which indicates that the MM/PBSA method can distinguish binders from non-binders. We also found that most non-binders preferred unbound conformations. First, the average conformational entropy change upon binding -TDeltaS for binders and non-binders are 32.1 kcal/mol and 35.9 kcal/mol, respectively, indicating that most non-binders lost more entropy upon binding than did binders. Second, the change of conformational energy for binders and non-binders are also significantly different: the average value for binders and non-binders are 2.0 kcal/mol and 4.3 kcal/mol, respectively.
+###end p 13
+###begin title 14
+The binding motif can be revealed by the VM method.
+###end title 14
+###begin p 15
+###xml 205 226 205 226 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Materials and Methods</xref>
+###xml 312 313 312 313 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 316 317 316 317 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 320 323 320 323 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3,</sub>
+###xml 329 331 329 331 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 333 342 333 342 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st003">Tables S3</xref>
+###xml 343 345 343 345 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st006">S6</xref>
+###xml 348 350 348 350 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b017">17</xref>
+###xml 352 354 352 354 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b022">22</xref>
+###xml 473 474 473 474 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 480 481 480 481 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 530 532 530 532 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sub>
+###xml 539 541 539 541 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 584 585 584 585 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b009">9</xref>
+###xml 587 589 587 589 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b010">10</xref>
+###xml 767 768 767 768 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</bold>
+###xml 770 771 770 771 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</bold>
+###xml 926 933 926 933 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">mm_pbsa</italic>
+###xml 982 990 982 990 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st007">Table S7</xref>
+###xml 993 995 993 995 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b019">19</xref>
+To understand the mechanism of the binding specificity, we need to determine the binding motif of the domain. We analyzed the amino acid preference at each position of the peptide using the VM method (see Materials and Methods). We compared our results with the available experimental measurements at positions P3, P0, P-3, and P-5 (Tables S3-S6) [17, 22]. These four positions are particularly important for the peptide binding: the two usually conserved Pro residues at P3 and P0 ensure strong binding affinity and residues at P-3, and P-5 are essential to the binding specificity [9, 10]. To determine the residues of the Abl SH3 domain that are important for peptide binding, the contribution of each SH3 domain residue to binding with the template peptide APSYSPPPPP (the two conserved Pro residues are in bold) was analyzed (the polar contribution to desolvation was calculated using the GB/SA method implemented in the mm_pbsa module of AMBER 8 for the sake of efficiency.) (Table S7) [19].
+###end p 15
+###begin p 16
+###xml 99 101 99 101 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 316 324 316 324 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st007">Table S7</xref>
+###xml 429 437 429 437 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020001-g003">Figure 3</xref>
+###xml 893 895 893 895 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b022">22</xref>
+In the crystal structure of APSYSPPPPP complexed with the Abl SH3 domain, the residue at position P-5 in the peptide occupies a hydrophobic pocket of the SH3 domain. Proline at this position has relatively strong van der Waals interactions with Trp36 (-1.3 kcal/mol) and Trp47 (-0.9 kcal/mol) in the Abl SH3 domain (Table S7). Several other residues, Asn, Leu, Met, Phe, Tyr, and Val, are also strongly favored at this position (Figure 3A). It is worth pointing out that the mutation of Pro to Tyr or Phe, does not significantly impair the van der Waals interaction between the peptide and the SH3 domain due to the conformational change of the peptide backbone. Our predicted preference based on free energy calculations is consistent with the experimental results: Pro is the most preferred, whereas other residues especially hydrophobic ones (Phe, Leu, Met, Val, and Trp) are also favored [22].
+###end p 16
+###begin p 17
+###xml 54 56 54 56 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 168 175 168 175 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t001">Table 1</xref>
+###xml 191 193 191 193 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 329 331 329 331 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;6</sub>
+###xml 396 398 396 398 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 538 540 538 540 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;6</sub>
+###xml 689 691 687 689 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 753 755 751 753 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;6</sub>
+It should be noted that the preference of residue at P-5 are closely related to the residues at the adjacent positions. For example, the known binder FGTYPPPLPP (A4 in Table 1) has a Gly at P-5, which is not favored at this position based on the VM result. By analyzing the MD trajectory on A4-SH3 complex, we found that Phe at P-6 in A4 can occupy the binding pocket that is occupied by Pro at P-5 in the template peptide APSYSPPPPP to form favorable van der Waals interactions with Trp36 and Trp47. Moreover, the benzyl ring of Phe at P-6 is parallel to the aromatic ring of Trp47 to form strong pi-pi stacking interactions. Therefore, if there is a small residue (Ala, Gly, or Ser) at P-5, an aromatic residue (Tyr, Phe, or Trp) may be preferred at P-6. This suggests that the repertoire of SH3 domain-binding peptides may be much larger than previously thought.
+###end p 17
+###begin p 18
+###xml 69 71 69 71 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sub>
+###xml 73 81 73 81 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020001-g003">Figure 3</xref>
+###xml 256 258 256 258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b022">22</xref>
+###xml 346 348 346 348 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sub>
+###xml 410 412 410 412 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b012">12</xref>
+###xml 414 416 414 416 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b023">23</xref>
+###xml 418 420 418 420 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b024">24</xref>
+###xml 454 462 454 462 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st004">Table S4</xref>
+###xml 601 604 597 600 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">vdw</sub>
+###xml 613 615 605 607 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SA</sub>
+###xml 644 645 632 633 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 645 648 633 636 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">vdw</sub>
+###xml 656 657 640 641 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 657 659 641 643 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SA</sub>
+###xml 1098 1100 1082 1084 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b025">25</xref>
+###xml 1149 1151 1133 1135 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b026">26</xref>
+###xml 1199 1201 1183 1185 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b027">27</xref>
+###xml 1255 1257 1239 1241 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b028">28</xref>
+###xml 1260 1268 1244 1252 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020001-g004">Figure 4</xref>
+###xml 1380 1382 1364 1366 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b029">29</xref>
+###xml 1399 1401 1383 1385 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b030">30</xref>
+###xml 352 357 <span type="species:ncbi:10090">mouse</span>
+###xml 1208 1211 <span type="species:ncbi:10116">rat</span>
+###xml 1421 1424 <span type="species:ncbi:10116">rat</span>
+Our analysis showed that Trp, Phe, Tyr, Met, and Pro are favored at P-3 (Figure 3B), which is in good agreement with the study of Villanueva's et al. that the most favorable residues are Trp, Tyr, Phe, and Met (ordered based on the binding free energies) [22]. This observation is consistent with findings that an aromatic residue is favored at P-3 of mouse protein 3BP1, a known binder of the Abl SH3 domain [12, 23, 24]. The energy component analysis (Table S4) suggests that the strong preference of these four residues at this position is mainly due to the favorable non-polar contribution (DeltaEvdw + DeltaGSA) upon peptide binding: DeltaEvdw + DeltaGSA for Trp, Tyr, Met, and Phe are -55.9, -55.4, -54.4, and -53.8 kcal/mol, respectively, which are stronger than the other 16 residues at this position. Interestingly, positive charged residues, Arg and Lys, are not favored at this position, which is in contrast to most SH3 domain-binding peptides. To investigate the reason, we have compared the electrostatic surfaces of four SH3 domains, Abl tyrosine kinase SH3 domain (PDB entry 1bbz) [25], c-Crk N-terminal SH3 domain (PDB entry 1cka) [26], Grb2 N-terminal SH3 domain (PDB entry 1gbq) [27], and rat amphiphysin-2 SH3 domain (PDB entry 1bb9) [28] (Figure 4). Electrostatic potentials were calculated by solving the Poisson-Boltzmann equation using the Delphi program [29] in Insight II [30]. We find that the rat amphiphysin-2 SH3 domain has the largest areas of negative electrostatic potentials, which is mainly due to the acidic residues in Arg-Thr and extended n-Src loops of the domain. The large patch of negative electrostatic potential explains why the amphiphysin SH3 domain specifically recognizes the PXRPXR motif with two positively charged Arg residues. The c-Crk N-terminal and the Grb2 N-terminal SH3 domain have distinct but relatively small negative potential near the Arg-Thr and n-Src loop, which may explain why these two SH3 domains bind to peptides only possessing a single positively charged residue. Compared with the other three SH3 domains, the Abl SH3 domain does not possess remarkable and continuous distribution of the negative electrostatic potentials and therefore positively charged residues are not strongly preferred.
+###end p 18
+###begin p 19
+###xml 42 43 42 43 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 49 50 49 50 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 73 74 73 74 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 157 165 157 165 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st007">Table S7</xref>
+###xml 357 359 357 359 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b031">31</xref>
+###xml 361 363 361 363 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b032">32</xref>
+###xml 459 467 459 467 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020001-g003">Figure 3</xref>
+###xml 514 515 510 511 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 515 518 511 514 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">vdw</sub>
+###xml 526 527 518 519 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 527 529 519 521 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SA</sub>
+###xml 624 632 616 624 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st005">Table S5</xref>
+###xml 679 681 671 673 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b031">31</xref>
+###xml 870 871 862 863 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 900 908 892 900 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st005">Table S5</xref>
+###xml 1046 1047 1034 1035 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1047 1050 1035 1038 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ele</sub>
+###xml 1115 1116 1099 1100 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1116 1118 1100 1102 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PB</sub>
+###xml 1196 1197 1176 1177 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1197 1200 1177 1180 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ele</sub>
+###xml 1208 1209 1184 1185 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1209 1211 1185 1187 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PB</sub>
+###xml 1498 1500 1474 1476 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b032">32</xref>
+Proline is highly preferred at positions P0 and P3. We find that Pro at P0 has favorable interactions with Phe9 and Tyr52 (-1.0 kcal/mol and -1.0 kcal/mol) (Table S7), as well as favorable van der Waals interaction with Pro49 (-0.8 kcal/mol). Experimental and theoretical studies have focused on understanding how SH3 domains recognize the core motif PXXP [31, 32]. Proline is the most favorable residue at this position based on our free energy calculation (Figure 3C). When only the non-polar contribution (DeltaEvdw + DeltaGSA) is considered, the peptide with Pro has the strongest interaction with SH3 (-54.8 kcal/mol) (Table S5), which agrees with the study of Wang et al. [31]. In addition to the non-polar contribution, we found the less unfavorable desolvation-free energy is also an important factor for the preference of proline. For example, the residues at P0 in peptides 16, 19, and 20 (Table S5) all have relatively small side chains (Thr, Val, and Pro, respectively) and have similar protein-ligand electrostatic interactions DeltaEele. When the polar contributions of desolvation-free energies DeltaGPB were considered, the peptide 20 has the least unfavorable contribution (DeltaEele + DeltaGPB = + 20.5 kcal/mol). We believe that upon peptide binding the desolvation cost for the nitrogen-substituted atom in Pro may be less than that of the non-substituted nitrogen atom in the other amino acids, because the non-substituted nitrogen atom can be easily polarized by the solvent [32].
+###end p 19
+###begin p 20
+###xml 38 39 38 39 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 126 134 126 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020001-g003">Figure 3</xref>
+###xml 561 562 561 562 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 579 581 579 581 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b010">10</xref>
+###xml 651 653 651 653 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b017">17</xref>
+###xml 664 665 664 665 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+Proline is also strongly selected at P3 in almost all SH3 domain-binding peptides. From the calculated binding free energies (Figure 3D), it is interesting to find that, although Pro is preferred at this position by the Abl SH3 domain, the preference is not very strong. Proline at this position can be mutated to several other residues including Trp, Phe, Met, His, Leu, Gln, and Tyr, and the mutated peptides still have relatively strong binding free energies. Our calculation seems to contrast with what has been suggested about the critical role of Pro at P3 in SH3 ligands [10]. However, in the mutation experiments reported by Pisabarro et al. [17], Pro at P3 in peptide APTYPPPLPP was mutated to His, Leu, and Tyr, and the binding affinities of the mutated peptides were only slightly decreased from -7.1 kcal/mol to -6.2, -6.2, and -6.2 kcal/mol, respectively. These three favorable residues reported by Pisabarro et al. were also relatively favored in our predictions.
+###end p 20
+###begin title 21
+Identifying Physiological Interacting Partners of the Abl SH3 Domain
+###end title 21
+###begin p 22
+###xml 399 406 399 406 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t002">Table 2</xref>
+###xml 585 593 585 593 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020001-g005">Figure 5</xref>
+###xml 789 791 789 791 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;6</sub>
+###xml 896 898 896 898 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 955 957 955 957 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;6</sub>
+###xml 963 965 963 965 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 1146 1148 1146 1148 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b013">13</xref>
+Based on the comparison between the experimental and calculated results, we have shown that the VM method can determine the binding motif of the Abl SH3 domain. The difference between the binding free energies of the mutated peptide at each position and the template peptide APSYSPPPPP, called SPMFEP, can be used as a position specific scoring matrix to predict the binding affinities of peptides (Table 2). To evaluate the performance of SPMFEP, the 15 binders and 20 non-binders were first scored using SPMFEP. Two obvious distributions for binders and non-binders can be observed (Figure 5), indicating that binders and non-binders can be successfully distinguished by SPMFEP. The binding affinity of peptide A4 was under-estimated. From our analysis (see above), we know that Phe at P-6 in the peptide A4 is favorable in the hydrophobic binding pocket that is originally occupied by Pro at P-5 in the template peptide. Consequently, the residues at P-6 and P-5 may interact with each other. In SPMFEP, the inter-dependence between positions is not considered. In fact, all methods using a position specific scoring matrix, such as Scansite [13], have the same limitations. Overall, SPMFEP performs well on the selected 35 peptides.
+###end p 22
+###begin p 23
+###xml 123 124 123 124 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sup>
+###xml 426 434 426 434 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st009">Table S9</xref>
+###xml 511 518 511 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t003">Table 3</xref>
+###xml 601 603 601 603 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b033">33</xref>
+###xml 605 607 605 607 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b034">34</xref>
+###xml 807 809 807 809 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b035">35</xref>
+###xml 1058 1060 1058 1060 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b013">13</xref>
+###xml 1231 1233 1231 1233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b036">36</xref>
+###xml 1305 1307 1305 1307 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b036">36</xref>
+###xml 1319 1321 1319 1321 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b037">37</xref>
+###xml 397 402 <span type="species:ncbi:9606">human</span>
+###xml 495 500 <span type="species:ncbi:9606">human</span>
+###xml 701 706 <span type="species:ncbi:10090">mouse</span>
+###xml 1015 1020 <span type="species:ncbi:9606">human</span>
+###xml 1179 1184 <span type="species:ncbi:10090">mouse</span>
+We next scanned the SWISS-PROT using SPMFEP to predict interacting partners of the Abl SH3 domain. There are about 6.2 x 107 ten-residue-long peptides in the current SWISS-PROT database (May 2005), in which about 218,540 ten-residue-long peptides have the PXXP motif. Only about 2,600 peptides have scores smaller than two, which are in the top 0.005% (the top 600 peptide sequences in 353 unique human proteins are listed in Table S9). We first carefully examined the top ten candidates in the human proteome (Table 3), among which WASF1 and EVL are known interacting partners of the Abl SH3 domain [33, 34]. WASF4 is a homology of WASF1 and is in the same protein family. SEM6A is a homology of the mouse protein SEM6D, a known Abl SH3 domain-binding protein, and is therefore likely to be a true binder [35]. In total, we have identified two known binders and two candidates highly supported by experimental evidence, among the top ten peptides, which is a surprisingly good result. As a comparison, the top ten human peptides in the Scansite search are [13] 3BP2, RX, RBMG, TACT, PRL3, SCA3, AT19, AD08, DYN2, and SEP4, among which only 3BP2, the homology of a known binder (mouse protein 3BP2), is likely to be a true binder [36] but no binding information is found for all other candidates in BIND [36] and MINT [37] databases to interact with Abl protein or the Abl SH3 domain. If only considering the top ten candidates, the SPMFEP method based on VM performs better than Scansite on identifying the interacting partners of the Abl SH3 domain.
+###end p 23
+###begin p 24
+###xml 9 11 9 11 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b037">37</xref>
+###xml 23 25 23 25 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b036">36</xref>
+###xml 267 269 267 269 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b013">13</xref>
+###xml 283 285 283 285 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b014">14</xref>
+###xml 319 326 319 326 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t004">Table 4</xref>
+###xml 149 154 <span type="species:ncbi:10090">mouse</span>
+###xml 174 179 <span type="species:ncbi:9606">human</span>
+###xml 361 366 <span type="species:ncbi:9606">human</span>
+In MINT [37] and BIND [36], 44 non-redundant proteins have been identified to directly interact with the protein Abl, and 13 of them, including five mouse proteins and eight human proteins, bind to the Abl SH3 domain. We compared the performance of SPMFEP, Scansite [13], and iSPOT [14], to identify these 13 proteins (Table 4). The top 600 candidates found in human proteins and the top 2,000 candidates found in all proteins were saved for further analyses.
+###end p 24
+###begin p 25
+###xml 124 131 124 131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t004">Table 4</xref>
+###xml 136 144 136 144 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st008">Table S8</xref>
+###xml 431 439 431 439 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st009">Table S9</xref>
+###xml 71 76 <span type="species:ncbi:9606">human</span>
+###xml 108 113 <span type="species:ncbi:10090">mouse</span>
+###xml 275 280 <span type="species:ncbi:10090">mouse</span>
+###xml 310 315 <span type="species:ncbi:9606">human</span>
+SPMFEP can successfully identify ten known binders: seven of the eight human proteins and three of the five mouse proteins (Table 4 and Table S8). 3BP1_mouse and 3BP2_mouse are not ranked highly, considering all proteins (1,393 and 1,895) but they are in the top 500 if only mouse proteins are considered. The human homologies of 3BP1_mouse and 3BP2_mouse are in the top 600 candidates (249 for 3BP1_human and 502 for 3BP2_human) (Table S9) and it is reasonable to believe that they are true binders of the Abl SH3 domain. Overall, we have successfully identified most of the known binders of the Abl SH3 domain.
+###end p 25
+###begin p 26
+###xml 65 72 65 72 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t004">Table 4</xref>
+###xml 164 166 164 166 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b038">38</xref>
+###xml 481 483 481 483 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b017">17</xref>
+###xml 494 496 494 496 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 509 511 509 511 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;4</sub>
+Scansite can identify eight known binders of the Abl SH3 domain (Table 4). P73_human, not identified by SPMFEP, is ranked 321 in the Scansite result. Agami et al. [38] reported that a P73 mutant P338A could not form stable P73-Abl complexes. If P73 interacts with Abl by ten-residue-long peptide segment, this peptide segment should be AFKQSPPAVP, which is the same as the peptide identified by Scansite. Based on our VM analysis and mutation experiments by Pisabarro and Serrano [17], Phe at P-5 and Lys at P-4 are not favored. Because Scansite considers 15-residue-long peptides rather than ten-residue-long peptides in SPMFEP, it is likely that the five additional residues may contribute favorably to binding. It is not surprising that the longer the peptide, the more specific, but less sensitive, are the predictions.
+###end p 26
+###begin p 27
+###xml 58 65 58 65 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t004">Table 4</xref>
+###xml 201 203 201 203 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b014">14</xref>
+Using iSPOT, we can only correctly identify five binders (Table 4). In iSPOT, the scoring matrix was derived from position-specific contacts based on six SH3-peptide or SH3-protein complex structures [14]. The accuracy of the matrix is limited by the relatively small number of residue-resident contacts found between SH3 domains and their binding peptides to fill the 27 x 10 x 10 x 10 position-specific contact matrix.
+###end p 27
+###begin p 28
+###xml 29 36 29 36 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t004">Table 4</xref>
+###xml 98 100 98 100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b035">35</xref>
+###xml 102 104 102 104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b039">39</xref>
+CABL2_human and SEM6D_mouse (Table 4) cannot be identified by all the three methods. Experiments [35, 39] have shown that their interactions with Abl are mediated by the interaction between the proline-rich region and the Abl SH3 domain. Since the scoring matrix used by all the three methods does not consider dependence between positions, we suspect that synergistic interactions may exist between positions within or beyond the proline-rich regions of the two proteins.
+###end p 28
+###begin title 29
+Discussion
+###end title 29
+###begin p 30
+In this study, we have demonstrated that the MM/PBSA method can accurately calculate the binding free energies between the Abl SH3 domain and its peptide ligands. Examination of each component of the binding free energy shows that, besides the non-bonded interactions and desolvation effect, the change of the conformational energies of the peptides upon binding is also crucial to determine the binding specificity of the domain. These results are encouraging to apply MD simulation and free energy calculation to understand the molecular mechanism of other domain-peptide and protein-protein interactions.
+###end p 30
+###begin p 31
+We have also shown that the VM method can precisely determine the sequence motif recognized by the Abl SH3 domain. The experimental scheme of the VM method is totally different from those of the current peptide library experiments in the following ways: 1) produce all possible peptides that are one amino acid different from the template peptide; (2) measure the "binding" affinities of all these peptides; and, (3) generate a scoring matrix based on the binding affinity differences between the mutated and the template peptides to determine the binding motif.
+###end p 31
+###begin p 32
+###xml 542 543 542 543 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sup>
+###xml 546 548 546 548 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">10</sup>
+###xml 666 668 666 668 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">10</sup>
+###xml 671 673 671 673 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sup>
+###xml 773 775 773 775 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;6</sup>
+###xml 778 780 778 780 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sup>
+###xml 878 881 878 881 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;12</sup>
+###xml 884 886 884 886 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;9</sup>
+There are advantages of this scheme. First, the preference of an amino acid is quantitatively measured, based on the binding affinity of the peptide, which at least partially overcomes the sampling difficulty in the current peptide library experiment. Ideally, to determine the binding motif of a domain, one should examine the binding between the domain and all possible peptides of a given length, and align all binding peptides to calculate the frequency of each amino acid occurring at each position. In reality, there are usually only 107-1010 peptides in the library, due to the limit of time and cost. If the length of the binding peptide is ten, there are 1010-1013 possible peptides and the coverage of the peptide sequence space by the peptide library is about 10-6-10-3. If 15-residue-long peptides are considered as in Scansite, the coverage drops dramatically to 10-12-10-9. By measuring the relative preference of every amino acid based on the peptide-binding affinities, one overcomes this insufficient sampling issue and mimics the ideal procedure given the position-independence assumption. Second, the VM method can evaluate the penalties of unfavorable amino acids even the peptide do not really bind to the protein, which is very hard if not impossible in the experimental approaches. Third, since the scoring matrix is obtained by taking the difference between the template and the mutated peptides that are only one amino acid different from the template peptide, some errors due to insufficient sampling of conformational space and/or inaccurate free energy calculation can be cancelled.
+###end p 32
+###begin p 33
+There are two major hurdles of applying the VM method in a high-throughput manner. First, the MD simulation and free energy calculations are time-consuming. Second, a domain-peptide complex structure is required. Given the fast pace of advancement of computer power and structural genomics/homology modeling, we believe that the VM method will become more and more useful.
+###end p 33
+###begin title 34
+Materials and Methods
+###end title 34
+###begin title 35
+MD simulations.
+###end title 35
+###begin p 36
+###xml 127 129 127 129 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b019">19</xref>
+###xml 156 158 156 158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b040">40</xref>
+###xml 270 277 270 277 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t001">Table 1</xref>
+###xml 279 281 279 281 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b017">17</xref>
+###xml 391 399 391 399 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st001">Table S1</xref>
+###xml 507 509 507 509 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b012">12</xref>
+###xml 643 651 643 651 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020001-st001">Table S1</xref>
+###xml 789 791 789 791 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b025">25</xref>
+###xml 852 856 852 856 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">scap</italic>
+###xml 866 868 866 868 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b041">41</xref>
+###xml 1047 1048 1047 1048 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+</sup>
+###xml 1221 1223 1221 1223 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b042">42</xref>
+###xml 1513 1515 1501 1503 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b043">43</xref>
+###xml 1588 1590 1576 1578 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 1592 1594 1580 1582 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;2</sup>
+###xml 1615 1625 1603 1613 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s3">discussion</xref>
+###xml 341 346 <span type="species:ncbi:9606">human</span>
+MD simulations were performed on the 15 binders and 20 non-binders of the Abl SH3 domain using the AMBER 8 simulation package [19] and AMBER03 force field [40]. The amino acid sequences and the experimentally determined binding affinities of the 15 binders are shown in Table 1 [17]. Ten peptides, B1 to B10, were randomly selected from the human proteome and are considered as non-binders (Table S1). Ten peptides, C1 to C10, do not bind to the Abl SH3 domain but are Class I binders of other SH3 domains [12]: C1 and C2 bind to the Src SH3 domains, C3 and C4 bind to the Yes SH3 domain, and C5 to C10 bind to the Grb2 N-terminal SH3 domain (Table S1). We chose the crystal structure of the peptide APSYSPPPPP complexed with the Abl SH3 domain (Class I binder and the PDB entry is 1bbz) [25] as the template and mutated it to other peptides using the scap program [41]. The complex was solvated in a rectangular box of about 3,000 TIP3P water molecules so that the boundary of the box is at least 9 A away from any solute atom. Counter-ions of Na+ were placed based on the Columbic potential to keep the whole system neutral. Particle Mesh Ewald (PME) was employed to consider the long-range electrostatic interactions [42]. Following 2,000 steps of minimization, a 1.2 ns (30 ps temperature increase from 10 degreesK to 300 degreesK and 1.17 ns equilibration and data collection) MD simulation with a 2.0 fs time step was performed on each complex. The SHAKE procedure was employed to constrain hydrogen atoms [43] during MD and all heavy atoms of SH3 were restrained using a 5 kcal.mol-1.A-2 harmonic force (see discussion in Supporting Information).
+###end p 36
+###begin p 37
+To determine the conformational energy of unbound peptide in solvent, 2.0 ns MD simulation was conducted on each peptide. Each peptide was solvated in a water box of about 1,600 water molecules, which extended 10 A away from any peptide atom. 1,000 steps of minimization were followed by a 2.0 ns MD simulation for equilibration and data collection using the same set-up as described above.
+###end p 37
+###begin title 38
+Free energy calculations using the MM/PBSA method.
+###end title 38
+###begin p 39
+The binding free energy is calculated as:
+###end p 39
+###begin p 40
+###xml 12 14 8 10 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">MM</sub>
+###xml 11 14 7 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E<sub>MM</sub></italic>
+###xml 107 109 99 101 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PB</sub>
+###xml 106 109 98 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G<sub>PB</sub></italic>
+###xml 120 122 108 110 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SA</sub>
+###xml 119 122 107 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G<sub>SA</sub></italic>
+###xml 229 230 217 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 235 236 219 220 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 443 445 427 429 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b016">16</xref>
+where DeltaEMM is the molecular mechanics interaction energy between the SH3 domain and the peptide, DeltaGPB and DeltaGSA are the electrostatic and non-polar contributions to desolvation upon peptide binding, respectively, and -TDeltaS is the conformational entropy change. To consider the conformational flexibility of the peptide, we ran two separate MD simulations on the complex and the free peptide to calculate the binding free energy [16].
+###end p 40
+###begin p 41
+###xml 6 8 2 4 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">MM</sub>
+###xml 5 8 1 4 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E<sub>MM</sub></italic>
+###xml 34 40 30 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sander</italic>
+###xml 61 63 57 59 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b019">19</xref>
+###xml 72 74 64 66 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PB</sub>
+###xml 71 74 63 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G<sub>PB</sub></italic>
+###xml 100 104 92 96 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pbsa</italic>
+###xml 445 447 433 435 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SA</sub>
+###xml 444 447 432 435 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G<sub>SA</sub></italic>
+###xml 485 487 473 475 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b016">16</xref>
+###xml 489 491 477 479 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b044">44</xref>
+DeltaEMM was calculated using the sander program in AMBER 8 [19]. DeltaGPB was calculated using the pbsa program in AMBER 8. The grid size used to solve the Poisson-Boltzmann equation was 0.5 A, and the values of interior dielectric constant and exterior dielectric constant were set to 1 and 80, respectively (the influence of the interior dielectric constant value to the free energy calculation is discussed in Supporting Information). DeltaGSA was estimated from the surface area [16, 44]. The peptide-SH3 interaction energies were calculated from 150 snapshots taken from 300 ps to 1.2 ns MD simulation trajectories of the complex. 160 snapshots taken from 400 ps to 2.0 ns MD simulations on the unbound peptides were used to calculate the conformational energy change for the peptides.
+###end p 41
+###begin p 42
+###xml 102 107 102 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nmode</italic>
+###xml 128 130 128 130 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b019">19</xref>
+###xml 410 412 410 412 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sup>
+###xml 568 569 562 563 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 569 571 563 565 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ij</sub>
+The normal mode analysis was performed to estimate the vibrational component of the entropy using the nmode program in AMBER 8 [19]. In the absence of solvent, the structures (complex, SH3, and peptide) were minimized with no cutoff for non-bonded interactions, by using conjugate gradient and then Newton-Raphson minimizations until the root mean square of the elements of gradient vector was less than 5 x 10-5 kcal/mol. Then, normal mode calculations were carried out with no cutoff for non-bonded interactions. A distance-dependent dielectric constant (epsilon = 4Rij) was used to mimic solvent screening. Frequencies of the vibrational modes were computed at 300K for these minimized structures and using a harmonic approximation of the energies. Due to the high computational demand, only 25 snapshots taken from MD were used to estimate -TDeltaS.
+###end p 42
+###begin title 43
+The VM method.
+###end title 43
+###begin p 44
+###xml 277 281 277 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">scap</italic>
+###xml 291 293 291 293 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020001-b041">41</xref>
+To investigate the preference of residues at each position, systematic single point mutation was performed on the peptide. The peptide APSYSPPPPP in the crystal structure 1bbz was used as the template. Each residue of the peptide was mutated to the other 19 residues using the scap program [41]. Minimization, MD simulations, and MM/PBSA calculations were performed on all 190 mutated complexes, as well as on the free peptides using the same set-up described above. Assuming mutating a single residue of the peptide did not significantly change the peptide conformation, we did not include the conformational entropy in the comparison of 20 residues at each position.
+###end p 44
+###begin title 45
+Single point mutation free energy profile and database scan.
+###end title 45
+###begin p 46
+###xml 159 166 159 166 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020001-t002">Table 2</xref>
+###xml 281 284 281 284 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S,i</sub>
+###xml 280 284 280 284 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M<sub>S,i</sub></italic>
+###xml 316 317 316 317 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 322 324 322 324 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">th</sup>
+###xml 321 324 321 324 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i<sup>th</sup></italic>
+###xml 353 354 353 354 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 352 354 352 354 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S<sub>i</sub></italic>
+###xml 381 383 381 383 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">th</sup>
+###xml 380 383 380 383 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i<sup>th</sup></italic>
+The SPMFEP is a 10 x 20 matrix, which represents the difference between the binding free energies of the mutated peptides and the template peptide APSYSPPPPP (Table 2). SPMFEP can be used as a position specific scoring matrix. The score of each peptide is calculated as:  , where MS,i is the score of the amino acid S at ith position in the SPMFEP and Si is the amino acid at the ith position of the peptide. All ten-residue-long peptides in the SWISS-PROT database (release 46.4) were scored using the SPMFEP. The Perl script used for the database scan is available upon request.
+###end p 46
+###begin title 47
+Supporting Information
+###end title 47
+###begin title 48
+The Correlations between the Experimental and Calculated Relative Binding Free Energies Using an Interior Dielectric Constant of 2
+###end title 48
+###begin p 49
+(249 KB TIF)
+###end p 49
+###begin p 50
+Click here for additional data file.
+###end p 50
+###begin title 51
+The Superposition of 23 Snapshots Extracted from the MD Trajectory from 0.1 ns to 1.2 ns
+###end title 51
+###begin p 52
+###xml 92 93 92 93 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 96 98 96 98 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sub>
+###xml 101 103 101 103 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;4</sub>
+###xml 106 109 106 109 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5,</sub>
+###xml 115 117 115 117 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;6</sub>
+The structure of SH3 shown here was extracted from the snapshot at 0.1 ns. The residues at P3, P-3, P-4, P-5, and P-6 of the peptide are colored in red and other residues are colored according to residue type defined in Insight II.
+###end p 52
+###begin p 53
+(2.9 MB TIF)
+###end p 53
+###begin p 54
+Click here for additional data file.
+###end p 54
+###begin title 55
+The Fluctuations of the Free Energy Components
+###end title 55
+###begin p 56
+PB represents the polar contribution to the solvation free energy (DeltaGPB). Electrostatic means the electrostatic interaction between the peptide and the SH3 domain (DeltaEele), and van de Waals means the van de Waals interactions between the peptide and the SH3 domain (DeltaEvdw).
+###end p 56
+###begin p 57
+(358 KB TIF)
+###end p 57
+###begin p 58
+Click here for additional data file.
+###end p 58
+###begin title 59
+The Interactions between Peptide FGTYPPPLPP and the Abl SH3 Domain
+###end title 59
+###begin p 60
+Two residues, Trp36 and Trp47, are shown in stick, and the peptide is shown in ball-and-stick.
+###end p 60
+###begin p 61
+(942 KB TIF)
+###end p 61
+###begin p 62
+Click here for additional data file.
+###end p 62
+###begin title 63
+The MM/PBSA Calculations Protocols and the Conformational Changes of Ligands in Peptide Binding
+###end title 63
+###begin p 64
+(42 KB DOC)
+###end p 64
+###begin p 65
+Click here for additional data file.
+###end p 65
+###begin title 66
+The Energetic Components and Binding Affinities for 20 Non-Binders (kcal/mol)
+###end title 66
+###begin p 67
+(66 KB DOC)
+###end p 67
+###begin p 68
+Click here for additional data file.
+###end p 68
+###begin title 69
+The Energetic Components and Binding Affinities for the 15 Peptide Ligands of the Abl SH3 Domain Using Interior Dielectric Constant of 2 (kcal/mol)
+###end title 69
+###begin p 70
+(56 KB DOC)
+###end p 70
+###begin p 71
+Click here for additional data file.
+###end p 71
+###begin title 72
+###xml 63 65 63 65 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+The Binding Free Energies for 20 Peptides Mutated at Position P-5 (kcal/mol)
+###end title 72
+###begin p 73
+(63 KB DOC)
+###end p 73
+###begin p 74
+Click here for additional data file.
+###end p 74
+###begin title 75
+###xml 63 65 63 65 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sub>
+The Binding Free Energies for 20 Peptides Mutated at Position P-3 (kcal/mol)
+###end title 75
+###begin p 76
+(62 KB DOC)
+###end p 76
+###begin p 77
+Click here for additional data file.
+###end p 77
+###begin title 78
+###xml 63 64 63 64 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+The Binding Free Energies for 20 Peptides Mutated at Position P0 (kcal/mol)
+###end title 78
+###begin p 79
+(61 KB DOC)
+###end p 79
+###begin p 80
+Click here for additional data file.
+###end p 80
+###begin title 81
+###xml 63 64 63 64 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+The Binding Free Energies for 20 Peptides Mutated at Position P3 (kcal/mol)
+###end title 81
+###begin p 82
+(65 KB DOC)
+###end p 82
+###begin p 83
+Click here for additional data file.
+###end p 83
+###begin title 84
+The Contribution of Each Residue in Peptide APSYSPPPPP to the SH3 Binding (kcal/mol)
+###end title 84
+###begin p 85
+(57 KB DOC)
+###end p 85
+###begin p 86
+Click here for additional data file.
+###end p 86
+###begin title 87
+The High-Rank Peptides Selected by PMFEP, Scansite, and iSPOT in 13 Abl SH3-Binding Proteins
+###end title 87
+###begin p 88
+(54 KB DOC)
+###end p 88
+###begin p 89
+Click here for additional data file.
+###end p 89
+###begin title 90
+###xml 31 36 <span type="species:ncbi:9606">Human</span>
+The Top 600 Sequences Found in Human Proteins from Database Search
+###end title 90
+###begin p 91
+(643 KB DOC)
+###end p 91
+###begin p 92
+Click here for additional data file.
+###end p 92
+###begin title 93
+Accession Numbers
+###end title 93
+###begin p 94
+The Swiss-Prot and TrEMBL () accession numbers for the genes and gene products discussed in this paper are: 1bb9 (1bb9), 1bbz (CAB04591), 1cka (CAA18266), 1gbq (1gbqa), 3BP1_human (Q9Y3L3), 3BP1_mouse (P55194), 3BP2 (P78314), 3BP2_mouse (Q06649), AD08 (P78325), AT19 (Q8TE59), CABL2_human (NP_665850), DYN2 (P50570), EVL (Q9UI08), P73_human (O15350), PRL3 (P02814), RBMG (Q9UPN6), RX (Q9Y2V3), SCA3 (O14828), SEM6A (Q9H2E6), SEM6D (Q76KF3), SEM6D_mouse (NP_954711), SEP4 (O43236), TACT (P40200), WASF1 (Q92558), and WASF4 (Q8IV90).
+###end p 94
+###begin p 95
+The MD simulations were performed on the Linux cluster in the Center for Theoretical Biological Physics (CTBP) at UCSD. This work has been supported by the National Science Foundation PFC-sponsored Center for Theoretical Biological Physics (grants PHY-0216576 and PHY-0225630). TH is supported by a CTBP postdoctoral scholarship. BL is supported by a National Institutes of Health grant to the McCammon group (GM31749). WAM is supported by a NIH training grant (5-T32DK07233). We thank Prof. J. Andrew McCammon for providing access to computer software such as Insight II.
+###end p 95
+###begin title 96
+Abbreviations
+###end title 96
+###begin p 97
+molecular dynamics
+###end p 97
+###begin p 98
+Molecular Mechanics/Poisson-Boltzmann Solvent Area
+###end p 98
+###begin p 99
+standard deviation
+###end p 99
+###begin p 100
+Src Homology 2 domain
+###end p 100
+###begin p 101
+Src Homology 3 domain
+###end p 101
+###begin p 102
+single position mutation free energy profile
+###end p 102
+###begin p 103
+virtual mutagenesis
+###end p 103
+###begin title 104
+References
+###end title 104
+###begin article-title 105
+A structural perspective on protein-protein interactions
+###end article-title 105
+###begin article-title 106
+Structural determinants of peptide-binding orientation and of sequence specificity in SH3 domains
+###end article-title 106
+###begin article-title 107
+Two binding orientations for peptides to the src SH3 domain: Development of a general model for SH3-ligand interactions
+###end article-title 107
+###begin article-title 108
+Structure of the WW domain of a kinase-associated protein complexed with a proline-rich peptide
+###end article-title 108
+###begin article-title 109
+Modular peptide recognition domains in eukaryotic signaling
+###end article-title 109
+###begin article-title 110
+Profilin binds proline-rich ligands in two distinct amide backbone orientations
+###end article-title 110
+###begin article-title 111
+Recognition and regulation of primary-sequence motifs by signaling modular domains
+###end article-title 111
+###begin article-title 112
+SH3 domains and drug design: Ligands, structure, and biological function
+###end article-title 112
+###begin article-title 113
+Can we infer peptide recognition specificity mediated by SH3 domains?
+###end article-title 113
+###begin article-title 114
+The structure and function of proline recognition domains
+###end article-title 114
+###begin article-title 115
+Phage display selection of ligand residues important for Src homology 3 domain-binding specificity
+###end article-title 115
+###begin article-title 116
+Distinct ligand preferences of Src homology 3 domain from Src, Yes, Abl, Cortactin, p53bp2, Plc-g, Crk, and Grb2
+###end article-title 116
+###begin article-title 117
+Scansite 2.0: Proteome-wide prediction of cell signaling interactions using short sequence motifs
+###end article-title 117
+###begin article-title 118
+SH3-SPOT: An algorithm to predict preferred ligands to different members of the SH3 gene family
+###end article-title 118
+###begin article-title 119
+Virtual interaction profiles of proteins
+###end article-title 119
+###begin article-title 120
+Calculating structures and free energies of complex molecules: Combining molecular mechanics and continuum models
+###end article-title 120
+###begin article-title 121
+Rational design of specific high-affinity peptide ligands for the Abl-SH3 domain
+###end article-title 121
+###begin article-title 122
+###xml 51 54 <span type="species:ncbi:12721?0.9873544761140104">HIV</span>
+Free energy calculations on dimer stability of the HIV protease using molecular dynamics and a continuum solvent model
+###end article-title 122
+###begin article-title 123
+On the calculation of binding free energies using continuum methods: Application to MHC class I protein-peptide interactions
+###end article-title 123
+###begin article-title 124
+Calculation of affinities of peptides for proteins
+###end article-title 124
+###begin article-title 125
+Ligand screening by exoproteolysis and mass spectrometry in combination with computer modeling
+###end article-title 125
+###begin article-title 126
+Identification of Src, Fyn, Lyn, PI3K, and Abl SH3 domain ligands by screening a random phage display library
+###end article-title 126
+###begin article-title 127
+Structure-function analysis of SH3 domains: SH3 binding-specificity altered by single amino acid substitutions
+###end article-title 127
+###begin article-title 128
+Crystal structure of the Abl-SH3 domain complexed with a designed high-affinity peptide ligand: Implications for SH3-ligand interactions
+###end article-title 128
+###begin article-title 129
+Structural basis for the specific interaction of lysine-containing proline-rich peptides with the n-terminal SH3 domain of c-Crk
+###end article-title 129
+###begin article-title 130
+Solution structure of the Grb2 N-terminal SH3 domain complexed with a ten-residue peptide derived from SOS: Direct refinement against NOEs, J-couplings, and 1H and 13C chemical shifts
+###end article-title 130
+###begin article-title 131
+Crystal structure of the amphiphysin-2 SH3 domain and its role in the prevention of dynamin ring formation
+###end article-title 131
+###begin article-title 132
+Classical electrostatics in biology and chemistry
+###end article-title 132
+###begin article-title 133
+An analysis of the interactions between the Sem-5 SH3 domain and its ligands using molecular dynamics, free energy calculations, and sequence analysis
+###end article-title 133
+###begin article-title 134
+Exploiting the basis of proline recognition by SH3 and WW domains: Design of N-substituted inhibitors
+###end article-title 134
+###begin article-title 135
+Scar/WAVE-1, a Wiskott-Aldrich syndrome protein, assembles an actin-associated multi-kinase scaffold
+###end article-title 135
+###begin article-title 136
+cAMP-dependent protein kinase phosphorylation of EVL, a mena/VASP relative, regulates its interaction with actin and SH3 domains
+###end article-title 136
+###begin article-title 137
+Guidance of myocardial patterning in cardiac development by Sema6D reverse signaling
+###end article-title 137
+###begin article-title 138
+BIND: The Biomolecular Interaction Network Database
+###end article-title 138
+###begin article-title 139
+MINT: A Molecular INTeraction database
+###end article-title 139
+###begin article-title 140
+Interaction of c-Abl and p73 alpha and their collaboration to induce apoptosis
+###end article-title 140
+###begin article-title 141
+ik3-2, a relative to ik3-1/Cables, is associated with cdk3, cdk5, and c-abl
+###end article-title 141
+###begin article-title 142
+A point-charge force field for molecular mechanics simulations of proteins
+###end article-title 142
+###begin article-title 143
+Extending the accuracy limits of prediction of side-chain conformations
+###end article-title 143
+###begin article-title 144
+Particale mesh Ewald and N.log(N) method for Ewald sums in large systems
+###end article-title 144
+###begin article-title 145
+Numerical-integration of cartesian equations of motion of a system with constraints: Molecular-dynamics of n-alkanes
+###end article-title 145
+###begin article-title 146
+Biomolecular simulations: Recent developments in force fields, simulations of enzyme catalysis, protein-ligand, protein-protein, and protein-nucleic acid noncovalent interactions
+###end article-title 146
+###begin article-title 147
+Identification of a protein that binds to the SH3 region of abi and is similar to bcr and gap-rho
+###end article-title 147
+###begin article-title 148
+Identification of a 10-amino acid proline-rich SH3 binding-site
+###end article-title 148
+###begin article-title 149
+Interaction of the N-methyl-D-aspartic acid receptor NR2D subunit with the c-Abl tyrosine kinase
+###end article-title 149
+###begin article-title 150
+c-Abl tyrosine kinase binds and phosphorylates phospholipid scramblase 1
+###end article-title 150
+###begin article-title 151
+The unique N-terminal domain of the cAMP phosphodiesterase PDE4D4 allows for interaction with specific SH3 domains
+###end article-title 151
+###begin article-title 152
+###xml 42 47 <span type="species:ncbi:9606">human</span>
+Isolation of hNap1BP which interacts with human Nap1 (NCKAP1) whose expression is down-regulated in Alzheimer's disease
+###end article-title 152
+###begin article-title 153
+###xml 29 39 <span type="species:ncbi:7227">Drosophila</span>
+Mena, a relative of VASP and Drosophila enabled, is implicated in the control of microfilament dynamics
+###end article-title 153
+###begin article-title 154
+Structure of a regulatory complex involving the Abl SH3 domain, the Crk SH2 domain, and a Crk-derived phosphopeptide
+###end article-title 154
+###begin title 155
+Figures and Tables
+###end title 155
+###begin title 156
+The Correlations between Experimental and Predicted Relative Binding Free Energies of the 15 Binders of the Abl SH3 Domain
+###end title 156
+###begin title 157
+The Distributions of the Predicted Binding Free Energies for Binders and Non-Binders of the Abl SH3 Domain
+###end title 157
+###begin title 158
+The Preference of Residue Based on the Binding Free Energy Difference between the Mutated Peptide and the Template Peptide
+###end title 158
+###begin p 159
+###xml 44 46 44 46 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;5</sub>
+###xml 53 55 53 55 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sub>
+###xml 62 63 62 63 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 74 75 74 75 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+The preference of residue at positions (A) P-5, (B) P-3, (C) P0, and (D) P3 based on the binding free energy difference between the mutated peptide and the template peptide APSYSPPPPP. In (D), the conformational entropy was included in the binding free energies.
+###end p 159
+###begin title 160
+The Electrostatic Potentials of the Peptide-Binding Interfaces for Four SH3 Domains
+###end title 160
+###begin p 161
+(A) 1bbz, (B) 1cka, (C) 1gbq, and (D) 1bb9.
+###end p 161
+###begin p 162
+###xml 626 628 626 628 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sub>
+The scale of gradation was from -5 kT/e to +5 kT/e corresponding to red color to blue color. The electrostatic potentials of proteins were calculated using the Delphi module in Insight II. The salt concentration was set to 0.0 M because electrostatic potentials had small changes in the range of the experimental salt concentrations. The internal and external dielectric constants were set to 1 and 80, respectively. Electrostatic potentials were computed using a grid space of 0.5 A with the focusing technique. The structures of the four SH3 domains were aligned using the Homology module in Insight II. The Tyr residue at P-3 in peptide APSYSPPPPP was shown in stick.
+###end p 162
+###begin title 163
+The Distribution of the Predicted Binding Free Energies Based on SPMFEP for Binders and Non-Binders
+###end title 163
+###begin p 164
+Energetic Components and Binding Affinities for the 15 Peptide Ligands of the Abl SH3 Domain (kcal/mol)
+###end p 164
+###begin p 165
+SPMFEPs of the Abl SH3 Domain
+###end p 165
+###begin p 166
+Top Ten Binding Partner Candidates of the Abl SH3 Domain Identified by SPMFEP
+###end p 166
+###begin p 167
+Comparison of Predictions of SPMFEP, Scansite, and iSPOT on 13 Known Interacting Proteins of the Abl SH3 Domain
+###end p 167
+###begin p 168
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Author contributions.</bold>
+Author contributions. TH, KC, and WW conceived and designed the experiments. TH performed the experiments. TH, KC, WAM, and BL analyzed the data. TH and WW wrote the paper.
+###end p 168
+###begin p 169
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing interests.</bold>
+Competing interests. The authors have declared that no competing interests exist.
+###end p 169
+###begin p 170
+Citation: Hou T, Chen K, McLaughlin WA, Lu B, Wang W (2006) Computational analysis and prediction of the binding motif and protein interacting partners of the Abl SH3 domain. PLoS Comput Biol 2(1): e1.
+###end p 170
+

@@ -1,0 +1,313 @@
+###begin article-title 0
+Computational identification of protein coding potential of conserved sequence tags through cross-species evolutionary analysis
+###end article-title 0
+###begin p 1
+###xml 97 121 97 121 <email xmlns:xlink="http://www.w3.org/1999/xlink">graziano.pesole@unimi.it</email>
+To whom correspondence should be addressed. Tel: +39 02 5031 4915; Fax: +39 02 5031 4912; Email: graziano.pesole@unimi.it
+###end p 1
+###begin p 2
+###xml 277 282 <span type="species:ncbi:9606">human</span>
+###xml 283 288 <span type="species:ncbi:10090">mouse</span>
+###xml 442 447 <span type="species:ncbi:9606">human</span>
+###xml 452 457 <span type="species:ncbi:10090">mouse</span>
+The identification of conserved sequence tags (CSTs) through comparative genome analysis may reveal important regulatory elements involved in shaping the spatio-temporal expression of genetic information. It is well known that the most significant fraction of CSTs observed in human-mouse comparisons correspond to protein coding exons, due to their strong evolutionary constraints. As we still do not know the complete gene inventory of the human and mouse genomes it is of the utmost importance to establish if detected conserved sequences are genes or not. We propose here a simple algorithm that, based on the observation of the specific evolutionary dynamics of coding sequences, efficiently discriminates between coding and non-coding CSTs. The application of this method may help the validation of predicted genes, the prediction of alternative splicing patterns in known and unknown genes and the definition of a dictionary of non-coding regulatory elements.
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin p 4
+A fundamental task in genome analysis is the annotation of the various sequence features that constitute the genetic program of each organism. In this respect the identification of genes and of the regulatory elements controlling level, location and chronology of their expression represents a major challenge for biologists in the genomic era.
+###end p 4
+###begin p 5
+It should be noted that we still have not established, with any degree of confidence, exactly the number of genes encoded by any of the completed (at least at draft level) prokaryotic and eukaryotic genomes. The problem is not trivial even for prokaryotic genomes, where the typical high gene density and the absence of introns makes the task of gene detection and annotation somewhat more tractable. For example, it can be difficult to accurately predict some of the shortest genes that often lack identifiable homologs in other species. The gene-finding problem becomes even more daunting in large eukaryotic genomes, where coding regions are generally scattered in a vast sea of non-coding noise.
+###end p 5
+###begin p 6
+###xml 626 635 626 635 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ab initio</italic>
+###xml 1255 1256 1255 1256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c1">1</xref>
+###xml 1272 1273 1272 1273 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c2">2</xref>
+###xml 1310 1311 1310 1311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c3">3</xref>
+###xml 1326 1327 1326 1327 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c4">4</xref>
+###xml 1384 1385 1384 1385 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c5">5</xref>
+The simplest way to predict a coding region is the observation of a statistically significant similarity to a known protein (for example by BlastX analysis). However, in many cases no homolog can be identified in the protein databanks. Furthermore, given that most of the proteins collected in public databases merely represent the conceptual translation of predicted ORFs, the observation of a protein match does not guarantee the identification of a true gene and the correct identification of its exon/intron structure. For this reason it is attractive to use several approaches, including computational methods performing ab initio gene predictions, concurrently. These methods function by integrating the detection of specific signals (e.g. splice sites, start codon context, etc.) with the observation of sequence statistical features peculiar to protein coding regions (e.g. long ORFs, asymmetric composition of the three codon positions, presence of upstream CpG islands, etc.). Gene finding tools integrating both content and signal sensors perform particularly well when adopting hidden Markov models (HMMs) applying probabilistic models to interconnect the sequence and boundary signals considered. Among the most popular programs are Glimmer (1) and GeneMark (2) for bacterial genomes and Genscan (3) and HMMgene (4) for eukaryotic genes, with prediction accuracies >90% (5). However, auxiliary experimental information, such as EST or cDNA matches, are needed to confirm a gene prediction.
+###end p 6
+###begin p 7
+###xml 255 256 255 256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c6">6</xref>
+###xml 257 258 257 258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c7">7</xref>
+###xml 548 549 548 549 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c8">8</xref>
+###xml 112 117 <span type="species:ncbi:9606">human</span>
+###xml 122 127 <span type="species:ncbi:10090">mouse</span>
+###xml 520 525 <span type="species:ncbi:9606">human</span>
+###xml 530 535 <span type="species:ncbi:10090">mouse</span>
+The availability of both genome and high throughput transcript collections for several model organisms, such as human and mouse, opens new possibilities for the identification of protein coding genes based on comparative analysis of homologous sequences (6,7). Several methods have been proposed that use a strategy taking into account similarity at the nucleotide and amino acid levels as well as conservation of splice sites, exon length and codon usage. Indeed, a comparison of the mRNA sequences of 1880 orthologous human and mouse gene pairs (8) showed approximately85% identity for coding exons, in contrast to an average 35% identity for introns (close to the expected level of identity for random sequences).
+###end p 7
+###begin p 8
+###xml 95 96 95 96 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c9">9</xref>
+As it is known that sequences regulating gene expression tend to be conserved between species (9), the problem of discriminating between potentially coding and non-coding conserved sequence tags (CSTs) arises. Only these latter may represent potential regulatory elements whose activity deserves further investigation.
+###end p 8
+###begin p 9
+###xml 980 982 980 982 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c10">10</xref>
+###xml 983 985 983 985 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c11">11</xref>
+###xml 1000 1002 1000 1002 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c12">12</xref>
+Here we present a new heuristic method based on pairwise genome comparison which has been implemented in software called CSTfinder. Following the identification of high scoring segment pairs (HSPs) through a Blast-like sequence comparison, CSTfinder assesses the potential coding capacity of CSTs delimited by each HSP. The measure of coding capacity, expressed by a coding potential score (CPS), is related to the observation of a constrained evolutionary process specific to coding regions (and not observable in non-coding regions) that can be observed through cross-species comparisons. Firstly, substitutions in homologous coding regions tend to be strongly biased toward synonymous changes. Secondly, non-synonymous substitutions (i.e. base changes involving amino acid substitution) tend to be more conservative than those randomly expected, favoring interconversions between structurally similar amino acids. A similar strategy is adopted by some gene finding algorithms (10,11) and in QRNA (12), a program specifically designed for non-coding RNA gene detection. However, this latter requires aligned sequences as input.
+###end p 9
+###begin p 10
+The method proposed here has been specifically designed to detect CSTs in large-scale genome comparisons, and also to assess their coding capacity using a novel scoring formula. It is extremely fast and accurate and has proven very valuable in the recognition of known protein coding regions in genomic and cDNA nucleotide sequences and in detecting novel potentially coding exons in large unannotated homologous genome regions.
+###end p 10
+###begin title 11
+MATERIALS AND METHODS
+###end title 11
+###begin title 12
+CSTfinder algorithm
+###end title 12
+###begin p 13
+###xml 22 23 22 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+###xml 52 54 52 54 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c13">13</xref>
+###xml 204 205 204 205 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 277 278 277 278 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 278 279 278 279 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 278 279 278 279 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>f</italic></sub>
+###xml 397 398 397 398 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 398 399 398 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 398 399 398 399 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>f</italic></sub>
+###xml 435 436 435 436 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 470 471 470 471 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 493 494 493 494 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 504 505 504 505 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 505 506 505 506 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 505 506 505 506 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>f</italic></sub>
+###xml 509 510 509 510 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 510 511 510 511 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 510 511 510 511 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>f</italic></sub>
+###xml 514 515 514 515 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 515 516 515 516 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 515 516 515 516 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>f</italic></sub>
+###xml 519 520 519 520 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 528 529 528 529 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+Given a CST of length L identified by Blast search (13) for a pair of sequences S1 and S2 the analysis is carried out for all the three possible frames in the forward and reverse strand orientation, i.e. f = +1, +2, +3, -1, -2 and -3, respectively. For each frame the pairs of Nf aligned trinucleotides (i.e. hypothetical codons) are considered that show at least one nucleotide substitution. The Nf triplet pairs considered for frame f can be classified as synonymous (S) or non- synonymous (A) so that Nf = Sf + Af + G, where G is the number of gapped or stop codon-containing triplet pairs. A CPS is then calculated for the CST under investigation as:
+###end p 13
+###begin p 14
+###xml 0 0 0 0 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="gkg483equ1.gif"/>
+
+###end p 14
+###begin p 15
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 7 8 7 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 7 8 7 8 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>f</italic></sub>
+###xml 13 14 13 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 14 15 14 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 14 15 14 15 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>f</italic></sub>
+###xml 126 127 126 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 139 140 139 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 139 140 139 140 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 220 221 220 221 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 463 464 463 464 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+where Sf and Af are the number of triplet pairs where synonymous and replacement changes are observed, respectively, in frame f, and AA_simi is a measure of the structural similarity between compared amino acids for the ith triplet pair expressed in terms of a PAM or Blosum score. The PAM or Blosum matrix is selected by the user (default Blosum80) and assigns a penalty of -9 for gap lengths not a multiple of three and for stop codon-containing triplet pairs. L is the nucleotide length of the relevant HSP. Given the dependence between the CPS and the CST size, the CPS is normalized to a fixed size of 100 codons.
+###end p 15
+###begin p 16
+Alternatively, CSTfinder allows the CPS to be calculated over triplet windows scanning the CST under investigation. This approach can allow the approximate identification of the boundaries, if any, of the protein coding region within the CST.
+###end p 16
+###begin p 17
+###xml 184 186 184 186 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#8211;5</sup>
+Parameters used in the Blast-like sequence similarity search carried out by the CSTfinder software included a word size of 10, a minimum CST length of 30 nt and a maximum E-value of 10-5.
+###end p 17
+###begin title 18
+Data
+###end title 18
+###begin p 19
+###xml 183 188 183 188 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 191 193 191 193 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c14">14</xref>
+###xml 32 37 <span type="species:ncbi:9606">human</span>
+The CDS dataset, including 1880 human and rodent nucleotide sequences coding for proteins (CDS), was obtained from the collection of orthologous mRNA sequences analyzed by Makalowski et al. (14). This set has been divided into five parts according to observed identities in encoded proteins: cds1 (399 CDSs, 97-100%), cds2 (421 CDSs, 92-97%), cds3 (413 CDSs, 73-85%), cds4 (383 CDSs, 73-85%), cds5 (263 CDSs, 40-73%).
+###end p 19
+###begin p 20
+###xml 18 20 18 20 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c15">15</xref>
+###xml 82 87 <span type="species:ncbi:9606">human</span>
+###xml 92 97 <span type="species:ncbi:10090">mouse</span>
+The GENE dataset (15) included 15 orthologous pairs of single gene sequences from human and mouse collected in the IMOG dataset.
+###end p 20
+###begin p 21
+###xml 71 73 71 73 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c16">16</xref>
+###xml 33 38 <span type="species:ncbi:9606">human</span>
+The 5'-UTR mRNA sequences of the human and rodent division from UTRdb (16) were analyzed to reveal wrongly annotated CDSs in the EMBL/GenBank entry.
+###end p 21
+###begin p 22
+###xml 172 174 160 162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c17">17</xref>
+###xml 71 76 <span type="species:ncbi:9606">human</span>
+###xml 81 86 <span type="species:ncbi:10090">mouse</span>
+The GENOME dataset included 199 orthologous paired genome regions from human and mouse, accounting for a total of approximately140 Mb, extracted from the EnsEMBL database (17), including at least one known gene and flanking 5' and 3' genomic regions containing other partial or complete genes classified as 'novel', 'EST' or 'GenScan/Twinscan' predicted genes.
+###end p 22
+###begin p 23
+###xml 883 885 871 873 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c18">18</xref>
+###xml 600 605 <span type="species:ncbi:9606">human</span>
+###xml 628 633 <span type="species:ncbi:10090">mouse</span>
+###xml 704 709 <span type="species:ncbi:9606">human</span>
+###xml 724 729 <span type="species:ncbi:10090">mouse</span>
+###xml 760 765 <span type="species:ncbi:9606">human</span>
+###xml 828 833 <span type="species:ncbi:9606">human</span>
+RANDOM and SYNTENY datasets were also generated to evaluate CSTfinder performance. For the RANDOM dataset a thousand pairs of nucleotide sequences were generated by Monte Carlo simulation using the nucleotide composition of sequences in the CDS dataset. To make simulated sequences resembling natural sequences the simulation generated sequences made of five 'exons' and four 'introns', all 100 nt long, with exon sequences diverging by 60-90% and intron sequences made of a poly(A) in the first and a poly(C) in the second sequence. The SYNTENY dataset included eight conserved syntenic regions for human chromosome 22 and the mouse genome (EnsEMBL release 11.31), accounting for approximately31 Mb for human and 28 Mb for mouse and a total of 2215 annotated human genes. We expect that in these syntenic regions virtually all human coding exons have been discovered and annotated (18).
+###end p 23
+###begin p 24
+CSTfinder software and trial data are available from the authors upon request.
+###end p 24
+###begin title 25
+RESULTS
+###end title 25
+###begin p 26
+###xml 141 143 141 143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c14">14</xref>
+###xml 278 279 278 279 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg483tb1">1</xref>
+###xml 98 103 <span type="species:ncbi:9606">human</span>
+###xml 108 113 <span type="species:ncbi:10090">mouse</span>
+###xml 606 611 <span type="species:ncbi:9606">human</span>
+###xml 612 617 <span type="species:ncbi:10090">mouse</span>
+To test the effectiveness of the algorithm we named CSTfinder, we analyzed a set of 1880 pairs of human and mouse orthologous CDS sequences (14). Results are summarized separately for five groups of orthologous gene pairs showing a decreasing level of protein identity in Table 1. As anticipated, synonymous codons significantly outnumbered non-synonymous codons at all levels of identity. The percentage of synonymous codons was fairly homogeneous among all five classes as well as the AA_sim score (see Materials and Methods), whereas the percentage of non-synonymous codons was higher in more divergent human-mouse pairs.
+###end p 26
+###begin p 27
+###xml 94 95 94 95 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg483tb1">1</xref>
+Virtually all CDSs in the five groups of sequences showed a CPS > 30 (100% positives in Table 1). The average CPS ranged between 270.8 and 3318.7 for the five groups. Only 14 of the total 1880 sequence pairs in the CDS dataset, all in the 40-73% similarity group, did not show CPS > 30. However, in these cases no HSP was detected through the Blast search, thus preventing CPS calculation.
+###end p 27
+###begin p 28
+###xml 159 160 159 160 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg483tb1">1</xref>
+###xml 379 380 379 380 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f1">1</xref>
+The RANDOM dataset (see Materials and Methods) has been used as a negative training set carrying out the analysis on each detected HSP. Results shown in Table 1 show a clear-cut discrimination between genuine coding and non-coding highly conserved regions, with the latter showing non-synonymous changes greatly outnumbering synonymous changes and an average CPS of 13.0. Figure 1 shows the distribution of the CPSs obtained in the analysis of the RANDOM training set. Using a CPS threshold of 30 the rate of false positives can be estimated at 17.8%. However, only less than 5% of simulated gene pairs in the random dataset showed two or more concurrent HSPs with CPS > 30 and in only one case was a CPS > 500 observed.
+###end p 28
+###begin p 29
+###xml 264 265 264 265 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg483tb2">2</xref>
+###xml 143 148 <span type="species:ncbi:9606">human</span>
+###xml 149 154 <span type="species:ncbi:10090">mouse</span>
+To further assess the reliability of the algorithm in detecting coding exons when comparing homologous genomic regions we analyzed 15 pairs of human-mouse orthologous genes contained in the GENE dataset (see Materials and Methods). Results are summarized in Table 2. For all genes at least one exon was detected with CPS > 500, with an overall rate of 66/73 exons and an average CPS of 864.5. The method performed equally well at various degrees of conservation of the corresponding protein products, although more clear-cut signals were obtained from more conserved proteins.
+###end p 29
+###begin p 30
+###xml 117 119 117 119 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c16">16</xref>
+###xml 318 319 318 319 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg483tb3">3</xref>
+###xml 69 74 <span type="species:ncbi:9606">human</span>
+###xml 440 445 <span type="species:ncbi:9606">human</span>
+###xml 530 535 <span type="species:ncbi:9606">human</span>
+The CSTfinder algorithm was also used to compare 5'-UTR sequences of human and rodent mRNAs from the UTRdb database (16) in order to detect potentially coding CSTs (present in the database due to mis-annotation of the coding region or to UTRs that are part of the coding portion in alternatively spliced mRNAs). Table 3 shows the 10 highest CPS matches for both 5'- and 3'-UTR analysis. In all cases the hypothetical peptide encoded by the human sequence of the detected CST is identical or highly similar to an already annotated human protein. These results imply that mis-annotation of CDS regions (or indeed known or undetected alternative splicing patterns) have contributed to the presence of a number of coding regions in UTRdb.
+###end p 30
+###begin p 31
+In order to provide a conservative estimate of the false positive rate in real biological data we analyzed the SYNTENY dataset. 1801 of 1845 CTSs with CPS > 500 (approximately98%) overlapped exons of EnsEMBL annotated genes, as well as 4015 of 5755 CSTs with CPS > 30 (70%). This implies a false positive rate of approximately2% if a CPS threshold of 500 is adopted, but also indicates that CSTs with CPS > 30 merit further investigation. In contrast, only 414 of 1579 CSTs with CPS < 30 (26%) corresponded to exons of EnsEMBL annotated genes.
+###end p 31
+###begin p 32
+###xml 463 464 451 452 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f2">2</xref>
+###xml 1164 1165 1140 1141 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f3">3</xref>
+###xml 1235 1236 1211 1212 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f3">3</xref>
+###xml 1258 1259 1234 1235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f3">3</xref>
+###xml 1279 1280 1255 1256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f3">3</xref>
+###xml 1301 1302 1277 1278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f3">3</xref>
+###xml 1324 1325 1300 1301 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f3">3</xref>
+###xml 1433 1434 1409 1410 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg483tb1">1</xref>
+###xml 62 67 <span type="species:ncbi:9606">human</span>
+###xml 72 77 <span type="species:ncbi:10090">mouse</span>
+Finally, we carried out an extensive analysis on 199 pairs of human and mouse gene loci accounting for a total of approximately140 Mb. A total of 10 899 CSTs were identified. We classified these CSTs on the basis of the detected overlap between CST coordinates and genome feature coordinates annotated in EnsEMBL as 'known gene', 'novel gene', 'EST gene' or 'GenScan predicted gene'. Remaining CSTs were classified as 'no match'. Results are summarized in Figure 2. Interestingly, only 4.1% of CSTs overlapping with exons belonging to 'known genes' showed a CPS < 30, with a remarkable fraction of approximately40% with a CPS > 500 denoting a highly significant coding capacity. High CPSs have also been observed for CSTs falling in 'novel genes', 'EST genes' and 'GenScan predicted genes', thus providing significant confirmation of a large number of unknown genes. We have also investigated those few cases were the CSTs overlapping known genes presented low CPSs (< 30). We noted that in most cases the CSTs covered not only a coding portion of the gene but comprised conserved regions falling in introns or 5'- or 3'-UTRs. Some examples are reported in Figure 3, where a graphic representation of CSTs mapping on known genes (Fig. 3A), novel genes (Fig. 3B), EST genes (Fig. 3C) and GenScan (Fig. 3D) and TwinScan (Fig. 3E) predicted genes is shown. It is evident that CSTfinder confirms most known exons (see also data in Table 1) and, more importantly, indicates novel coding exons including those missing the experimental validation of a matching transcript sequence and only computationally predicted by GenScan or TwinScan. In addition, most CSTs not showing a significantly high CPS fall outside the coding portion of gene exons.
+###end p 32
+###begin p 33
+###xml 491 493 479 481 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c19">19</xref>
+###xml 470 475 <span type="species:ncbi:9606">human</span>
+A large fraction of identified CSTs (approximately50%, 4577 of 10 899), designated as 'no match', do not correspond to sequence stretches with known function. Although some of these may represent as yet unannotated exons it is likely that most of them actually represent non-genic sequences endowed with structural or regulatory activities. A comparable estimate of the abundance of non-genic conserved sequences has been made from an analysis of the syntenic region of human chromosome 21 (19).
+###end p 33
+###begin title 34
+DISCUSSION
+###end title 34
+###begin p 35
+###xml 47 52 <span type="species:ncbi:9606">human</span>
+###xml 54 59 <span type="species:ncbi:10090">mouse</span>
+###xml 61 64 <span type="species:ncbi:10116">rat</span>
+The completion of the draft genome sequence of human, mouse, rat and Fugu, as well as the steady progression of other vertebrate sequencing projects, has opened new avenues in the genomic (or post-genomic) era that will give us the extraordinary opportunity of investigating evolutionary changes that have shaped genome structure and content during evolution. The comparison of two or more genome sequences revealing conservative and diverging patterns may highlight common and species-specific molecular mechanisms that control gene expression.
+###end p 35
+###begin p 36
+###xml 1008 1010 1008 1010 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c20">20</xref>
+###xml 983 988 <span type="species:ncbi:9606">human</span>
+###xml 989 994 <span type="species:ncbi:10090">mouse</span>
+In particular, the comparative sequence analysis of genomes of two or more species gives us the possibility of identifying the entire inventory of conserved genomic elements playing a role in the control of gene expression. It is increasingly clear that to decrypt the genetic information encoded in the genome it is necessary, but not sufficient, to define the structure of all its genes. Indeed, most of the genome space (>95% in mammals) is non-coding and thus potentially involved in the concerted regulation of spatio-temporal expression of genes. The identification of CSTs may be critical in shedding light on this 'dark side' of the genome. However, given that we still do not know the complete gene inventory of almost any of the genomes sequenced to date, it is particularly important to assign the genome CSTs identified in cross-species comparisons to the coding or non-coding portion of the genome. Indeed, most annotated coding exons correspond to conserved regions in human-mouse comparisons (20). We have here proposed a novel heuristic approach that can effectively discriminate between coding and non-coding CSTs. It is based on the simple idea that coding and non-coding portions of the genome are subjected to remarkably different evolutionary dynamics. In fact, specific constraints operate on coding regions where synonymous outnumber non-synonymous changes, and these latter more likely result in conservative amino acid replacements.
+###end p 36
+###begin p 37
+###xml 85 87 85 87 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c12">12</xref>
+###xml 339 340 339 340 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg483tb2">2</xref>
+Although a similar strategy underlies other methods recently proposed, such as QRNA (12), these methods generally require pairwise sequence alignments as input and are computationally unfeasible for large-scale genome comparisons. Furthermore, CSTfinder proved generally more accurate in assessing CST coding capacity than QRNA (see Table 2).
+###end p 37
+###begin p 38
+###xml 272 273 272 273 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg483tb1">1</xref>
+###xml 147 152 <span type="species:ncbi:9606">human</span>
+###xml 157 162 <span type="species:ncbi:10090">mouse</span>
+We have shown that the proposed CPS effectively discriminates between these two different dynamics as >99% of CSTs identified in the comparison of human and mouse coding sequences displayed a CPS above the cut-off value of 30, with an average value much higher (see Table 1). Of the few genes that CSTfinder failed to detect, most did not show statistically significant CSTs and thus completely escaped the analysis.
+###end p 38
+###begin p 39
+###xml 389 390 389 390 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg483tb2">2</xref>
+###xml 572 573 572 573 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c3">3</xref>
+###xml 588 589 588 589 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg483c6">6</xref>
+###xml 199 204 <span type="species:ncbi:9606">human</span>
+###xml 205 210 <span type="species:ncbi:10090">mouse</span>
+The CSTfinder algorithm may provide a significant validation for novel genes not confirmed by transcript information or similarity to known proteins. Interestingly an application to a limited set of human-mouse ortholog gene regions significantly validated several genes, finding CSTs with high coding potential (CPS > 500) in correspondence to almost all the relevant coding exons (Table 2). More importantly, many of the genes present in databases lack reliable transcript or protein similarity information and have merely been computationally predicted by the GenScan (3) or TwinScan (6) software programs. Conversely, as many of the proteins collected in public repositories are hypothetical, being the result of computational translation of predicted ORFs, the validity of those not showing any potentially coding CST should be questioned.
+###end p 39
+###begin p 40
+Additionally, CSTfinder may help the identification of transcripts derived from alternative splicing in those cases where some variant isoforms are not represented in the sequence database. For example a high scoring CST found in the 5'-UTR of Rho guanine nucleotide exchange factor (GEF) 7 variant 1 mRNA (NM_003899) corresponds to a CDS portion in variant 2 mRNA encoded by the same gene (NM_145735).
+###end p 40
+###begin p 41
+If CSTs overlapping coding exons also cover non-coding regions (e.g. 5'-UTRs, 3'-UTRs and splice juctions) they usually show lower CPSs, sometimes below the cut-off threshold. In this case the coding-like evolutionary signature is obscured by the unconstrained evolutionary dynamics of the non-coding part. For some selected CSTs a window-based approach, also implemented in the CSTfinder algorithm, can be used to discriminate regions evolving under different evolutionary dynamics.
+###end p 41
+###begin p 42
+###xml 113 118 <span type="species:ncbi:9606">human</span>
+###xml 119 124 <span type="species:ncbi:10090">mouse</span>
+We have tested the effectiveness of the method at various evolutionary distances by sampling different groups of human-mouse orthologous CDSs. This means that the applicability of the method is not constrained by the evolutionary distance between species compared but rather by the sensitivity of identification of local alignment by a Blast-like similarity search. As species divergence increases, the number of CSTs detected decreases. However, the capacity of CSTfinder to differentiate between coding and non-coding regions within and among CSTs remains essentially constant.
+###end p 42
+###begin p 43
+###xml 187 188 187 188 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f2">2</xref>
+###xml 213 214 213 214 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f3">3</xref>
+###xml 1060 1061 1048 1049 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg483f3">3</xref>
+###xml 762 767 <span type="species:ncbi:9606">human</span>
+The reliability of CST coding potential prediction is obviously dependent on the CPS threshold chosen, even if a large number of CTSs matching coding exons show a very high CPS (see Fig. 2 and green boxes in Fig. 3). The analysis carried out on the RANDOM dataset (see Materials and Methods) clearly shows that a CPS threshold of 500 is highly conservative, as only 1 out of the total of 6564 CSTs identified showed a CPS above this threshold. The analysis carried out on the SYNTENY dataset confirmed a low false positive rate (approximately2%) if a CPS cut-off of 500 is chosen. However, some of these false positives could actually be missed exons. Indeed, 11 of the 44/1845 CSTs with CPS > 500 non-overlapping annotated genes showed significant matches with human ESTs, GenScan predicted exons or SwissProt entries. Our analyses suggest that it is worth considering CSTs showing a CPS > 30 for further analyses as many of these overlap coding exons (70% in the SYNTENY dataset) but at the same time also neighboring non-coding regions (see red box in Fig. 3B).
+###end p 43
+###begin p 44
+The application of CSTfinder, in association with other tools specifically designed for coding and non-coding gene detection, may thus represent a very valuable approach for large-scale detection of non-coding regulatory elements, validation of gene predictions and discovery of novel genes.
+###end p 44
+###begin title 45
+Figures and Tables
+###end title 45
+###begin p 46
+ Distribution of CPSs from the CSTfinder analysis of the RANDOM set.
+###end p 46
+###begin p 47
+ Results obtained from the CSTfinder analysis of the GENOME set showing the percentage of CSTs falling in different gene annotation categories.
+###end p 47
+###begin p 48
+###xml 148 149 148 149 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 164 165 164 165 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+###xml 180 181 180 181 <bold xmlns:xlink="http://www.w3.org/1999/xlink">C</bold>
+###xml 194 195 194 195 <bold xmlns:xlink="http://www.w3.org/1999/xlink">D</bold>
+###xml 200 201 200 201 <bold xmlns:xlink="http://www.w3.org/1999/xlink">E</bold>
+###xml 47 52 <span type="species:ncbi:9606">human</span>
+###xml 53 58 <span type="species:ncbi:10090">mouse</span>
+ Detailed result of CSTfinder analysis on five human-mouse homologous gene loci in the GENOME dataset belonging to different EnsEMBL gene classes. (A) Known gene; (B) novel gene; (C) EST gene; (D and E) GenScan predicted gene. Upper boxes represent identified CSTs (green, CPS > 500; red, 30 > CPS </= 500; black, CPS </= 30) with lower boxes corresponding to known or predicted exons. For each gene the EnsEMBL ID, the chromosome position and the coordinates (NCBI 30 release) are reported. The arrow highlights a CSTfinder predicted coding sequence missed by GenScan but coincident with a TwinScan predicted exon.
+###end p 48
+###begin title 49
+Result of the application of CSTfinder to the CDS dataset (see Materials and Methods)
+###end title 49
+###begin p 50
+###xml 26 27 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 49 50 49 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+The number of synonymous (S) and non-synonymous (A) substitutions, the Blosum80 score (AA_sim) and the average CPS are shown for each group of genes, all values normalized to 100 codons.
+###end p 50
+###begin title 51
+Result of the application of CSTfinder to the GENE database (see Materials and Methods)
+###end title 51
+###begin p 52
+The last column reports the fraction of CSTs matching to exons correctly classified as coding (values in parentheses refer to a QRNA application with the same BLAST parameters used in CSTfinder).
+###end p 52
+###begin title 53
+###xml 54 59 <span type="species:ncbi:9606">human</span>
+###xml 64 69 <span type="species:ncbi:10090">mouse</span>
+Results of CSTfinder application to the comparison of human and mouse 5'- and 3'-UTRs collected in UTRdb (16)
+###end title 53
+###begin p 54
+The 10 highest scoring HSPs are shown for both 5'- and 3'-UTRs with the accession number of the relevant matching protein.
+###end p 54
+###begin title 55
+ACKNOWLEDGEMENTS
+###end title 55
+###begin p 56
+We thank David Horner for helpful comments on the manuscript. This work has been supported by Telethon and MIUR.
+###end p 56
+###begin title 57
+REFERENCES
+###end title 57
+

@@ -1,0 +1,883 @@
+###begin article-title 0
+Predicting genes for orphan metabolic activities using phylogenetic profiles
+###end article-title 0
+###begin p 1
+This is an open access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin p 2
+###xml 171 187 171 187 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 161 166 <span type="species:ncbi:4932">yeast</span>
+###xml 171 187 <span type="species:ncbi:562">Escherichia coli</span>
+A method that combines local structure of a metabolic network with phylogenetic profiles is described and used to assign genes to orphan metabolic activities in yeast and Escherichia coli.
+###end p 2
+###begin p 3
+###xml 326 351 326 351 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 355 371 355 371 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 326 350 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 355 371 <span type="species:ncbi:562">Escherichia coli</span>
+Homology-based methods fail to assign genes to many metabolic activities present in sequenced organisms. To suggest genes for these orphan activities we developed a novel method that efficiently combines local structure of a metabolic network with phylogenetic profiles. We validated our method using known metabolic genes in Saccharomyces cerevisiae and Escherichia coli. We show that our method should be easily transferable to other organisms, and that it is robust to errors in incomplete metabolic networks.
+###end p 3
+###begin title 4
+Background
+###end title 4
+###begin p 5
+###xml 391 392 391 392 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 393 394 393 394 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 670 671 670 671 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 672 673 672 673 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 728 729 728 729 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 783 784 783 784 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 785 786 785 786 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 820 821 820 821 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 1042 1059 1042 1059 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 1060 1062 1060 1062 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 1068 1093 1068 1093 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 1094 1096 1094 1096 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 212 217 <span type="species:ncbi:9606">human</span>
+###xml 1042 1058 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 1068 1092 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+It is hard to overestimate the potential impact of accurate network reconstruction algorithms on systems biology. Accurate models of biological networks will be essential in diverse areas from genetics of common human diseases to synthetic biology. Current computational methods of metabolic network reconstruction can directly benefit from many decades of experimental biochemical studies [1,2]. Available homology-based annotation methods assign metabolic functions to sequences by establishing sequence similarity to known enzymes. State of the art homology approaches use different types of sequence and structural similarity, such as the overall sequence homology [3-5], presence of conserved functional motifs and blocks [6], specific spatial positions of functional residues [7,8], or a combination of the above [9]. Unfortunately, in spite of the overall success, homology-based methods fail to annotate metabolic genes with poor homology to known enzymes. This has resulted in partially reconstructed metabolic networks, such as for Escherichia coli [10] and Saccharomyces cerevisiae [11].
+###end p 5
+###begin p 6
+###xml 115 117 115 117 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 508 513 508 513 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 516 518 516 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 676 678 676 678 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+The inability to annotate all enzymes using homology-based methods leaves members of metabolic pathways 'missing' [12]. That is, although biochemical evidence may indicate that a certain group of reactions takes place in an organism, we do not know which genes encode the enzymes responsible for the catalyses. It is perhaps natural to call these 'missing' genes orphan metabolic activities, to emphasize the fact that certain metabolic activities are not assigned to any sequences. As suggested by Osterman et al. [12], we can classify orphan metabolic activities as 'local' or 'global'. Global orphan activities do not have a single representative sequence in any organism [13]. In contrast, local orphan activities represent reactions for which we do not have a representative sequence in an organism of interest, although one or several sequences catalyzing the reaction may be known in other organisms. The problem of assigning sequences to orphan activities is conceptually conjugate to the problem of assigning activities (functions) to hypothetical sequences. Although progress in solving the former problem will necessarily improve solution of the latter, optimal methods and algorithms for these two problems may be different.
+###end p 6
+###begin p 7
+###xml 106 108 106 108 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 109 111 109 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 246 248 246 248 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 249 251 249 251 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 337 339 337 339 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 340 342 340 342 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 365 367 365 367 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 368 370 368 370 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 461 463 461 463 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 464 466 464 466 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 665 667 665 667 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 668 670 668 670 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+Several non-homology methods have been developed in order to establish functional links between proteins [14,15]. These so-called context-based approaches include gene phylogenetic profiles (measuring co-occurrence of gene pairs across genomes) [16,17], the protein fusion (Rosetta Stone) method (detecting fusion events between genes) [18-20], gene co-expression [21,22], and conserved gene neighborhoods (measuring chromosomal co-localization between genes) [23-25]. It was demonstrated that the functional links generated by the context-based methods recover members of protein complexes, functional modules, molecular pathways and gene-phenotype relationships [26-28].
+###end p 7
+###begin p 8
+###xml 21 26 21 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 29 31 29 31 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 162 167 162 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 170 172 170 172 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+Previously, Osterman et al. [12] illustrated how context-based methods can be successfully used to fill the remaining gaps in the metabolic networks, while Green et al. [29] proposed a Bayesian method for identifying missing enzymes using primarily sequence homology and chromosomal proximity information. In contrast to Green, the approach reported here uses exclusively non-homology information. Consequently, our method should be particularly useful when the gene encoding the enzyme catalyzing a particular orphan function has little or no sequence similarity to any known enzymes.
+###end p 8
+###begin p 9
+###xml 148 162 148 162 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 163 165 163 165 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 148 161 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 328 333 <span type="species:ncbi:4932">yeast</span>
+Recently, we used mRNA co-expression data and local structure of a metabolic network to fill metabolic gaps in a partially reconstructed network of S. cerevisiae [11]. Using exclusively co-expression information, for 20% of all metabolic reactions it was possible to rank a correct gene within the top 50 out of 5,594 candidate yeast genes.
+###end p 9
+###begin p 10
+###xml 632 634 632 634 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 635 637 635 637 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 638 640 638 640 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+In this study, we demonstrate that it is possible to significantly improve prediction of sequences responsible for orphan metabolic activities by using gene phylogenetic profiles. Importantly, in contrast to mRNA co-expression data, which are usually available only for several model organisms, phylogenetic profiles can be readily calculated for any sequenced organism. The accuracy of phylogenetic profiles will increase as genomic pipelines reveal more protein sequences. In comparison to previous studies that demonstrated that it is possible to cluster proteins from annotated biochemical pathways using phylogenetic profiles [17,27,30], our goal is significantly more specific in that we want to predict genes responsible for particular orphan activities. By directly taking into account the structure of a partially reconstructed metabolic network (for example, giving more weight to genes closer to a network gap) our method is able to combine the information of a 'known core' of the network with phylogenetic correlations to the remaining gaps. We show that our method is readily applicable to less-studied organisms with partially known metabolic networks.
+###end p 10
+###begin title 11
+Results and discussion
+###end title 11
+###begin title 12
+The main approach
+###end title 12
+###begin p 13
+###xml 38 40 38 40 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 41 43 41 43 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 460 461 460 461 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 474 475 474 475 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+As was demonstrated by us previously [31,32], the closer genes are in a metabolic network the more similar are the genes' evolutionary histories. It is important to know whether this relationship is strong enough to determine the exact network location of a hypothetical gene. The established distance metrics (see Materials and methods) allows us to quantify the relationship between the gene distance in the network and the average gene co-evolution (Figure 1). In Figure 1 we show Pearson's correlations of phylogenetic profiles between a target gene and all other network genes separated from the target by distances one, two, three, and so on. The background correlation (0.11) was estimated by averaging correlation coefficients between all non-metabolic and metabolic genes. The average correlation between metabolic genes decreases monotonically with their separation in the metabolic network, ranging between 0.29 for metabolic distance 1 and 0.13 for metabolic distance 8. This relationship suggests that we can use gene phylogenetic profiles and their location in the metabolic network to predict sequences for orphan activities.
+###end p 13
+###begin p 14
+###xml 115 117 115 117 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+The idea behind our method is similar to that used by us previously in the context of mRNA co-expression networks [31]. We used a heuristic cost function to determine how a test gene 'fits' into a network gap. The 'fit' of a test gene in a network gap is determined by its phylogenetic correlations with network genes close to the gap. The parameters of the cost function were optimized to achieve the best predictive ability by minimizing the log sum of the ranks for all correct metabolic enzymes. Several functional forms of the cost function were tested (see Equations 1 to 3 below).
+###end p 14
+###begin p 15
+###xml 74 76 74 76 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 85 87 85 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 110 112 110 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 164 165 164 165 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 166 167 166 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 169 170 169 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 218 220 218 220 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 224 225 224 225 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 227 227 227 227 <inline-graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="gb-2006-7-2-r17-i1.gif"/>
+###xml 264 267 264 267 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p1 </italic>
+###xml 393 394 393 394 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 394 396 394 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 394 396 394 396 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 456 457 456 457 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 546 547 546 547 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+Equation 1 represents a cost function similar to the one used previously [31], where x is the candidate gene, n is a gene from the network neighborhood of the gap, c(x, n) is the phylogenetic correlation between genes x and n,  is the vector of layer weights, and p1 is the power factor for the phylogenetic correlations. The summation in Equation 1 is, first, over all genes in a given layer Ni around the gap and, second, over all layers up to the layer R. Only three layers around the network gaps were used in all calculations in the paper. |N| is the total number of genes in all three layers.
+###end p 15
+###begin p 16
+###xml 0 0 0 0 <inline-graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="gb-2006-7-2-r17-i2.gif"/>
+
+###end p 16
+###begin p 17
+###xml 535 535 535 535 <inline-graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="gb-2006-7-2-r17-i3.gif"/>
+###xml 537 538 537 538 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 540 541 540 541 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 670 672 670 672 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g </italic>
+###xml 697 698 697 698 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 763 765 763 765 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g </italic>
+###xml 769 770 769 770 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+Equation 2 represents a cost function that takes into account the specificity of connections established by metabolites. The idea behind the connection specificity is the following: if a metabolite participates in establishing few connections (that is, the metabolite participates in a small number of reactions), the corresponding connections are given more weight in the cost function compared to connections established by widely used metabolites. The connection specificity was taken into account by an additional weight parameter  (g, n), determined by an inverse power function of the total number of connections established by the metabolite linking the gap gene g and its neighboring gene n. If more than one metabolite establishes the connection between g and n, the most specific one (the metabolite with the fewest connections) was used.
+###end p 17
+###begin p 18
+###xml 0 0 0 0 <inline-graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="gb-2006-7-2-r17-i4.gif"/>
+
+###end p 18
+###begin p 19
+###xml 169 173 169 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946;</italic>
+###xml 173 174 170 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 173 174 170 171 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+Equation 3 represents an exponential cost function, which is used to increase the sensitivity to differences between phylogenetic correlations. A set of new parameters (betai) was introduced to account for different weighting of the exponent in different layers.
+###end p 19
+###begin p 20
+###xml 0 0 0 0 <inline-graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="gb-2006-7-2-r17-i5.gif"/>
+
+###end p 20
+###begin p 21
+We found that the functions with connection specificity adjustment (Equations 2 and 3) significantly outperform the function without specificity adjustment (Equation 1). However, we found no difference in predictive power between Equation 2 and 3 (Additional data file 4). In the text below, unless otherwise specified, we present results obtained using Equation 2.
+###end p 21
+###begin title 22
+Self-consistent test and parameter optimization
+###end title 22
+###begin p 23
+###xml 142 143 142 143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 305 310 <span type="species:ncbi:4932">yeast</span>
+###xml 751 756 <span type="species:ncbi:4932">yeast</span>
+To optimize the cost function parameters and assess the performance of our method we carried out a self-consistent test illustrated in Figure 2. The test consists of: removing a known gene from its position in the network (leading to a network gap); adding the gene to a collection of 6,093 non-metabolic yeast genes; and ranking all candidate genes in terms of their 'fit' in the network gap according to the cost function. As the correct gene occupying the gap is known, we can accurately measure the performance of the method based on the obtained ranking. The overall performance of the method was quantified by calculating the fraction of correct genes that are ranked as the top, within the top 10 and within the top 50 out of all non-metabolic yeast genes. These performance measures are directly related to the main goal of our method: to suggest candidates for orphan activities to be tested experimentally. Even if our method is not always able to rank the correct gene as the top candidate, it may be useful, for example, to rank it within the top 10 candidates. These top 10 candidates can then be tested experimentally to find out the exact gene responsible for the orphan activity.
+###end p 23
+###begin p 24
+###xml 306 308 306 308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 376 378 376 378 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+The optimal values for the cost function parameters were determined by minimizing the log sum of the ranks of all known metabolic enzymes in their correct network positions (see Materials and methods). Two types of parameter optimization algorithm were used: a deterministic Nelder-Mead simplex algorithm [33] and a stochastic global optimization by simulated annealing (SA) [34]. The best performance was obtained from the SA optimizations and is reported below.
+###end p 24
+###begin p 25
+###xml 217 219 217 219 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3a</xref>
+###xml 496 499 496 499 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p1 </italic>
+###xml 585 588 585 588 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p2 </italic>
+The optimized prediction algorithm identifies 22.8%, 37.3% and 46.2% of the correct genes as the top candidates, within the top 10 candidates, and within the top 50 candidates out of 6,094 genes, respectively (Figure 3a). In comparison, under random ranking, the fraction of correct genes as the top candidate, within the top 10 candidates, and within the top 50 candidates is only 0.016%, 0.16% and 0.8%, respectively. For Equation 2, optimal performance was observed with the correlation power p1 = 1.81 (95% confidence interval (CI): 1.40-2.21) and the connection specificity power p2 = 0.79 (95% CI: 0.68-0.90). As the ratio of the number of the cost function adjustable parameters to observations is around 1:100, our method does not suffer from overfitting. We achieved almost identical prediction accuracies using the training and test sets in ten-fold cross-validation (Additional data file 5).
+###end p 25
+###begin p 26
+###xml 370 372 370 372 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 956 958 956 958 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3b</xref>
+The functional information present in the currently available phylogenetic profiles allows us to significantly improve the performance in comparison to a similar method based on gene co-expression. Using mRNA co-expression, we predicted 4.1%, 12.7% and 23.8% of the correct enzyme-encoding genes to be top ranked, within the top 10, and within the top 50, respectively [31]. The improved performance reflects larger coverage of the available phylogenetic profiles, which can be calculated for many sequences in various genomes; in contrast, mRNA co-expression data are mostly available for model organisms and genes with significant mRNA expression changes. Another important improvement of the current approach is the use of the connection specificity adjustment. The specificity adjusted cost functions (Equations 2 and 3) predict 5% to 18% more correct genes within the top ranks compared to functions without specificity adjustment (Equation 1; Figure 3b).
+###end p 26
+###begin p 27
+###xml 402 405 402 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w2 </italic>
+###xml 442 445 442 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w3 </italic>
+###xml 510 513 510 513 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w2 </italic>
+###xml 517 520 517 520 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w3 </italic>
+It is interesting to investigate the relative contribution of different layers around a network gap to the cost function. As only the relative difference in layer weights impact the algorithm performance, the weight of the first layer was always set to 1. The best performance of the algorithm based on Equation 2 was achieved with the following weights for the second and third layers around the gap: w2 = 0.0085 (95% CI: 0.0051-0.0120) and w3 = 0.0024 (95% CI: 0.0011-0.0037). Smaller values for the weights w2 and w3 indicate that the phylogenetic correlations at the distances 2 and 3 from the gap are not as informative as the correlations of the first layer neighbors. But, as there are 5 and 13 times more genes in the second and third layers, respectively, their contribution to the cost function values is around 5% to 10% for the highly ranked genes and more than 10% for enzymes ranked between 200 and 600. As we show below, the contribution of the second and third layers roughly doubles for predictions on partially known networks.
+###end p 27
+###begin title 28
+Performance based on phylogenetic profiles generated using COG
+###end title 28
+###begin p 29
+###xml 156 158 156 158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 159 161 159 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 223 225 223 225 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 449 454 <span type="species:ncbi:4932">yeast</span>
+As described in Materials and methods, BLAST searches were used in this work to calculate phylogenetic profiles. In contrast, a number of previous studies [27,35] relied on the Cluster of Orthologous Groups (COG) database [36] to obtain phylogenetic profiles. We investigated the performance of our algorithm on COG-based phylogenetic profiles. Using the same algorithm and the COG-based profiles, we predicted 34.1%, 56.2% and 69.0% of the correct yeast metabolic genes to be the top ranked, within the top 10 and within the top 50, respectively. This indicates an improvement of about 50% over the results based on the BLAST searches; however, this result is unlikely to indicate superior performance. First, the current coverage of the COG database is significantly biased towards genes encoding known metabolic enzymes. For example, 72% (443 out of 615) of known metabolic genes have COG profiles while only 19% (1,148 out of 6,093) of non-metabolic genes have COG profiles. This bias leads to a significant overestimation of the 'real-world' performance of the COG-based profiles. Second, the COG database has a very limited set of hypothetical proteins, making it impractical to predict hypothetical genes responsible for orphan activities using COG.
+###end p 29
+###begin title 30
+Performance using hypotheticals as candidate genes
+###end title 30
+###begin p 31
+###xml 736 738 736 738 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3c</xref>
+###xml 137 142 <span type="species:ncbi:4932">yeast</span>
+###xml 233 238 <span type="species:ncbi:4932">yeast</span>
+###xml 297 302 <span type="species:ncbi:4932">yeast</span>
+In practice, it is logical to test only hypothetical genes for orphan metabolic activities in a given organism. To simulate this for the yeast metabolic network, we repeated our self-consistent test procedure using only hypothetical yeast genes as gap candidates. We identified 1,514 hypothetical yeast open reading frames (ORFs) for this analysis. As the number of hypothetical genes is smaller than the total number of genes (usually 30% to 70% smaller), the performance of our method should improve. Indeed, testing only hypothetical genes improved the algorithm performance: 30.4%, 48.0% and 57.1% correct enzymes were ranked as the top 1, within the top 10 and within the top 50 among all candidate sequences, respectively (Figure 3c). We note that the observed 25% improvement in performance is not due to a better discrimination against hypothetical genes. Similar improvement was observed when a candidate set of 1,514 randomly selected genes with known functions was used (Additional data file 6).
+###end p 31
+###begin title 32
+###xml 19 27 19 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 19 26 <span type="species:ncbi:562">E. coli</span>
+Performance on the E. coli metabolic network
+###end title 32
+###begin p 33
+###xml 105 113 105 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 201 209 201 209 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 285 299 285 299 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 370 378 370 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 465 473 465 473 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 589 597 589 597 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 714 722 714 722 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 946 948 946 948 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3d</xref>
+###xml 963 971 963 971 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1060 1074 1060 1074 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 105 112 <span type="species:ncbi:562">E. coli</span>
+###xml 201 208 <span type="species:ncbi:562">E. coli</span>
+###xml 285 298 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 370 377 <span type="species:ncbi:562">E. coli</span>
+###xml 465 472 <span type="species:ncbi:562">E. coli</span>
+###xml 589 596 <span type="species:ncbi:562">E. coli</span>
+###xml 714 721 <span type="species:ncbi:562">E. coli</span>
+###xml 963 970 <span type="species:ncbi:562">E. coli</span>
+###xml 1060 1073 <span type="species:ncbi:4932">S. cerevisiae</span>
+To understand the transferability of our approach to other organisms, we repeated our analysis using the E. coli metabolic network. The same procedures were used to construct the metabolic network for E. coli (see Materials and methods). First, the optimal parameters obtained for the S. cerevisiae metabolic network, without further modifications, were applied to rank E. coli metabolic genes. As a result, the algorithm predicts 13.3%, 30.0%, and 41.3.% of known E. coli metabolic genes to be top ranked, within the top 10 and within the top 50, respectively, out of 3,578 non-metabolic E. coli genes. Second, the simulated annealing optimization was performed to optimize the cost function specifically for the E. coli network. Based on the optimized parameters slightly better results were obtained: 18.0%, 33.8%, and 45.6% of the correct genes were ranked as the top candidate, within the top 10, and within the top 50, respectively (Figure 3d). The optimal E. coli parameters for the cost function are generally similar to the optimal parameters for the S. cerevisiae metabolic network. This suggests that parameters obtained on several model organisms can be directly used for predictions in other organisms, although an organism-specific optimization will slightly improve the algorithm performance.
+###end p 33
+###begin title 34
+Performance based on genes without independent homology information
+###end title 34
+###begin p 35
+###xml 176 184 176 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 188 201 188 201 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae</italic>
+###xml 389 396 389 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 176 183 <span type="species:ncbi:562">E. coli</span>
+###xml 188 201 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 389 396 <span type="species:ncbi:562">E. coli</span>
+Our prediction method is designed primarily for enzymatic activities without good homology information. Above, we validated the approach using all known metabolic enzymes from E. coli and S. cerevisiae. In addition, it is interesting to identify a set of enzymes for which independent homology information is not available (that is, the biochemical experiments have been conducted only in E. coli, for example) and test the performance on this subset.
+###end p 35
+###begin p 36
+###xml 24 32 24 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 160 162 160 162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 232 239 232 239 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 429 437 429 437 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 24 31 <span type="species:ncbi:562">E. coli</span>
+###xml 232 239 <span type="species:ncbi:562">E. coli</span>
+###xml 429 436 <span type="species:ncbi:562">E. coli</span>
+We obtained a subset of E. coli enzymatic EC numbers without representative sequences in other organisms. The subset, identified using the SWISS-PROT database [37], includes EC numbers with representative sequences exclusively from E. coli. We also included EC numbers with representative sequences in the TrEMBL database (a computer-annotated complement to the SWISS-PROT), but only if these were computationally annotated from E. coli sequences and, consequently, cannot provide independent homology information. Each identified EC number was then manually checked.
+###end p 36
+###begin p 37
+###xml 68 69 68 69 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 177 185 177 185 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 330 338 330 338 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 177 184 <span type="species:ncbi:562">E. coli</span>
+###xml 330 337 <span type="species:ncbi:562">E. coli</span>
+The identified subset consists of 25 enzymes and is listed in Table 1. The performance of our method on the subset was comparable to the performance observed for the set of all E. coli enzymes: 16.0%, 24.0% and 44.0% of the correct enzymes were ranked as the top, within the top 10, and within the top 50, respectively, among all E. coli candidate genes. Consequently, the algorithm is effective for sequences that are likely to be missed by homology-based methods.
+###end p 37
+###begin title 38
+Importance of the neighborhood
+###end title 38
+###begin p 39
+###xml 569 571 569 571 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4a</xref>
+###xml 717 719 717 719 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4a</xref>
+###xml 889 891 889 891 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4a</xref>
+The performance of our algorithm for a specific network gap should crucially depend on the available evolutionary information for network genes located around the gap. As we optimized our algorithm we found that for about one-third of all gaps the algorithm performance is no better than random. To investigate this further, we calculated the discrimination ratio of the cost function value for the correct gene and the average for all non-metabolic genes. The distribution of the discrimination ratios for all possible gaps in the metabolic network is shown in Figure 4a. Confirming our expectation, about one-third of all gaps did not allow any discrimination between the correct and average genes (bin 0 in Figure 4a represents gaps with discrimination ratios less than 1). On the other hand, about 50% of the gaps have discrimination ratios equal or greater than 7 (bin >= 7 in Figure 4a). For comparison, the average rank of the correct genes for the gaps in bin 0 is only 1,989, while it is 26 for the gaps in bin >= 7.
+###end p 39
+###begin p 40
+###xml 444 446 444 446 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4b</xref>
+We found that an important feature that separates the informative and non-informative gaps is the availability of accurate phylogenetic correlations for the neighborhood genes around the gaps. Clearly, if accurate phylogenetic correlations cannot be calculated - because, for example, the corresponding genes exist only in several related genomes - the cost function will not be able to discriminate between correct and incorrect genes. Figure 4b illustrates this point by showing the relationship between the average phylogenetic correlation between the first layer genes and the fraction of well-predicted gaps. For gaps with a first layer correlation of at least 0.5, 95% of the correct genes are ranked within the top 50. In contrast, less than 20% of the correct genes are ranked within the top 50 if the average first layer correlation is below 0.1. In practice, the discrimination ratio can be used to estimate the predictive ability of different gaps.
+###end p 40
+###begin title 41
+Performance based on a partially known networks
+###end title 41
+###begin p 42
+###xml 939 940 939 940 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 313 318 <span type="species:ncbi:4932">yeast</span>
+Currently available metabolic networks are significantly incomplete. As our algorithm directly relies on the network structure, it is important to understand that the algorithm performance depends on the network completeness. To investigate this we deliberately removed a certain fraction of known genes from the yeast network and retrained our algorithm on the incomplete network. We tried two approaches to simulate incomplete networks. First, we completely deleted a fraction of genes from the network and removed all connections to the deleted genes. Second, we effectively converted a fraction of the metabolic network into orphan activities. In this case the connections established by the orphan activities are preserved, but the genes responsible for these activities are converted into orphan activities. These two deletion approaches gave similar results and we report here only the effects of complete gene deletions. As Figure 5 demonstrates, the performance of our method decreases only gradually when increasing fractions of network genes are deleted. Even when as many as 50% of the network genes are deleted, the algorithm still performs reasonably well, predicting 13.7% as the top candidate (95% CI: 10.5-15.6%), 27.9% to be within the top 10 (95% CI: 24.2-31.5%), and 33.1% within the top 50 (95% CI: 29.2-37.1%). Interestingly, when a high percentage (20% to 50%) of the network was deleted, the relative cost function contributions from genes of the second and third layers around gaps increased approximately twice. This suggests that, for an incomplete network, the second and third layers play a larger role in 'focusing' a correct gene towards the corresponding gap.
+###end p 42
+###begin p 43
+###xml 203 217 203 217 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 221 228 221 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 203 216 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 221 228 <span type="species:ncbi:562">E. coli</span>
+The relative insensitivity of our method to the network completeness suggests that the algorithm based on phylogenetic profiles will be useful not only for metabolic networks of model organisms, such as S. cerevisiae and E. coli, but also for networks of less studied organisms.
+###end p 43
+###begin title 44
+###xml 37 51 37 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 55 62 55 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 37 50 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 55 62 <span type="species:ncbi:562">E. coli</span>
+Predictions for orphan activities in S. cerevisiae and E. coli
+###end title 44
+###begin p 45
+###xml 29 37 29 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 41 55 41 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 314 322 314 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 326 340 326 340 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 29 36 <span type="species:ncbi:562">E. coli</span>
+###xml 41 54 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 314 321 <span type="species:ncbi:562">E. coli</span>
+###xml 326 339 <span type="species:ncbi:4932">S. cerevisiae</span>
+As the metabolic networks of E. coli and S. cerevisiae are relatively well studied, it is likely that the developed algorithm will be most useful in less studied species with a larger fraction of orphan metabolic activities. Nevertheless, we investigated in detail several predictions for orphan activities in the E. coli and S. cerevisiae networks.
+###end p 45
+###begin p 46
+###xml 60 68 60 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 69 71 69 71 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 77 91 77 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 101 103 101 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 297 302 297 302 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 305 307 305 307 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 430 432 430 432 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 487 492 487 492 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 495 497 495 497 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 507 515 507 515 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 630 634 630 634 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yrbH</italic>
+###xml 742 744 742 744 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 840 854 840 854 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 872 885 872 885 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli yrbH </italic>
+###xml 60 67 <span type="species:ncbi:562">E. coli</span>
+###xml 77 90 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 184 189 <span type="species:ncbi:4932">yeast</span>
+###xml 507 514 <span type="species:ncbi:562">E. coli</span>
+###xml 840 853 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 872 879 <span type="species:ncbi:562">E. coli</span>
+Although considered as gaps in the originally reconstructed E. coli [10] and S. cerevisiae networks [11], a number of orphan activities have been recently identified. For example, the yeast enzyme 5-formyltetrahydrofolate cyclo-ligase (EC 6.3.3.2) appears as a gap in the network model by Forster et al. [11]. However, the gene responsible for this activity, YER183C/FAU1, has been cloned and characterized by Holmes and Appling [38]. This gene is present in the updated model by Duarte et al. [39]. In the E. coli iJR904 model, the arabinose-5-phosphate isomerase (API, EC 5.3.1.13) is listed as an orphan activity. However, the yrbH/b3197 gene has been recently characterized as encoding the enzyme responsible for this metabolic reaction [40]. Significantly, without any sequence homology information, our algorithm was able to rank the S. cerevisiae FAU1 gene and the E. coli yrbH gene as the number 10 and number 1 candidate, respectively, for their corresponding enzymatic activities. More examples for recently identified orphan activities and predictions can be found in Additional file 9.
+###end p 46
+###begin p 47
+###xml 29 43 29 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 47 55 47 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 204 211 204 211 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 213 221 213 221 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 300 302 300 302 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 358 363 358 363 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gabD </italic>
+###xml 438 446 438 446 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 458 462 458 462 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yneI</italic>
+###xml 536 541 536 541 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yneI </italic>
+###xml 681 684 681 684 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-61</sup>
+###xml 699 707 699 707 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 755 760 755 760 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gabD </italic>
+###xml 840 843 840 843 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-59</sup>
+###xml 859 864 859 864 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yneI </italic>
+###xml 916 920 916 920 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yneH</italic>
+###xml 921 926 921 926 <italic xmlns:xlink="http://www.w3.org/1999/xlink">glsA2</italic>
+###xml 985 990 985 990 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yneH </italic>
+###xml 1076 1081 1076 1081 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yneI </italic>
+###xml 1085 1090 1085 1090 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yneH </italic>
+###xml 29 42 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 47 54 <span type="species:ncbi:562">E. coli</span>
+###xml 204 211 <span type="species:ncbi:562">E. coli</span>
+###xml 213 220 <span type="species:ncbi:562">E. coli</span>
+###xml 438 445 <span type="species:ncbi:562">E. coli</span>
+###xml 699 706 <span type="species:ncbi:562">E. coli</span>
+###xml 793 798 <span type="species:ncbi:9606">human</span>
+Several orphan activities in S. cerevisiae and E. coli remain unassigned to any gene. We found several interesting predictions for the NAD+ dependent succinate-semialdehyde dehydrogenase (EC 1.2.1.24) in E. coli. E. coli seems to possess two different types of succinate semialdehyde dehydrogenases [41]: one is NAD(P)+ dependent and is encoded by the b2661/gabD gene (EC 1.2.1.16); the other is specific for NAD+ only (EC 1.2.1.24). One E. coli gene, b1525/yneI, was predicted as the top candidate for this orphan activity. We believe yneI is a good candidate for the orphan activity because of the following additional functional clues. It has 32% sequence identity (E-value 5*10-61) to the other E. coli succinate semialdehyde dehydrogenase encoded by gabD and 30% sequence identity to the human enzyme ALDH5A1 (EC 1.2.1.24, E-value 7*10-59). In addition, yneI is adjacent on the bacterial chromosome to the gene yneH/glsA2/b3512, which encodes glutaminase 2 (EC 3.5.1.2). The gene yneH is involved in the same glutamate metabolism pathway as EC 1.2.1.24. The closeness of yneI and yneH on the chromosome suggests that they are involved in related functions.
+###end p 47
+###begin title 48
+Conclusion
+###end title 48
+###begin p 49
+###xml 291 293 291 293 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 448 453 <span type="species:ncbi:4932">yeast</span>
+We demonstrate in this work that genes encoding orphan metabolic activities can be effectively identified by integrating phylogenetic profiles with a partially known network. The reported approach is significantly more accurate in comparison to a similar method based on mRNA co-expression [31]. We are able to predict five times more correct genes as the top candidates and two times more within the top 50 candidates out of about 6,000 unrelated yeast genes. It is likely that the improvement in performance reflects larger functional coverage of the available phylogenetic profiles over mRNA co-expression data. Indeed, the performances of the algorithms based on mRNA co-expression and phylogenetic profiles are similar when only well-perturbed network neighborhoods, the neighborhoods with large changes in gene expression, are considered.
+###end p 49
+###begin p 50
+The larger functional coverage of phylogenetic profiles allows our approach to be extended to organisms with no or little expression data. As we demonstrate, the optimized parameters are likely to be directly transferable between organisms. Importantly, the incompleteness of the currently available metabolic networks is not a major hindrance to the application of our algorithm.
+###end p 50
+###begin p 51
+The performance of our algorithm significantly improves if the specificity of the connections established by different metabolites is taken into consideration. To account for the connection specificity, the algorithm assigns smaller cost function weights to connections established by widely used (that is, non-specific) metabolites. Similar specificity corrections should be useful for calculations based on other context-based descriptors, such as mRNA expression.
+###end p 51
+###begin p 52
+###xml 139 140 139 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 449 457 449 457 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 449 456 <span type="species:ncbi:562">E. coli</span>
+Ultimately, to achieve maximal performance it will be necessary to combine various sequence-based and context-based descriptors. In Figure 6 we show how different context-based associations change as a function of the network distance between the metabolic genes. Four different context-based associations are shown: gene co-expression, gene fusions (Rosetta Stone), phylogenetic profiles, and chromosomal gene clustering (similar relationships for E. coli are shown in Additional data file 7). The figures demonstrate that different context-based associations can contribute to 'focusing' a hypothetical gene to its proper location in the network. We are currently building a combined method (P. Kharchenko, L.C., Y. Freund, D.V., G.M. Church, unpublished data) that will integrate different associations in order to predict genes responsible for orphan metabolic activities. We also plan to apply similar gap-filling methods to other cellular networks.
+###end p 52
+###begin title 53
+Materials and methods
+###end title 53
+###begin title 54
+Construction of metabolic networks
+###end title 54
+###begin p 55
+###xml 63 68 63 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 71 73 71 73 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 92 106 92 106 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 271 273 271 273 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 274 276 274 276 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 307 308 307 308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 453 454 453 454 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 757 758 757 758 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 815 816 815 816 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 950 951 950 951 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 92 105 <span type="species:ncbi:4932">S. cerevisiae</span>
+We used the manually curated metabolic reaction set of Forster et al. [11] to construct the S. cerevisiae metabolic network. The reaction set consists of 1,172 metabolic reactions. The method to build a metabolic network from a reaction set has been described elsewhere [31,32] and is illustrated in Figure 7. The nodes of the network correspond to metabolic genes, and the edges correspond to the connections established by metabolic reactions (Figure 7). Two metabolic genes are connected if the corresponding enzymes share a common metabolite among their reactants or products. By calculating the shortest path between any two metabolic genes we established the network distance metrics. Orphan metabolic activities appear in the network as gaps (Figure 7). We refer to 'first layer neighbors' (yellow in Figure 7) of a target gene to describe the collection of genes with distance one to the target gene, 'second layer neighbors' (blue in Figure 7) to describe the genes with distance two, and so on.
+###end p 55
+###begin p 56
+###xml 406 408 406 408 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+While any metabolite can be used to establish connections between metabolic genes, common metabolites and cofactors, such as ATP, water or hydrogen, are not likely to connect genes with similar metabolic functions. Indeed, the performance of our algorithm on the network in which all connections were present was significantly worse than on the network in which highly connected metabolites were excluded [31]. In order to determine an exclusion threshold, we gradually removed the most highly connected metabolites while monitoring the overall performances of the algorithm. We found that the best performance was achieved when the 15 most highly connected metabolites were excluded from the network reconstruction. Exclusion of more than the 15 most connected metabolites increases prediction accuracy by a slight margin, although the coverage of metabolic genes in the network is reduced significantly. For instance, 20% and 50% metabolic genes lost all their network connections when 120 and 240 most frequent metabolites were excluded, respectively, while the network retains more than 99% of all metabolic genes when only the 15 most frequent metabolites were excluded. The results presented in this paper are thus based on the metabolic network constructed without these 15 most frequent metabolites: ATP, ADP, AMP, CO2, CoA, glutamate, H, NAD, NADH, NADP, NADPH, NH3, GLC, orthophosphate and pyrophosphate.
+###end p 56
+###begin p 57
+###xml 360 373 360 373 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae</italic>
+###xml 416 424 416 424 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 454 459 454 459 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 462 464 462 464 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 526 534 526 534 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 18 23 <span type="species:ncbi:4932">yeast</span>
+###xml 293 298 <span type="species:ncbi:4932">yeast</span>
+###xml 360 373 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 416 423 <span type="species:ncbi:562">E. coli</span>
+###xml 526 533 <span type="species:ncbi:562">E. coli</span>
+The reconstructed yeast network contains 615 known metabolic genes and 230 orphan activities. On average, a metabolic gene has 15.8, 76.2 and 200.0 neighbors on its first, second and third layers in the neighborhood, respectively. The average distance between a pair of metabolic genes in the yeast network (network radius) is 3.48. In a similar manner as for S. cerevisiae, we constructed the metabolic network for E. coli from the iJR904 model by Reed et al. [10]. Again, the 15 most frequent metabolites were excluded. The E. coli network contains 613 known metabolic enzymes and 136 orphan activities with a network radius of 3.81.
+###end p 57
+###begin title 58
+Phylogenetic profile measures
+###end title 58
+###begin title 59
+Binary phylogenetic profiles
+###end title 59
+###begin p 60
+###xml 51 65 51 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 75 83 75 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 270 275 270 275 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 278 280 278 280 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 506 514 506 514 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 51 64 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 75 82 <span type="species:ncbi:562">E. coli</span>
+###xml 497 502 <span type="species:ncbi:4932">yeast</span>
+###xml 506 513 <span type="species:ncbi:562">E. coli</span>
+We constructed phylogenetic profiles for all 6,708 S. cerevisiae and 4,199 E. coli ORFs using automated BLAST searches against a collection of 70 prokaryotic and eukaryotic genomes (Additional data file 1). Our collection of genomes is similar to the one used by Bowers et al. [26]. We deliberately filtered evolutionarily similar genomes. To calculate phylogenetic profile correlations between genes we used a 70-dimensional binary vector representing presence or absence of homologs of a target yeast or E. coli gene in query genomes. The Pearson's correlation between the profile vectors (31) was calculated using Equation 4:
+###end p 60
+###begin p 61
+###xml 0 0 0 0 <inline-graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="gb-2006-7-2-r17-i6.gif"/>
+
+###end p 61
+###begin p 62
+###xml 6 8 6 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 66 68 66 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">X </italic>
+###xml 72 73 72 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Y</italic>
+###xml 75 77 75 77 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 100 102 100 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink">X </italic>
+###xml 116 118 116 118 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 128 130 128 130 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 153 155 153 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Y </italic>
+###xml 169 171 169 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 185 187 185 187 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 210 212 210 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink">X </italic>
+###xml 216 218 216 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Y </italic>
+where N is the total number of the lineages considered. For genes X and Y, x is the number of times X occurs in the N lineages, y is the number of times Y occurs in the N lineages, and z is the number of times X and Y occur together.
+###end p 62
+###begin p 63
+###xml 166 171 166 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 189 193 189 193 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-10 </sup>
+###xml 203 205 203 205 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 246 249 246 249 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-2 </sup>
+###xml 254 257 254 257 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-12</sup>
+###xml 333 336 333 336 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-3 </sup>
+###xml 404 407 404 407 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-10</sup>
+###xml 430 432 430 432 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-2</sup>
+###xml 599 602 599 602 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-3 </sup>
+Naturally, our calculations of phylogenetic profiles rely on the BLAST E-value threshold used for considering protein homology of target genes. In the study by Bower et al. an E-value of 10-10 was used [26]. We tried different E-value cutoffs (10-2 to 10-12) looking for the best algorithm performance. We found that an E-value of 10-3 gave significantly better results in comparison with either more (10-10) or less stringent (10-2) thresholds; 3 and 5 times better, respectively. In this report, unless otherwise specified, the binary phylogenetic profile correlations were calculated using E = 10-3 as the homology threshold.
+###end p 63
+###begin title 64
+Normalized phylogenetic profiles and mutual information
+###end title 64
+###begin p 65
+###xml 5 10 5 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 13 15 13 15 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 210 212 210 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 224 225 224 225 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 264 266 264 266 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij</italic>
+###xml 264 266 264 266 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij</italic></sub>
+###xml 275 278 275 278 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij </italic>
+###xml 275 278 275 278 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij </italic></sub>
+###xml 364 366 364 366 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 386 387 386 387 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 590 604 590 604 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 608 616 608 616 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 590 603 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 608 615 <span type="species:ncbi:562">E. coli</span>
+Date et al. [42] introduced the use of normalized phylogenetic profiles to infer functional associations. Instead of using a predetermined E-value threshold to determine the presence of a homolog for a protein i in a genome j, they proposed using the value -1/logEij, where Eij is the BLAST E-value of the top-scoring sequence alignment hit for the target protein i in the query genome j. In this way different degrees of sequence divergence are captured without a predefined cutoff. We calculated the Pearson's correlation coefficients between the normalized phylogenetic profiles for all S. cerevisiae and E. coli genes.
+###end p 65
+###begin p 66
+###xml 16 21 16 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 24 26 24 26 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 61 66 61 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 69 71 69 71 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+The study by Wu et al. [30], together with the study by Date et al. [42], also suggested using mutual information (MI) to assess protein functional association. We calculated MI according to Equation 5:
+###end p 66
+###begin p 67
+###xml 0 2 0 2 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MI</italic>
+###xml 3 4 3 4 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 11 12 11 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H</italic>
+###xml 13 14 13 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 18 19 18 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H</italic>
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 25 26 25 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H</italic>
+###xml 27 28 27 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 30 31 30 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+MI(A, B) = H(A) + H(B) - H(A, B)     (5)
+###end p 67
+###begin p 68
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H</italic>
+###xml 8 9 8 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 32 33 15 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 34 35 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 36 39 19 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lnp</italic>
+###xml 40 41 23 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 107 108 90 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 109 110 92 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 120 122 103 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A </italic>
+###xml 163 164 146 147 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H</italic>
+###xml 165 166 148 149 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 168 169 151 152 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 192 193 158 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 194 195 160 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 197 198 163 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink">b</italic>
+###xml 199 202 165 168 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lnp</italic>
+###xml 203 204 169 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 206 207 172 173 <italic xmlns:xlink="http://www.w3.org/1999/xlink">b</italic>
+###xml 279 280 245 246 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 281 282 247 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 284 285 250 251 <italic xmlns:xlink="http://www.w3.org/1999/xlink">b</italic>
+###xml 300 302 266 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A </italic>
+###xml 306 308 272 274 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B </italic>
+where H(A) = -summation operatorp(a)lnp(a) represents the marginal entropy of the probability distribution p(a) of gene A of occurring among all query genomes and H(A, B) = -summation operatorp(a, b)lnp(a, b) represents the relative entropy of the joint probability distribution p(a, b) of the genes A and B occurring across all the query genomes used in this study. Two sets of MI, based on the binary and normalized phylogenetic profiles described above, were generated and used in our prediction.
+###end p 68
+###begin p 69
+###xml 414 416 414 416 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-3</sup>
+We tested the effect of normalized phylogenetic profiles as well as mutual information in our algorithm but did not detect any significant improvements compared to binary profiles (Additional data file 8). Since the procedure of generating binary phylogenetic profiles is more straightforward, in this report, unless otherwise specified, we use the correlations generated using binary phylogenetic profiles (E = 10-3).
+###end p 69
+###begin title 70
+COG-based phylogenetic profile
+###end title 70
+###begin p 71
+###xml 105 107 105 107 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+In addition to using BLAST searches to generate phylogenetic profiles, we also utilize the COG database [36] as the source of orthology information to create phylogenetic profiles. We used the January 2005 version of the COG database consisting of 44 genomes. We consider that an ortholog of a target ORF exists in a query genome if a sequence from that genome co-occurs in the same COG as the target gene. Based on the COG orthology information, a binary phylogenetic profile string was calculated for each gene and pair-wise correlations were calculated using Equation 4.
+###end p 71
+###begin title 72
+Cost function optimization
+###end title 72
+###begin p 73
+###xml 112 114 112 114 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 191 193 191 193 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 633 635 633 635 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+Two methods were used to optimize the parameters of the cost functions. First, following our previous analysis [31], the layer weights were optimized using the Nelder-Mead simplex algorithm [33]. The simplex optimization usually took 6 to 8 hours to converge on a Dell PowerEdge 1750 with Dual CPUs at 2.8 GHz and 2 GB DDR SDRAM memory. We usually carried out the simplex optimizations starting from many (10 to 15) randomly chosen starting points to check the sensitivity towards initial conditions. Second, because the simplex algorithm is deterministic and may miss a global parameter minimum, we also used a global SA algorithm [34]. We used the SA algorithm to optimize all parameters used in the cost functions, including the layer weights and the power factors for both phylogenetic correlations and connection specificities. Several annealing schedules were tried. Naturally, the SA algorithm took much longer (usually >20 hours on the same machine) to converge.
+###end p 73
+###begin p 74
+Using the SA optimization we obtained lower average ranks for correct metabolic genes and thus better overall performance. For this reason, the results reported in the paper are based on the SA optimization. However, we want to point out that these two algorithms (SA and the simplex) have comparable performance on highly ranked genes (ranked 1 to 100; Additional data file 3). Since our ultimate goal is to generate a list of highly probable candidates for orphan activities to be tested experimentally, the number of candidate genes for each gap should probably not exceed 50 to 100. Thus, the simplex algorithm, although not optimal, is probably sufficient for this purpose.
+###end p 74
+###begin title 75
+Ten-fold cross-validation
+###end title 75
+###begin p 76
+We carried out a ten-fold cross-validation to estimate the accuracy of our method and generalization errors. The set of the known enzymes was randomly split into ten groups. One such group of enzymes was left out each time and designated as the test group. We then trained our method on the remaining 90% of the enzymes and used the obtained parameters to evaluate the performance on the test group.
+###end p 76
+###begin title 77
+Performance on partially known network
+###end title 77
+###begin p 78
+###xml 123 137 123 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 123 136 <span type="species:ncbi:4932">S. cerevisiae</span>
+To evaluate the performance on incomplete metabolic networks, we deliberately deleted up to 50% of the enzyme nodes in the S. cerevisiae metabolic network. The deleted nodes were added to the candidate gene set, and the performance of the algorithm was evaluated using the incomplete network. This experiment was repeated ten times and the results averaged.
+###end p 78
+###begin title 79
+Additional data files
+###end title 79
+###begin p 80
+###xml 104 105 104 105 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 212 213 212 213 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 303 304 303 304 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 415 416 415 416 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">4</xref>
+###xml 504 505 504 505 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">5</xref>
+###xml 590 591 590 591 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">6</xref>
+###xml 800 801 800 801 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">7</xref>
+###xml 895 902 895 902 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 925 926 925 926 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+###xml 1075 1076 1075 1076 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S9">9</xref>
+###xml 1116 1124 1116 1124 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1128 1142 1128 1142 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 643 648 <span type="species:ncbi:4932">yeast</span>
+###xml 752 757 <span type="species:ncbi:4932">yeast</span>
+###xml 895 902 <span type="species:ncbi:562">E. coli</span>
+###xml 1116 1123 <span type="species:ncbi:562">E. coli</span>
+###xml 1128 1141 <span type="species:ncbi:4932">S. cerevisiae</span>
+The following additional data are available with the online version of this paper. Additional data file 1 is a table showing the genomes used in this study to generate phylogenetic profiles. Additional data file 2 is a table showing the effect of connection specificity adjustment. Additional data file 3 is a figure comparing the performance of the simplex and simulated annealing algorithms. Additional data file 4 is a figure comparing the predictions based on Equations 2 and 3. Additional data file 5 is a figure showing 10-fold cross-validation of the algorithm. Additional data file 6 is a figure comparing the predictions based on all yeast non-metabolic genes as the candidate gene set, all hypothetical genes or a randomly selected subset of yeast non-metabolic genes. Additional data file 7 is a figure showing context-based association as a function of metabolic network distance in E. coli. Additional data file 8 compares predictions based on normalized gene phylogenetic profiles, mutual information, and the method reported in the paper. Additional data file 9 is a dataset of sample predictions for E. coli and S. cerevisiae orphan activities.
+###end p 80
+###begin title 81
+Supplementary Material
+###end title 81
+###begin title 82
+Additional File 1
+###end title 82
+###begin p 83
+Genomes used in this study to generate phylogenetic profiles.
+###end p 83
+###begin p 84
+Click here for file
+###end p 84
+###begin title 85
+Additional File 2
+###end title 85
+###begin p 86
+The effect of connection specificity adjustment.
+###end p 86
+###begin p 87
+Click here for file
+###end p 87
+###begin title 88
+Additional File 3
+###end title 88
+###begin p 89
+Comparison of the performance of the simplex and simulated annealing algorithms.
+###end p 89
+###begin p 90
+Click here for file
+###end p 90
+###begin title 91
+Additional File 4
+###end title 91
+###begin p 92
+Comparison of the predictions based on Equations 2 and 3.
+###end p 92
+###begin p 93
+Click here for file
+###end p 93
+###begin title 94
+Additional File 5
+###end title 94
+###begin p 95
+Ten-fold cross-validation of the algorithm.
+###end p 95
+###begin p 96
+Click here for file
+###end p 96
+###begin title 97
+Additional File 6
+###end title 97
+###begin p 98
+###xml 43 48 <span type="species:ncbi:4932">yeast</span>
+###xml 152 157 <span type="species:ncbi:4932">yeast</span>
+Comparison of the predictions based on all yeast non-metabolic genes as the candidate gene set, all hypothetical genes or a randomly selected subset of yeast non-metabolic genes.
+###end p 98
+###begin p 99
+Click here for file
+###end p 99
+###begin title 100
+Additional File 7
+###end title 100
+###begin p 101
+###xml 73 80 73 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 73 80 <span type="species:ncbi:562">E. coli</span>
+Context-based association as a function of metabolic network distance in E. coli.
+###end p 101
+###begin p 102
+Click here for file
+###end p 102
+###begin title 103
+Additional File 8
+###end title 103
+###begin p 104
+Comparison of predictions based on normalized gene phylogenetic profiles, mutual information, and the method reported in the paper.
+###end p 104
+###begin p 105
+Click here for file
+###end p 105
+###begin title 106
+Additional File 9
+###end title 106
+###begin p 107
+###xml 34 42 34 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 46 60 46 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 34 41 <span type="species:ncbi:562">E. coli</span>
+###xml 46 59 <span type="species:ncbi:4932">S. cerevisiae</span>
+Dataset of sample predictions for E. coli and S. cerevisiae orphan activities.
+###end p 107
+###begin p 108
+Click here for file
+###end p 108
+###begin title 109
+Acknowledgements
+###end title 109
+###begin p 110
+We thank Drs Peter Kharchenko and Andrey Rzhetsky for valuable discussions. We also thank anonymous reviewers for helpful suggestions.
+###end p 110
+###begin article-title 111
+MetaCyc: a multiorganism database of metabolic pathways and enzymes.
+###end article-title 111
+###begin article-title 112
+BRENDA, the enzyme database: updates and major new developments.
+###end article-title 112
+###begin article-title 113
+Enzyme function less conserved than anticipated.
+###end article-title 113
+###begin article-title 114
+How well is enzyme function conserved as a function of pairwise sequence identity?
+###end article-title 114
+###begin article-title 115
+Assessing annotation transfer for genomics: quantifying the relations between protein sequence, structure and function through traditional and probabilistic scores.
+###end article-title 115
+###begin article-title 116
+Recent enhancements to the Blocks Database servers.
+###end article-title 116
+###begin article-title 117
+Method for prediction of protein function from sequence using the sequence-to-structure-to-function paradigm with application to glutaredoxins/thioredoxins and T1 ribonucleases.
+###end article-title 117
+###begin article-title 118
+TESS: a geometric hashing algorithm for deriving 3D coordinate templates for searching structural databases. Application to enzyme active sites.
+###end article-title 118
+###begin article-title 119
+EFICAz: a comprehensive approach for accurate genome-scale enzyme function inference.
+###end article-title 119
+###begin article-title 120
+###xml 34 50 34 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 34 55 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+An expanded genome-scale model of Escherichia coli K-12 (iJR904 GSM/GPR).
+###end article-title 120
+###begin article-title 121
+###xml 35 59 35 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 35 59 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Genome-scale reconstruction of the Saccharomyces cerevisiae metabolic network.
+###end article-title 121
+###begin article-title 122
+Missing genes in metabolic pathways: a comparative genomics approach.
+###end article-title 122
+###begin article-title 123
+Call for an enzyme genomics initiative.
+###end article-title 123
+###begin article-title 124
+###xml 34 39 <span type="species:ncbi:4932">yeast</span>
+###xml 43 48 <span type="species:ncbi:9606">human</span>
+Protein interaction networks from yeast to human.
+###end article-title 124
+###begin article-title 125
+Protein function in the post-genomic era.
+###end article-title 125
+###begin article-title 126
+Measuring genome evolution.
+###end article-title 126
+###begin article-title 127
+Assigning protein functions by comparative genome analysis: protein phylogenetic profiles.
+###end article-title 127
+###begin article-title 128
+Protein interaction maps for complete genomes based on gene fusion events.
+###end article-title 128
+###begin article-title 129
+Detecting protein function and protein-protein interactions from genome sequences.
+###end article-title 129
+###begin article-title 130
+Genes linked by fusion events are generally of the same functional category: a systematic analysis of 30 microbial genomes.
+###end article-title 130
+###begin article-title 131
+Exploring the metabolic and genetic control of gene expression on a genomic scale.
+###end article-title 131
+###begin article-title 132
+###xml 26 50 26 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 26 50 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Large-scale prediction of Saccharomyces cerevisiae gene function using overlapping transcriptional clusters.
+###end article-title 132
+###begin article-title 133
+Conservation of gene order: a fingerprint of proteins that physically interact.
+###end article-title 133
+###begin article-title 134
+Genomic gene clustering analysis of pathways in eukaryotes.
+###end article-title 134
+###begin article-title 135
+The use of gene clusters to infer functional coupling.
+###end article-title 135
+###begin article-title 136
+Prolinks: a database of protein functional linkages derived from coevolution.
+###end article-title 136
+###begin article-title 137
+Genome evolution reveals biochemical networks and functional modules.
+###end article-title 137
+###begin article-title 138
+Systematic association of genes to phenotypes by genome and literature mining.
+###end article-title 138
+###begin article-title 139
+A Bayesian method for identifying missing enzymes in predicted metabolic pathway databases.
+###end article-title 139
+###begin article-title 140
+Identification of functional links between genes using phylogenetic profiles.
+###end article-title 140
+###begin article-title 141
+Filling gaps in a metabolic network using expression information.
+###end article-title 141
+###begin article-title 142
+Expression dynamics of a cellular metabolic network.
+###end article-title 142
+###begin article-title 143
+A simplex method for function minimization.
+###end article-title 143
+###begin article-title 144
+Optimization by simulated annealing.
+###end article-title 144
+###begin article-title 145
+STRING: known and predicted protein-protein associations, integrated and transferred across organisms.
+###end article-title 145
+###begin article-title 146
+The COG database: an updated version includes eukaryotes.
+###end article-title 146
+###begin article-title 147
+UniProt: the Universal Protein knowledgebase.
+###end article-title 147
+###begin article-title 148
+###xml 73 97 73 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 73 97 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Cloning and characterization of methenyltetrahydrofolate synthetase from Saccharomyces cerevisiae.
+###end article-title 148
+###begin article-title 149
+###xml 33 57 33 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 33 57 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Reconstruction and validation of Saccharomyces cerevisiae iND750, a fully compartmentalized genome-scale metabolic model.
+###end article-title 149
+###begin article-title 150
+###xml 0 16 0 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 0 16 <span type="species:ncbi:562">Escherichia coli</span>
+Escherichia coli YrbH is a D-arabinose 5-phosphate isomerase.
+###end article-title 150
+###begin article-title 151
+###xml 58 74 58 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 58 79 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+Two succinic semialdehyde dehydrogenases are induced when Escherichia coli K-12 Is grown on gamma-aminobutyrate.
+###end article-title 151
+###begin article-title 152
+Discovery of uncharacterized cellular systems by genome-wide analysis of functional linkages.
+###end article-title 152
+###begin title 153
+Figures and Tables
+###end title 153
+###begin p 154
+The average phylogenetic correlation between a target gene and all other network genes at a certain metabolic network distance. The standard deviation of the average correlation for all possible network gaps is represented by the error bars. The dashed line shows the background correlation, estimated by the average phylogenetic correlation between any metabolic and non-metabolic genes. The average phylogenetic correlation between two genes decreases monotonically with their separation in the network.
+###end p 154
+###begin p 155
+'Fit' test of a candidate gene in a network gap. We use a self-consistent test in which a known gene E4 is removed from the network, leaving a gap in its place. We then: 1, put candidate genes in the gap one by one; 2, determine the function value for every candidate gene (Equations 1 to 3); and 3, rank all candidate genes based on their function values. In the figure we show an example when the correct gene E4 was ranked as number 6.
+###end p 155
+###begin p 156
+###xml 51 55 51 55 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(a) </bold>
+###xml 368 372 368 372 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(b) </bold>
+###xml 467 471 467 471 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(c) </bold>
+###xml 619 623 619 623 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(d) </bold>
+###xml 643 651 643 651 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 842 850 842 850 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 185 190 <span type="species:ncbi:4932">yeast</span>
+###xml 643 650 <span type="species:ncbi:562">E. coli</span>
+###xml 726 731 <span type="species:ncbi:4932">yeast</span>
+###xml 842 849 <span type="species:ncbi:562">E. coli</span>
+Enzyme predictions based on phylogenetic profiles. (a) The cumulative fraction of correctly predicted genes as a function of rank among all non-metabolic genes. All 6,093 non-metabolic yeast genes plus a known correct gene were ranked using Equation 2. The cumulative distribution is shown for ranks from 1 to 100; the inset shows the same distribution for all ranks. (b) The effect of connection specificity adjustment. Only highly ranked genes (1 to 50) are shown. (c) Comparison of the performance with all non-metabolic genes as candidates to that with only hypothetical genes as candidates for an orphan activity. (d) Predictions for the E. coli metabolic network. The cost function with the parameters optimized for the yeast network showed comparable performance to the cost function with the parameters specifically optimized for the E. coli network.
+###end p 156
+###begin p 157
+###xml 80 84 80 84 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(a) </bold>
+###xml 565 569 565 569 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(b) </bold>
+Importance of metabolic neighborhood for the predictive power of the algorithm. (a) Informative and non-informative gaps. About one-third of the gaps did not allow any discrimination between the correct and average genes (represented by bin 0 in the figure), that is, the function value of the correct gene is equal to or smaller than the function value for average genes determined by Equation 2. The red line shows the average rank of correct genes represented in each bin. Genes filling gaps with higher discrimination ratios are ranked higher by the algorithm. (b) The relationship between the rank of a correct enzyme in a gap and the average correlation of first layer genes around the gap. A metabolic gene for a gap with a high average first layer correlation (>0.5) is usually highly ranked by the prediction algorithm (black line) but the fraction of such gaps is small (red bins).
+###end p 157
+###begin p 158
+###xml 103 108 <span type="species:ncbi:4932">yeast</span>
+The algorithm performance using an incomplete metabolic network. We show the algorithm performance for yeast networks with a certain fraction of genes randomly deleted. The performance decrease is gradual as up to 50% of the network nodes are deleted. For example, when half of the network is deleted, we can still predict more than 33% of the correct metabolic genes within the top 50 among all candidate genes, compared to 0.8% by random chance.
+###end p 158
+###begin p 159
+###xml 98 102 98 102 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(a) </bold>
+###xml 346 350 346 350 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(b) </bold>
+###xml 531 535 531 535 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(c) </bold>
+###xml 673 677 673 677 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(d) </bold>
+###xml 73 78 <span type="species:ncbi:4932">yeast</span>
+###xml 867 872 <span type="species:ncbi:4932">yeast</span>
+Context-based associations versus the metabolic network distance for the yeast metabolic network. (a) mRNA expression distance. The expression distance is calculated as 1-|correlation|, where correlation is the Spearman's rank correlation between genes' mRNA expression. Close neighbors in the metabolic network have similar expression profiles. (b) Gene fusion events (Rosetta Stone). The fraction of proteins involved in gene fusion events. The adjacent genes in the network are much more likely to form a Rosetta Stone protein. (c) Phylogenetic profiles. Pearson's correlations between phylogenetic profiles for genes close in the network are more likely to be similar. (d) Chromosomal distance between genes. The mean physical distances (in kilobase pairs (kbp)) between ORFs are shown. The adjacent genes in the network are significantly closer to each other on yeast chromosomes.
+###end p 159
+###begin p 160
+Construction of a network from a list of metabolic reactions. The direct connections are established between the dependency pairs: gene pairs sharing metabolites (M) as reactants or products. An orphan activity (metabolic network gap) is marked by a question mark and surrounded by known metabolic genes. The first and second network layers around the gap are colored yellow and blue, respectively. E, enzyme.
+###end p 160
+###begin p 161
+###xml 31 48 31 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 31 47 <span type="species:ncbi:562">Escherichia coli</span>
+Performance of our method with Escherichia coli orphan activities without independent sequence homology information
+###end p 161
+###begin p 162
+###xml 147 154 147 154 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 292 300 292 300 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 147 154 <span type="species:ncbi:562">E. coli</span>
+###xml 292 299 <span type="species:ncbi:562">E. coli</span>
+The subset of orphan activities, identified using the SWISS-PROT database [37], includes EC numbers with representative sequences exclusively from E. coli. We also included EC numbers with representative sequences in the TrEMBL database, but only if these were computationally annotated from E. coli sequences.
+###end p 162
+

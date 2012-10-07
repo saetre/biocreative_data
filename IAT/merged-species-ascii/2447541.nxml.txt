@@ -1,0 +1,1089 @@
+###begin article-title 0
+###xml 65 90 65 90 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 65 89 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Combining guilt-by-association and guilt-by-profiling to predict Saccharomyces cerevisiae gene function
+###end article-title 0
+###begin p 1
+This is an open access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background:
+###end title 2
+###begin p 3
+Learning the function of genes is a major goal of computational genomics. Methods for inferring gene function have typically fallen into two categories: 'guilt-by-profiling', which exploits correlation between function and other gene characteristics; and 'guilt-by-association', which transfers function from one gene to another via biological relationships.
+###end p 3
+###begin title 4
+Results:
+###end title 4
+###begin p 5
+###xml 31 43 31 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+###xml 220 244 220 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 246 259 246 259 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 332 345 332 345 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 220 244 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+We have developed a strategy ('Funckenstein') that performs guilt-by-profiling and guilt-by-association and combines the results. Using a benchmark set of functional categories and input data for protein-coding genes in Saccharomyces cerevisiae, Funckenstein was compared with a previous combined strategy. Subsequently, we applied Funckenstein to 2,455 Gene Ontology terms. In the process, we developed 2,455 guilt-by-profiling classifiers based on 8,848 gene characteristics and 12 functional linkage graphs based on 23 biological relationships.
+###end p 5
+###begin title 6
+Conclusion:
+###end title 6
+###begin p 7
+###xml 0 13 0 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 468 473 <span type="species:ncbi:4932">yeast</span>
+Funckenstein outperforms a previous combined strategy using a common benchmark dataset. The combination of 'guilt-by-profiling' and 'guilt-by-association' gave significant improvement over the component classifiers, showing the greatest synergy for the most specific functions. Performance was evaluated by cross-validation and by literature examination of the top-scoring novel predictions. These quantitative predictions should help prioritize experimental study of yeast gene functions.
+###end p 7
+###begin title 8
+Introduction
+###end title 8
+###begin p 9
+###xml 152 153 152 153 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 154 155 154 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 328 333 <span type="species:ncbi:9606">human</span>
+The rapid development of high-throughput technologies has made it possible to study the properties and relationships of thousands of genes in parallel [1-6]. A current challenge in genomic analysis is to combine this increasingly rich trove of evidence to infer biological function. The sheer volume of information makes manual human evaluation impracticable. Therefore, it is urgently necessary to develop improved automated algorithms to assist and accelerate the process of functional annotation.
+###end p 9
+###begin p 10
+###xml 310 311 310 311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 623 624 623 624 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 625 627 625 627 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+The transfer of function annotation from one gene to another via biological relationships ('guilt-by-association') has been widely used, especially on the basis of homology relationships. However, accurate functional annotation via homology often requires high sequence similarity between homologous proteins [7], and many proteins do not have homologs with known function. Function may also be assigned to a gene based on a profile of its characteristics ('guilt-by-profiling'). Sequence-based guilt-by-profiling methods, for example, assign functions based on matches to motifs derived from multiple sequence alignments [8-11].
+###end p 10
+###begin p 11
+###xml 349 351 349 351 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 452 454 452 454 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 485 487 485 487 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 527 529 527 529 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 647 649 647 649 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 650 652 650 652 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 715 717 715 717 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 718 720 718 720 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+Sequence-based relationships and characteristics are better suited to predict catalytic activity or structural role rather than involvement in a biological process, for example, osmotic stress response. Biological relationships other than homology have proven useful in guilt-by-association studies, including protein-protein physical interactions [12], genetic interactions derived from examination of double-perturbation and phenotyping experiments [13], correlated gene expression [14], or correlated phylogenetic profiles [15]. Algorithms to predict function from interactions have evolved from simple inspection of neighborhood interactions [12,16] to consider the global structure of the interaction network [17,18].
+###end p 11
+###begin p 12
+###xml 153 155 153 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 156 158 156 158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 187 189 187 189 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 222 224 222 224 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 268 270 268 270 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 321 323 321 323 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 324 326 324 326 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 350 351 350 351 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+Beyond sequence patterns, a wide variety of biological characteristics has proven useful in guilt-by-profiling function prediction, including phenotype [19,20], subcellular localization [21], gene chromosome neighborhood [22], previously known functional annotations [23], and membership within gene expression clusters [24,25] or protein complexes [5].
+###end p 12
+###begin p 13
+###xml 196 198 196 198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 469 471 469 471 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+Many guilt-by-profiling and guilt-by-association efforts have been reported. Some guilt-by-profiling studies have exploited gene-gene relationships by transforming them into gene characteristics [14], and some guilt-by-association studies have exploited gene characteristics by treating shared annotation with a gene characteristic as a gene-gene relationship. Only a few attempts have been made to integrate both types of inference. In particular, Deng and coworkers [26] inferred gene function by exploiting both gene-gene relationships and gene characteristics. This approach, discussed further below, used protein pattern annotation and protein complex information as gene characteristics, and also exploited protein interaction, genetic interaction, and expression correlation relationships.
+###end p 13
+###begin p 14
+###xml 19 31 19 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+###xml 156 169 156 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 409 422 409 422 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+Here, we introduce Funckenstein, a new method combining both guilt-by-profiling and guilt-by-association approaches to predict protein function. Initially, Funckenstein uses separate classifiers for guilt-by-profiling and guilt-by-association. It can integrate a very large number of gene characteristics and gene-gene relationships to infer functions, thanks to the scalability of its component classifiers. Funckenstein then combines prediction results using logistic regression optimized for precision versus recall performance, achieving a better performance than either approach alone.
+###end p 14
+###begin p 15
+###xml 14 27 14 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 56 81 56 81 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 157 170 157 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 341 354 341 354 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 426 427 426 427 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 429 439 429 439 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae</italic>
+###xml 553 567 553 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces </italic>
+###xml 622 635 622 635 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 56 80 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 426 439 <span type="species:ncbi:4932">S. cerevisiae</span>
+Here we apply Funckenstein to a benchmark of integrated Saccharomyces cerevisiae genomic data used previously to predict broad gene functions, and show that Funckenstein achieves higher precision at all levels of recall. Because predictions of more specific gene functions are generally more useful to experimental biologists, we also apply Funckenstein to score 2,455 Gene Ontology (GO) terms for all protein-coding genes in S. cerevisiae. The results are assessed by cross-validation and by evaluation of top predictions by an expert curator from the Saccharomyces Genome Database (SGD). Together, the results show that Funckenstein achieves high precision in cross-validation and in the prediction of novel functions.
+###end p 15
+###begin title 16
+Results
+###end title 16
+###begin title 17
+A method combining guilt-by-profiling with guilt-by-association
+###end title 17
+###begin p 18
+###xml 32 44 32 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+###xml 214 216 214 216 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 330 332 330 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 488 490 488 490 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+We have developed an algorithm (Funckenstein) that combines both guilt-by-profiling and guilt-by-association to make gene function predictions. Guilt-by-profiling was performed using the random forest (RF) method [27]. However, for comparison we also performed guilt-by-profiling using a probabilistic decision tree (PDT) method [28] with an early-stopping criterion to limit over-fitting. Guilt-by-association was performed in two steps: first, generate a functional linkage (FL) graph [29], that is, a graph with edge weights reflecting the probability that two genes share a sufficiently specific GO term; and second, use the FL graph to assign a score to each (candidate gene, GO term) combination based on the weight of links between the candidate gene and genes currently assigned to that GO term. The RF and FL predictions were then combined via a logistic regression model that optimizes precision versus recall performance. A full description of the algorithm and optimization of its parameters may be found in Materials and methods.
+###end p 18
+###begin title 19
+Performance evaluation using a previous benchmark
+###end title 19
+###begin p 20
+###xml 54 55 54 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 57 68 57 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 261 263 261 263 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 396 397 396 397 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 463 465 463 465 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 54 67 <span type="species:ncbi:4932">S. cerevisiae</span>
+A combined approach was applied previously to predict S. cerevisiae gene functions. Specifically, a Markov random field (MRF) guilt-by-association approach integrated information from protein interactions, genetic interactions, and gene expression correlation [26]. This approach also employed guilt-by-profiling, in that a gene-specific prior was calculated from Pfam protein sequence patterns [8] and protein complex membership using a naive Bayes (NB) method [30]. We will refer to this combined approach as 'MRF-NB'.
+###end p 20
+###begin p 21
+###xml 48 49 48 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 51 62 51 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 214 216 214 216 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 632 633 632 633 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 691 704 691 704 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 857 859 857 859 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 48 61 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 553 558 <span type="species:ncbi:4932">yeast</span>
+MRF-NB was applied previously to protein-coding S. cerevisiae genes to predict a small set of functional categories derived from literature annotation by the Munich Information Center for Protein Sequences (MIPS) [31]. MIPS functional categories are hierarchical, with top-level functions describing very general protein functions (for example, 'metabolism') and lower levels describing more specific functions (for example, 'proton driven symporter'). The MRF-NB approach was applied to 13 top-level MIPS functional categories and trained on the 3,588 yeast genes that had been assigned at least one of these categories (see Table 1 for details). For the purposes of comparison, we trained Funckenstein on the same data sets used for the MRF analysis and compared our cross-validation performance with the cross-validation performance reported previously [26].
+###end p 21
+###begin p 22
+MIPS functional classes used to compare with MRF-NB approach
+###end p 22
+###begin p 23
+MIPS, Munich Information Center for Protein Sequences; MRF, Markov random field; NB, naive bayes.
+###end p 23
+###begin p 24
+###xml 9 21 9 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+###xml 406 407 406 407 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 726 728 726 728 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 810 811 810 811 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+To train Funckenstein's guilt-by-profiling classifiers, we used protein sequence pattern and complex membership data. For guilt-by-association analysis, we used four types of pairwise biological relationships: pairwise physical and genetic interactions, correlated gene expression (with a correlation coefficient greater than 0.9), and interaction according to a large-scale affinity purification dataset [5]. When using affinity purification-derived interactions for predictions, we considered both the 'spoke' model (interactions defined to exist between bait and prey proteins) and the 'matrix' model (interaction defined not only between bait and prey protein, but also between prey proteins purified with the same bait) [32]. Because the 'matrix' model gave a slightly worse prediction performance (Table 2), we used the 'spoke' model for affinity purification-derived interactions.
+###end p 24
+###begin p 25
+Area under the precision versus recall curve for MIPS function prediction
+###end p 25
+###begin p 26
+FL, functional linkage; MIPS, Munich Information Center for Protein Sequences; MRF, Markov random field; NB, naive Bayes; PDT, probabilistic decision tree; RF, random forest.
+###end p 26
+###begin p 27
+###xml 374 387 374 387 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 406 408 406 408 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1a</xref>
+###xml 495 508 495 508 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+Receiver operating characteristic (ROC) curves reflect the tradeoff between recall and false positive rate that can be achieved by tuning a given method. Here, false positive rate is defined as the fraction of (gene, MIPS category) pairs that were predicted to be positive, among all pairs that are incorrect annotations according to the MIPS annotation. The ROC curves for Funckenstein and MRF-NB (Figure 1a) reflect a similar trend to that observed in the precision versus recall curves, with Funckenstein yielding an area under the ROC curve (AUC) of 0.88, compared with an AUC of 0.75 for MRF-NB. An AUC of 50% would indicate performance equal to that of random guessing and an AUC of 100% would indicate perfect performance. Although AUC is a measure of overall performance that is used for many applications, it is less appropriate here. Because the total number of unannotated gene/MIPS functional category pairs far exceeds the number of annotations, only performance at extremely low false-positive rates will be relevant to most users. Furthermore, most biologists are more interested in precision (fraction of predictions that are correct) than in false positive rate as defined above. Therefore, we used the precision-recall curve to evaluate prediction performance in all subsequent analyses.
+###end p 27
+###begin p 28
+###xml 136 149 136 149 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 342 346 342 346 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(a) </bold>
+###xml 423 427 423 427 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(b) </bold>
+Performance of MIPS function prediction using a previously established benchmark dataset. Results are shown for five different methods: Funckenstein (light red); MRF-NB [26] (black); guilt-by-profiling by the RF method alone (dark red); guilt-by-profiling by the PDT method alone (violet); guilt-by-association by the FL method alone (blue). (a) True positive rate versus false positive rate at different score thresholds. (b) Precision versus recall at prediction score thresholds. MIPS, Munich Information Center for Protein Sequences; MRF, Markov random field; NB, naive Bayes; PDT, probabilistic decision tree; RF, random forest.
+###end p 28
+###begin p 29
+The precision that a given user requires depends on their application. Since each of our predictions is accompanied by a quantitative measure of confidence, users may consider only the highest-precision predictions. Alternatively, users wishing to select candidate genes for further study - for example, for medium-scale genomic experiments - may wish to include a greater number of 'trues' at the expense of precision. Predictions offer a principled form of triage to reduce the search space and reduce the experimental resources required for follow-up study.
+###end p 29
+###begin p 30
+###xml 7 9 7 9 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1b</xref>
+###xml 110 123 110 123 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 184 197 184 197 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 690 703 690 703 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 871 884 871 884 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 1243 1256 1243 1256 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+Figure 1b, which describes the tradeoff between precision and recall for various score thresholds, shows that Funckenstein outperforms MRF-NB in predicting MIPS functional categories. Funckenstein yields a higher precision than MRF-NB across the full range of recall values obtained in the MRF-NB study. For example, with a recall of 50% (that is, when 50% of all MIPS annotations are predicted), a precision of 75% is achieved, compared with 67% by MRF-NB. For approximately 44% of the (gene, MIPS category) pairs, MRF-NB did not make a prediction, giving these pairs a score of 0.0. As a result, the precision-recall curve of MRF-NB is truncated at a recall of 56%. With a recall of 55%, Funckenstein achieves a precision of 71%, compared with 51% by MRF-NB. Of particular interest to users choosing candidate genes for disease association or for medium-scale screens, Funckenstein achieves a higher recall than MRF-NB at every level of precision. As a single overall measure of performance, we computed the area under the precision-recall curve. (In truncated regions of the MRF-NB curve, we modeled recall values as having precision corresponding to that of the nearest observed recall value.) The area under the precision-recall curve of Funckenstein was 0.651, greater than the 0.522 observed for the MRF-NB approach.
+###end p 30
+###begin p 31
+###xml 53 66 53 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 268 270 268 270 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1b</xref>
+###xml 437 438 437 438 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+We also investigated the individual contributions of Funckenstein classifiers of each type (guilt-by-profiling or guilt-by-association) in predicting MIPS functional categories. The guilt-by-profiling classifier outperforms the guilt-by-association classifier (Figure 1b) with precision-recall curve areas of 0.621 and 0.364, respectively. In fact, the guilt-by-profiling classifier alone already outperforms MRF-NB (area 0.522). Figure 1 also shows the performance of an alternative PDT guilt-by-profiling method in predicting MIPS functional categories. The RF method is undoubtedly an improvement over the PDT method (area 0.621 versus 0.504). This supports our choice to use the RF method for all other guilt-by-profiling predictions described here.
+###end p 31
+###begin p 32
+###xml 131 144 131 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+Combining the two component classifiers led to better performance than was achieved with either alone. However, the improvement of Funckenstein over the guilt-by-profiling classifier was modest for the MIPS benchmark (area of 0.651 compared with 0.621 under that of guilt-by-profiling classifier). This could be because of the very limited number of available interactions in this dataset. More substantial improvement would be expected as more relationships are included.
+###end p 32
+###begin p 33
+###xml 789 802 789 802 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 1033 1045 1033 1045 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+###xml 1169 1181 1169 1181 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+Note that differences in component classifier performance may be due either to algorithmic differences or to the value of the features used for prediction, and the comparison above does not separate these effects. Therefore, we also investigated the effect of transforming gene features into gene-gene relationships for use by the FL classifier. Specifically, we treated shared annotation with a Pfam domain as a gene-gene relationship (information found in expression cluster membership features was already available to the FL classifier as protein interactions). This substantially improved the performance of the FL classifier to an area under the precision-recall curve of 0.451 (versus the previous 0.364 area). However, use of the improved FL guilt-by-association classifier within Funckenstein actually reduced its overall performance (area 0.651 versus 0.637). One explanation is that the inclusion of the same evidence type in both component classifiers may lead to 'over-counting' of evidence and, thus, a slightly weaker Funckenstein. Thus, it may be important to include component classifiers using relatively independent input features for the success of Funckenstein.
+###end p 33
+###begin title 34
+Application to Gene Ontology terms using an expanded integrated dataset
+###end title 34
+###begin p 35
+###xml 34 47 34 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 352 365 352 365 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 606 607 606 607 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 612 613 612 613 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+Although it enabled us to compare Funckenstein and MRF-NB methods directly, the previously defined set of functional categories has the drawback of being somewhat non-specific. (For example, it is not immediately clear what specific follow-up experiment would test the hypothesis that a gene is involved in 'metabolism'.) Therefore, we sought to apply Funckenstein to predict more specific GO functional terms. We also expanded the scope of the data used to make predictions. We assembled data for 21 gene characteristic types and 23 experimentally determined gene-gene relationship types (shown in Tables 3 and 4, respectively).
+###end p 35
+###begin p 36
+Gene attributes used in guilt-by-profiling GO term predictions
+###end p 36
+###begin p 37
+GO, Gene Ontology.
+###end p 37
+###begin p 38
+Biological relationships used in guilt-by-association GO term predictions
+###end p 38
+###begin p 39
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">a</sup>
+aFor each evidence type, a representative reference (the one contributing the most interactions) is shown. GO, Gene Ontology.
+###end p 39
+###begin p 40
+###xml 476 477 476 477 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 479 490 479 490 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 232 237 <span type="species:ncbi:9606">child</span>
+###xml 476 489 <span type="species:ncbi:4932">S. cerevisiae</span>
+Terms in the GO vocabulary are organized within a rooted directed acyclic graph with three branches that describe biological process (BP), molecular function (MF), and cellular component (CC), respectively. Within each GO branch, a child GO term may descend from multiple parental GO terms. The vocabulary is structured such that annotation with a given GO term implies 'propagation' of this annotation to all ancestral terms. We obtained GO annotation for all protein-coding S. cerevisiae genes from SGD and, for each gene, we assigned ancestral GO terms implied by annotated descendent terms.
+###end p 40
+###begin p 41
+###xml 129 130 129 130 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 135 136 135 136 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 36 41 <span type="species:ncbi:4932">yeast</span>
+For GO term prediction, we selected yeast protein-coding genes annotated by at least one of the attribute types listed in Tables 3 and 4. Out of these 6,368 genes, the numbers of 'verified', 'uncharacterized', and 'dubious' open reading frames were 4,476, 1,312, and 580, respectively, when we initiated the work. In total, 5,790 genes were assigned to at least one GO term, including all 'verified' and 'uncharacterized' open reading frames.
+###end p 41
+###begin p 42
+###xml 666 667 666 667 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T5">5</xref>
+Some GO terms describe extremely general functions; for example, 'catalytic activity' (GO:0003824) had 1,885 associated genes. To focus on specific GO terms with the greatest potential to guide future experimentation, we considered only GO terms assigned to 300 or fewer genes. We excluded GO terms assigned to fewer than three genes, because of the extreme difficulty in developing a classifier with such a limited number of positive training examples. After this filtering, 2,455 GO terms remained. For convenience, we separated GO terms into 12 categories corresponding to all combinations of three GO branches (BP, MF, and CC) and four specificity levels (Table 5). Specificity levels are defined according to the number of annotated genes: 3 to 10, 11 to 30, 31 to 100, and 101 to 300 genes. To avoid circularity due to logical dependency between GO terms, we have not allowed classifiers to predict GO terms using other GO terms. The functional linkage graphs used in guilt-by-association analysis were trained separately for each of the 12 GO categories, and the logistic regression parameter for combining guilt-by-association and guilt-by-profiling predictions was optimized separately for each GO category by maximizing the area under the corresponding precision versus recall curve.
+###end p 42
+###begin p 43
+Distribution of the GO functional terms predicted
+###end p 43
+###begin p 44
+BP, biological process; CC, cellular component; GO, Gene Ontology; MF, molecular function.
+###end p 44
+###begin p 45
+###xml 111 112 111 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 114 125 114 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 287 288 287 288 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 290 301 290 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 111 124 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 287 300 <span type="species:ncbi:4932">S. cerevisiae</span>
+GO term predictions using both guilt-by-profiling and guilt-by-association classifiers were made for the 6,368 S. cerevisiae protein-coding genes that are either annotated with a GO term or have at least one gene characteristic or interaction. This resulted in a score for each of 6,368 S. cerevisiae genes for each of 2,455 GO terms for a total of 15,633,440 quantitative annotation scores.
+###end p 45
+###begin p 46
+###xml 256 268 256 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+###xml 620 632 620 632 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+###xml 667 668 667 668 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 673 674 673 674 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 728 729 728 729 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T6">6</xref>
+We also assessed variants of the FL classifier using relationships defined by shared annotation (as discussed above for MIPS function predictions). Results from the variant FL component classifier were combined with the RF predictions to yield variants of Funckenstein. As described above for MIPS function predictions, we evaluated prediction performance by calculating precision and recall at different quantitative score thresholds and by calculating total area under the precision-recall curve within each of the 12 GO categories. Performance was calculated for individual component classifiers, and for variants of Funckenstein, the combined classifier (Figures 2 and 3, respectively, with underlying values shown in Table 6).
+###end p 46
+###begin p 47
+The area under the precision versus recall curve for different classifiers
+###end p 47
+###begin p 48
+###xml 222 235 222 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+*FL1, FL classifier based on shared gene characteristics in Table 3; FL2, FL classifier based on direct gene-gene relationships in Table 4; FL3, FL classifier based on both relationship types. Entries in bold are the best Funckenstein classifier; entries in italics are the best individual classifier. BP, biological process; CC, cellular component; FL, functional linkage; GO, Gene Ontology; MF, molecular function; RF, random forest.
+###end p 48
+###begin p 49
+###xml 449 455 449 455 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(a-l) </bold>
+Performance of GO term prediction using either the RF guilt-by-profiling (RF; brown) or FL guilt-by-association classifiers (FL). Three types of FL classifiers were compared: FL1 (green), which used only gene characteristics used in the RF classifier that have been recoded as gene pair characteristics; FL2 (red), which used only 'intrinsic' gene-gene relationships; and FL3 (blue), which used both intrinsic and recoded gene-gene characteristics. (a-l) Plots are organized according to GO branch and GO term specificity. FL, functional linkage; GO, Gene Ontology; RF, random forest.
+###end p 49
+###begin p 50
+###xml 29 42 29 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 131 144 131 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 446 452 446 452 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(a-l) </bold>
+Cross-validation results for Funckenstein and the RF guilt-by-profiling component classifier (RF) alone (brown). Three versions of Funckenstein were compared, each integrating RF with one of three variants of the FL guilt-by-association classifier (FL): FL1, FL using only relationships derived from shared gene characteristics (green); FL2, FL using only direct gene-gene relationships (red); and FL3, FL using all types of relationship (blue). (a-l) Plots are organized according to GO branch and GO term specificity. FL, functional linkage; GO, Gene Ontology; RF, random forest.
+###end p 50
+###begin p 51
+###xml 134 135 134 135 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 146 147 146 147 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T6">6</xref>
+The addition of relationships based on shared annotation improved predictions for MF attributes, but not BP and CC attributes (Figure 2 and Table 6). For example, the area under the precision-recall curve for MF attributes with 101 to 300 genes was 0.55 for the FL guilt-by-association classifier using shared annotation relationships alone, in contrast to 0.24 using only direct gene-gene relationships. By contrast, the FL classifiers for BP and CC attributes with 101 to 300 genes yielded precision-recall areas of 0.169 and 0.271, respectively, using only shared annotation relationships - compared with 0.373 and 0.391, respectively, for the FL classifiers using only direct relationships. It is intuitively reasonable that shared annotation with protein motifs would be most useful for inferring similar molecular function rather than similar BP and CC attributes, and that direct relationships such as protein interaction would be more useful for inferring similar BP and CC annotation. The FL classifier variant that used both shared annotation and direct relationships outperformed variants using either type of relationship alone, especially for predicting MF attributes.
+###end p 51
+###begin p 52
+The RF guilt-by-profiling classifier substantially outperformed the best FL guilt-by-association classifier in predicting MF attributes. For example, the precision-recall area of the RF classifier for MF attributes with specificity of 11 to 30 genes was 0.557, in contrast to 0.383 for the best FL classifier, suggesting that the presence of particular sequence motifs (or combinations of sequence motifs) is more helpful in inferring molecular function than are gene-gene relationships. In predicting BP and CC attributes, the opposite was true. The FL classifier outperformed the RF classifier in predicting BP and particularly in predicting CC attributes. For example, for CC attributes with 11 to 30 genes, the precision-recall area of the best FL classifier was 0.465, in contrast to 0.377 by the RF classifier. For BP attributes with 11 to 30 genes, the area for the best FL classifier was 0.359, compared with 0.306 by the RF classifier.
+###end p 52
+###begin p 53
+###xml 74 87 74 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 166 167 166 167 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 178 179 178 179 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T6">6</xref>
+###xml 344 357 344 357 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 602 615 602 615 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+By combining the guilt-by-profiling and guilt-by-association classifiers, Funckenstein generally outperforms either classifier alone in all three GO branches (Figure 3 and Table 6), and the combination shows particular synergy for BP and CC attributes. For example, for BP attributes with 31 to 100 genes, the precision-recall area of the best Funckenstein classifier is 0.454, compared with 0.349 by the best individual classifier, a 30% improvement. For CC attributes with 31 to 100 genes, the precision-recall area increases by 18% from 0.496 for the best individual classifier to 0.586 by the best Funckenstein classifier. The improvement for MF attributes is not substantial, with the best performance coming from the RF classifier, which relies on the presence or absence of protein motif patterns.
+###end p 53
+###begin p 54
+###xml 24 37 24 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 120 133 120 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 305 318 305 318 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+Interestingly, the best Funckenstein classifier is not based on the best guilt-by-association component classifier. The Funckenstein variant based on the FL classifier using only direct relationships excels in most GO categories, and is particularly superior for MF attributes. Consequently, we chose the Funckenstein with guilt-by-association classifier using only direct relationships as our final predictor. As discussed above for MIPS function predictions, it appears that complementarity of individual classifiers is more important than use of individually optimized component classifiers.
+###end p 54
+###begin p 55
+###xml 21 34 21 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 131 144 131 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 590 603 590 603 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+The final version of Funckenstein achieves high prediction precision in predicting GO terms. For example, at a recall rate at 50%, Funckenstein achieves a prediction precision for GO terms with 101 to 300 genes of 48%, 89% and 64% for BP, MF and CC branches, respectively. In all three branches, it is clear that these precision levels could greatly facilitate the choice of candidate genes for follow-up experiments - precision levels of only approximately 3% would be expected from unguided 'brute force' experimentation. For the most specific GO terms annotated with only 3 to 10 genes, Funckenstein still achieves (at 50% recall) precision rates of 14%, 59%, and 73% for BP, MF, and CC branches, respectively, which may be compared with a corresponding unguided precision of approximately 0.09%.
+###end p 55
+###begin p 56
+Because there were no experimentally determined gene-gene relationships for any dubious genes in our data set, performance of the above-mentioned classifiers was based on verified and uncharacterized protein-coding genes (5,790 genes in total). To generate scores for dubious genes, we used scores obtained by the guilt-by-profiling classifier alone. This resulted in a total of 15,569,760 quantitative prediction scores (2,455 GO terms x 6,368 genes).
+###end p 56
+###begin p 57
+###xml 496 497 496 497 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+To investigate trends associated with verified, uncharacterized, or dubious genes, we counted the number of predictions for genes of each type that fell into each of ten prediction score intervals. Based on the correspondence of prediction score to observed precision, these intervals were chosen to have an expected precision of 0 to 0.1, 0.1 to 0.2, and so on. Within each interval, we compared the number of predictions for verified or uncharacterized genes with that of dubious genes (Figure 4). As expected, uncharacterized and verified genes tended to have higher precision scores than dubious genes, with verified genes tending to have the best scores.
+###end p 57
+###begin p 58
+Prediction scores for 'verified', 'uncharacterized', and 'dubious' genes. For 'verified' (red) or 'uncharacterized' (blue) genes, the log ratio of the number of predictions within each score interval (relative to the number for 'dubious' genes) is shown.
+###end p 58
+###begin p 59
+###xml 18 19 18 19 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 133 134 133 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+We show in Figure 5 the impact of different evidence types on prediction performance of the guilt-by-profiling classifier. In Figure 6, we show an example decision tree of the guilt-by-association classifier. Detailed discussion of these two figures can be found in the Discussion section.
+###end p 59
+###begin p 60
+###xml 387 393 387 393 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(a-l) </bold>
+The average frequency of each type of gene characteristic among the five most important variables (see Materials and methods for the variable performance measure): phenotype (brown); protein complex and/or cellular localization (blue); transcription regulation (green); and protein sequence pattern (red). The gene characteristic types are organized according to their order in Table 3. (a-l) Plots are organized according to GO branch and GO term specificity. GO, Gene Ontology.
+###end p 60
+###begin p 61
+An example of a PDT used to generate a FL graph. This example was trained based on annotations of those BP GO terms that are currently annotated to 3 to 10 genes. BP, biological process; FL, functional linkage; PDT, probabilistic decision tree.
+###end p 61
+###begin title 62
+Literature-based evaluation of novel GO function predictions
+###end title 62
+###begin p 63
+###xml 217 218 217 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 220 231 220 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 217 230 <span type="species:ncbi:4932">S. cerevisiae</span>
+In calculating precision and recall by cross-validation, only predictions corresponding to currently known GO annotations were counted as 'true'. This is conservative in that our current knowledge of gene function in S. cerevisiae is far from complete, and some predictions considered to be 'false' may actually be true. A high-scoring prediction that is 'false' is most appropriately viewed as a novel prediction. Indeed, novel predictions are the most interesting product of a quantitative gene annotation system.
+###end p 63
+###begin p 64
+To assess the best-scoring novel predictions according to current literature, we selected 120 high-scoring novel predictions (the top 10 from each of the 12 GO categories). Within each GO category, we selected predictions in order of score. To avoid over-weighting particular genes or GO terms in our evaluation, we excluded predictions involving a gene or GO term already associated with a higher-scoring prediction within the same category of GO terms. Each novel prediction was assessed by an expert curator within the SGD group (JP, with guidance from JMC).
+###end p 64
+###begin p 65
+###xml 577 578 577 578 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T7">7</xref>
+Each prediction was assigned with one of the following labels: A, 'known correct', that is, having strong supporting evidence in the literature that was not yet captured by a GO annotation in SGD; B, 'likely true', that is, having supporting evidence that is inconclusive; C, 'unclear'; D, 'unlikely to be true', that is, having evidence which either mitigates against the prediction or which suggests an incompatible annotation; or E, 'highly unlikely', that is, having strong evidence that contradicts the association or supports a clearly incompatible annotation (see Table 7 for more detail). We consider predictions labeled 'A' as known correct predictions, and predictions with either 'A' or 'B' as supported.
+###end p 65
+###begin p 66
+Categories for expert classification of novel predictions
+###end p 66
+###begin p 67
+###xml 5 19 5 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces </italic>
+SGD, Saccharomyces Genome Database.
+###end p 67
+###begin p 68
+###xml 48 50 48 50 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7a</xref>
+Results of the assessment, summarized in Figure 7a, show the proportion of novel predictions that are known correct in different GO branches. The fractions of top-scoring predictions that are supported were comparable in each of the three branches - 63%, 60% and 48% for BP, MF and CC GO terms, respectively. The fractions of top-scoring predictions that are known correct were 63%, 35% and 45% for BP, MF and CC attributes, respectively. We note that the top-scoring novel BP predictions were confirmed more frequently than MF and CC predictions (the reverse of performance order observed in cross-validation assessment).
+###end p 68
+###begin p 69
+###xml 169 173 169 173 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(a) </bold>
+###xml 267 271 267 271 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(b) </bold>
+Assessment of 120 novel predictions by an expert curator. Assessments were either 'known correct', 'likely true', 'unclear', 'unlikely to be true' or 'highly unlikely'. (a) For each of the three GO branches, the proportion of novel predictions given each assessment. (b) For each specificity level, the proportion of novel predictions given each assessment. GO, Gene Ontology.
+###end p 69
+###begin p 70
+The number of 'known correct' predictions is a conservative estimate of the actual number of correct predictions, since supporting evidence may not be available in the literature. Therefore, the number of predictions that are actually correct is estimated to be between the number of predictions labeled 'A' and the number labeled either 'A', 'B', or 'C'. Thus, our estimates for the true rates of success among top novel predictions were 63%, 35% to 65%, and 45% to 50% for BP, MF and CC GO terms, respectively.
+###end p 70
+###begin p 71
+###xml 122 124 122 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7b</xref>
+###xml 263 275 263 275 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+We also examined the success rate of novel predictions as a function of the specificity of the GO terms predicted (Figure 7b). The success rates were 33% to 43% and 20% to 27% for GO terms with specificity 11 to 30 and 3 to 10, respectively. As one might expect, Funckenstein's precision for novel predictions rose substantially for more general GO terms: 73% to 86% and 63% to 71% for GO terms with specificity 101 to 300 and 31 to 100, respectively.
+###end p 71
+###begin p 72
+###xml 79 80 79 80 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 452 458 452 458 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ARG80 </italic>
+###xml 484 490 484 490 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ARG80 </italic>
+###xml 651 652 651 652 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 819 824 819 824 <italic xmlns:xlink="http://www.w3.org/1999/xlink">BPT1 </italic>
+Top novel predictions and their evaluations are listed in Additional data file 1. Only 2 out of these 120 predictions were made for 'uncharacterized' genes, and none were made for dubious genes. Among these 120 predictions, 103 are refinements of original annotations, that is, the target gene has already been annotated with an ancestor GO term of the predicted GO. For example, the correct novel prediction of 'DNA bending activity' (GO:0008301) for ARG80 was a refinement, in that ARG80 was previously annotated with 'DNA binding' (GO:0003677), the direct parent term of 'DNA bending activity'. The remaining 17 predictions in Additional data file 1 have no annotated ancestor GO terms assigned to the target gene except the root GO term, and are, therefore, particularly interesting novel predictions. For example, BPT1 was correctly predicted to have 'ATPase activity, coupled to transmembrane movement of substances' (GO:0042626), and had not previously been annotated with any ancestor of this GO term. Interestingly, out of these 17 particularly interesting novel predictions, 13 were ranked by a SGD expert as 'known true' or 'likely to be true'.
+###end p 72
+###begin title 73
+A resource for browsing predictions and underlying evidence
+###end title 73
+###begin p 74
+###xml 215 217 215 217 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+So that researchers may browse predictions and gain intuition about the evidence underlying specific predictions, we developed an online resource allowing browsing by GO term or gene. This is publicly available at [33].
+###end p 74
+###begin title 75
+Discussion
+###end title 75
+###begin title 76
+Validation of a method combining guilt-by-profiling and guilt-by-association
+###end title 76
+###begin p 77
+###xml 4 17 4 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 151 164 151 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 279 281 279 281 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1b</xref>
+The Funckenstein method yielded substantial improvement over MRF-NB, a previous method combining guilt-by-profiling with guilt-by-association. Indeed, Funckenstein achieved a higher prediction precision across all ranges of recall when applied to the same benchmark data (Figure 1b).
+###end p 77
+###begin p 78
+###xml 79 92 79 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+Here we generated a more up-to-date collection of integrated data, and applied Funckenstein to predict more specific functional terms from the GO vocabulary. The precision versus recall performance of these predictions was assessed by cross-validation and (for top novel predictions) by a follow-up analysis of the literature.
+###end p 78
+###begin p 79
+The results suggest that these predictions could be very useful in guiding experimentalists to promising candidate genes. Even the most challenging GO category, highly specific BP terms, yielded a precision of 14% at 50% recall in cross-validation assessment. Importantly, even predictions with 14% (or lower) precision can be extremely useful. To put 14% precision into perspective, if predictions were made at random for a GO term with approximately 6 genes left to be identified, we would expect a precision at 50% recall of approximately 0.1%. Thus, predictions with 14% precision at 50% recall represent a 140-fold increase in the 'hit rate' compared with random testing (which is the rate that would be achieved by an experimentalist using the 'brute force' approach of testing all genes).
+###end p 79
+###begin p 80
+###xml 3 15 3 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+###xml 233 235 233 235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 454 456 454 456 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+In Funckenstein, both guilt-by-profiling and guilt-by-association classifiers were based on a decision tree model. Decision-tree based classifiers offer some advantages over other machine learning algorithms. For example, unlike NB [34], decision trees do not assume conditional independence between different data types. Decision trees can also provide intuition for the reasoning behind predictions more readily than support vector machine approaches [35]. In addition, decision trees have good scaling properties in terms of running time and memory usage, which is an important issue when considering thousands of gene characteristics for thousands of genes, and multiple biological relationships among millions of gene pairs.
+###end p 80
+###begin p 81
+###xml 23 36 23 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 169 171 169 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 296 298 296 298 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 327 328 327 328 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+Much of the success of Funckenstein can be attributed to the RF classifier in the guilt-by-profiling classification. The RF classifier is an ensemble of decision trees [27], which has proven to be superior to regular decision trees in many cases, for example, in predicting protein interactions [36]. As we can see from Figure 1, if we had used the simpler PDT rather than the RF classifier, we would not have gained much improvement over MRF-NB. The fact that the guilt-by-association classifier was based on a PDT suggests that further improvements could be obtained using the RF method to obtain the functional linkage graph used in guilt-by-association.
+###end p 81
+###begin p 82
+###xml 53 65 53 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+###xml 359 371 359 371 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+###xml 400 401 400 401 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 403 416 403 416 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 537 550 537 550 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+The guilt-by-association classifier was important to Funckenstein's success, especially in predicting BP and CC attributes. While performance of the guilt-by-association component classifier can be improved by transforming gene characteristics into gene-gene relationships, this does not necessarily lead to better performance in the follow-up integration by Funckenstein. Indeed, as shown in Figure 3, Funckenstein with the FL classifier that used only experimentally determined gene-gene relationships achieved better performance than Funckenstein using the version of FL that performed best by itself. Thus, to achieve the best overall performance, it may be important to integrate component classifiers using complementary input features rather than using the input features that optimize performance of each component classifier alone.
+###end p 82
+###begin title 83
+The use of a FL graph significantly improves the performance of guilt-by-association in predicting specific GO functions
+###end title 83
+###begin p 84
+###xml 727 729 727 729 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+In our benchmark study predicting MIPS functions, the guilt-by-profiling classifier played a more dominant role than guilt-by-association. In predicting GO terms, however, the contribution of guilt-by-association was more substantial. This improvement can be attributed both to the increased number of interactions and inclusion of additional relationship types in the GO term prediction effort, and to the fact that the GO terms were generally more specific. When the benchmark data set for MRF-NB was established, the total number of relationships, including gene expression correlation and co-membership within a protein complex, was only 9,976. By contrast, our GO predictions used 55,039 interactions reported by BioGRID [37]. The number of relationship types also increases from 4 when predicting MIPS functions to 23 when predicting GO terms.
+###end p 84
+###begin p 85
+We also found that the relative contribution of guilt-by-association in GO term predictions increases as GO terms become more specific. This coincides with the decreased performance of the guilt-by-profiling RF classifier for more specific GO terms, for which fewer positive training examples (that is, genes previously annotated with the GO term) are available. By contrast, guilt-by-association has the potential to be successful given only a single positive training example gene with a given GO term, since the 'transfer rules' are learned from the many GO terms within each GO category.
+###end p 85
+###begin p 86
+The guilt-by-association classifier performs well for both CC and BP GO terms, and even outperforms the RF classifiers in some of the CC and BP subcategories; however, its performance is much poorer in the MF categories than that of the RF classifier. This may be explained by the fact that CC and BP GO terms more often have corresponding relationships with other genes in the genome, while the MF GO terms focus on describing the catalytic activity or structural role of an individual protein.
+###end p 86
+###begin title 87
+Assessing the value of different evidence types in predicting function
+###end title 87
+###begin p 88
+###xml 148 150 148 150 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+The RF classifier is not only useful in prediction, but can also be used to assess the value of particular variables in inferring a given function [27] (see Materials and methods). By ranking gene characteristics according to their importance score, we gain intuition about the gene characteristics that were most useful for inferring a particular function.
+###end p 88
+###begin p 89
+###xml 320 321 320 321 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 440 442 440 442 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 491 493 491 493 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 571 576 571 576 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 673 678 673 678 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 810 815 810 815 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 988 993 988 993 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+For each GO term, we identified the five variables that were most useful in the corresponding RF classifier (see Materials and methods for details). Within each of the 12 GO categories, we then calculated the frequency with which each gene characteristic type was observed among the set of most useful variables (Figure 5). For GO terms assigned to 31 or more genes, we find the protein subcellular localization study by Huh and coworkers [21] and a phenotyping study by Lum and colleagues [19] to be the most useful sources of gene characteristics. In addition, the Huh et al. study was the most useful type of gene characteristic in predicting CC GO terms, while the Lum et al. study was the most useful gene characteristic type in prediction of BP and MF GO terms. It is intuitively reasonable that the Huh et al. study of subcellular localization should be useful in predicting CC GO terms, since CC GO terms often correspond directly to subcellular localizations measured within Huh et al.
+###end p 89
+###begin p 90
+###xml 47 52 47 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 338 343 338 343 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+It is easy to rationalize the value of the Lum et al. phenotyping study in predicting BP GO terms, since genes within the same biological pathway or process are known to often exhibit similar phenotypes. However, it was surprising to find that a phenotyping study was dominant in predicting general molecular functions. Phenotypes in Lum et al. often correspond to the many genes, so these phenotypes may be useful in combination with other terms, even if the Lum phenotypes alone are not sufficient to predict the target GO term accurately.
+###end p 90
+###begin p 91
+###xml 98 99 98 99 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 101 112 101 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 98 111 <span type="species:ncbi:4932">S. cerevisiae</span>
+Some gene characteristics may also be negative predictors of molecular function. For example, 124 S. cerevisiae genes are annotated with 'RNA polymerase II transcription factor activity' (GO:0003702). Among 1,453 genes with the gene characteristic 'Huh:nucleus', 106 are annotated with the target GO term; by contrast, among the remaining genes without this characteristic, only 18 are annotated with the target GO term, so that not having 'Huh:nucleus' is particularly valuable as a 'negative predictor' of GO:0003702.
+###end p 91
+###begin p 92
+###xml 499 500 499 500 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 502 513 502 513 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 937 938 937 938 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 940 951 940 951 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 1101 1102 1101 1102 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 1104 1115 1104 1115 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 1234 1235 1234 1235 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 1237 1248 1237 1248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 499 512 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 937 950 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 1101 1114 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 1234 1247 <span type="species:ncbi:4932">S. cerevisiae</span>
+For predicting specific GO terms assigned to 30 or fewer genes, we find no gene characteristic type dominates in terms of variable importance; almost all gene characteristic types are represented among the most useful variables of at least one GO category. Yet there is a tendency for protein sequence patterns to become more useful as GO terms become more specific, within each of the three GO branches. For example, the MF term 'aldehyde reductase activity' (GO:0004032) is annotated to only four S. cerevisiae genes, each sharing a Prosite sequence motif 'PS00063' that is unique to these four genes, making it the best predictor of this function. In another example, the BF term 'negative regulation of microtubule polymerization or depolymerization' (GO:0031111) is assigned to eight genes, six with a conserved DH domain (Interpro 'IPR000219') involved in Rho GTPase interaction and activation that has been assigned to only seven S. cerevisiae genes. A third example is the CC term 'proteasome core complex, alpha-subunit complex (sensu Eukaryota)' (GO:0019773) that has been assigned to seven S. cerevisiae genes. Each shares a protease alpha unit domain, Interpro 'IPR000426', that has been assigned only to these same seven S. cerevisiae genes. Although protein sequence information is valuable in all GO branches and is increasingly useful for more specific GO terms, it is far from dominant in terms of variable importance. Thus, it is necessary to integrate multiple sources of experimental evidence.
+###end p 92
+###begin p 93
+###xml 107 108 107 108 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 160 165 160 165 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 172 177 172 177 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 188 193 188 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1067 1069 1067 1069 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 1103 1104 1103 1104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+The prediction importance of gene characteristics within the same class (each indicated by color in Figure 5) can be very different. For example, data from Lum et al., Huh et al., Roberts et al., and Interpro are, respectively, the best characteristic types within each of the five characteristic classes. Within the same characteristic class, we can assess value of variables in predicting gene function as one surrogate measure of the corresponding quality of each experiment. It must be noted that this analysis does not reveal the reasons for improved value in predicting function, which may result from differences in sensitivity, specificity or coverage of the corresponding experiments. Furthermore, a data set that is least useful for predicting function may be ideal for other purposes. With these caveats, we note one example from the comparison of characteristic types: among protein subcellular localization studies, gene characteristics derived from the study by Huh and coworkers study were substantially more useful than those of Kumar and colleagues [38] in all 12 GO categories (Figure 5).
+###end p 93
+###begin p 94
+###xml 347 348 347 348 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+It is less clear how one should establish the importance of particular variables in generating the FL graph used in guilt-by-association. However, we can still obtain some intuition by examining the PDT classifier used to generate the FL graph. For example, in the PDT classifier developed for the most specific BP GO category, we can see (Figure 6) that a protein pair with 'Affinity capture-MS', 'Affinity capture-western', and 'two-hybrid' evidence is more likely to share a specific BP function than another pair with 'Affinity capture-MS' and only one of 'Affinity capture-western' or 'two-hybrid' evidence. The corresponding number of functionally linked ('+') and non-functionally linked ('-') gene pairs within the training set were (138+, 580-) for pairs with all three supporting evidence types. The decision tree structure is slightly different in different GO categories, with more general GO categories having more complex structures. However, the 'Affinity capture-MS' tends to be a top choice within decision trees used to generate the FL graph.
+###end p 94
+###begin title 95
+Directions for further improvement
+###end title 95
+###begin p 96
+###xml 26 39 26 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 195 208 195 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 747 748 747 748 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1010 1014 1010 1014 <italic xmlns:xlink="http://www.w3.org/1999/xlink">VPH1</italic>
+###xml 1016 1020 1016 1020 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SUI2</italic>
+###xml 1022 1026 1022 1026 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SPT7</italic>
+###xml 1032 1036 1032 1036 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TIF5</italic>
+###xml 1132 1136 1132 1136 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SFH1</italic>
+###xml 1138 1142 1138 1142 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MSH3</italic>
+###xml 1144 1148 1144 1148 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TPS2</italic>
+###xml 1150 1154 1150 1154 <italic xmlns:xlink="http://www.w3.org/1999/xlink">LSM1</italic>
+###xml 1156 1160 1156 1160 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MSH6</italic>
+###xml 1166 1170 1166 1170 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MLH2</italic>
+###xml 1418 1419 1418 1419 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1435 1440 1435 1440 <italic xmlns:xlink="http://www.w3.org/1999/xlink">VPH1 </italic>
+###xml 1668 1673 1668 1673 <italic xmlns:xlink="http://www.w3.org/1999/xlink">VPH1 </italic>
+###xml 1750 1751 1750 1751 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 1753 1764 1753 1764 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 1924 1929 1924 1929 <italic xmlns:xlink="http://www.w3.org/1999/xlink">VPH1 </italic>
+###xml 2107 2109 2107 2109 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 1750 1763 <span type="species:ncbi:4932">S. cerevisiae</span>
+Novel predictions made by Funckenstein were sufficiently accurate to be useful in guiding experimental research according to current literature. However, we would like to understand why some top Funckenstein predictions were ranked as 'highly unlikely' by the SGD expert. Because highly specific terms are expected to be most useful to experimentalists, we focused on predictions for the most specific GO categories (assigned to 3 to 10 genes). Among the 30 such novel predictions of the most specific GO categories, 10 were considered 'highly unlikely' in light of current literature. These ten fell within each of the GO branches (three, five, and two predictions corresponding to MF, CC, and BP branches, respectively; see Additional data file 1). According to the contribution of the RF and guilt-by-association classifier to the final prediction scores of these ten predictions, we can divide them into two classes: predictions with low RF but high guilt-by-association scores (corresponding to the genes VPH1, SUI2, SPT7, and TIF5); and predictions with high RF but low guilt-by-association scores (corresponding to the genes SFH1, MSH3, TPS2, LSM1, MSH6, and MLH2). Predictions in the former class all corresponded to CC GO terms. In each of these four cases, genes were known to encode members of a protein complex, and membership in a different subunit of the same complex was predicted (Additional data file 1). For example, VPH1 was predicted to have function 'hydrogen-transporting ATPase V1 domain' (GO:0000221), while according to SGD it is a 'subunit of vacuolar-ATPase V0 domain' (a different subunit of the same complex). Thus, it is no surprise that VPH1 was found in multiple high-throughput experiments to interact with all eight S. cerevisiae genes in the V1 subunit, leading to a high guilt-by-association score and a mistaken prediction. This mistake might have been avoided, given the knowledge that VPH1 is annotated to the ATPase V0 domain. However, we had avoided using GO terms to predict other GO terms, to avoid complications arising from strong dependencies between GO terms [23]. This example suggests, however, that we might gain by using GO terms that are strongly anti-correlated with the target GO term as a predictor.
+###end p 96
+###begin p 97
+###xml 164 169 164 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SFH1 </italic>
+###xml 280 285 280 285 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SFH1 </italic>
+###xml 428 429 428 429 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 431 442 431 442 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 702 707 702 707 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SFH1 </italic>
+###xml 719 720 719 720 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 722 733 722 733 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 811 824 811 824 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 1118 1120 1118 1120 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 428 441 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 719 732 <span type="species:ncbi:4932">S. cerevisiae</span>
+We also examined six top-scoring predictions with high RF but low guilt-by-association scores. All six can be attributed to conserved protein domains. For example, SFH1 was predicted to have 'phosphatidylinositol transporter activity' (GO:0008526), while SGD annotation describes SFH1 as a 'putative homolog of Sec14p, which is a phosphatidylinositol/phosphatidylcholine transfer protein involved in lipid metabolism'. All five S. cerevisiae genes currently annotated with 'phosphatidylinositol transporter activity' share the Pfam patterns 'PF00650 (CRAL/TRIO domain)' and 'PF03765 (CRAL/TRIO N-term domain)', as well as the Prosite pattern 'PS50191 (CRAL-TRIO lipid binding domain profile)'. Because SFH1 is the only S. cerevisiae gene other than these five genes to have these domains and sequence patterns, Funckenstein assigned the target function with very high confidence. However, a previous study was unable to record any detectable phosphatidylinositol/phosphatidylcholine transfer activity for Sfh1p in cytosolic extracts, even when recombinant Sfh1p was added as a supplement at micromolar concentrations [39], although they could not exclude the possibility that the activity might exist under some other condition. Assuming that this was a mis-prediction, it is not clear how such a mis-prediction might be avoided in future.
+###end p 97
+###begin title 98
+Conclusion
+###end title 98
+###begin p 99
+###xml 46 60 46 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein' </italic>
+###xml 150 163 150 163 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 258 259 258 259 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 261 272 261 272 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 305 318 305 318 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 377 378 377 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 380 391 380 391 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 418 431 418 431 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 522 535 522 535 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 258 271 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 377 390 <span type="species:ncbi:4932">S. cerevisiae</span>
+We have developed a combined algorithm named 'Funckenstein' that combines both gene characteristics and gene-gene relationships to predict functions. Funckenstein shows substantial improvement over a promising previous method in predicting MIPS functions of S. cerevisiae genes. We have therefore applied Funckenstein to systematically predict 2,455 more specific GO terms for S. cerevisiae genes. In cross-validation Funckenstein achieves high precision within all three GO branches, even for the most specific GO terms. Funckenstein has generated a large number of novel predictions that can be readily explored by experimentalists. The assessment of the top 120 novel predictions by an SGD expert suggests that the resulting novel predictions have the potential to be extremely useful to experimentalists.
+###end p 99
+###begin title 100
+Materials and methods
+###end title 100
+###begin title 101
+Prediction methods
+###end title 101
+###begin title 102
+The probabilistic decision tree classifier
+###end title 102
+###begin p 103
+###xml 164 166 164 166 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 323 325 323 325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 326 328 326 328 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 637 639 637 639 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+The PDT is a simple and effective tool for modeling the probability of one variable describing an object conditioned on other known characteristics of that object [40]. The decision tree is a graph describing the recursive division of a set of objects into successively smaller partitions. For a detailed description, see [28,40]. In short, all objects in the training set are initially assigned to the root node. Objects are recursively split into smaller partitions on the basis of the value of a particular predictive variable. The predictive variable used to split objects at each node was chosen based on the Gini impurity measure [28], a measure of uniformity of objects with respect to a given variable of interest. To avoid overfitting, we implemented an 'early stopping' criterion to decide whether the next proposed split provides sufficient information to justify the accompanying increase in model complexity. For the predictive variable offering the largest reduction in Gini impurity, we compute the corresponding hypergeometric distribution probability:
+###end p 103
+###begin p 104
+
+###end p 104
+###begin p 105
+###xml 6 8 6 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 61 62 61 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 62 64 62 64 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 62 64 62 64 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>T </italic></sub>
+###xml 68 69 68 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 69 71 69 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink">F </italic>
+###xml 69 71 69 71 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>F </italic></sub>
+###xml 187 188 187 188 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 188 191 188 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TL </italic>
+###xml 188 191 188 191 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>TL </italic></sub>
+###xml 195 196 195 196 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 196 198 196 198 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FL</italic>
+###xml 196 198 196 198 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>FL</italic></sub>
+###xml 200 201 200 201 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 201 204 201 204 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TR </italic>
+###xml 201 204 201 204 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>TR </italic></sub>
+###xml 208 209 208 209 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 209 212 209 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FR </italic>
+###xml 209 212 209 212 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>FR </italic></sub>
+###xml 419 421 419 421 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P </italic>
+###xml 526 528 518 520 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 568 570 560 562 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+where N is the total number of genes in the parent node, and NT and NF are the total number of genes in the parent node annotated with and without the target GO term, respectively, while NTL and NFL, NTR and NFR are the corresponding numbers at the left and right daughter node given the split, respectively. We reject the split and determine the node to be a 'leaf node' if the hypergeometric distribution probability P > alpha (with alpha = 0.01 except where otherwise specified). We compute the probability of a given gene i to be annotated with the target GO term j as:
+###end p 105
+###begin p 106
+
+###end p 106
+###begin p 107
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 7 9 7 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 7 9 7 9 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>T </italic></sub>
+###xml 13 14 13 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 14 16 14 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">F </italic>
+###xml 14 16 14 16 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>F </italic></sub>
+###xml 38 39 38 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 39 41 39 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 39 41 39 41 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>T </italic></sub>
+where NT and NF are as defined above, PT is the overall fraction of genes annotated with the target GO term and Psi is the number of pseudocounts used to correct for small sample sizes (Psi = 1 for all results described).
+###end p 107
+###begin title 108
+Random forest classifier
+###end title 108
+###begin p 109
+###xml 612 614 612 614 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 809 811 809 811 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+Whereas the PDT classifier produces only one tree as a predictive model for a given GO term, a RF classifier is composed of an ensemble of many decision trees. Each decision tree in the 'forest' differs from the PDT in that: training genes at the root node are selected by bootstrap resampling (sampling with replacement) from the full training set; at every node, only a fraction of available object characteristics are assessed as candidates for splitting the next node; and there is no early-stopping criterion (since the process of averaging over diverse trees is an intrinsic safeguard against overfitting [27]). The score for a given candidate gene and GO term is then the fraction of trees trained on that GO term that classify that gene as positive. More details on the RF classifier can be found in [27].
+###end p 109
+###begin p 110
+###xml 451 453 451 453 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P </italic>
+###xml 538 540 538 540 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P </italic>
+Because the extremely large number of predictive variables available in our data set (8.848 for the GO term prediction study) impacts the memory and time efficiency of the RF method, we introduced modifications to the RF method. We performed feature selection to eliminate variables that were marginally uninformative. For feature selection we examined the set of unique genes at the root node and computed the hypergeometric distribution probability P (as defined in the PDT description above), retaining only those characteristics with P < alpha. Because of the bootstrap resampling in selecting training genes, the selected features may vary between trees. We also imposed the same early stopping criterion and method for calculating a probability score at each leaf node that were described for PDTs above. The final RF score for a given gene and GO term was then the average of the probability scores at leaf nodes corresponding to that gene across all trees in the forest trained on that GO term.
+###end p 110
+###begin p 111
+There are three free parameters of the RF classifier: the number of random variables at each split, the threshold for feature selection, and the threshold for early stopping. Optimization of these parameters is described below in the 'Training and cross-validation' section.
+###end p 111
+###begin p 112
+###xml 346 348 346 348 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+We also estimated the importance of each variable in predicting each given GO term. Variable importance was computed using Gini impurity (also used above in the context of PDTs). Specifically, importance of a given variable is the sum of the reduction in Gini impurity over all appearances of that variable over all decision trees in the forest [27].
+###end p 112
+###begin title 113
+Guilt-by-association classifier
+###end title 113
+###begin p 114
+###xml 263 265 263 265 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 1195 1197 1195 1197 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-8</sup>
+###xml 1240 1241 1240 1241 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 1243 1254 1243 1254 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 1240 1253 <span type="species:ncbi:4932">S. cerevisiae</span>
+Guilt-by-association was performed using a FL graph, in which each edge in the graph is assigned a weight related to the probability that two genes share a common GO term whose specificity (number of genes) is within the specificity range of a given GO category [29]. The FL graph is then used to assign scores to particular gene and GO term combinations. We produced a separate FL graph for each of 12 GO categories, corresponding to each combination of three GO branches (BP, MF, and CC) and four specificity levels (3 to 10, 11 to 30, 31 to 100, and 101 to 300). We used the PDT method to produce each FL graph. Unlike PDTs predicting specific GO terms where the objects under study are genes, here the objects of interest are gene pairs. The variable to be predicted for each gene pair is the answer to the question 'are these two proteins functionally linked, that is, do they share any one of the specific GO terms in a specified GO category?' The attributes used for this classifier are gene-gene relationships, such as protein or genetic interactions. To limit over-fitting, we used the same PDT early-stopping criterion described in the context of function prediction, with threshold 10-8. Thus, for each GO category, each pair of S. cerevisiae genes is assigned a FL 'weight' reflecting the probability that the gene pair shares a specific GO term in that category. To score the annotation of a particular candidate gene with a particular GO term, we retrieve FL weight scores for all pairings of the candidate gene with genes known to have the GO term and average the top three FL scores.
+###end p 114
+###begin title 115
+Combining guilt-by-profiling and guilt-by-association scores
+###end title 115
+###begin p 116
+###xml 155 157 155 157 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 179 180 179 180 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 283 284 283 284 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 284 287 284 287 <italic xmlns:xlink="http://www.w3.org/1999/xlink">GBP</italic>
+###xml 284 287 284 287 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>GBP</italic></sub>
+###xml 288 289 288 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 291 292 291 292 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 298 299 298 299 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 299 302 299 302 <italic xmlns:xlink="http://www.w3.org/1999/xlink">GBA</italic>
+###xml 299 302 299 302 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>GBA</italic></sub>
+###xml 303 304 303 304 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 306 307 306 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 362 363 362 363 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 364 365 364 365 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 367 368 367 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+Guilt-by-profiling and guilt-by-association classifier scores are combined by a simple logistic regression model with one free parameter. For a given gene i and a target function j, let the probability score computed by the guilt-by-profiling and guilt-by-association classifiers be PGBP(i, j) and PGBA(i, j), respectively, then the corresponding combined score P(i, j) is defined as:
+###end p 116
+###begin p 117
+
+###end p 117
+###begin p 118
+###xml 6 8 6 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w </italic>
+where w is optimized over the range from 0 to 1 based on area under the precision versus recall curve obtained in cross-validation.
+###end p 118
+###begin title 119
+Training and cross-validation
+###end title 119
+###begin p 120
+For both PDT and RF classifiers, we performed ten-fold cross-validation to obtain a probability score for each gene and used these scores to assess performance. For the RF classifier, we obtained an 'out-of-bag' score for every gene. Each tree in the forest uses only approximately 66% of genes in training. Therefore, for each gene we identified the approximately 33% of trees that did not use that gene in training and averaged the scores for that gene to obtain its 'out-of-bag' score.
+###end p 120
+###begin p 121
+###xml 219 221 219 221 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TP</italic>
+###xml 240 242 240 242 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FP</italic>
+###xml 260 262 260 262 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TN</italic>
+###xml 285 287 285 287 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FN</italic>
+###xml 319 322 319 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TP </italic>
+###xml 323 325 323 325 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FP</italic>
+###xml 467 470 467 470 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FN </italic>
+###xml 471 473 471 473 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TN</italic>
+We optimized the free parameters of the RF classifier according to the performance of 'out-of-bag' scores. To evaluate performance of a set of scores, we obtain at multiple score thresholds the number of true positive (TP), false positive (FP), true negative (TN), and false negative (FN) genes at the given threshold. TP (FP) is defined as the number of proteins with a score greater than the threshold, which are (are not) currently annotated with target function. FN (TN) is defined as the number of proteins with a score below the threshold that are (are not) currently annotated with the target function. Thus, we can compute 'precision':
+###end p 121
+###begin p 122
+
+###end p 122
+###begin p 123
+'recall' or 'true positive rate':
+###end p 123
+###begin p 124
+
+###end p 124
+###begin p 125
+and 'false positive rate':
+###end p 125
+###begin p 126
+
+###end p 126
+###begin p 127
+###xml 70 71 70 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 71 81 71 81 <italic xmlns:xlink="http://www.w3.org/1999/xlink">precision </italic>
+###xml 71 81 71 81 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>precision </italic></sub>
+###xml 88 89 88 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 89 95 89 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink">recall</italic>
+###xml 89 95 89 95 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>recall</italic></sub>
+###xml 100 101 100 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 101 106 101 106 <italic xmlns:xlink="http://www.w3.org/1999/xlink">true </italic>
+###xml 101 106 101 106 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>true </italic></sub>
+###xml 113 114 113 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 114 120 114 120 <italic xmlns:xlink="http://www.w3.org/1999/xlink">false </italic>
+###xml 114 120 114 120 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>false </italic></sub>
+Thus, to assess the performance of a given set of scores, we can plot Pprecision versus Precall, or Ptrue versus Pfalse (the latter is often called a ROC curve). Although the ROC curve is widely used in evaluating the performance of a classifier, it is not the best measure for this application. Because annotations are sparse, only very low false positive rates correspond to predictions with a level of precision that is likely to be useful. Therefore, we used the area under the precision-recall curve to optimize the three free parameters of the RF classifier and the single free parameter of the logistic regression procedure used to combine guilt-by-profiling and guilt-by-association scores. We also used the precision-recall curve to compute the 'projected precision' corresponding to a given prediction score. First, we computed its corresponding recall. Then, we identified the maximal precision at or greater than the recall in the precision-recall curve, and used that precision as the 'projected precision' corresponding to a given prediction score.
+###end p 127
+###begin title 128
+Predictions of MIPS functions using a previously defined benchmark data set
+###end title 128
+###begin title 129
+Data sources
+###end title 129
+###begin p 130
+###xml 178 180 178 180 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 356 358 356 358 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 371 372 371 372 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 437 438 437 438 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 440 451 440 451 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 673 674 673 674 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 888 890 888 890 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 437 450 <span type="species:ncbi:4932">S. cerevisiae</span>
+For comparison with the earlier MRF-NB method, we used the benchmark data set to which it was previously applied. This used the MIPS catalog of functional categories ('FunCat') [41]. Although this catalog currently includes 28 top-level functional categories that describe general functions, we used the 13 functional classes derived previously from MIPS [26] (see Table 1 for detailed description). We also predicted only for the 3,588 S. cerevisiae genes annotated with at least one of the 13 function classes, as was done previously. We used the same information used in training the MRF-NB model, including Pfam domain and tandem affinity purification (TAP) complexes [5], protein and genetic interactions derived from MIPS, and gene expression correlation. We downloaded this information from the website corresponding to the previous MRF-NB publication without any post-processing [42].
+###end p 130
+###begin p 131
+###xml 330 332 330 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+We trained PDT and RF guilt-by-profiling classifiers using gene characteristics, that is, protein domain and complex information. The FL graph for the guilt-by-association classifier was trained using protein and genetic interactions from MIPS, gene expression correlation, and TAP complex interaction based on the 'spoke' model [32].
+###end p 131
+###begin title 132
+GO function prediction
+###end title 132
+###begin title 133
+Sources of data
+###end title 133
+###begin p 134
+###xml 44 45 44 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 47 58 47 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 74 76 74 76 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+###xml 394 395 394 395 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 397 408 397 408 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cerevisiae </italic>
+###xml 673 686 673 686 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Mus musculus </italic>
+###xml 972 985 972 985 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein </italic>
+###xml 44 57 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 394 407 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 673 685 <span type="species:ncbi:10090">Mus musculus</span>
+We downloaded associations of GO terms with S. cerevisiae genes from SGD [43] in December 2006. We also downloaded the GO directed acyclic graph structure from the GO database (November 30, 2006 release) and used it to 'propagate' associations so association to a particular GO term was propagated to all ancestral GO terms. We identified 2,530 GO terms that are associated with at least three S. cerevisiae genes according to the propagated annotation. We defined a measure of functional specificity for each GO term by counting the number of genes currently associated with that GO term. Then, following the same strategy that was used in a recent critical assessment of Mus musculus gene functions (unpublished data), we divided these GO terms into 12 subcategories according to GO branches and GO specificities (3 to 10, 11 to 30, 31 to 100, and 101 to 300 genes). The total number of GO terms in these 12 categories was 2,455. The parameters of the RF classifier and Funckenstein were trained independently for each of the 12 GO subsets.
+###end p 134
+###begin p 135
+###xml 168 169 168 169 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 307 309 307 309 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 478 479 478 479 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 658 659 658 659 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 389 394 <span type="species:ncbi:4932">yeast</span>
+For guilt-by-profiling predictions, we collected a large number of gene attributes derived both from sequence analysis and high-throughput experimental data (see Table 3 for details). For guilt-by-association predictions, we downloaded experimentally determined interaction types from the BioGRID database [37]. This database defines 23 protein and genetic interaction types, for example, yeast two-hybrid protein interaction and synthetic lethal genetic interaction (see Table 4 for details), corresponding to a total of 55,039 unique gene pairs with some relationship. We also computed shared annotation relationships for all gene characteristics in Table 3. Within a given class of gene characteristics, a gene pair was considered to have shared annotation if the number of shared characteristics was more than 90% of the number of unique characteristics held by either protein.
+###end p 135
+###begin title 136
+Abbreviations
+###end title 136
+###begin p 137
+###xml 342 356 342 356 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces </italic>
+AUC, area under the ROC curve; BP, biological process; CC, cellular component; FL, functional linkage; GO, Gene Ontology; MF, molecular function; MIPS, Munich Information Center for Protein Sequences; MRF, Markov random field; NB, naive Bayes; PDT, probabilistic decision tree; ROC, Receiver operating characteristic; RF, random forest; SGD, Saccharomyces Genome Database.
+###end p 137
+###begin title 138
+Competing interests
+###end title 138
+###begin p 139
+The authors declare that they have no competing interests.
+###end p 139
+###begin title 140
+Authors' contributions
+###end title 140
+###begin p 141
+WT, LVZ, MT, and FPR conceived the study. WT, MT, LVZ, ODK, and FR developed the methodology for prediction and evaluation. WT, LVZ, and ZW assembled the data. WT performed the analysis. MT and LVZ carried out early variations of the analysis. WT and FDG constructed the website. JP performed analysis of novel predictions with guidance from JMC. WT and FR drafted the manuscript. All authors read and approved the final manuscript.
+###end p 141
+###begin title 142
+Additional data files
+###end title 142
+###begin p 143
+###xml 104 105 104 105 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 179 191 179 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+The following additional data are available with the online version of this paper. Additional data file 1 is a table listing the results of expert evaluation of GO predictions by Funckenstein.
+###end p 143
+###begin title 144
+Supplementary Material
+###end title 144
+###begin title 145
+Additional data file 1
+###end title 145
+###begin p 146
+###xml 39 51 39 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Funckenstein</italic>
+Expert evaluation of GO predictions by Funckenstein.
+###end p 146
+###begin p 147
+Click here for file
+###end p 147
+###begin title 148
+Acknowledgements
+###end title 148
+###begin p 149
+We thank the West Quad Computing Group at Harvard Medical School for computational resources and support. Computational resources were also provided by the National Science Foundation through the TeraGrid program. This work was supported by US National Institutes of Health (NIH) grants HG003224 (FR), HG0017115 (FR), DK071507 (WT), F32 HG004098 (MT), F32 HG02552 (ODK), HG001315 (JP and JMC), and the Keck Foundation (FR). ZW is a Howard Hughes Medical Institute Predoctoral Fellow.
+###end p 149
+###begin p 150
+###xml 43 58 43 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Genome Biology </italic>
+This article has been published as part of Genome Biology Volume 9 Supplement 1, 2008: Quantitative inference of gene function from diverse large-scale datasets. The full contents of the supplement are available online at
+###end p 150
+###begin article-title 151
+###xml 72 97 72 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 66 71 <span type="species:ncbi:4932">yeast</span>
+###xml 72 96 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Comprehensive identification of cell cycle-regulated genes of the yeast Saccharomyces cerevisiae by microarray hybridization.
+###end article-title 151
+###begin article-title 152
+A DNA microarray system for analyzing complex DNA samples using two-color fluorescent probe hybridization.
+###end article-title 152
+###begin article-title 153
+###xml 60 84 60 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 60 84 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+A comprehensive analysis of protein-protein interactions in Saccharomyces cerevisiae.
+###end article-title 153
+###begin article-title 154
+###xml 51 56 <span type="species:ncbi:4932">yeast</span>
+A comprehensive two-hybrid analysis to explore the yeast protein interactome.
+###end article-title 154
+###begin article-title 155
+###xml 31 36 <span type="species:ncbi:4932">yeast</span>
+Functional organization of the yeast proteome by systematic analysis of protein complexes.
+###end article-title 155
+###begin article-title 156
+###xml 50 75 50 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 50 74 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Systematic identification of protein complexes in Saccharomyces cerevisiae by mass spectrometry.
+###end article-title 156
+###begin article-title 157
+How well is enzyme function conserved as a function of pairwise sequence identity?
+###end article-title 157
+###begin article-title 158
+Pfam: clans, web tools and services.
+###end article-title 158
+###begin article-title 159
+InterPro, progress and status in 2005.
+###end article-title 159
+###begin article-title 160
+The PRINTS database: a resource for identification of protein families.
+###end article-title 160
+###begin article-title 161
+The PROSITE database.
+###end article-title 161
+###begin article-title 162
+###xml 45 50 <span type="species:ncbi:4932">yeast</span>
+A network of protein-protein interactions in yeast.
+###end article-title 162
+###begin article-title 163
+###xml 73 78 <span type="species:ncbi:4932">yeast</span>
+Gene function prediction from congruent synthetic lethal interactions in yeast.
+###end article-title 163
+###begin article-title 164
+###xml 26 51 26 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 26 50 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Large-scale prediction of Saccharomyces cerevisiae gene function using overlapping transcriptional clusters.
+###end article-title 164
+###begin article-title 165
+Discovery of uncharacterized cellular systems by genome-wide analysis of functional linkages.
+###end article-title 165
+###begin article-title 166
+Assessment of prediction accuracy of protein function from protein-protein interaction data.
+###end article-title 166
+###begin article-title 167
+Global protein function prediction from protein-protein interaction networks.
+###end article-title 167
+###begin article-title 168
+Mapping Gene Ontology to proteins based on protein-protein interaction data.
+###end article-title 168
+###begin article-title 169
+###xml 84 89 <span type="species:ncbi:4932">yeast</span>
+Discovering modes of action for therapeutic compounds using a genome-wide screen of yeast heterozygotes.
+###end article-title 169
+###begin article-title 170
+Machine learning of functional class from phenotype data.
+###end article-title 170
+###begin article-title 171
+###xml 51 56 <span type="species:ncbi:4932">yeast</span>
+Global analysis of protein localization in budding yeast.
+###end article-title 171
+###begin article-title 172
+STRING: a database of predicted functional associations between proteins.
+###end article-title 172
+###begin article-title 173
+Predicting gene function from patterns of annotation.
+###end article-title 173
+###begin article-title 174
+Functional discovery via a compendium of expression profiles.
+###end article-title 174
+###begin article-title 175
+###xml 39 47 <span type="species:ncbi:99490|species:ncbi:9783|species:ncbi:9785">elephant</span>
+###xml 59 62 <span type="species:ncbi:9606">men</span>
+Gene selection in microarray data: the elephant, the blind men and our algorithms.
+###end article-title 175
+###begin article-title 176
+An integrated probabilistic model for functional prediction of proteins.
+###end article-title 176
+###begin article-title 177
+Random forest.
+###end article-title 177
+###begin article-title 178
+###xml 38 43 <span type="species:ncbi:4932">yeast</span>
+A probabilistic functional network of yeast genes.
+###end article-title 178
+###begin article-title 179
+Naive (Bayes) at forty: The independence assumption in information retrieval.
+###end article-title 179
+###begin article-title 180
+MIPS: a database for genomes and protein sequences.
+###end article-title 180
+###begin article-title 181
+###xml 10 15 <span type="species:ncbi:4932">yeast</span>
+Analyzing yeast protein-protein interaction data obtained from different sources.
+###end article-title 181
+###begin article-title 182
+Yfunc
+###end article-title 182
+###begin article-title 183
+Discovery of biological networks from diverse functional genomic data.
+###end article-title 183
+###begin article-title 184
+Knowledge-based analysis of microarray gene expression data by using support vector machines.
+###end article-title 184
+###begin article-title 185
+Evaluation of different biological data and computational classification methods for use in protein interaction prediction.
+###end article-title 185
+###begin article-title 186
+BioGRID: a general repository for interaction datasets.
+###end article-title 186
+###begin article-title 187
+###xml 32 37 <span type="species:ncbi:4932">yeast</span>
+Subcellular localization of the yeast proteome.
+###end article-title 187
+###begin article-title 188
+###xml 47 52 <span type="species:ncbi:4932">yeast</span>
+Identification of a novel family of nonclassic yeast phosphatidylinositol transfer proteins whose function modulates phospholipase D activity and Sec14p-independent cell growth.
+###end article-title 188
+###begin article-title 189
+The FunCat, a functional annotation scheme for systematic classification of proteins from whole genomes.
+###end article-title 189
+###begin article-title 190
+MRF-NB
+###end article-title 190
+###begin article-title 191
+###xml 0 14 0 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces </italic>
+Saccharomyces Genome Database
+###end article-title 191
+###begin article-title 192
+###xml 86 91 <span type="species:ncbi:4932">yeast</span>
+Chemogenomic profiling: identifying the functional interactions of small molecules in yeast.
+###end article-title 192
+###begin article-title 193
+Integration of chemical-genetic and genetic interaction data links bioactive compounds to cellular target pathways.
+###end article-title 193
+###begin article-title 194
+###xml 0 5 <span type="species:ncbi:4932">Yeast</span>
+Yeast genome-wide drug-induced haploinsufficiency screen to determine drug mode of action.
+###end article-title 194
+###begin article-title 195
+###xml 37 42 <span type="species:ncbi:4932">yeast</span>
+Quantitative genome-wide analysis of yeast deletion strain sensitivities to oxidative and chemical stress.
+###end article-title 195
+###begin article-title 196
+###xml 72 77 <span type="species:ncbi:4932">yeast</span>
+A global view of pleiotropy and phenotypically derived gene function in yeast.
+###end article-title 196
+###begin article-title 197
+Genome-wide location and regulated recruitment of the RSC nucleosome-remodeling complex.
+###end article-title 197
+###begin article-title 198
+###xml 57 62 <span type="species:ncbi:4932">yeast</span>
+Global position and recruitment of HATs and HDACs in the yeast genome.
+###end article-title 198
+###begin article-title 199
+Transcriptional regulatory code of a eukaryotic genome.
+###end article-title 199
+###begin article-title 200
+###xml 39 63 39 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 39 63 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Transcriptional regulatory networks in Saccharomyces cerevisiae.
+###end article-title 200
+###begin article-title 201
+The ProDom database of protein domain families: more emphasis on 3D.
+###end article-title 201
+###begin article-title 202
+TIGRFAMs and Genome Properties: tools for the assignment of molecular function and biological process in prokaryotic genomes.
+###end article-title 202
+###begin article-title 203
+PANTHER version 6: protein sequence and function evolution data with expanded representation of biological pathways.
+###end article-title 203
+###begin article-title 204
+###xml 42 47 <span type="species:ncbi:4932">yeast</span>
+Proteome survey reveals modularity of the yeast cell machinery.
+###end article-title 204
+###begin article-title 205
+###xml 22 27 <span type="species:ncbi:4932">yeast</span>
+Global mapping of the yeast genetic interaction network.
+###end article-title 205
+###begin article-title 206
+###xml 37 61 37 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 31 36 <span type="species:ncbi:4932">yeast</span>
+###xml 37 61 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+A DNA integrity network in the yeast Saccharomyces cerevisiae.
+###end article-title 206
+###begin article-title 207
+###xml 46 51 <span type="species:ncbi:4932">yeast</span>
+Global analysis of protein phosphorylation in yeast.
+###end article-title 207
+###begin article-title 208
+###xml 50 55 <span type="species:ncbi:4932">yeast</span>
+The structural and functional organization of the yeast mediator complex.
+###end article-title 208
+###begin article-title 209
+###xml 52 57 <span type="species:ncbi:4932">yeast</span>
+Exploration of the function and organization of the yeast early secretory pathway through an epistatic miniarray profile.
+###end article-title 209
+###begin article-title 210
+###xml 96 120 96 120 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 96 120 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Four novel suppressors of gic1 gic2 and their roles in cytokinesis and polarized cell growth in Saccharomyces cerevisiae.
+###end article-title 210
+###begin article-title 211
+###xml 64 89 64 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 58 63 <span type="species:ncbi:4932">yeast</span>
+###xml 64 88 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Cumulative mutations affecting sterol biosynthesis in the yeast Saccharomyces cerevisiae result in synthetic lethality that is suppressed by alterations in sphingolipid profiles.
+###end article-title 211
+###begin article-title 212
+###xml 78 102 78 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 78 102 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Suppression of genome instability by redundant S-phase checkpoint pathways in Saccharomyces cerevisiae.
+###end article-title 212
+###begin article-title 213
+###xml 80 88 80 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vitro</italic>
+###xml 29 34 <span type="species:ncbi:4932">yeast</span>
+###xml 63 68 <span type="species:ncbi:4932">yeast</span>
+Functional interaction of 13 yeast SCF complexes with a set of yeast E2 enzymes in vitro.
+###end article-title 213
+###begin article-title 214
+###xml 51 56 <span type="species:ncbi:4932">yeast</span>
+Composition and functional characterization of the yeast spliceosomal penta-snRNP.
+###end article-title 214
+###begin article-title 215
+###xml 62 86 62 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 62 86 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Dissection of filamentous growth by transposon mutagenesis in Saccharomyces cerevisiae.
+###end article-title 215
+###begin article-title 216
+###xml 15 40 15 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 15 39 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+The product of Saccharomyces cerevisiae WHIP/MGS1, a gene related to replication factor C genes, interacts functionally with DNA polymerase delta.
+###end article-title 216
+###begin article-title 217
+###xml 57 62 <span type="species:ncbi:4932">yeast</span>
+Bem1p is a positive regulator of the homotypic fusion of yeast vacuoles.
+###end article-title 217
+###begin article-title 218
+###xml 33 38 <span type="species:ncbi:4932">yeast</span>
+Systematic analysis of essential yeast TAFs in genome-wide transcription and preinitiation complex assembly.
+###end article-title 218
+###begin article-title 219
+Architecture of RNA polymerase II and implications for the transcription mechanism.
+###end article-title 219
+###begin article-title 220
+###xml 72 97 72 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 72 96 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Isolation and mapping of self-assembling protein domains encoded by the Saccharomyces cerevisiae genome using lambda repressor fusions.
+###end article-title 220
+###begin article-title 221
+###xml 125 130 <span type="species:ncbi:4932">yeast</span>
+Targeting an mRNA for decapping: displacement of translation factors and association of the Lsm1p-7p complex on deadenylated yeast mRNAs.
+###end article-title 221
+###begin article-title 222
+Cef1p is a component of the Prp19p-associated complex and essential for pre-mRNA splicing.
+###end article-title 222
+###begin article-title 223
+###xml 49 54 <span type="species:ncbi:4932">yeast</span>
+A robust toolkit for functional profiling of the yeast genome.
+###end article-title 223
+###begin article-title 224
+###xml 0 8 0 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">In situ </italic>
+In situ analysis of spatial relationships between proteins of the nuclear pore complex.
+###end article-title 224
+###begin article-title 225
+RNA-protein interactions promote asymmetric sorting of the ASH1 mRNA ribonucleoprotein complex.
+###end article-title 225
+

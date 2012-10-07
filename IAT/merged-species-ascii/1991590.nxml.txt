@@ -1,0 +1,1029 @@
+###begin article-title 0
+###xml 82 106 82 106 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Saccharomyces cerevisiae</italic>
+###xml 75 80 <span type="species:ncbi:4932">Yeast</span>
+###xml 82 106 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+An Improved, Bias-Reduced Probabilistic Functional Gene Network of Baker's Yeast, Saccharomyces cerevisiae
+###end article-title 0
+###begin p 1
+Conceived and designed the experiments: EM IL ZL. Performed the experiments: IL ZL. Analyzed the data: IL. Wrote the paper: EM IL.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+Probabilistic functional gene networks are powerful theoretical frameworks for integrating heterogeneous functional genomics and proteomics data into objective models of cellular systems. Such networks provide syntheses of millions of discrete experimental observations, spanning DNA microarray experiments, physical protein interactions, genetic interactions, and comparative genomics; the resulting networks can then be easily applied to generate testable hypotheses regarding specific gene functions and associations.
+###end p 3
+###begin title 4
+Methodology/Principal Findings
+###end title 4
+###begin p 5
+###xml 93 96 93 96 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+###xml 119 143 119 143 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Saccharomyces cerevisiae</italic>
+###xml 119 143 119 143 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>Saccharomyces cerevisiae</italic></bold>
+###xml 112 117 <span type="species:ncbi:4932">yeast</span>
+###xml 119 143 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 613 618 <span type="species:ncbi:4932">yeast</span>
+We report a significantly improved version (v. 2) of a probabilistic functional gene network [1] of the baker's yeast, Saccharomyces cerevisiae. We describe our optimization methods and illustrate their effects in three major areas: the reduction of functional bias in network training reference sets, the application of a probabilistic model for calculating confidences in pair-wise protein physical or genetic interactions, and the introduction of simple thresholds that eliminate many false positive mRNA co-expression relationships. Using the network, we predict and experimentally verify the function of the yeast RNA binding protein Puf6 in 60S ribosomal subunit biogenesis.
+###end p 5
+###begin title 6
+Conclusions/Significance
+###end title 6
+###begin p 7
+###xml 209 214 <span type="species:ncbi:4932">yeast</span>
+YeastNet v. 2, constructed using these optimizations together with additional data, shows significant reduction in bias and improvements in precision and recall, in total covering 102,803 linkages among 5,483 yeast proteins (95% of the validated proteome). YeastNet is available from .
+###end p 7
+###begin title 8
+Introduction
+###end title 8
+###begin p 9
+###xml 382 385 382 385 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+###xml 386 390 386 390 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Nariai1">[12]</xref>
+Gene networks provide a simple basis for organizing thousands of cellular components and their associations with each other, as well as for generating testable hypotheses about the components and the system as a whole. A number of research efforts have demonstrated that heterogeneous functional genomics and proteomics data can be integrated into gene (or protein) networks (e.g., [1]-[12]), thus organizing and relating highly complex data sets, as well as simplifying the prediction of new gene functions and associations on basis of the network connections. In such network integration approaches, relationships between genes are detected by various experimental or computational methods, and then combined in a bottom-up fashion in order to build a network model. As high-throughput biological experiments advance, we expect corresponding gains in network models derived from these data. Such improvements, however, are often tempered by the already extreme and growing complexity of the biological data.
+###end p 9
+###begin p 10
+There are three major problems in integrating diverse genomics data into network models. First, the genomics data are heterogeneous in their sensitivity and specificity for relationships between genes. For example, experimental methods such as mass spectrometry preferentially observe abundant proteins, while comparative genomics methods apply only to evolutionarily conserved genes. Increasing the sensitivity of detection usually carries a cost of increasing false positive identifications. Thus, the systematic bias for each method should be understood and considered during data integration. Second, genomics data sets vary widely in their utility for reconstructing gene networks. Thus, we need robust benchmarking methods that can evaluate each data set and allow comparison of their relative merits. Third, data sets are often correlated, complicating integration. However, the correlation can be difficult to measure because of both data incompleteness (a common problem) and sampling biases.
+###end p 10
+###begin p 11
+###xml 206 209 206 209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+###xml 211 214 211 214 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Bowers1">[3]</xref>
+###xml 216 219 216 219 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Myers1">[8]</xref>
+###xml 221 225 221 225 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-vonMering1">[10]</xref>
+###xml 226 230 226 230 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Fraser1">[13]</xref>
+###xml 372 375 372 375 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+###xml 1154 1157 1154 1157 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+###xml 1120 1125 <span type="species:ncbi:4932">yeast</span>
+Probabilistic functional gene networks represent a class of gene network models that attempt to solve these problems, allowing integrative network models to be built from heterogeneous genomics data (e.g., [1], [3], [8], [10]-[13]). One key idea of such network models is the reinterpretation of genomics data as providing evidence for "functional coupling" between genes [1]. This non-mechanistic, but nonetheless useful, high level notion of gene association enables the integration of many different types of data, capturing diverse types of associations (e.g., direct physical interactions, regulatory interactions, membership in the same physical protein complex, etc.) precisely because the definition of gene association is inclusive. Such associations can be discovered using Bayesian statistical methods which allow robust evaluations to be made of functional associations between genes in a supervised learning framework, such as by measuring known pathways and cellular systems for their recapitulation by the data sets being analyzed. We previously reported such a probabilistic genome-wide gene network for yeast genes (dubbed YeastNet v.1) [1].
+###end p 11
+###begin p 12
+###xml 98 105 98 105 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 1</bold>
+###xml 98 105 98 105 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t001"><bold>Table 1</bold></xref>
+###xml 491 495 491 495 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee2">[14]</xref>
+###xml 497 501 497 501 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Myers2">[15]</xref>
+###xml 1382 1386 1382 1386 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+###xml 377 382 <span type="species:ncbi:4932">yeast</span>
+###xml 1140 1145 <span type="species:ncbi:4932">yeast</span>
+###xml 1190 1195 <span type="species:ncbi:4932">yeast</span>
+###xml 1371 1376 <span type="species:ncbi:4932">yeast</span>
+Here, we present optimized methods that improve our probabilistic functional gene network models. Table 1 summarizes the major improvements. In particular, optimization of three major areas is highlighted, illustrating their effects on network quality. First, we reduced functional bias toward the dominant gold standard reference annotation during training. For example, most yeast gene functional annotation sets show biases towards genes of "protein biosynthesis" or "ribosomal proteins" [14], [15]. This bias inflates scores in a manner that does not generalize for other functions. Second, we apply a simple probability model for calculating confidence in protein physical interaction and genetic interaction data sets. We find the hypergeometric probability of an interaction occurring at random chance provides an excellent error confidence model for the interactions and simplifies their integration. Third, we introduce two thresholds that significantly improve the derivation of functional linkages from DNA microarray experiments. The combination of these improvements with additional data results in a markedly improved overall yeast gene network, spanning 95% of the validated yeast protein-coding genes. We demonstrate the network topology is predictive of essential genes, and apply the network to predict, then experimentally confirm, the function of the yeast gene PUF6 in 60S ribosomal subunit biogenesis.
+###end p 12
+###begin title 13
+A summary of major improvements to YeastNet version 2.
+###end title 13
+###begin title 14
+Results and Discussion
+###end title 14
+###begin p 15
+###xml 48 53 <span type="species:ncbi:4932">yeast</span>
+We incorporated three major improvements to the yeast probabilistic gene network, beyond inclusion of additional data sets: the reduction of bias in the reference training set, the introduction of probabilistic scores for physical and genetic interactions, and the introduction of filters to remove false-positive linkages from analysis of mRNA co-expression. We first discuss each of these improvements in turn, before demonstrating the overall quality of the network.
+###end p 15
+###begin title 16
+Effect of a functionally biased reference set in learning a gene network from functional genomics data
+###end title 16
+###begin p 17
+###xml 864 868 864 868 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Myers2">[15]</xref>
+###xml 870 874 870 874 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Huttenhower1">[16]</xref>
+###xml 842 847 <span type="species:ncbi:4932">yeast</span>
+###xml 966 971 <span type="species:ncbi:4932">yeast</span>
+The derivation of a probabilistic functional network from functional genomics and proteomics data using the log-likelihood strategy is an example of a supervised learning approach, distinguishing positive functional associations from negative associations on the basis of the performance of training associations in the data sets under analysis. The learning efficiency, however, is contingent upon the quality of the reference training sets, although the algorithms we employ are chosen for their robustness to false examples in the references. Learning efficiency also correlates with the extent of reference examples, as we cannot learn effectively using only a few examples. A third important characteristic of reference sets affecting supervised learning is the systematic bias among examples. In agreement with previous observations of yeast gene annotation [15], [16], we found that this last issue in particular was important for reconstructing a functional yeast gene network.
+###end p 17
+###begin p 18
+###xml 109 113 109 113 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Dwight1">[17]</xref>
+###xml 694 703 694 703 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1A</bold>
+###xml 694 703 694 703 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g001"><bold>Figure 1A</bold></xref>
+###xml 823 827 823 827 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Kanehisa1">[18]</xref>
+###xml 82 87 <span type="species:ncbi:4932">yeast</span>
+###xml 157 162 <span type="species:ncbi:4932">yeast</span>
+###xml 352 357 <span type="species:ncbi:4932">yeast</span>
+The most comprehensive and reliable functional annotation currently available for yeast is the Gene Ontology [17] annotation set. More than 70% of validated yeast protein-encoding genes are annotated by at least one of over 1,000 Gene Ontology "biological process" terms with support derived from reliable small-scale experimental evidence. Therefore, yeast Gene Ontology "biological process" annotation meets the first two requirements of a good reference set for efficient learning. However, the frequency distribution of annotation terms is heavily biased toward the single term "protein biosynthesis" (GO:0006412). This term alone is responsible for >27% of the total reference gene pairs (Figure 1A). We observed a similar bias in another widely used annotation set, The Kyoto Encyclopedia of Genes and Genomes (KEGG) [18] (data not shown).
+###end p 18
+###begin title 19
+The effect of functionally biased Gene Ontology annotation on network training.
+###end title 19
+###begin p 20
+###xml 835 839 835 839 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Gasch1">[19]</xref>
+(A) Frequency histograms of the usage of 1,067 Gene Ontology "biological process" annotations, ranked by the number of genes annotated with each term (black bars) and by the number of reference linkages derived using that term (white bars). Functional annotation is highly biased towards genes with the term "protein biosynthesis". This functional bias becomes more severe in the reference linkages, given the combinatorial increase after linking all genes sharing a given term. As a result, linkages among protein biosynthesis genes compose >27% of total reference linkages. By contrast, the second most frequent term accounts for <5% of total reference linkages. (B) The likelihood of functional association between genes on the basis of the co-expression of their mRNAs across DNA microarray experiments (here, following heat-shock [19]) is significantly affected by the dominant reference term "protein biosynthesis". For example, for the 1,000 most strongly co-expressed gene pairs, the likelihood of functional association between co-expressed genes is approximately30 fold higher than random chance (LLSapproximately3.4) (empty circles), but drops to approximately6 fold (LLSapproximately1.8) after masking the term "protein biosynthesis" in the reference set (filled circles). Thus, the high likelihood score from the biased reference set cannot be generalized to other functions. The black and red lines indicate sigmoid curve fits to the unbiased and biased reference analyses, respectively.
+###end p 20
+###begin p 21
+###xml 101 106 <span type="species:ncbi:4932">yeast</span>
+There are many possible reasons for such biased annotation, ranging from bias in scientific interest-yeast has historically been a major model for studying many core cellular processes including eukaryotic protein biosynthesis-to bias in technological feasibility-it is generally easier to study highly expressed proteins such as ribosomal proteins-to intrinsic bias in the cellular system themselves-core molecular machines such as the ribosome legitimately incorporate more genes than many other cellular systems. We suspect that such bias is inevitable; nonetheless, we need to minimize its adverse effects for network reconstruction.
+###end p 21
+###begin p 22
+###xml 156 159 156 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">via</italic>
+###xml 362 366 362 366 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Gasch1">[19]</xref>
+###xml 473 482 473 482 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1B</bold>
+###xml 473 482 473 482 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g001"><bold>Figure 1B</bold></xref>
+###xml 621 630 621 630 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1B</bold>
+###xml 621 630 621 630 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g001"><bold>Figure 1B</bold></xref>
+###xml 1037 1046 1037 1046 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1A</bold>
+###xml 1037 1046 1037 1046 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g001"><bold>Figure 1A</bold></xref>
+###xml 313 318 <span type="species:ncbi:4932">yeast</span>
+###xml 1353 1358 <span type="species:ncbi:4932">yeast</span>
+We examined the consequences of this bias by "masking" this dominant term in the annotation reference set, thereby removing all reference gene pairs linked via this term, and then testing data sets for their performance on the full and masked reference sets. For example, mRNA co-expression relationships between yeast genes across various heat-shock treatments [19] appear to strongly predict functional associations when benchmarked using the full, biased reference set (Figure 1B, open circles). However, that strong relationship largely disappears after masking only the single reference term "protein biosynthesis" (Figure 1B, closed circles). This observation clearly indicates that the strong functional associations derived from co-expression over these particular arrays are limited largely to protein biosynthesis genes. Thus, assigning a high likelihood score for gene pairs that co-express highly but are not in protein biosynthesis would be misleading. Examination of the frequency distribution of reference set gene pairs (Figure 1A) shows that the next most dominant term ("Cell wall organization and biosynthesis", GO:0007047) accounts for <5% of reference pairs, with contributions from remaining terms decaying fairly smoothly. We therefore removed only the dominant "protein biosynthesis" term before reconstructing the probabilistic yeast gene network.
+###end p 22
+###begin title 23
+Probabilistic inference of gene functional associations from physical protein-protein interactions and genetic interactions
+###end title 23
+###begin p 24
+###xml 533 537 533 537 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ito1">[20]</xref>
+###xml 539 543 539 543 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Uetz1">[21]</xref>
+###xml 820 824 820 824 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ito1">[20]</xref>
+###xml 302 307 <span type="species:ncbi:4932">yeast</span>
+###xml 463 468 <span type="species:ncbi:4932">yeast</span>
+Because of the generally strong correlation between protein physical or genetic interactions and functional associations, a map of such interactions among proteins is an invaluable source for learning about protein functions and pathways. Among many techniques of mapping protein physical interaction, yeast two hybrid assays and affinity purification followed by mass spectrometry have proved to be the most popular for their scalability. Two major genome-scale yeast two hybrid screens reported more than 4,000 binary interactions [20], [21]. While these interactions passed minimum quality criteria, we might not expect all to be equally informative for inferring functional associations. The original confidence measures-dividing interactions into a more reproducible "core" set and less reproducible "non-core" set [20]-is coarse-grained and may often miss functionally informative interactions.
+###end p 24
+###begin p 25
+###xml 354 358 354 358 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Bader2">[22]</xref>
+Mass-spectrometry-derived interaction data, usually provided as a list of baits of affinity purification and their identified preys, is even more complicated for inferring binary physical or functional associations. Two different models of inferring binary interactions from the lists of identifications have been widely used-the spoke and matrix models [22]. The spoke model allows pair-wise relationships only between baits and preys in the same complexes, whereas the matrix model includes additional relationships inferred by pairing preys in the same complexes. These interpretative models exhibit different trade-offs between completeness and accuracy-the spoke model achieves high accuracy at the cost of incompleteness, whereas the matrix model provides a more complete model but relatively low accuracy due to pairing all prey proteins from a given bait with each other.
+###end p 25
+###begin p 26
+###xml 418 429 418 429 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 2A&amp;B</bold>
+###xml 418 429 418 429 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g002"><bold>Figure 2A&amp;B</bold></xref>
+###xml 924 935 924 935 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 2A&amp;B</bold>
+###xml 924 935 924 935 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g002"><bold>Figure 2A&amp;B</bold></xref>
+###xml 1003 1008 <span type="species:ncbi:4932">yeast</span>
+A probabilistic model of protein-protein interactions should bypass the limitations of these coarse descriptive models, while providing higher resolution scoring important for data integration. We found that calculating the hypergeometric probability of the protein interactions occurring at random chance in a given data set generates a very well-behaved ranking of interaction accuracy in recall-precision analyses (Figure 2A&B). Note that this approach does not require training-instead, confidence is based only upon observations in the experiment under analysis and reflects the specificity with which a particular protein pair interacts, down-weighting promiscuous interactors and rewarding well-observed specific interactions. This scoring scheme outperforms the spoke model and attaches confidence values to each interaction in the matrix model, thereby separating high and low confidence matrix model interactions (Figure 2A&B). The hypergeometric score appears to work equally effectively for yeast two-hybrid and mass spectrometry interactions.
+###end p 26
+###begin title 27
+Assigning confidence scores to physical or genetic interactions.
+###end title 27
+###begin p 28
+###xml 221 226 221 226 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 228 232 228 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ito1">[20]</xref>
+###xml 307 312 307 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 314 318 314 318 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Gavin1">[52]</xref>
+###xml 349 353 349 353 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Mewes1">[43]</xref>
+###xml 355 359 355 359 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Tong2">[74]</xref>
+###xml 724 728 724 728 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ito1">[20]</xref>
+###xml 942 946 942 946 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Bader2">[22]</xref>
+###xml 184 189 <span type="species:ncbi:4932">yeast</span>
+Performance of the hypergeometric probabilistic score is shown for gene functional associations inferred from (A) protein-protein physical interactions measured by the high-throughput yeast two hybrid (Y2H) screen of Ito et al. [20], (B) affinity-purified complexes identified by mass spectrometry by Gavin et al. [52], and (C) genetic interactions [43], [74]. Performance with the probability score is measured cumulatively for each successive bin of 200 interactions (A-C, red filled triangles), ranked by probability score. Recall and precision are calculated using the reference linkages derived from Gene Ontology "biological process" annotation masking the term "protein biosynthesis". The Y2H core model described in [20] (A, filled circle) is more precise than the complete data set (A, open circle), but with reduced recall. Similarly, two different ways of inferring binary linkages from mass spectrometry-derived protein complexes [22]-the spoke (B, filled circle) and matrix models (B, open circle)-show differing trade-offs between precision and recall. The set of binary genetic interactions (C, open circle) shows very low precision for functional inferences, although the false positive rate of genetic interactions is generally perceived to be low; in contrast, the hypergeometric probability identifies a functionally informative subset of linkages. In general, the hypergeometric probability scores provide an excellent ranking of interactions in each of the data sets consistent with the linkages' functional informativeness.
+###end p 28
+###begin p 29
+###xml 182 191 182 191 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 2C</bold>
+###xml 182 191 182 191 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g002"><bold>Figure 2C</bold></xref>
+###xml 540 544 540 544 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Kelley1">[23]</xref>
+###xml 585 590 585 590 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">HSP82</italic>
+###xml 758 762 758 762 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Sangster1">[24]</xref>
+###xml 770 775 770 775 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">HSP82</italic>
+###xml 990 995 990 995 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">HSP82</italic>
+###xml 1180 1184 1180 1184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Kelley1">[23]</xref>
+###xml 1186 1190 1186 1190 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Boone1">[25]</xref>
+###xml 563 568 <span type="species:ncbi:4932">yeast</span>
+Interestingly, we also observed the hypergeometric probability-based confidence scores to effectively rank genetic interactions according to their utility for functional inferences (Figure 2C). Considering the likely low false positive rate of genetic interactions, this ranking probably does not reflect differences in the quality of interactions. Instead, it likely reflects the specificity of the genetic interactions, as each gene can participate in a varying number of genetic interactions and span a wide range of biological pathways [23]. For example, the yeast Hsp90 chaperone HSP82 is considered to be a genetic capacitor genetically interacting with many (289) genes from diverse cellular processes, and may generically buffer phenotypic variation [24]. Since HSP82 is a global modulator, the genetic interactions in which it participates only allow for weak function inferences. Therefore, the appropriate interpretation for the low precision observed for interactions involving HSP82 is probably not that of false positives, but rather promiscuous interactions. Genetic interactions have been previously classified into within-pathway and between-pathway interactions [23], [25]; the hypergeometric probability model appears to rank within-pathway interactions above between-pathway interactions, thereby increasing the utility of genetic interactions for inferring functional associations between genes.
+###end p 29
+###begin title 30
+Optimized method of inferring functional links by co-expression analysis
+###end title 30
+###begin p 31
+###xml 109 112 109 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+For inferring functional linkages from DNA microarray evidence, we employ the divide-test-integrate approach [1] for discovering functionally informative cases of mRNA co-expression. This method is in contrast to simply concatenating the results of all DNA microarray experiments to create a single, monolithic expression vector for each gene, then measuring correlation between these vectors. A co-expression network derived in this manner indeed shows a robust correlation between the extent of expression correlation and the degree of functional association, in part because of its high dimensionality. However, it generally works as a useful model only for limited groups of genes, such as consistently co-expressed housekeeping genes. The problem facing this method is that context-specific co-expression patterns evident in only a subset of experiments are overwhelmed by stochastic or uncorrelated expression changes across the remaining experiments. For example, consider the case of combining several experiments designed to detect expression dynamics during heat shock with a large number of unrelated experiments. Linkage between genes that respond coordinately under heat shock but not in the remaining experiments are unlikely to be detected in an analysis of the monolithic expression vectors. In contrast, linkages among these genes might be detected by the divide-test-integrate approach, in which each group of biologically coherent experiments is analyzed separately for co-expression linkages, followed by integration of linkages across the sets of experiments. However, its actual practice often entails increased false positive co-expression linkages because of lower dimension expression vectors and the correspondingly increased probability of observing such correlations at random.
+###end p 31
+###begin p 32
+###xml 560 567 560 567 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 2</bold>
+###xml 560 567 560 567 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t002"><bold>Table 2</bold></xref>
+For robust as well as sensitive co-expression linkage detection, we introduced two new parameters to filter false positive co-expression linkages. These filters operate by removing genes from the co-expression analysis that fail to show a minimum ratio of expression change (R) in a minimum number of microarray experiments (M), thereby eliminating the genes most likely to be unresponsive in the array set being analyzed. We optimized the choice of these two parameters for each set of array experiments by maximizing the area under a recall-precision curve (Table 2).
+###end p 32
+###begin title 33
+SMD data sets used for co-expression links (total 500 experiments)
+###end title 33
+###begin p 34
+N: the number of experiments in the set
+###end p 34
+###begin p 35
+R: minimum absolute value of log base 2 ratio of expression between treated experiment and control
+###end p 35
+###begin p 36
+M: minimum number of microarray experiments that exceed the R threshold
+###end p 36
+###begin p 37
+###xml 454 461 454 461 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s3">Methods</xref>
+###xml 607 611 607 611 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Gollub1">[26]</xref>
+###xml 728 737 728 737 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 3A</bold>
+###xml 728 737 728 737 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g003"><bold>Figure 3A</bold></xref>
+###xml 813 822 813 822 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 3A</bold>
+###xml 813 822 813 822 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g003"><bold>Figure 3A</bold></xref>
+###xml 838 846 838 846 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Tables 2</bold>
+###xml 838 846 838 846 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t002"><bold>Tables 2</bold></xref>
+###xml 846 851 846 851 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"> and </bold>
+###xml 851 852 851 852 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</bold>
+###xml 851 852 851 852 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t003"><bold>3</bold></xref>
+###xml 1133 1142 1133 1142 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 3B</bold>
+###xml 1133 1142 1133 1142 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g003"><bold>Figure 3B</bold></xref>
+###xml 1522 1531 1522 1531 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 3C</bold>
+###xml 1522 1531 1522 1531 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g003"><bold>Figure 3C</bold></xref>
+Beyond filtering genes, we also removed entire data sets that proved uninformative for reconstructing a functional network: We measured the relationship between the degree of co-expression between two genes, measured as the Pearson correlation coefficient (PCC) of their expression levels across the arrays under consideration, and the likelihood of their functional association, measured by the log likelihood of belonging to the same pathway (LLS, see Methods) between the genes in each successive bin of 1000 gene pairs ranked in descending order by PCC. Across 18 total sets of DNA microarrays from SMD [26], containing 581 individual array experiments, we found 14 sets showed a significant relationship (e.g., Cell cycle; Figure 3A) and 4 sets showed no relationship (e.g., Oxidative stress with Menadione; Figure 3A), as listed in Tables 2 and 3. Alternate measures of expression correlation (the non-parametric Spearman rank coefficient and mutual information measures) failed to improve performance over PCC. Filtering the unresponsive genes as described above further improved the relationships, as shown for an example in Figure 3B. In order to ensure representation of housekeeping genes, the 14 informative array sets were also concatenated into monolithic expression vectors spanning 500 experiments and analyzed for co-expression linkages as above. The benefits of the divide-test-integrate method are illustrated in the improved precision for any given coverage of genes or reference linkages, as shown in Figure 3C on the independent MIPS protein functional linkage reference set (excluding the term "protein synthesis").
+###end p 37
+###begin title 38
+Optimizing the inference of linkages from mRNA co-expression.
+###end title 38
+###begin p 39
+###xml 446 450 446 450 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Shapira1">[75]</xref>
+###xml 636 640 636 640 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Eisen1">[76]</xref>
+###xml 832 836 832 836 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Brauer1">[77]</xref>
+###xml 1258 1261 1258 1261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+###xml 1681 1686 <span type="species:ncbi:4932">yeast</span>
+(A) Examples of a functionally informative DNA microarray data set and a non-informative one. Each set is illustrated as a scatter plot showing the log likelihood of functional association for each successive bin of 1,000 gene pairs (circles) ranked by decreasing Pearson correlation coefficient between expression vectors derived from that array set. The set of microarray data measuring oxidative stress responses following Menadione treatment [75] (filled circles) does not show a significant relationship between co-expression and the likelihood of functional association. In contrast, the set of cell cycle time course experiments [76] (open circles) shows a strong relationship. The effect of filtering genes using the parameters M and R is illustrated in (B). A data set of genes changing expression during the diauxic shift [77] (open circles) shows a noisy relationship between co-expression and the likelihood of functional association, especially for gene pairs with the highest Pearson correlation coefficients. However, by introducing the two threshold parameters, the relationship improves (filled circles), in particular decreasing variance considerably and improving the corresponding regression model. (C) The divide-test-integrate strategy [1] for inferring linkages, shown here calculated across all 500 microarray experiments (empty triangles) considerably outperforms analysis of the expression vectors constructed by concatenating the 500 experiments (filled circles). Precision is measured using reference linkages derived from MIPS functional annotation, masking the term "protein synthesis", and recall is calculated for either reference linkages or total yeast genes (inset).
+###end p 39
+###begin title 40
+SMD data sets tested but rejected (total 81 experiments)
+###end title 40
+###begin p 41
+N: the number of experiments in the set
+###end p 41
+###begin title 42
+Assessment of YeastNet version 2 as a predictive model
+###end title 42
+###begin p 43
+###xml 124 131 124 131 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 4</bold>
+###xml 124 131 124 131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t004"><bold>Table 4</bold></xref>
+###xml 154 161 154 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s3">Methods</xref>
+###xml 544 548 532 536 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ito1">[20]</xref>
+###xml 616 621 <span type="species:ncbi:4932">yeast</span>
+###xml 660 665 <span type="species:ncbi:4932">yeast</span>
+In total, ten types of functional genomics, proteomics, and comparative genomics data sets are integrated into the network (Table 4), as described in the Methods section (see the pseudo-code for an overview of the procedure). Approximately 1,800,000 individual experimental observations were integrated into the network model, optimizing a total of approximately155 free parameters in order to construct the network. Using a permissive scoring threshold corresponding to the log likelihood score (LLS>0.916) of non-core genome-wide Y2H screens [20], YeastNet v. 2 contains a total of 102,803 linkages covering 5,483 yeast proteins (covering >95 % of validated yeast proteome).
+###end p 43
+###begin title 44
+Ten genomics data types incorporated into YeastNet version 2
+###end title 44
+###begin p 45
+N : Total number of genes incorporated into the integrated YeastNet version 2
+###end p 45
+###begin p 46
+E : Total number of linkages incorporated into the integrated YeastNet version 2
+###end p 46
+###begin p 47
+###xml 285 293 285 293 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 4</bold>
+###xml 285 293 285 293 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g004"><bold>Figure 4</bold></xref>
+###xml 767 770 767 770 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i.e</italic>
+###xml 708 713 <span type="species:ncbi:4932">yeast</span>
+The integrated model, along with the various sets of linkages derived from individual data sets, was assessed on an independent test set of gene functional linkages derived from the MIPS protein function annotation set, calculating recall and precision of the MIPS reference linkages (Figure 4). For this purpose, we measure recall of genes, rather than gene pairs, in order to assess the generality of predictions across the entire genome. The integrated network shows high gene coverage and high precision across the entire network. As expected, the integrated network surpasses any individual data set for precision at a given coverage; the complete network covers >95% of the protein-coding genes in the yeast genome with >60% precision on the inferred linkages (i.e., at least 6 out of 10 predicted linkages are true).
+###end p 47
+###begin title 48
+Summary of benchmarking for the YeastNet v. 2 integrated functional gene network, along with the functional linkage sets derived from the ten individual types of data.
+###end title 48
+###begin p 49
+###xml 115 124 115 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g003">Figure 3C</xref>
+###xml 24 29 <span type="species:ncbi:4932">yeast</span>
+Precision and recall of yeast genes are calculated using the unbiased MIPS functional linkage reference set, as in Figure 3C. Gene pairs in each set were ranked by LLS scores, then cumulative precision and recall were calculated for each successive bin of 1,000 gene pairs (each symbol indicates a bin). The confidence measures for each individual data type can be seen to rank the gene pairs effectively. YeastNet v. 2 shows high overall performance, with the integration of the heterogeneous genomics data improving both reliability and completeness of the overall model.
+###end p 49
+###begin p 50
+###xml 275 278 275 278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+###xml 835 844 835 844 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 5A</bold>
+###xml 835 844 835 844 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g005"><bold>Figure 5A</bold></xref>
+###xml 1316 1325 1316 1325 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 5B</bold>
+###xml 1316 1325 1316 1325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g005"><bold>Figure 5B</bold></xref>
+###xml 259 264 <span type="species:ncbi:4932">yeast</span>
+###xml 489 494 <span type="species:ncbi:4932">yeast</span>
+###xml 527 532 <span type="species:ncbi:4932">yeast</span>
+###xml 1775 1780 <span type="species:ncbi:4932">yeast</span>
+We compared the overall performance of YeastNet version 2 to that of YeastNet version 1 by recall-precision analysis on the independent test sets. We previously defined a confident sub-network by taking only the top 34,000 functional linkages (covering 4,681 yeast proteins) [1] and used that for detailed biological interpretation. We therefore selected the top 34,000 linkages of both versions of YeastNet in order to perform a fair comparison. This subset of YeastNet v. 2 covers 4,649 yeast proteins (>80% of the validated yeast proteome). In tests of the MIPS functional linkage reference set that included linkages derived using the functional category "protein synthesis", the precision of the two networks is comparable, while coverage-for both genes and reference linkages-is significantly improved for the new network model (Figure 5A). Superiority of the new network becomes more obvious when we mask the reference linkages derived from the term "protein synthesis". Precision of the new network is minimally influenced by masking of this single term. In contrast, YeastNet v. 1 shows a noticeable drop in precision, indicating a bias towards protein synthesis-related functions. We observe the same trend using another independent functional linkage reference set derived from KOG functional categories (Figure 5B), with the precision of YeastNet v. 2 changing only minimally with removal of the KOG reference term "protein synthesis", while precision of YeastNet v. 1 drops below v. 2. Roughly 17% of total KOG reference linkages are derived from the annotation term "protein synthesis", while only 4.3% of total MIPS linkages are, accounting for the larger effect seen on the KOG benchmark. (The effect is also accentuated by the fact that MIPS annotates 3,752 yeast genes, whereas KOG annotates only 3,022.) Therefore, we conclude that the new network, YeastNet v. 2, is a significantly improved gene functional network, both showing higher accuracy and coverage, as well as better generalization to a more diverse set of cellular systems.
+###end p 50
+###begin title 51
+###xml 40 43 40 43 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+YeastNet v. 2 outperforms YeastNet v. 1 [1], as measured by precision and recall of either genes or reference linkages on independent reference sets.
+###end title 51
+###begin p 52
+###xml 304 309 <span type="species:ncbi:4932">yeast</span>
+(A) shows performance on the MIPS functional linkage reference set, with or without masking the term "protein synthesis", while (B) shows performance on reference linkages derived from KOG functional categories. For both reference sets, we observe significantly improved recall by YeastNet v. 2 for both yeast genes and reference linkages. The effect of the annotation "protein synthesis" is revealed by a significant drop of precision in YeastNet v. 1 but not v. 2 after masking the term during benchmarking. The higher fraction of linkages derived from "protein synthesis" in KOG (approximately17% of total linkages) than MIPS (approximately4% of total MIPS linkages) explains the apparently higher precision of v. 1 than v. 2 when including the term in (B), resulting in a correspondingly larger drop in precision of v. 1 when the term is masked. All analyses in (A) and (B) are for the 34,000 most confident linkages of each network.
+###end p 52
+###begin p 53
+###xml 136 140 136 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Giaever1">[27]</xref>
+###xml 344 348 344 348 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Jeong1">[28]</xref>
+###xml 514 518 514 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Reguly1">[29]</xref>
+###xml 527 531 527 531 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Xenarios1">[30]</xref>
+###xml 627 628 627 628 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 628 629 628 629 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</sub>
+###xml 641 650 641 650 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 6A</bold>
+###xml 641 650 641 650 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g006"><bold>Figure 6A</bold></xref>
+###xml 937 946 937 946 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 6B</bold>
+###xml 937 946 937 946 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g006"><bold>Figure 6B</bold></xref>
+###xml 1369 1373 1357 1361 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Giaever1">[27]</xref>
+###xml 1527 1528 1515 1516 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 1528 1529 1516 1517 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</sub>
+###xml 1629 1638 1617 1626 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 6C</bold>
+###xml 1629 1638 1617 1626 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g006"><bold>Figure 6C</bold></xref>
+###xml 293 298 <span type="species:ncbi:4932">yeast</span>
+###xml 1221 1226 <span type="species:ncbi:4932">yeast</span>
+###xml 1616 1621 <span type="species:ncbi:4932">yeast</span>
+Another aspect of the predictive quality of a gene network relates to an observed correlation between a gene's tendency to be essential [27] and its centrality in a network, measured as the number of interactions in which the gene participates. This correlation was initially observed for the yeast physical protein-protein interaction network [28]. Consistent with the original observation, the high quality physical protein-protein interactions derived from small-scale experiments (here, collected from bioGRID [29] and DIP [30]) show a strong correlation between degree centrality and lethality (Spearman rank correlation (rs)  =  0.94; Figure 6A). YeastNet v. 1 also showed a strong correlation-slightly worse in quality than the physical interactions but covering a higher proportion of the experimentally identified essential genes (increasing from 85% coverage in the protein-protein interaction network to 91% by YeastNet v. 1; Figure 6B). One explanation for this slightly lower correlation is that linkages in YeastNet v. 1 are enriched among genes of protein biosynthesis, especially ribosomal proteins, because of the biased reference set. This trend would lower the correlation, as only approximately18% of yeast ribosomal genes (defined by GO cellular component annotation) are essential, similar to the general background proportions of essential genes [27]. Consistent with this notion, we found that YeastNet v. 2 shows a higher correlation between degree centrality and lethality (Spearman rank correlation (rs)  =  0.95) while covering nearly all (99%) of the experimentally identified essential yeast genes (Figure 6C). This indicates that the optimized learning methods, considering functional bias, produce a more globally predictive network model.
+###end p 53
+###begin title 54
+YeastNet v. 2 shows improved correlation between gene centrality and lethality.
+###end title 54
+###begin p 55
+###xml 267 271 267 271 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Giaever1">[27]</xref>
+###xml 464 468 464 468 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Xenarios1">[30]</xref>
+###xml 481 485 481 485 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Reguly1">[29]</xref>
+###xml 708 711 708 711 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i.e</italic>
+###xml 913 914 913 914 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 914 915 914 915 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</sub>
+###xml 255 260 <span type="species:ncbi:4932">yeast</span>
+Each plot presents the correlation (for a given network) between network centrality, calculated as the number of interactions per gene normalized by the maximum observed value, versus the essentiality of the genes, calculated as the fraction of essential yeast genes [27] for each successive bin (open circle) of 100 genes ranked by decreasing degree centrality. (A) shows the trend for a high quality protein-protein physical interaction network derived from DIP [30] and bioGRID [29], (B) shows the trend for YeastNet version 1 (34,000 most confident linkages only), and (C) shows the trend for YeastNet version 2. For both functional networks, degree centrality is weighted by the interaction LLS scores (i.e., calculated as the sum of LLS scores for a gene, divided by the maximum sum of LLS scores observed in the network). The degree of correlation is measured as the Spearman rank correlation coefficient (rs).
+###end p 55
+###begin title 56
+###xml 67 71 67 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+Experimental validation of the top ribosome biogenesis prediction, PUF6
+###end title 56
+###begin p 57
+###xml 580 581 580 581 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 831 838 831 838 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 5</bold>
+###xml 831 838 831 838 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t005"><bold>Table 5</bold></xref>
+###xml 892 896 892 896 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CIC1</italic>
+###xml 901 905 901 905 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ESF2</italic>
+###xml 943 947 943 947 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Hoang1">[31]</xref>
+###xml 949 953 949 953 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Horsey1">[32]</xref>
+###xml 1321 1328 1321 1328 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 5</bold>
+###xml 1321 1328 1321 1328 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t005"><bold>Table 5</bold></xref>
+###xml 1389 1393 1389 1393 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Huh1">[33]</xref>
+###xml 590 595 <span type="species:ncbi:4932">yeast</span>
+In addition to the above computational validation, we also experimentally validated predictions arising from the new gene network. Using the new network, we predicted new genes to be involved in the process of ribosomal biogenesis, which is a fundamental process critical for cells and widely conserved across eukaryotes. New ribosomal biogenesis genes were inferred by identifying close network neighbors to the known ribosomal biogenesis genes. Specifically, we generated a seed set of known ribosome biogenesis genes based on their Gene Ontology biological process annotation (n  =  238 yeast genes annotated by the terms "ribosome assembly", "rRNA", or "35S"), then prioritized their network neighbors by the sum of their LLS scores to genes of the seed set. This list of genes was filtered to remove known ribosomal proteins. Table 5 lists the top 5 predictions. Two of the top 5 genes, CIC1 and ESF2 have been verified in the literature [31], [32] but had not yet been included in the ribosome biogenesis annotation set we employed, and thus can be considered true predictions already verified by published studies. Moreover, these predictions are also supported by multiple lines of evidence including inferred functional linkages based on high-throughput data (e.g., co-expression and mass spectrometry analysis; Table 5). All five genes are known to be localized to the nucleolus [33], strongly supporting a possible role in ribosome biogenesis.
+###end p 57
+###begin title 58
+Top five predictions of new ribosomal biogenesis genes
+###end title 58
+###begin p 59
+Experimentally validated by this study and others.
+###end p 59
+###begin p 60
+###xml 126 131 <span type="species:ncbi:4932">yeast</span>
+CX: co-expression, GT: genetic interaction, LC: literature curation, MS: mass spectrometry complex analysis, YH: genome-scale yeast two hybrid
+###end p 60
+###begin p 61
+###xml 39 43 39 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+###xml 74 78 74 78 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+###xml 171 174 171 174 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">via</italic>
+###xml 207 211 207 211 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ASH1</italic>
+###xml 226 230 226 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ASH1</italic>
+###xml 264 268 264 268 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Gu1">[34]</xref>
+###xml 319 323 319 323 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+###xml 350 354 350 354 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Wade1">[35]</xref>
+###xml 457 461 457 461 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+We selected the top-ranked prediction, PUF6, for experimental validation. PUF6 encodes an RNA-binding protein previously known to be involved in mating-type determination via its translational repression of ASH1 mRNA prior to ASH1 mRNA localization to the bud tip [34]. While previous computational evidence associates PUF6 with ribosomal biogenesis [35], there is not yet direct experimental support for its involvement. We therefore experimentally tested PUF6 for its participation in ribosomal biogenesis.
+###end p 61
+###begin p 62
+###xml 109 112 109 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">puf</italic>
+###xml 135 139 131 135 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Winzeler1">[36]</xref>
+###xml 254 263 244 253 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 7A</bold>
+###xml 254 263 244 253 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g007"><bold>Figure 7A</bold></xref>
+###xml 535 538 525 528 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">puf</italic>
+###xml 562 571 548 557 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 7B</bold>
+###xml 562 571 548 557 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g007"><bold>Figure 7B</bold></xref>
+###xml 846 850 832 836 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Rotenberg1">[37]</xref>
+###xml 851 855 837 841 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Adams1">[39]</xref>
+###xml 974 978 960 964 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+###xml 1055 1059 1041 1045 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+###xml 1163 1167 1149 1153 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ghaemmaghami1">[40]</xref>
+###xml 1343 1347 1329 1333 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ho1">[38]</xref>
+###xml 1349 1358 1335 1344 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 7C</bold>
+###xml 1349 1358 1335 1344 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g007"><bold>Figure 7C</bold></xref>
+###xml 16 21 <span type="species:ncbi:4932">yeast</span>
+We might expect yeast strains defective in ribosomal biogenesis to show a slow growth phenotype; we tested a puf6Delta deletion strain [36] and indeed observed significant growth retardation compared to the wild-type strain when cultured at 20 degreesC (Figure 7A). We then analyzed the polysome profile of the deletion strain in order to assess defects in ribosome processing consistent with a biogenesis defect. We observed an abnormal decrease in the ratio of 60S/40S ribosomal subunits and detected the presence of halfmers in the puf6Delta deletion strain (Figure 7B). Such halfmers-shoulders on the 80S and polysome peaks-arise from mRNA bound by an extra 40S subunit stalled at the AUG initiation codon and are characteristic of 60S subunit biogenesis defects and blockage of translation initiation at the 60S subunit joining stage (e.g., [37]-[39]). Both the decrease in 60S subunit abundance relative to 40S and the presence of halfmers indicate a probable role of PUF6 in 60S ribosomal subunit biogenesis. We further tested the participation of PUF6 in 60S biogenesis by performing Western blot analysis on an epitope-tagged version of the Puf6 protein [40]. We observed the epitope-tagged Puf6 protein to co-sediment in a sucrose gradient with the 60S ribosome in a fashion similar to the known 60S ribosome biogenesis factor Nmd3p [38] (Figure 7C). Therefore, the top network prediction for proteins most likely to participate in ribosome biogenesis could be experimentally confirmed. In all, 3 of the top 5 predictions could be directly confirmed, with the remaining 2 highly likely given their nucleolar localization.
+###end p 62
+###begin title 63
+###xml 48 52 48 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+Experimental validation of the participation of PUF6 in 60S ribosomal subunit biogenesis.
+###end title 63
+###begin p 64
+###xml 6 15 6 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">puf6&#916;</italic>
+###xml 32 36 28 32 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Giaever1">[27]</xref>
+###xml 425 429 415 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+###xml 519 523 509 513 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ghaemmaghami1">[40]</xref>
+###xml 639 643 629 633 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TDH1</italic>
+###xml 756 760 746 750 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">NMD3</italic>
+###xml 799 803 789 793 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ho1">[38]</xref>
+###xml 917 921 907 911 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+###xml 311 316 <span type="species:ncbi:4932">yeast</span>
+(A) A puf6Delta deletion strain [27] shows a marked conditional growth defect compared to wild-type (WT) cells when grown at 20 degreesC, accompanied by (B) a decrease in the ratio of 60S/40S ribosomal subunits and the formation of halfmer polysomes, as measured by monitoring absorbance at 254 nm of clarified yeast cell lysate separated on a 7 to 47 % sucrose density gradient. Additional evidence for the participation of PUF6 in 60S biogenesis can be seen (C) in the co-sedimentation of the TAP-tagged Puf6 protein [40] with the 60S ribosomal subunits, as measured by Western blotting of lysates separated by sucrose density gradient. TDH1 encodes a cytoplasmic protein with no known association with ribosomal subunits, serving as a negative control. NMD3 encodes a known 60S biogenesis factor [38], serving as positive control. Puf6-TAP shows a similar sedimentation profile as Nmd3-TAP, supporting the role of PUF6 in 60S ribosomal subunit biogenesis.
+###end p 64
+###begin title 65
+Conclusions
+###end title 65
+###begin p 66
+###xml 440 449 440 449 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figures 1</bold>
+###xml 440 449 440 449 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g001"><bold>Figures 1</bold></xref>
+###xml 449 454 449 454 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"> and </bold>
+###xml 454 455 454 455 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</bold>
+###xml 454 455 454 455 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g005"><bold>5</bold></xref>
+###xml 927 931 927 931 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Hart1">[41]</xref>
+###xml 1299 1308 1299 1308 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 3B</bold>
+###xml 1299 1308 1299 1308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g003"><bold>Figure 3B</bold></xref>
+###xml 142 147 <span type="species:ncbi:4932">yeast</span>
+In this study, we present several optimizations that significantly improve the predictive power of a probabilistic functional gene network of yeast. There are three major aspects worth noting. First, our current functional genomics knowledge is severely biased. This bias leads to biased learning unless appropriately taken into account, as the effect of reference linkages from the dominant GO term "protein biosynthesis" is quite strong (Figures 1 and 5). Second, physical protein interaction and genetic interaction data can be assigned scores that allow, on a per interaction basis, for fine-grained, continuous valued confidence measures. The score that we employ, based on the hypergeometric probability, is simple and robust, and works across a variety of different experimental techniques, and would therefore even be appropriate as a final confidence score directly out of large-scale experimental assays (e.g., as in [41]). Introduction of this score significantly improves the performance of these data in deriving the probabilistic gene network. Third, introducing two additional parameters into the analysis of mRNA co-expression linkages significantly decreases the number of false positive linkages while simultaneously decreasing the variance in the quality of the derived linkages (Figure 3B). Incorporation of each of these optimizations into YeastNet v. 2 significantly improves the quality of the model, improving precision and recall on independent test sets and increasing generality of the model for more diverse cellular systems. We expect that the protocol we present for calculating the network is general and could be applied to other organisms essentially directly as described.
+###end p 66
+###begin p 67
+We describe applications of the gene network for functional prediction (prediction of ribosomal biogenesis genes) and prediction of essential genes. In order to perform similar analyses of YeastNet v. 2, we have established a web site () where the network can be downloaded in full. We anticipate posting future updates of the network to this site as new data sets become available.
+###end p 67
+###begin title 68
+Materials and Methods
+###end title 68
+###begin title 69
+###xml 0 24 0 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Saccharomyces cerevisiae</italic>
+###xml 0 24 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Saccharomyces cerevisiae gene set
+###end title 69
+###begin p 70
+###xml 130 154 130 154 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Saccharomyces cerevisiae</italic>
+###xml 177 181 177 181 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Cherry1">[42]</xref>
+###xml 101 106 <span type="species:ncbi:4932">yeast</span>
+###xml 130 154 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+YeastNet version 2 is based on the verified 5,794 protein encoding open reading frames (ORFs) of the yeast genome downloaded from Saccharomyces cerevisiae Genome Database (SGD) [42] on March 2005. All linkages and calculations of genome coverage are based on this gene set.
+###end p 70
+###begin title 71
+Reference and benchmark sets
+###end title 71
+###begin p 72
+###xml 218 242 218 242 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Saccharomyces cerevisiae</italic>
+###xml 265 269 265 269 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Dwight1">[17]</xref>
+###xml 547 571 547 571 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Saccharomyces cerevisiae</italic>
+###xml 1221 1224 1221 1224 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i.e</italic>
+###xml 218 242 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 547 571 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+In order to benchmark the assigned functional linkages in this study, three different reference sets were used. As a major reference set for benchmarking, we used the Gene Ontology (GO) annotation, downloaded from the Saccharomyces cerevisiae Genome Database (SGD) [17] on March 2005. The GO schema lists three hierarchies of function describing "biological process" (i.e., pathways and systems), "molecular function" (i.e., biochemical activities), and "cellular component" (i.e., subcellular localization). For training the network, we used the Saccharomyces cerevisiae GO "biological process" annotation, which contains up to 14 different levels of information under the term "biological process" within the hierarchy. We used terms belonging to levels 2 through 10. We also excluded the term "protein biosynthesis" because it annotates so many genes as to significantly bias the benchmarking. To construct the reference set of linkages, we considered all gene pairs as functionally linked if they shared annotation from this set of GO terms. These pairs comprised our positive reference set for training network models. Negative examples were constructed as pairs of annotated genes not sharing any annotation terms, i.e., all other links among this annotated set of genes.
+###end p 72
+###begin p 73
+###xml 369 373 369 373 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">NOP1</italic>
+###xml 378 382 378 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SIK1</italic>
+###xml 532 536 532 536 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">BUD5</italic>
+###xml 632 636 632 636 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">NOG1</italic>
+Specifically, 66,174 positive reference pairs were employed, representing all gene pairs sharing any GO biological process terms between levels 2-10 (except for the biased term "protein biosynthesis"). These pairs are provided on the supporting web site (). All other pairs of these genes were implicitly defined as the negative reference pairs. For example, the genes NOP1 and SIK1 represent a positive example, sharing the GO terms 'rRNA modification', '35S primary transcript processing', 'processing of 20S pre-rRNA'. The genes BUD5 ('bud site selection', 'pseudohyphal growth', 'small GTPase mediated signal transduction') and NOG1 ('ribosome-nucleus export') are annotated, but do not share terms, and represent a negative example.
+###end p 73
+###begin p 74
+###xml 180 184 180 184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Mewes1">[43]</xref>
+###xml 395 399 395 399 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Tatusov1">[44]</xref>
+###xml 849 853 849 853 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Tatusov2">[45]</xref>
+We also employed two independent functional linkage reference sets for testing functional linkages. One was derived from the Munich Information Center for Protein Sequences (MIPS) [43] protein function annotation. We used the 11 major categories from the top level MIPS functional category annotation. The second reference set was derived from the clusters of orthologous group (COG) annotation [44], which is based on reconstructing homologous groups of proteins in such a manner as to considerably enrich for orthologous proteins within each group, with the functions of genes assigned within 23 broad categories (such as "Transcription" and "Signal Transduction Mechanisms") based on the well-annotated proteins with each COG. We use the version of COG that includes multicellular eukaryotic genomes (named eukaryotic orthologous groups, or KOG) [45]. Positive and negative linkage sets were constructed from each of these reference sets as for the GO set.
+###end p 74
+###begin title 75
+Benchmarking and integrating heterogeneous functional genomics data
+###end title 75
+###begin p 76
+###xml 224 227 224 227 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 260 263 260 263 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+Different types of genomics data sets differ considerably in their utility for inferring functional linkages. We standardized the contributions from heterogeneous genomic data sets by scoring using the log likelihood score (LLS) scheme previously described in [1].
+###end p 76
+###begin p 77
+###xml 138 144 138 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P(I|D)</italic>
+###xml 149 168 149 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P(&#8764;I|D)</italic>
+###xml 231 234 219 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(D)</italic>
+###xml 244 247 232 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(I)</italic>
+###xml 261 277 249 253 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#8764;I)</italic>
+###xml 319 323 295 299 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P(I)</italic>
+###xml 328 345 304 309 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P(&#8764;I)</italic>
+###xml 485 491 449 455 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P(I|D)</italic>
+###xml 496 515 460 467 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P(&#8764;I|D)</italic>
+###xml 673 677 625 629 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P(I)</italic>
+###xml 682 699 634 639 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P(&#8764;I)</italic>
+###xml 899 902 839 842 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+In this scheme, the score for each data set (or subset; e.g., a set of gene pairs co-expressed to a certain extent) is calculated aswhere P(I|D) and P(approximatelyI|D) are the probabilities for gene pairs linked by the given data (D) to share (I) or not share (approximatelyI) functional annotation, respectively, and P(I) and P(approximatelyI) represent the prior probabilities of sharing/not sharing functional annotation, respectively. For estimating the conditional probabilities P(I|D) and P(approximatelyI|D), we calculated the fraction of annotated gene pairs in the data set being analyzed that were found in the positive or negative reference sets, respectively. P(I) and P(approximatelyI) were calculated as the overall frequencies of positive reference pairs (annotated gene pairs sharing annotation) and negative reference pairs (annotated gene pairs not sharing annotations). Thus, an LLS score of zero indicates that the data is no more informative than random expectation for discovering functional linkages; increasingly positive LLS scores indicate increasing information in the data set for discovering functional linkages.
+###end p 77
+###begin p 78
+###xml 55 59 55 59 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Efron1">[46]</xref>
+###xml 61 65 61 65 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Efron2">[47]</xref>
+###xml 74 77 74 77 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 212 216 212 216 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Sima1">[48]</xref>
+###xml 265 269 265 269 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-BragaNeto1">[49]</xref>
+###xml 668 669 668 669 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 795 799 771 775 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Witten1">[50]</xref>
+###xml 813 816 789 792 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 887 891 863 867 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">test</sub>
+###xml 884 891 860 867 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS<sub>test</sub></italic>
+###xml 907 912 883 888 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">train</sub>
+###xml 904 912 880 888 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS<sub>train</sub></italic>
+To avoid overtraining, we employed 0.632 bootstrapping [46], [47] for all LLS calculations. 0.632 bootstrapping has been shown to provide a robust estimate of classifier accuracy, out-performing cross-validation [48], especially for very small data sets (e.g., see [49]), and is thus appropriate even for more poorly annotated genomes. Unlike cross-validation, which uses sampling without replacement for constructing test and training data sets, 0.632 bootstrapping employs sampling with replacement, constructing the training set from data sampled with replacement and the test set from the remaining data that weren't sampled. Each linkage has a probability of 1-1/n of not being sampled, resulting in approximately63.2% of the data in the training set and approximately36.8% in the test set [50]. The overall LLS is the weighted average of results on the two sets, equal to 0.632*LLStest + (1-0.632)*LLStrain.
+###end p 78
+###begin p 79
+###xml 149 152 149 152 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 215 218 215 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 341 350 341 350 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1B</bold>
+###xml 341 350 341 350 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0000988-g001"><bold>Figure 1B</bold></xref>
+###xml 430 433 430 433 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+For data sets in which each gene pair is associated with a continuous score (e.g., correlation coefficient, mutual information, etc.), we calculated LLS scores for bins containing equal numbers of gene pairs. Those LLS scores and their corresponding data scores (the mean data scores for a bin) were used to calculate regression models (see Figure 1B for examples), which were then used to map individual data intrinsic scores to LLS scores in a continuous manner, allowing calculation of LLS scores for gene pairs lacking annotation. In general, quadratic curve fits tended to overscore gene pairs with the highest data-intrinsic scores (e.g., those with the highest correlation coefficients) during the extrapolation to unannotated genes; sigmoidal fits provided equivalent quality regression models, but were more conservative for the highest scoring cases.
+###end p 79
+###begin p 80
+###xml 16 19 16 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 89 92 89 92 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+###xml 303 304 303 304 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 333 336 333 336 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 400 402 400 402 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WS</italic>
+###xml 512 513 512 513 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 509 513 509 513 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS<sub>0</sub></italic>
+###xml 537 540 537 540 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 570 571 570 571 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">D</italic>
+###xml 661 662 661 662 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 690 693 690 693 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 754 757 754 757 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 792 793 792 793 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 804 807 804 807 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 850 853 850 853 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 881 882 881 882 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 949 950 949 950 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">D</italic>
+###xml 1131 1132 1124 1125 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">D</italic>
+###xml 1155 1157 1141 1143 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WS</italic>
+###xml 1172 1174 1158 1160 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0,</sub>
+###xml 1169 1174 1155 1160 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS<sub>0,</sub></italic>
+###xml 1193 1196 1179 1182 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 1360 1365 1346 1351 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">na&#239;ve</italic>
+###xml 1394 1397 1380 1383 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 1434 1437 1420 1423 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+###xml 1542 1545 1528 1531 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LLS</italic>
+For integrating LLS scores from different data sets, we employed the weighted sum method [1] in order to take into account correlations among the data sets. The published weighted sum method was modified by using linearly decaying weights for additional datasets, and by including a new free parameter, T, which represents a minimum LLS threshold on the data sets being integrated. The weighted sum (WS) integrating multiple likelihood scores of functional association for a gene-pair was calculated as:where LLS0 represents the maximum LLS score for a given gene pair, D is a free parameter determining the decay rate of the weight for secondary evidence, and i is the rank order index of LLS scores, ranking gene pairs starting from the second highest LLS with descending magnitude for all n remaining LLS scores. For integration, we consider only LLS scores above the threshold T, thereby excluding noisy low scoring linkages. The free parameter D ranges from 1 to +infinity, and is optimized to maximize overall performance (measured as the area under a recall-precision curve) of the integrated model. As the optimal value of D approaches +infinity, WS approaches LLS0, and lower scoring LLS scores do not provide any additional likelihood, as appropriate when all data sets are completely dependent. We independently explicitly test the performance of a naive Bayesian integration of the LLS scores (here, simply the sum of the LLS scores for a given gene pair), then select the integration approach maximizing the area under a plot of LLS versus gene pairs incorporated in the network.
+###end p 80
+###begin p 81
+Regarding the choice of linear versus exponential decay of confidence in secondary evidence, we observe better performance (measured by recall-precision analysis) using the linear model when accompanied by more extensive secondary evidence and improved filtering of false positive linkages prior to integration. In YeastNet v.1, more low-scoring false-positive linkages were incorporated, and their contributions as secondary evidence were more strongly down-weighted under the exponential model. However, in YeastNet v. 2, new filters (in particular, new probabilistic scores for protein interactions and the introduction of thresholds for DNA microarray data) down-weight or remove many false positive associations prior to integration. The addition of new data sets also has the effect of increasing the quantity of secondary evidence. Thus we empirically observe that as secondary lines of evidence become more available and informative, the linear dependency model performs better.
+###end p 81
+###begin title 82
+Inferring gene functional linkages from mRNA expression data
+###end title 82
+###begin p 83
+###xml 130 134 130 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Gollub1">[26]</xref>
+###xml 495 497 495 497 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;4</sup>
+###xml 572 576 572 576 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Carlson1">[51]</xref>
+###xml 716 719 716 719 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+###xml 983 991 983 991 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Tables 2</bold>
+###xml 983 991 983 991 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t002"><bold>Tables 2</bold></xref>
+###xml 991 996 991 996 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"> and </bold>
+###xml 996 997 996 997 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</bold>
+###xml 996 997 996 997 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t003"><bold>3</bold></xref>
+Gene functional linkages were inferred from mRNA expression data deposited in the Stanford Microarray Database (SMD) by July 2005 [26]. Co-expression relationships were measured as the Pearson correlation coefficient (PCC) between pairs of genes' mRNA expression vectors, accepting only PCC values statistically significant at the 99% confidence level by t-test. From the set of gene pairs with significant PCC scores, we excluded pairs with cDNA sequence homology (defined as a BLAST E-value<10-4 and percentage nucleotide sequence identity >70% over the aligned regions [51]) in order to reduce false positive co-expression linkages caused by cross-hybridization on the DNA microarrays. As demonstrated previously [1], overall recall/precision of expression-derived linkages can be improved by analyzing subsets of arrays independently, rather than as a single composite expression vector. We tested a total of 581 DNA microarray experiments comprising 18 sets, as defined by SMD (Tables 2 and 3). We found that 14 SMD sets, containing a total of 500 array experiments, exhibited a significant correlation between PCC and the log likelihood score; we considered only these data sets further.
+###end p 83
+###begin p 84
+###xml 178 185 178 185 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 2</bold>
+###xml 178 185 178 185 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t002"><bold>Table 2</bold></xref>
+###xml 297 304 297 304 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 2</bold>
+###xml 297 304 297 304 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t002"><bold>Table 2</bold></xref>
+###xml 1226 1233 1226 1233 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 2</bold>
+###xml 1226 1233 1226 1233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t002"><bold>Table 2</bold></xref>
+We introduced two additional parameters to improve co-expression inferences: a threshold for the minimum observed change in mRNA levels across the set of array experiments (R in Table 2), and a threshold for the minimum number of microarray experiments with expression values greater than R (M in Table 2). Thus, only genes that are differentially expressed by at least R-fold (in either direction) on at least M microarrays in the given data set will be considered for co-expression linkages. These parameters considerably reduce the linkage false positive rate by removing genes that do not vary across the set of arrays being analyzed, under the premise that genes that are expressed at a constant level across the tested conditions are not likely to be relevant to the conditions of the experiments or to participate in strong co-expression relationships. These filters therefore remove false positive linkages derived from experimental noise and drift in otherwise unchanging baseline expression levels. We optimized the two thresholds for each set of SMD arrays, maximizing the area under a curve plotting the number of genes incorporated in the inferred linkages versus cumulative log likelihood score of the linkages (Table 2).
+###end p 84
+###begin p 85
+In order to include otherwise robust co-expression linkages missed by these analyses, we also concatenated all 500 experiments derived from the 14 selected SMD data sets and derived co-expression linkages from these concatenated expression vectors. These linkages plus those from each of the 14 SMD subsets were integrated by the weighted sum method.
+###end p 85
+###begin title 86
+Inferring gene functional linkages from experimental protein-protein interaction data
+###end title 86
+###begin p 87
+###xml 188 192 188 192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Xenarios1">[30]</xref>
+###xml 291 295 291 295 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Reguly1">[29]</xref>
+###xml 330 334 330 334 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Mewes1">[43]</xref>
+###xml 712 716 712 716 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Gavin1">[52]</xref>
+###xml 717 721 717 721 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Krogan1">[54]</xref>
+###xml 771 775 771 775 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ito1">[20]</xref>
+###xml 777 781 777 781 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Uetz1">[21]</xref>
+###xml 783 787 783 787 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-FromontRacine1">[55]</xref>
+###xml 788 792 788 792 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Tong1">[57]</xref>
+###xml 741 746 <span type="species:ncbi:4932">yeast</span>
+Physical protein-protein interactions (PPI) and genetic interactions (GI) were collected from the Database of Interacting Proteins (DIP) small-scale experiment set (downloaded March 2003) [30], BioGRID (downloaded on June 2006) in which all interactions are supported by literature curation [29] and literature collection by MIPS [43]. These interactions are highly confident, because genetic interaction screens inherently provide low false-positive rates (Type I errors), and all physical interactions in these sets are derived from small-scale studies. Additional physical interactions were collected from published genome-scale screens using mass spectrometry analyses of affinity-purified protein complexes [52]-[54] or high throughput yeast two hybrid (Y2H) assays [20], [21], [55]-[57].
+###end p 87
+###begin p 88
+###xml 66 70 66 70 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Hart1">[41]</xref>
+###xml 72 76 72 76 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee3">[58]</xref>
+###xml 341 345 341 345 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Bader2">[22]</xref>
+###xml 503 504 503 504 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 542 543 542 543 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 646 649 646 649 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e.g</italic>
+###xml 818 819 818 819 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 880 881 880 881 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 946 947 946 947 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 1011 1014 1009 1012 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e.g</italic>
+###xml 1373 1377 1371 1375 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i.e.</italic>
+###xml 218 223 <span type="species:ncbi:4932">yeast</span>
+###xml 702 707 <span type="species:ncbi:4932">yeast</span>
+###xml 1082 1087 <span type="species:ncbi:4932">yeast</span>
+We applied a quantitative error model developed for PPI data sets [41], [58] in order to assign probabilistic confidence scores to each PPI or GI gene pair. Instead of modeling simple binary bait-prey interactions for yeast two hybrid assays, inferred binary interactions from mass spectrometry analysis of affinity-purified protein complex [22], or binary genetic interactions, we calculated the hypergeometric probability of interaction between two proteins by random chance, assigning a probability (p-value) to the pair as:whereand where k is the number of interactions observed between proteins A and B in the complete interaction data set (e.g., depending on the data set, counting the number of yeast two-hybrid interactions, mass spectrometry co-purifications, or genetic interactions involving both A and B), n is the number of observed interactions involving protein A, m is the number of observed interactions involving protein B, and N is total number of experiments with >/=1 interaction measured (e.g., depending on the data set, counting the number of total detected yeast two-hybrid interactions, the number of pull-down experiments with at least one interaction prey identified by mass spectrometry analysis, or the number of total detected genetic interactions). Using this measure, interactions between proteins with many different interacting partners (i.e., frequent interactors) have a high probability of occurring by random chance, indicating either promiscuous or strongly context-dependent interactions. Given probable association with many other partners, such cases therefore receive a correspondingly low confidence in the gene pair's specific interaction with each other.
+###end p 88
+###begin title 89
+Inferring gene functional linkages from genome context
+###end title 89
+###begin p 90
+###xml 124 128 124 128 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Huynen1">[59]</xref>
+###xml 129 133 129 133 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Wolf1">[61]</xref>
+###xml 190 194 190 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Huynen1">[59]</xref>
+###xml 196 200 196 200 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Enright1">[62]</xref>
+###xml 201 205 201 205 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Yanai1">[64]</xref>
+###xml 226 229 226 229 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Bowers1">[3]</xref>
+###xml 231 235 231 235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Dandekar1">[65]</xref>
+###xml 237 241 237 241 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Overbeek1">[66]</xref>
+We employ three genome context methods for inferring functional linkages from genome sequences: phylogenetic profiling (PG) [59]-[61], the Rosetta Stone protein (RS) (or gene-fusion) method [59], [62]-[64], and gene neighbors [3], [65], [66]. Linkages for each method were derived from analysis of a database of 149 genomes (117 bacteria, 16 archaea, and 16 eukaryotes).
+###end p 90
+###begin p 91
+###xml 121 125 121 125 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Altschul1">[67]</xref>
+###xml 222 226 222 226 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Marcotte3">[68]</xref>
+###xml 231 234 231 234 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Bowers1">[3]</xref>
+###xml 331 335 331 335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Date1">[69]</xref>
+###xml 14 19 <span type="species:ncbi:4932">yeast</span>
+Briefly, each yeast protein sequence was compared to every other sequence using the program BLASTP with default settings [67]. Rosetta Stone linkages and gene neighbor linkages were calculated from these comparisons as in [68] and [3], respectively. Phylogenetic profiles were constructed from these comparisons and analyzed as in [69] with the following modifications. We found the profiles corresponding to major phylogenetic groups of organisms varied widely in their utility for deriving functional gene associations. In particular, inclusion of eukaryotic and archaeal genomes did not significantly improve performance. Instead, we found the best performance-measured as the performance maximizing the area under a plot of LLS versus the number of genes participating in the linkages-by inferring functional linkages from a profile constructed only from bacterial genomes. For discretizing BLAST E-values prior to calculation of mutual information between phylogenetic profiles, we binned by equal numbers of examples rather than by equal intervals of E-values, accounting for the non-uniform distribution of BLAST E-values. We observed the best results from using 3 bins.
+###end p 91
+###begin title 92
+Inferring gene functional linkages from literature mining
+###end title 92
+###begin p 93
+###xml 135 139 135 139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Jenssen1">[70]</xref>
+###xml 141 145 141 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Stapley1">[71]</xref>
+###xml 152 155 152 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Lee1">[1]</xref>
+###xml 178 179 178 179 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 233 257 233 257 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Saccharomyces cerevisiae</italic>
+###xml 233 257 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 373 378 <span type="species:ncbi:4932">yeast</span>
+We identified functional linkages by mining the scientific literature (specifically, Medline abstracts) using the co-citation approach [70], [71] as in [1]. We analyzed a set of N  =  29,135 Medline abstracts that included the word "Saccharomyces cerevisiae" in the abstract for perfect matches to either the standardized names or common names (or their synonyms) of 5,794 yeast genes.
+###end p 93
+###begin title 94
+Inferring gene functional linkages from protein tertiary structure
+###end title 94
+###begin p 95
+###xml 155 156 155 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 285 289 285 289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Aloy1">[72]</xref>
+Functional linkages were also inferred from physical interactions predicted between proteins pairs based upon modeling their 3-dimensional structures into X-ray crystal structures of homologous protein complexes. We used the tertiary structure predictions reported by Aloy and Russell [72], using the reported P-values as the internal measure of confidence in the interactions.
+###end p 95
+###begin title 96
+Summary of integration
+###end title 96
+###begin p 97
+###xml 506 513 506 513 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 4</bold>
+###xml 506 513 506 513 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0000988-t004"><bold>Table 4</bold></xref>
+###xml 334 339 <span type="species:ncbi:4932">yeast</span>
+The final integrated gene network incorporates 10 fairly distinctive types of data: 1) small-scale protein physical interactions from literature curation, 2) co-citation evidence, 3) mRNA co-expression, 4) genetic interactions, 5) protein complexes derived from affinity-purification followed by mass spectrometry, 6) high-throughput yeast two hybrid analyses, 7) gene neighbors, 8) phylogenetic profiles, 9) Rosetta Stone protein linkages, and 10) inferred interactions from tertiary structural modeling (Table 4). The following pseudo-code summarizes the benchmarking and integration of these data:
+###end p 97
+###begin p 98
+For DNA microarray data
+###end p 98
+###begin p 99
+###xml 16 21 <span type="species:ncbi:4932">yeast</span>
+For each set of yeast DNA microarrays (corresponding to all arrays from a given category defined in SMD)
+###end p 99
+###begin p 100
+Calculate the mean-centered Pearson correlation coefficient (PCC) between all pairs of genes' expression profiles
+###end p 100
+###begin p 101
+Calculate (by t-test) the minimum correlation coefficient for 99% confidence given the # of experiments in the set. For further analyses, consider only pairs meeting this criterion.
+###end p 101
+###begin p 102
+###xml 89 91 89 91 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;4</sup>
+Eliminate all potential cross-hybridization pairs defined by cDNA BLAST score (E-value<10-4 and nucleotide sequence identity >70%), then evaluate the regression between PCC and the log likelihood score (LLS) of sharing Gene Ontology biological process annotations
+###end p 102
+###begin p 103
+Reject set if no relationship is evident between PCC and LLS
+###end p 103
+###begin p 104
+Filter genes considered in the correlation analysis by requiring each gene to exhibit significant expression changes (e.g., >R-fold, typically approximately1.5-fold) in at least M microarray experiments across the data set. Optimize these 2 parameters by recall-precision analysis, maximizing the area under a plot of LLS versus # of genes participating in the linkages.
+###end p 104
+###begin p 105
+Fit regression (typically sigmoid) between PCC and LLS, considering only genes passing the optimized filtering criteria (1.1.1.3) and only gene pairs whose correlation exceeds the 99% confidence level (1.1.1.1).
+###end p 105
+###begin p 106
+Using regression fit, assign LLS scores to all gene pairs whose correlation exceeds the 99% confidence level, including unannotated gene pairs.
+###end p 106
+###begin p 107
+Select minimum LLS threshold from inflection point of regression model. Retain only LLS scores/gene pairs surpassing threshold.
+###end p 107
+###begin p 108
+###xml 21 26 <span type="species:ncbi:4932">yeast</span>
+Consider all sets of yeast DNA microarrays passing the filter of 1.1.1.2.1 as a single composite set and analyze as in 1.1 and subsections. (This step helps reconstruct linkages for globally co-expressed genes, such as housekeeping genes.)
+###end p 108
+###begin p 109
+Integrate LLS scores from all analyses of DNA microarrays
+###end p 109
+###begin p 110
+Calculate the weighted sum of LLS scores for each gene pair across the analyses of DNA microarray sets
+###end p 110
+###begin p 111
+###xml 191 196 191 196 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">na&#239;ve</italic>
+###xml 263 268 263 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">na&#239;ve</italic>
+Optimize the choice of the weighting parameters D and T using recall-precision analysis by maximizing the area under a plot of LLS versus # of genes participating in the linkages. Compare to naive Bayesian integration, and choose from weighted integration versus naive Bayes by recall-precision analysis.
+###end p 111
+###begin p 112
+###xml 122 127 <span type="species:ncbi:4932">yeast</span>
+For each set of protein-protein physical interaction data (mass spectrometry analyses of purified complexes, genome-scale yeast 2 hybrid analysis, small-scale data collected by literature curation) and genetic interaction data (collected by literature curation)
+###end p 112
+###begin p 113
+Fit regressions between LLS and data-intrinsic scores (-log(hypergeometric probability of interaction))
+###end p 113
+###begin p 114
+Using regression fit(s), assign LLS scores to all interacting gene pairs, including unannotated gene pairs
+###end p 114
+###begin p 115
+###xml 167 171 167 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Gavin1">[52]</xref>
+###xml 172 176 172 176 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Krogan1">[54]</xref>
+###xml 332 337 332 337 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">na&#239;ve</italic>
+###xml 404 409 404 409 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">na&#239;ve</italic>
+Integrate LLS scores from homogeneous types of detection methods using weighted sum method (e.g., integrate LLS from three major mass spectrometry analysis of complex [52]-[54] into a single integrated set of gene linkages from all mass spectrometry analyses), optimizing D and T parameters by recall-precision analysis. Compare to naive Bayesian integration, and choose from weighted integration versus naive Bayes by recall-precision analysis.
+###end p 115
+###begin p 116
+For co-citation, phylogenetic profiles, Rosetta-stone proteins, gene neighbors data, and inferred protein interactions from protein tertiary structure
+###end p 116
+###begin p 117
+###xml 259 263 259 263 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Aloy1">[72]</xref>
+Fit regressions between LLS and data-intrinsic scores (-log(random probability of co-citation), mutual information of phylogenetic profiles, (-log(random probability of gene-fusion), -log(random probability of being gene neighbors, and original P score as in [72], respectively)
+###end p 117
+###begin p 118
+Using regression fit(s), assign LLS scores to all co-cited (or co-inherited or co-neighboring) gene pairs, including unannotated gene pairs
+###end p 118
+###begin p 119
+###xml 139 144 139 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">na&#239;ve</italic>
+###xml 211 216 211 216 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">na&#239;ve</italic>
+Integrate all linkages using the weighted sum method, optimizing the choice of D and T parameters by recall-precision analysis. Compare to naive Bayesian integration, and choose from weighted integration versus naive Bayes by recall-precision analysis.
+###end p 119
+###begin title 120
+###xml 27 32 <span type="species:ncbi:4932">yeast</span>
+Experimental validation of yeast ribosomal biogenesis genes
+###end title 120
+###begin p 121
+###xml 119 128 107 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">puf6&#916;</italic>
+###xml 158 162 142 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Winzeler1">[36]</xref>
+###xml 167 171 151 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PUF6</italic>
+###xml 173 177 157 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">NMD3</italic>
+###xml 183 187 167 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TDH1</italic>
+###xml 220 224 204 208 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Ghaemmaghami1">[40]</xref>
+###xml 0 5 <span type="species:ncbi:4932">Yeast</span>
+###xml 39 44 <span type="species:ncbi:4932">yeast</span>
+Yeast strains were cultured in YPD (1% yeast extract, 2% peptone, 2% dextrose) at either 20degreesC or 30degreesC. The puf6Delta haploid MATa deletion strain [36] and PUF6, NMD3, and TDH1 TAP-tagged haploid MATa strains [40] were obtained from Open Biosystems.
+###end p 121
+###begin p 122
+###xml 64 67 64 67 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 342 343 332 333 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 718 721 685 688 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">260</sub>
+###xml 860 864 827 831 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0000988-Baim1">[73]</xref>
+###xml 31 36 <span type="species:ncbi:4932">yeast</span>
+For polysome profile analysis, yeast strains were cultured to OD600 0.3-0.5, and 100 microg/ml cycloheximide (Sigma) was added to each culture. Cultures were immediately cooled with ice, and all subsequent steps were performed on ice or at 4degreesC. Each cell pellet was washed once with lysis buffer (20 mM Tris pH 7.4, 20 mM KCl, 5 mM MgCl2, 100 microg/ml cycloheximide, 12 mM beta-mercaptoethanol). The cells were pelleted, resuspended in one volume lysis buffer with protease inhibitors (2 microg/ml leupeptin, 2 microg/ml aprotinin, 1 microg/ml bestatin, 1 microg/ml pepstatin A; obtained from MP Biomedicals Inc.), and lysed with glass beads. Crude lysates were centrifuged at 15,000g for 10 minutes. Fifteen OD260 units of each supernatant were loaded onto continuous 12 ml 7 to 47% sucrose gradients in lysis buffer without protease inhibitors, as in [73]. After a 2.5-h spin at 40,000 rpm in a Beckman SW40 rotor, the sucrose gradient was fractionated and absorbance at 254 nm was measured. For TAP-tagged strains, fractions were collected, and proteins were precipitated with 10% cold trichloroacetic acid and washed with 100% cold acetone.
+###end p 122
+###begin p 123
+For analysis of co-sedimentation with ribosomes, precipitated proteins were resuspended in 20 microl Laemmli buffer, and 2 microl of each sample was deposited onto a nitrocellulose membrane. TAP-tagged proteins were detected with a PAP antibody (Rockland Immunochemicals, Inc.) and electrochemiluminescence (ECL; GE Amersham).
+###end p 123
+###begin p 124
+We thank Arlen Johnson for assistance with polysome profile analysis, and Orly Alter and Vishy Iyer for critical discussion of microarray analyses.
+###end p 124
+###begin title 125
+References
+###end title 125
+###begin article-title 126
+###xml 38 43 <span type="species:ncbi:4932">yeast</span>
+A probabilistic functional network of yeast genes.
+###end article-title 126
+###begin article-title 127
+BIND-The Biomolecular Interaction Network Database.
+###end article-title 127
+###begin article-title 128
+Prolinks: a database of protein functional linkages derived from coevolution.
+###end article-title 128
+###begin article-title 129
+###xml 52 74 <span type="species:ncbi:6239">Caenorhabditis elegans</span>
+Predictive models of molecular machines involved in Caenorhabditis elegans early embryogenesis.
+###end article-title 129
+###begin article-title 130
+A Bayesian networks approach for predicting protein-protein interactions from genomic data.
+###end article-title 130
+###begin article-title 131
+A combined algorithm for genome-wide prediction of protein function.
+###end article-title 131
+###begin article-title 132
+Predictome: a database of putative functional links between proteins.
+###end article-title 132
+###begin article-title 133
+Discovery of biological networks from diverse functional genomic data.
+###end article-title 133
+###begin article-title 134
+###xml 27 32 <span type="species:ncbi:9606">human</span>
+Probabilistic model of the human protein-protein interaction network.
+###end article-title 134
+###begin article-title 135
+STRING: a database of predicted functional associations between proteins.
+###end article-title 135
+###begin article-title 136
+###xml 26 36 <span type="species:ncbi:6239">C. elegans</span>
+Genome-wide prediction of C. elegans genetic interactions.
+###end article-title 136
+###begin article-title 137
+Probabilistic protein function prediction from heterogeneous genome-wide data.
+###end article-title 137
+###begin article-title 138
+A probabilistic view of gene function.
+###end article-title 138
+###begin article-title 139
+Effects of functional bias on supervised learning of a gene network model.
+###end article-title 139
+###begin article-title 140
+Finding function: evaluation methods for functional genomic data.
+###end article-title 140
+###begin article-title 141
+A scalable method for integration and functional analysis of multiple microarray datasets.
+###end article-title 141
+###begin article-title 142
+Saccharomyces Genome Database (SGD) provides secondary gene annotation using the Gene Ontology (GO).
+###end article-title 142
+###begin article-title 143
+The KEGG databases at GenomeNet.
+###end article-title 143
+###begin article-title 144
+###xml 47 52 <span type="species:ncbi:4932">yeast</span>
+Genomic expression programs in the response of yeast cells to environmental changes.
+###end article-title 144
+###begin article-title 145
+###xml 51 56 <span type="species:ncbi:4932">yeast</span>
+A comprehensive two-hybrid analysis to explore the yeast protein interactome.
+###end article-title 145
+###begin article-title 146
+###xml 60 84 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+A comprehensive analysis of protein-protein interactions in Saccharomyces cerevisiae.
+###end article-title 146
+###begin article-title 147
+###xml 10 15 <span type="species:ncbi:4932">yeast</span>
+Analyzing yeast protein-protein interaction data obtained from different sources.
+###end article-title 147
+###begin article-title 148
+Systematic interpretation of genetic interactions using protein networks.
+###end article-title 148
+###begin article-title 149
+Under cover: causes, effects and implications of Hsp90-mediated genetic capacitance.
+###end article-title 149
+###begin article-title 150
+###xml 49 54 <span type="species:ncbi:4932">yeast</span>
+Exploring genetic interactions and networks with yeast.
+###end article-title 150
+###begin article-title 151
+The Stanford Microarray Database: data access and quality assessment tools.
+###end article-title 151
+###begin article-title 152
+###xml 28 52 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Functional profiling of the Saccharomyces cerevisiae genome.
+###end article-title 152
+###begin article-title 153
+Lethality and centrality in protein networks.
+###end article-title 153
+###begin article-title 154
+###xml 70 94 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Comprehensive curation and analysis of global interaction networks in Saccharomyces cerevisiae.
+###end article-title 154
+###begin article-title 155
+DIP, the Database of Interacting Proteins: a research tool for studying cellular networks of protein interactions.
+###end article-title 155
+###begin article-title 156
+Esf2p, a U3-associated factor required for small-subunit processome assembly and compaction.
+###end article-title 156
+###begin article-title 157
+###xml 12 17 <span type="species:ncbi:4932">yeast</span>
+Role of the yeast Rrp1 protein in the dynamics of pre-ribosome maturation.
+###end article-title 157
+###begin article-title 158
+###xml 51 56 <span type="species:ncbi:4932">yeast</span>
+Global analysis of protein localization in budding yeast.
+###end article-title 158
+###begin article-title 159
+###xml 6 11 <span type="species:ncbi:4932">yeast</span>
+A new yeast PUF family protein, Puf6p, represses ASH1 mRNA translation and is required for its localization.
+###end article-title 159
+###begin article-title 160
+###xml 12 17 <span type="species:ncbi:4932">yeast</span>
+The budding yeast rRNA and ribosome biosynthesis (RRB) regulon contains over 200 genes.
+###end article-title 160
+###begin article-title 161
+###xml 35 48 <span type="species:ncbi:4932">S. cerevisiae</span>
+Functional characterization of the S. cerevisiae genome by gene deletion and parallel analysis.
+###end article-title 161
+###begin article-title 162
+###xml 13 37 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Depletion of Saccharomyces cerevisiae ribosomal protein L16 causes a decrease in 60S ribosomal subunits and formation of half-mer polyribosomes.
+###end article-title 162
+###begin article-title 163
+###xml 92 116 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+NMD3 encodes an essential cytoplasmic protein required for stable 60S ribosomal subunits in Saccharomyces cerevisiae.
+###end article-title 163
+###begin article-title 164
+###xml 0 24 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Saccharomyces cerevisiae nucleolar protein Nop7p is necessary for biogenesis of 60S ribosomal subunits.
+###end article-title 164
+###begin article-title 165
+###xml 41 46 <span type="species:ncbi:4932">yeast</span>
+Global analysis of protein expression in yeast.
+###end article-title 165
+###begin article-title 166
+###xml 33 38 <span type="species:ncbi:4932">yeast</span>
+A high-accuracy consensus map of yeast protein complexes reveals modular nature of gene essentiality.
+###end article-title 166
+###begin article-title 167
+SGD: Saccharomyces Genome Database.
+###end article-title 167
+###begin article-title 168
+MIPS: a database for genomes and protein sequences.
+###end article-title 168
+###begin article-title 169
+A genomic perspective on protein families.
+###end article-title 169
+###begin article-title 170
+The COG database: an updated version includes eukaryotes.
+###end article-title 170
+###begin article-title 171
+Estimating the error rate of a prediction rule: improvement on cross-validation.
+###end article-title 171
+###begin article-title 172
+An introduction to the bootstrap.
+###end article-title 172
+###begin article-title 173
+Superior feature-set ranking for small samples using bolstered error estimation.
+###end article-title 173
+###begin article-title 174
+Is cross-validation valid for small-sample microarray classification?
+###end article-title 174
+###begin article-title 175
+Data Mining: Practical Machine Learning Tools and Techniques: Morgan Kaufmann.
+###end article-title 175
+###begin article-title 176
+###xml 10 15 <span type="species:ncbi:4932">yeast</span>
+Surveying yeast genomics diversity using cDNA microarrays.
+###end article-title 176
+###begin article-title 177
+###xml 42 47 <span type="species:ncbi:4932">yeast</span>
+Proteome survey reveals modularity of the yeast cell machinery.
+###end article-title 177
+###begin article-title 178
+###xml 50 74 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Systematic identification of protein complexes in Saccharomyces cerevisiae by mass spectrometry.
+###end article-title 178
+###begin article-title 179
+###xml 45 50 <span type="species:ncbi:4932">yeast</span>
+###xml 51 75 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Global landscape of protein complexes in the yeast Saccharomyces cerevisiae.
+###end article-title 179
+###begin article-title 180
+Genome-wide protein interaction screens reveal functional networks involving Sm-like proteins.
+###end article-title 180
+###begin article-title 181
+###xml 76 100 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+A computationally directed screen identifying interacting coiled coils from Saccharomyces cerevisiae.
+###end article-title 181
+###begin article-title 182
+A combined experimental and computational strategy to define protein interaction networks for peptide recognition modules.
+###end article-title 182
+###begin article-title 183
+###xml 28 33 <span type="species:ncbi:4932">yeast</span>
+Bioinformatic prediction of yeast gene function.
+###end article-title 183
+###begin article-title 184
+Predicting protein function by genomic context: quantitative evaluation and qualitative inferences.
+###end article-title 184
+###begin article-title 185
+Assigning protein functions by comparative genome analysis: protein phylogenetic profiles.
+###end article-title 185
+###begin article-title 186
+Genome alignment, evolution of prokaryotic genome organization, and prediction of gene function using genomic context.
+###end article-title 186
+###begin article-title 187
+Protein interaction maps for complete genomes based on gene fusion events.
+###end article-title 187
+###begin article-title 188
+Detecting protein function and protein-protein interactions from genome sequences.
+###end article-title 188
+###begin article-title 189
+Genes linked by fusion events are generally of the same functional category: a systematic analysis of 30 microbial genomes.
+###end article-title 189
+###begin article-title 190
+Conservation of gene order: a fingerprint of proteins that physically interact.
+###end article-title 190
+###begin article-title 191
+The use of gene clusters to infer functional coupling.
+###end article-title 191
+###begin article-title 192
+Gapped BLAST and PSI-BLAST: a new generation of protein database search programs.
+###end article-title 192
+###begin article-title 193
+Predicting functional linkages from gene fusions with confidence.
+###end article-title 193
+###begin article-title 194
+Discovery of uncharacterized cellular systems by genome-wide analysis of functional linkages.
+###end article-title 194
+###begin article-title 195
+###xml 24 29 <span type="species:ncbi:9606">human</span>
+A literature network of human genes for high-throughput analysis of gene expression.
+###end article-title 195
+###begin article-title 196
+Biobibliometrics: information retrieval and visualization from co-occurrences of gene names in Medline abstracts.
+###end article-title 196
+###begin article-title 197
+InterPreTS: protein interaction prediction through tertiary structure.
+###end article-title 197
+###begin article-title 198
+###xml 74 98 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+A mutation allowing an mRNA secondary structure diminishes translation of Saccharomyces cerevisiae iso-1-cytochrome c.
+###end article-title 198
+###begin article-title 199
+###xml 22 27 <span type="species:ncbi:4932">yeast</span>
+Global mapping of the yeast genetic interaction network.
+###end article-title 199
+###begin article-title 200
+###xml 14 19 <span type="species:ncbi:4932">yeast</span>
+Disruption of yeast forkhead-associated cell cycle transcription by oxidative stress.
+###end article-title 200
+###begin article-title 201
+Cluster analysis and display of genome-wide expression patterns.
+###end article-title 201
+###begin article-title 202
+###xml 67 72 <span type="species:ncbi:4932">yeast</span>
+Homeostatic adjustment and metabolic remodeling in glucose-limited yeast cultures.
+###end article-title 202
+###begin p 203
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing Interests: </bold>
+Competing Interests: The authors have declared that no competing interests exist.
+###end p 203
+###begin p 204
+###xml 0 9 0 9 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding: </bold>
+Funding: This work was supported by grants from the N.S.F. (IIS-0325116, EIA-0219061), N.I.H. (GM06779-01,GM076536-01), Welch (F-1515), and a Packard Fellowship (EMM). These agencies were not involved in the design and conduct of the study, in the collection, analysis, and interpretation of the data, or in the preparation, review, or approval of the manuscript.
+###end p 204
+

@@ -1,0 +1,1172 @@
+###begin article-title 0
+Analysis of Pleiotropic Transcriptional Profiles: A Case Study of DNA Gyrase Inhibition
+###end article-title 0
+###begin p 1
+###xml 573 589 573 589 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 573 589 <span type="species:ncbi:562">Escherichia coli</span>
+Genetic and environmental perturbations often result in complex transcriptional responses involving multiple genes and regulons. In order to understand the nature of a response, one has to account for the contribution of the downstream effects to the formation of a response. Such analysis can be carried out within a statistical framework in which the individual effects are independently collected and then combined within a linear model. Here, we modeled the contribution of DNA replication, supercoiling, and repair to the transcriptional response of inhibition of the Escherichia coli gyrase. By representing the gyrase inhibition as a true pleiotropic phenomenon, we were able to demonstrate that: (1) DNA replication is required for the formation of spatial transcriptional domains; (2) the transcriptional response to the gyrase inhibition is coordinated between at least two modules involved in DNA maintenance, relaxation and damage response; (3) the genes whose transcriptional response to the gyrase inhibition does not depend on the main relaxation activity of the cell can be classified on the basis of a GC excess in their upstream and coding sequences; and (4) relaxation by topoisomerase I dominates the transcriptional response, followed by the effects of replication and RecA. We functionally tested the effect of the interaction between relaxation and repair activities, and found support for the model derived from the microarray data. We conclude that modeling compound transcriptional profiles as a combination of downstream transcriptional effects allows for a more realistic, accurate, and meaningful representation of the transcriptional activity of a genome.
+###end p 1
+###begin title 2
+Synopsis
+###end title 2
+###begin p 3
+###xml 1113 1129 1113 1129 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 1113 1129 <span type="species:ncbi:562">Escherichia coli</span>
+Pleiotropism-a movement, or reaction, in multiple directions: although it was initially used specifically to describe the effect of a single genetic mutation on multiple characters in the offspring, the transcriptional responses of cells are often best described in terms of pleiotropy, when a single input affects multiple components inside the cell. This, in turn, presents a dilemma with the analysis and interpretation of the observed effects: which effects are directly due to the input itself and which are not? How are the effects related to each other and which are more important? And finally, can the overall transcriptional response be summarized as a combination of the effects? There is, however, a problem with recording the effects when they occur almost simultaneously in the same organism. The authors approached this by recording the effects independently, using mutants that could generate all of the effects of interest but one, and then estimating the effects and their interactions from a multivariate linear model. The authors applied this method to explain the transcriptional response of Escherichia coli to a quinolone antibacterial, a relative of Cipro (ciprofloxacin hydrochloride), and discovered unexpected interactions between DNA maintenance modules in the cell.
+###end p 3
+###begin title 4
+Introduction
+###end title 4
+###begin p 5
+###xml 255 256 255 256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b001">1</xref>
+###xml 257 258 257 258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b002">2</xref>
+###xml 500 501 500 501 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b003">3</xref>
+DNA gyrase is an enzyme ubiquitously present throughout the bacterial kingdom, with a central role in DNA maintenance and chromosome metabolism in the cell: it is essential for initiation and elongation of DNA replication, and for chromosome segregation [1,2]. These cellular processes are dependent on the supercoiling activity of gyrase. Inhibition of that activity by genetic or pharmacological means disrupts these processes and may cause irreversible DNA damage leading to bacterial cell death [3]. Before the advent of genomics tools, the consequences of gyrase inhibition could be evaluated on three levels: (1) global effects on growth, replication, transcription, and translation; (2) local effects on transcription of selected genes; and (3) biochemical effects on plasmid supercoiling.
+###end p 5
+###begin p 6
+###xml 361 377 361 377 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 425 426 425 426 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b004">4</xref>
+###xml 427 428 427 428 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b006">6</xref>
+###xml 908 909 908 909 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b004">4</xref>
+###xml 910 911 910 911 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b007">7</xref>
+###xml 912 913 912 913 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b009">9</xref>
+###xml 361 377 <span type="species:ncbi:562">Escherichia coli</span>
+All these studies, while implicitly acknowledging the pleiotropic nature of the gyrase inhibition, could not adequately address or incorporate the pleiotropicity into the analysis, given the state of technology at the time. The ability to monitor transcriptional activity of entire genomes allowed an assessment of transcriptional and replication states of the Escherichia coli chromosome following inhibition of DNA gyrase [4-6]. These studies confirmed, now on a genome-wide scale, that treating cells with the gyrase inhibitors affects transcription of a large number of genes in the genome and arrests the movement of the replication fork(s). A systematic analysis of transcriptional effects would not be possible, however, without accounting for a multiplicity of cellular responses triggered by the gyrase inhibition. Such known responses include DNA damage, DNA relaxation, and arrest of replication [4,7-9]. It is critical to be able to model the transcriptional response accounting for those effects because the loss of the gyrase activity radiates through the system as a function of at least that many variables. Such a formulation underscores the fact that observed transcriptional effects almost never can be adequately interpreted in terms of one factor, regardless of how convenient it may seem. Numerous conditional and genetic changes inflicted upon biological systems result in complex responses whose nature cannot be properly elucidated without evaluating the contribution of affected processes and regulatory modules. The failure to do so may result in an incomplete or even an erroneous interpretation of data.
+###end p 6
+###begin p 7
+###xml 407 414 407 414 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 407 414 <span type="species:ncbi:562">E. coli</span>
+In the reported study, we constructed isogenic mutant stains that were deficient in generating each one of the known cellular responses to the inhibition of DNA gyrase. We collected transcriptional responses associated with the loss of the gyrase function in those strains, and used the collected parameters to model and interpret the DNA gyrase-dependent global patterns of transcriptional activity in the E. coli genome.
+###end p 7
+###begin title 8
+Results
+###end title 8
+###begin title 9
+Inhibition of DNA Gyrase Affects Transcription Globally and Locally
+###end title 9
+###begin p 10
+###xml 1962 1964 1962 1964 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b010">10</xref>
+###xml 2205 2215 2205 2215 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gyrA, gyrA</italic>
+###xml 2215 2216 2215 2216 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</sup>
+###xml 2216 2217 2216 2217 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">;</italic>
+###xml 2224 2226 2224 2226 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b011">11</xref>
+###xml 2748 2756 2748 2756 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen-0020152-st001">Table S1</xref>
+###xml 3039 3041 3039 3041 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b012">12</xref>
+###xml 3065 3069 3065 3069 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gyrA</italic>
+###xml 3074 3078 3074 3078 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gyrB</italic>
+###xml 3086 3088 3086 3088 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b013">13</xref>
+###xml 3113 3117 3113 3117 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 3124 3125 3124 3125 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b006">6</xref>
+Genome-wide transcriptional profiles have been widely and successfully used to comparatively describe physiological states of various organisms. Most treatments and genetic perturbations, however, result in complex transcriptional responses spreading over multiple regulatory pathways, functional groups, and physiological processes in a cell. Thus, in order to adequately evaluate a transcriptional outcome, such as a resulting transcriptional profile of a treatment, one has to assess the contribution of individual effects (pathways, groups, and processes) to the formation of a response and the interactions between the effects. We chose to dissect the compound response of gyrase inhibition for the following reasons: (1) physiological and transcriptional data indicate that multiple processes are affected by the loss of gyrase function; (2) the main affected processes can be genetically manipulated and excluded from the contribution to the profile; (3) targeting DNA gyrase, an essential bacterial enzyme, is an effective therapeutic means of killing pathogenic bacteria, and (4) the cellular and environmental requirements for efficient targeting of gyrase are insufficiently understood. In the study, we used a prototypical fluoroquinolone, norfloxacin, to inhibit the gyrase activity. The experiment was designed as a time-course treatment at a drug concentration that was effective against wild-type cells and not against a mutant stain carrying a drug-resistant gyrase allele. First, we established the overall nature of the transcriptional response triggered in the bacteria by targeting gyrase in the defined growth conditions. Relative transcript abundances were determined at 5, 10, 15, and 20 min after the addition of norfloxacin. Using measurements from four different time points, we concluded that the transcriptional activity of about 15% of the bacterial genome (613 genes) is affected by the targeting DNA gyrase (false discovery rate [10] is less than 1%). To ensure that this transcriptional response was specifically mediated by the inhibition of DNA gyrase, we examined the effect of the drug on genome-wide transcription in a mutant carrying a quinolone-resistant allele of gyrA, gyrAr; S83L [11]. We found that the norfloxacin treatment of the resistant mutant caused no changes in transcription, with the exception of up-regulation of the genes in the ArgR regulon, the effect opposite to the one observed in the wild-type cells. Overall, the inhibition of gyrase led to up-regulation of 269 and down-regulation of 344 genes. The affected genes belonged to various functional categories dominated by those whose products maintain DNA integrity and mediate transport and diffusion of low-molecular-weight compounds (Table S1). The response can be rationalized as a bacterial defense strategy to reduce intake of the drug, repair DNA damage, and restore DNA conformation and regulation in the cell. In agreement with the earlier reports, the targeting of DNA gyrase resulted in induction of the SOS regulon [12], up-regulation of the gyrA and gyrB genes [13], and repression of the topA gene [6].
+###end p 10
+###begin p 11
+###xml 273 275 273 275 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b014">14</xref>
+###xml 338 340 338 340 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b015">15</xref>
+###xml 380 388 380 388 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g001">Figure 1</xref>
+###xml 659 667 659 667 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g001">Figure 1</xref>
+###xml 806 808 806 808 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b014">14</xref>
+###xml 1156 1161 1156 1161 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b3616</italic>
+###xml 1165 1170 1165 1170 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b3650</italic>
+###xml 1247 1251 1247 1251 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(rfa</italic>
+###xml 1259 1264 1259 1264 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b3619</italic>
+###xml 1265 1271 1265 1271 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b3632)</italic>
+###xml 1606 1608 1606 1608 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b016">16</xref>
+###xml 1609 1611 1609 1611 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b017">17</xref>
+###xml 2019 2021 2019 2021 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b014">14</xref>
+We also examined the profile from a different angle: for existence of spatial transcriptional domains. Such analysis provides important regulatory and organizational information, which is invariably missed when the location of genes on the chromosome is not accounted for [14]. We observed the formation of local transcriptional domains [15] as a result of the gyrase inhibition (Figure 1). Spatial correlations of temporal profiles (0-20-min time series) suggested that some sets of genes linearly juxtaposed on the chromosome underwent similar transcriptional changes as a result of the treatment. We identified 60 domains larger than 3 kilobases (kb). (In Figure 1, domains were delineated using a sliding window of 16 consecutive genes, the expected length of the short-range transcriptional patterns [14].) Twenty-five of those domains overlapped with the regions enriched for differentially expressed genes. Genes in several domains belonged to well-defined functional classes, such as: ribosomal proteins, domain 8; lipopolysaccharide synthesis, domain 15; and iron transport proteins, domain 33. Domain 15 spanned across 32 genes, in a region from b3616 to b3650. This region contains two operons of the lipopolysaccharide synthesis genes (rfa genes: b3619~b3632) along with some functionally unrelated open reading frames (ORFs). Differential and coherent regulation of lipopolysaccharide synthesis may contribute to bacterial defense mechanisms, which would be consistent with the earlier observation linking bacterial resistance to norfloxacin with the levels of lipopolysaccharide in the cell [16,17]. Interestingly, despite the uniform distribution of differentially affected regions along the chromosome, the transcriptional domains were very sparse in the region surrounding the terminus of replication. This observation was consistent with our earlier finding that the spatial correlations of transcriptional activity in this region of the chromosome were particularly sensitive to the gyrase activity [14].
+###end p 11
+###begin title 12
+Uncoupling the Effects of Relaxation, Repair, and Replication
+###end title 12
+###begin p 13
+###xml 1174 1178 1174 1178 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1237 1241 1237 1241 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 1356 1360 1350 1354 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1521 1525 1515 1519 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1611 1615 1601 1605 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1688 1696 1678 1686 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen-0020152-st002">Table S2</xref>
+###xml 1722 1726 1708 1712 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1821 1825 1807 1811 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 1969 1977 1955 1963 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen-0020152-st002">Table S2</xref>
+###xml 2129 2130 2115 2116 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b009">9</xref>
+###xml 2131 2133 2117 2119 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b018">18</xref>
+###xml 2134 2136 2120 2122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b019">19</xref>
+###xml 2171 2175 2157 2161 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+Inhibition of the supercoiling activity of DNA gyrase in vivo is confounded by at least two other global effects, inhibition of DNA replication and DNA breaking. We were not able to find a condition, including a drug treatment or a temperature-sensitive mutation, in which inhibition of plasmid supercoiling would not be accompanied by induction of the prototypical SOS response and by an arrest, or slowing, of DNA replication (unpublished data). Moreover, the transcriptional effects of inhibition of gyrase are assumed to result from relaxation/overwinding of DNA, but it has not been demonstrated that the observed effects are indeed dependent on a relaxation activity of the cell. To untangle these effects, we examined the transcriptional response in the mutants in which the transcriptional effect of gyrase inhibition was not interfered with by the DNA damage response or replication arrest. We also examined transcriptional consequences of the gyrase inhibition in a strain lacking the major relaxation activity, topoisomerase I (Topo I). To that end, we constructed three isogenic strains in the MG1655 genetic background: a first mutant carried a deletion of the recA gene and could not generate the SOS response; a second, a dnaC temperature-sensitive mutation, could not initiate DNA replication at 38 degreesC; and a third, a deletion of the topA gene, could not efficiently relax negatively supercoiled DNA. Treatment of these strains with norfloxacin produced markedly different results. As expected, the recA deletion made the cells on average more susceptible to the drug: only 2% of the DeltarecA cells survived a 20-min treatment compared to 25% of the wild type (see Table S2). Unexpectedly, the DeltatopA strain showed a slightly higher viability than the wild type. And even more surprisingly, the dnaC(Ts) strain was even more susceptible to the drug in the absence of ongoing replication than the wild type (12% of cells survived after 20 min; Table S2). Cytotoxicity of quinolones has been assumed to be triggered when a DNA replication fork collides with a topoisomerase-DNA-quinolone ternary complex [9,18,19]. Significant cell killing in the dnaC(Ts) mutant indicated that the passage of the DNA replication fork is not necessary for the drug cytotoxicity.
+###end p 13
+###begin p 14
+###xml 331 334 331 334 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rfa</italic>
+###xml 342 350 342 350 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g001">Figure 1</xref>
+###xml 559 562 559 562 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lac</italic>
+In addition to the different drug sensitivities, these strains demonstrated diverse patterns of a local transcriptional activity. Although individual strains could be characterized by some unique spatial domains, many of the domains could be seen in three out of four strains, including most prominently the domain surrounding the rfa locus (Figure 1B). Moreover, spatial transcriptional domains could not be detected in the absence of DNA replication, even though the cells were fully transcriptionally competent (based on an isotope incorporation study and lac-operon induction; unpublished data).
+###end p 14
+###begin title 15
+Comparative Overview of the Individual Strains
+###end title 15
+###begin p 16
+###xml 9 13 5 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 185 187 181 183 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b012">12</xref>
+###xml 308 315 304 311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-0020152-t001">Table 1</xref>
+###xml 465 472 461 468 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-0020152-t001">Table 1</xref>
+###xml 487 488 483 484 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 516 523 512 519 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dinG, p</italic>
+###xml 667 713 663 709 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">argS, cydD, glyA, gor, rfaZ, trxA, yccS, ychB,</italic>
+###xml 718 723 714 719 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">yecD,</italic>
+###xml 934 940 930 936 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(trxA)</italic>
+###xml 976 978 972 974 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b020">20</xref>
+The DeltarecA strain, in addition to the loss of the recombination function, is deficient in a RecA-mediated cleavage of the LexA protein that represses transcription of the SOS genes [12]. Following the drug treatment, all of the known genes in the LexA regulon were activated in the RecA-dependent manner (Table 1). The regulatory regions of the genes that showed RecA-dependent activation contained the LexA binding site more frequently than expected by chance (Table 1; CTG[N10]CAG, p = 2.3E-13; TTG[N10]CAG for dinG, p = 4.4E-3, assuming a hypergeometric distribution for testing against the null hypothesis). Some other genes containing the LexA box, including argS, cydD, glyA, gor, rfaZ, trxA, yccS, ychB, and yecD, also exhibited RecA-dependent activation. Although the involvement of some of those genes in the SOS response has been sporadically addressed (for example, it has been shown that a thioredoxin-deficient mutant (trxA) is sensitive to hydrogen peroxide [20]), their role in rescuing bacterial cells from DNA damage remains unclear.
+###end p 16
+###begin p 17
+###xml 4 11 4 11 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 48 52 48 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 123 125 123 125 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b021">21</xref>
+###xml 171 175 167 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 260 264 256 260 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gyrA</italic>
+###xml 268 272 264 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gyrB</italic>
+###xml 304 312 300 308 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">tolC-par</italic>
+###xml 317 321 313 317 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topB</italic>
+###xml 443 454 439 450 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">parC, parE,</italic>
+###xml 459 463 455 459 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topB</italic>
+###xml 602 606 594 598 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 865 874 844 853 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen-0020152-sg001">Figure S1</xref>
+###xml 948 952 923 927 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1068 1072 1039 1043 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1102 1109 1073 1080 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">leuABCD</italic>
+###xml 1110 1114 1081 1085 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">leuO</italic>
+###xml 1124 1129 1095 1100 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b0071</italic>
+###xml 1130 1136 1101 1107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b0076,</italic>
+###xml 1189 1192 1160 1163 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">leu</italic>
+###xml 1247 1250 1218 1221 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">leu</italic>
+###xml 1271 1275 1242 1246 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1288 1310 1259 1281 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Salmonella typhimurium</named-content>
+###xml 1312 1314 1283 1285 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b022">22</xref>
+###xml 1315 1317 1286 1288 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b023">23</xref>
+###xml 1323 1331 1294 1302 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli,</italic>
+###xml 1380 1383 1351 1354 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">leu</italic>
+###xml 1421 1425 1392 1396 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1500 1502 1471 1473 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b024">24</xref>
+###xml 4 11 <span type="species:ncbi:562">E. coli</span>
+###xml 1288 1310 <span type="species:ncbi:90371">Salmonella typhimurium</span>
+###xml 1323 1330 <span type="species:ncbi:562">E. coli</span>
+The E. coli strain carrying the deletion of the topA allele without the compensatory mutations has been reported recently [21]. We confirmed that transduction of the DeltatopA into the MG1655 background was not accompanied by the compensatory mutations in the gyrA or gyrB genes or by any changes in the tolC-par and topB regions of the chromosome (unpublished data). We also did not observe any changes in transcript or protein levels of the parC, parE, and topB (unpublished data). Additionally, we verified that a significant fraction of the plasmid DNA was hyper-negatively supercoiled in the DeltatopA strain and that positively supercoiled plasmid DNA did not accumulate in the strain even at 50 mug/ml of norfloxacin; only traces of the relaxation activity could be observed at 37 degreesC, but not at 30 degreesC, when DNA gyrase was inhibited by the drug (Figure S1). The direct comparison of the transcriptional profiles between the DeltatopA strain and its isogenic wild type without the drug treatment revealed that the most up-regulated genes in the DeltatopA strain were the genes in the leuABCD/leuO cluster (b0071~b0076, 2.6- to 4.8-fold induction). This activation of the leu gene cluster is reminiscent of the suppression of the leu-500 promoter by the topA mutation in Salmonella typhimurium [22,23]. In E. coli, it has been demonstrated that the plasmid-borne leu-500 promoter can be activated by the topA mutation when the diffusion of free supercoils is presumably constrained [24].
+###end p 17
+###begin p 18
+###xml 12 15 12 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">leu</italic>
+###xml 113 118 113 118 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA,</italic>
+###xml 148 183 148 183 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">acnB, aldA, gltA, fruR, fumC, lldD,</italic>
+###xml 188 193 188 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pdhR;</italic>
+###xml 250 274 250 274 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(fadL, lamB, lldP, malE,</italic>
+###xml 279 285 279 285 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rbsD),</italic>
+###xml 322 333 322 333 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(metK, pps,</italic>
+###xml 338 343 338 343 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speB)</italic>
+Besides the leu cluster, genes in several other functional groups appeared to be activated in the absence of the topA, including energy metabolism (acnB, aldA, gltA, fruR, fumC, lldD, and pdhR; at least 2-fold change), transport and binding proteins (fadL, lamB, lldP, malE, and rbsD), and central intermediary metabolism (metK, pps, and speB). The majority of the down-regulated genes belonged to the "cell envelope" (22 genes) and the "motility and chemotaxis" (ten genes) categories.
+###end p 18
+###begin p 19
+###xml 49 53 43 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 159 161 153 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b025">25</xref>
+###xml 162 164 156 158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b026">26</xref>
+###xml 180 184 174 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 734 743 716 725 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen-0020152-sg002">Figure S2</xref>
+###xml 811 815 793 797 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gyrA</italic>
+###xml 833 837 815 819 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gyrB</italic>
+###xml 873 877 855 859 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+At a restrictive temperature of 38 degreesC, the dnaC(Ts) mutation blocks the initiation of DNA replication while allowing ongoing rounds to go to completion [25,26]. Shifting the dnaC(Ts) strain and its isogenic wild type from 30 degreesC to 38 degreesC resulted in the indistinguishable transcriptional profiles (G. Prasad, K. S. Jeong, and A. B. Khodursky, unpublished data). After the completion of ongoing rounds of replication, 90 min after the upshift, the cells were treated with norfloxacin, and the transcriptional response was evaluated relative to the untreated control. Although the SOS response was subdued compared to the response in the wild type, it could be easily discerned from the global transcriptional profile (Figure S2). We also observed up-regulation of the genes encoding DNA gyrase, gyrA (~1.6-fold), and gyrB (~2.5), and down-regulation of the topA (0.5), which was similar to the wild-type response.
+###end p 19
+###begin title 20
+Multifactorial Analysis of the Gyrase-Dependent Transcriptional Response
+###end title 20
+###begin p 21
+###xml 79 81 79 81 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b027">27</xref>
+###xml 176 184 176 184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g002">Figure 2</xref>
+###xml 529 537 529 537 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g002">Figure 2</xref>
+###xml 722 723 722 723 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;</sup>
+###xml 718 723 718 723 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA<sup>&#8722;</sup></italic>
+###xml 772 780 772 780 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g002">Figure 2</xref>
+###xml 908 912 908 912 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1062 1070 1062 1070 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g002">Figure 2</xref>
+The cluster analysis of the time-course data using self-organizing maps (SOM) [27] revealed substantial differences in the temporal expression patterns among the four strains (Figure 2). The expression patterns shown by the various weight vectors of the SOM indicated that the coordination of the transcriptional response in the cells is affected by the individual mutations. For example, although in the wild-type cells the activity of the SOS regulon is most anti-correlated with the activity of the major transporter systems (Figure 2A, the bottom-left corner and top-right corner vectors, circled), this relationship is broken in all three mutants. Whereas this is not particularly surprising in the case with the recA- strain in which the SOS genes were not induced (Figure 2B; no specific nodes could be identified with any subset of the SOS genes), it is rather unexpected that, in the absence of the topA gene, the SOS genes should be most anti-correlated with the different group of genes, those involved in the cell division and amino acid metabolism (Figure 2C). Additionally, whereas some differentially expressed genes exhibited similar temporal profiles in different strains (red or blue circle), a gene composition of each profile was strongly affected by a mutant background. These variations, however, cannot be adequately accounted for by an exploratory data analysis, such as SOM.
+###end p 21
+###begin p 22
+###xml 285 306 285 306 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Materials and Methods</xref>
+###xml 413 414 410 411 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 413 414 410 411 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>1</sub></bold>
+###xml 409 414 409 411 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;<bold><sub>1</sub></bold></italic>
+###xml 509 510 503 504 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 509 510 503 504 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>2</sub></bold>
+###xml 505 510 502 504 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;<bold><sub>2</sub></bold></italic>
+###xml 531 532 522 523 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 531 532 522 523 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>3</sub></bold>
+###xml 526 533 520 524 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#946;<bold><sub>3</sub></bold>)</italic>
+###xml 561 562 549 550 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sub>
+###xml 561 562 549 550 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>4</sub></bold>
+###xml 556 563 547 551 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#946;<bold><sub>4</sub></bold>)</italic>
+###xml 642 643 627 628 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 642 643 627 628 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>5</sub></bold>
+###xml 637 644 625 629 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#946;<bold><sub>5</sub></bold>)</italic>
+###xml 686 687 668 669 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 686 687 668 669 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>6</sub></bold>
+###xml 681 688 666 670 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#946;<bold><sub>6</sub></bold>)</italic>
+###xml 726 727 705 706 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sub>
+###xml 726 727 705 706 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>7</sub></bold>
+###xml 721 728 703 707 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#946;<bold><sub>7</sub></bold>)</italic>
+###xml 764 765 740 741 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 764 765 740 741 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>1</sub></bold>
+###xml 771 772 744 745 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 771 772 744 745 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>5</sub></bold>
+###xml 778 779 748 749 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 778 779 748 749 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>6</sub></bold>
+###xml 760 780 739 750 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;<bold><sub>1</sub></bold>, &#946;<bold><sub>5</sub></bold>, &#946;<bold><sub>6</sub></bold>,</italic>
+###xml 789 790 756 757 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sub>
+###xml 789 790 756 757 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>7</sub></bold>
+###xml 785 790 755 757 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;<bold><sub>7</sub></bold></italic>
+###xml 853 858 820 825 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sulA,</italic>
+###xml 956 960 923 927 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sulA</italic>
+###xml 1004 1005 968 969 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 999 1006 966 970 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#946;<sub>1</sub>)</italic>
+###xml 1025 1029 989 993 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1052 1056 1016 1020 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1074 1075 1035 1036 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 1070 1075 1034 1036 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;<sub>5</sub></italic>
+###xml 1178 1182 1139 1143 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1197 1201 1158 1162 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1206 1210 1167 1171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 1258 1262 1219 1223 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sulA</italic>
+###xml 1414 1422 1375 1383 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen-0020152-st003">Table S3</xref>
+To explain these variations and to obtain a synthetic description of the transcriptional consequences of the gyrase inhibition in the wild-type cells, we developed a linear model that took into account the multiplicity of physiological effects stemming from the gyrase inhibition (see Materials and Methods). The model incorporated seven effects: the effect of norfloxacin on the wild-type cells (coefficient beta1); the genetic effects associated with the ability of the cells to repair DNA (coefficient beta2), to relax DNA (beta3), and to replicate DNA (beta4); and the effect of norfloxacin on the cells that cannot repair their DNA (beta5), cannot efficiently relax their DNA (beta6), and do not replicate their DNA (beta7). For example, the coefficients beta1, beta5, beta6, and beta7 characterizing the activity of one of the SOS response genes, sulA, are, respectively, 3.6, -3.7, -1.2, and -2.3. It signifies that the transcriptional induction of sulA in the wild-type cells by norfloxacin (beta1) is negated in the recA-deletion mutant (drug-recA interaction: beta5), with the two effects acting in the opposite directions (3.6 versus -3.7). Besides the effect of the recA mutation, the topA and dnaC mutations also influenced the induction of the sulA gene, although to a somewhat lesser extent. The compilation of all coefficients determined for the genes present on the DNA microarrays is provided in Table S3.
+###end p 22
+###begin p 23
+###xml 168 169 165 166 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 168 169 165 166 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>5</sub></bold>
+###xml 175 176 169 170 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 175 176 169 170 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>6</sub></bold>
+###xml 164 177 164 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;<bold><sub>5</sub></bold>, &#946;<bold><sub>6</sub></bold>,</italic>
+###xml 185 186 176 177 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sub>
+###xml 185 186 176 177 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>7</sub></bold>
+###xml 181 186 175 177 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;<bold><sub>7</sub></bold></italic>
+###xml 256 264 247 255 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g003">Figure 3</xref>
+###xml 410 414 401 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 418 422 409 413 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 432 440 423 431 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g003">Figure 3</xref>
+###xml 739 743 730 734 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 876 880 867 871 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 898 899 886 887 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 898 899 886 887 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>5</sub></bold>
+###xml 893 900 884 888 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#946;<bold><sub>5</sub></bold>)</italic>
+###xml 906 910 894 898 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 921 922 906 907 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 921 922 906 907 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>6</sub></bold>
+###xml 916 923 904 908 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#946;<bold><sub>6</sub></bold>)</italic>
+###xml 928 932 913 917 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 943 944 925 926 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sub>
+###xml 943 944 925 926 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>7</sub></bold>
+###xml 938 945 923 927 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#946;<bold><sub>7</sub></bold>)</italic>
+###xml 1002 1006 984 988 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1010 1014 992 996 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 1126 1127 1105 1106 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 1126 1127 1105 1106 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>5</sub></bold>
+###xml 1120 1128 1102 1107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#8722;&#946;<bold><sub>5</sub></bold>)</italic>
+###xml 1137 1141 1116 1120 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1187 1188 1163 1164 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 1187 1188 1163 1164 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>6</sub></bold>
+###xml 1181 1189 1160 1165 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#8722;&#946;<bold><sub>6</sub></bold>)</italic>
+###xml 1198 1202 1174 1178 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1221 1222 1197 1198 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1271 1272 1244 1245 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sub>
+###xml 1271 1272 1244 1245 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>7</sub></bold>
+###xml 1265 1273 1241 1246 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#8722;&#946;<bold><sub>7</sub></bold>)</italic>
+###xml 1289 1293 1262 1266 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 1312 1313 1285 1286 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1480 1481 1450 1451 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 1480 1481 1450 1451 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>6</sub></bold>
+###xml 1474 1482 1447 1452 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#8722;&#946;<bold><sub>6</sub></bold>)</italic>
+###xml 1512 1513 1479 1480 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sub>
+###xml 1512 1513 1479 1480 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>7</sub></bold>
+###xml 1506 1514 1476 1481 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#8722;&#946;<bold><sub>7</sub></bold>)</italic>
+###xml 1525 1529 1492 1496 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+We observed that at least one coefficient, a ratio in a typical context of pair-wise comparisons, describing the gene-drug interactions changed by at least 2-fold (beta5, beta6, or beta7 > 1 or < -1) for 230 genes representing eight functional categories (Figure 3A). For example, the genes whose products are annotated as related to transport/binding proteins were repressed in the presence of the functional topA or dnaC gene (In Figure 3, the positive values represent a relative increase in transcript levels in the presence of a wild-type allele and vice versa). Transcription of the genes encoding components of central intermediary metabolism, amino acid biosynthesis, and biosynthesis of cofactors has been similarly affected. The recA gene contributed mostly to activation of the genes in the DNA synthesis, modification, and degradation category. In addition to the recA-drug effect (beta5), the topA-drug (beta6) and dnaC-drug (beta7) interactions suggested that the loss of function of the topA or dnaC gene can substantially affect transcriptional activation of those genes. In this group, the coefficients (-beta5) for the recA-drug interaction are larger than those (-beta6) for the topA-drug interaction (p = 0.03), but they are comparable to those (-beta7) describing the dnaC-drug interaction (p = 0.25). For most genes with known functions, the transcriptional response to the gyrase inhibition appeared to be associated predominantly with DNA relaxation (-beta6) and/or DNA replication (-beta7), with the recA contributing mostly to transcriptional activity of the genes involved in DNA metabolism and cell division.
+###end p 23
+###begin title 24
+A Role of Topo I in Mediating a Relaxation-Dependent Transcriptional Response
+###end title 24
+###begin p 25
+###xml 94 95 94 95 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b005">5</xref>
+###xml 200 202 200 202 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b021">21</xref>
+###xml 462 463 462 463 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">q</italic>
+###xml 535 536 532 533 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 535 536 532 533 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>1</sub></bold>
+###xml 531 536 531 533 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;<bold><sub>1</sub></bold></italic>
+###xml 629 633 626 630 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 646 653 643 650 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-0020152-t002">Table 2</xref>
+###xml 687 691 684 688 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 726 730 723 727 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 764 768 761 765 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 807 811 804 808 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 963 967 956 960 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1215 1222 1208 1215 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 1260 1268 1253 1261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g004">Figure 4</xref>
+###xml 1271 1272 1264 1265 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1367 1368 1360 1361 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1478 1486 1471 1479 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g004">Figure 4</xref>
+###xml 1215 1222 <span type="species:ncbi:562">E. coli</span>
+Transcriptional effects of DNA gyrase inhibition, repression, or activation of transcription [5], are assumed to be associated with DNA relaxation. Topo I is the main relaxation activity in the cell [21]. To examine the contribution of Topo I to the spectrum of transcriptional events triggered by gyrase inhibition, we identified the set of genes that were differentially affected by the drug, compared to those without using the drug, in the wild-type strain (q < 1% in SAM [significance analysis of microarrays] and coefficient beta1 > 0.5 or < -0.5). These genes can be further classified into four groups according to their topA dependency (Table 2) as follows: group I: activated, topA independent; group II: activated, topA dependent; group III: repressed, topA independent; and group IV: repressed, topA dependent. The inhibition of DNA gyrase by norfloxacin activated 84 genes (group I) and repressed 95 genes (group III), in both the wild type and DeltatopA mutant. Regulation of transcription of those genes depended on changes in the gyrase activity, but not on the activity of Topo I. Interestingly, the repressed genes had a relatively high GC content in their coding regions, uncharacteristic of the E. coli genome sequence, (group III, blue in Figure 4A; p = 0.029, coding regions between +1 and +500 base pairs [bp] from the translation start sites; p = 0.0045 between +200 and +500 bp), whereas the activated genes had the expected GC content (group I, red in Figure 4A). Since their regulatory regions had a slightly lower GC content than expected, repression of those genes upon the gyrase inhibition could not be explained on the basis of an unfavorable energetic state of the DNA template on the stage of transcription initiation. Instead, it is more likely that efficient elongation of transcription through the regions with the high GC content requires a swivel, normally provided by DNA gyrase.
+###end p 25
+###begin p 26
+###xml 230 238 230 238 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g004">Figure 4</xref>
+###xml 380 387 380 387 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-0020152-t002">Table 2</xref>
+###xml 396 404 396 404 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g004">Figure 4</xref>
+###xml 594 595 594 595 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 718 720 718 720 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b028">28</xref>
+###xml 721 723 721 723 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b029">29</xref>
+###xml 875 877 875 877 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b029">29</xref>
+###xml 878 880 878 880 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b031">31</xref>
+###xml 1121 1122 1121 1122 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1149 1150 1149 1150 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1231 1233 1231 1233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b032">32</xref>
+###xml 1337 1338 1337 1338 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1443 1451 1443 1451 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g004">Figure 4</xref>
+###xml 1689 1691 1689 1691 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b033">33</xref>
+###xml 1735 1739 1735 1739 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recF</italic>
+Unlike the genes that were repressed by inhibition of gyrase, the upstream regions (up to about 1 kb from their respective translation start sites) of the activated genes had a biased GC composition (data series labeled in red in Figure 4A). We found that short DNA segments with an unusually high GC content are located in the upstream regions of the activated genes (group I in Table 2; red in Figure 4B). When compared with 10,000 randomly selected sets of sequences from the entire genome, the windows with the most significant differences in the GC content were 33, 11, 36, 23, and 35 bp (p = 0.0022 to 0.0034). These sizes are very similar to those of palindromic units (PU or REP; sizes range from 33 to 40 bp [28,29]). Several PUs can be found in the bacterial interspersed mosaic elements (BIMEs) that are known to be preferentially bound and cleaved by DNA gyrase [29-31]. The PUs are imperfect palindromes, and their partial DNA base composition exhibits an unusually high GC content (Y: 13 bp, 85%; Z1: 9 bp, 78%; and Z2: 14 bp, 86%). We found several significant GC-rich consensus sequences such as CGCGCCG (p = 6.5E-14) and GCGGCGCGC (p = 6.4E-7) in 500-bp upstream regions of 84 activated genes using Bioprospector [32]. The sizes of the DNA fragments with a high GC content found in those regions ranged from 8 to 46 bp (p < 0.01). Such GC-rich motifs were not found in the sequences of the repressed genes (group III, blue in Figure 4B). It is tempting to speculate that these small GC-rich sequences, similar to BIMEs, could serve as mediators of the gyrase activity on the chromosome. Interestingly, the majority of the gyrase binding sites mapped by Franco and Drlica [33] were located in the GC rich region of the recF gene.
+###end p 26
+###begin p 27
+###xml 169 173 165 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 212 219 208 215 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-0020152-t002">Table 2</xref>
+###xml 675 676 671 672 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b006">6</xref>
+###xml 677 679 673 675 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b034">34</xref>
+###xml 805 809 801 805 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ompF</italic>
+###xml 811 816 807 812 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lamB,</italic>
+###xml 821 827 817 823 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">proVWX</italic>
+Many genes, whose transcriptional activity was repressed by gyrase inhibition in the wild type, exhibited no, or insignificant, changes in transcript levels in the DeltatopA strain (group IV: 245 genes, 72%; see Table 2). It is very likely that the normal transcriptional activity of those genes requires normal levels of DNA supercoiling, and they become repressed when the DNA template is relaxed by Topo I. The following classes were significantly represented by the genes from group IV: transport/binding proteins (47 genes), amino acid biosynthesis (32), macromolecule synthesis (17), central intermediary metabolism (19), and nucleotide biosynthesis (11). As expected [6,34], this group included the genes whose transcriptional activity is known to be sensitive to the superhelicity of DNA, such as ompF, lamB, and proVWX.
+###end p 27
+###begin title 28
+The Interaction between RecA and Topo I
+###end title 28
+###begin p 29
+###xml 365 369 365 369 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 374 378 374 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 388 389 388 389 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 483 487 483 487 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 492 496 492 496 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 648 652 648 652 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 658 662 658 662 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 685 693 685 693 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g003">Figure 3</xref>
+###xml 756 757 756 757 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 871 879 871 879 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g003">Figure 3</xref>
+###xml 909 917 909 917 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g003">Figure 3</xref>
+###xml 1051 1053 1051 1053 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b035">35</xref>
+###xml 1054 1056 1054 1056 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b036">36</xref>
+###xml 1548 1552 1548 1552 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1553 1557 1553 1557 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1843 1847 1843 1847 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1916 1918 1916 1918 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b037">37</xref>
+###xml 2004 2005 2004 2005 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">q</italic>
+###xml 2245 2246 2245 2246 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 2352 2356 2348 2352 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 2365 2372 2361 2368 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-0020152-t002">Table 2</xref>
+###xml 2450 2454 2446 2450 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 2459 2463 2455 2459 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 2520 2524 2516 2520 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 2563 2567 2559 2563 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 2568 2572 2564 2568 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 2709 2718 2705 2714 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen-0020152-sg003">Figure S3</xref>
+Although our experimental design did not allow the direct quantification of the interactions between the genetic factors, we explored possible associations by a pair-wise comparison of the relevant effects. Because of the apparent role of DNA replication in establishing the drug-related transcriptional response (see above) and the overall correlation between the recA and topA effects (r = 0.3 for 4,069 genes), we focused only on examining the relationship between the effects of recA and topA on the drug-induced transcriptional changes. From our linear model, we identified 36 genes whose expression appeared to be affected by the drug in the recA- and topA-dependent manner (see Figure 3B). For this group of genes, we observed a strong correlation (r > 0.8) between the changes in transcript levels that depended on the presence of the functional Topo I and RecA (Figure 3B). Based on the quadrants in Figure 3B, this group could be divided into the genes whose induction required RecA and Topo I, including several members of the SOS regulon [35,36], and the genes whose repression depended on the presence of RecA and Topo I. The latter subgroup included genes encoding membrane and cell surface proteins. Thus it appeared that at least some genes in the genome were subject to the dual regulation mediated by RecA and Topo I. Since our linear model is based on the conservative assumption of a binary response that ignores any other information associated with the temporal profile of induction/repression, we refined our analysis of the recA-topA association by carefully examining the temporal profiles. Using the triplicate measurements of transcript abundances obtained after 0, 5, and 10 min of the drug treatment, we determined the initial slopes of transcriptional changes for every measurable transcript in the wild-type and recA- strains. First, based on the estimations of false-discovery rates [37], we identified 135 differentially induced and 210 repressed genes in either strain (q < 0.01). We then compared the slopes of induction or repression of the genes in the selected group. We found that the initial kinetics of induction of 32 genes and repression of 83 genes was significantly distinct between the two strains (p < 0.05, following the permutation test of residuals). Further comparisons between the wild-type and DeltatopA strain (Table 2) allowed us to select 11 induced and 54 repressed genes as dependent on both topA and recA. In this second comparison, we were able to exclude the topA-independent regulation to examine the topA-recA association. The quantitative analysis of several randomly chosen transcripts from this set by RT-PCR confirmed the microarray results (Figure S3).
+###end p 29
+###begin p 30
+###xml 13 17 13 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 308 316 308 316 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g005">Figure 5</xref>
+###xml 364 372 364 372 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-0020152-g005">Figure 5</xref>
+###xml 428 435 428 435 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 500 507 500 507 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 518 539 518 539 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Staphylococcus aureus</named-content>
+###xml 428 435 <span type="species:ncbi:562">E. coli</span>
+###xml 500 507 <span type="species:ncbi:562">E. coli</span>
+###xml 518 539 <span type="species:ncbi:1280">Staphylococcus aureus</span>
+The apparent recA dependence of the transcriptional responses driven by DNA relaxation prompted us to further investigate the effect(s) of RecA on the Topo I-catalyzed relaxation reaction. We observed that the RecA protein stimulated the Topo I-catalyzed relaxation of plasmid DNA in vitro by about 10-fold (Figure 5A), and that the stimulation was ATP dependent (Figure 5B). Moreover, this stimulation was enzyme specific: the E. coli RecA did not affect the relaxation reaction catalyzed by either E. coli Topo I or Staphylococcus aureus Topo I (A. Reckinger, K. S. Jeong, A. B. Khodursky, and H. Hiasa, unpublished data).
+###end p 30
+###begin title 31
+Discussion
+###end title 31
+###begin p 32
+###xml 43 50 43 50 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 98 100 98 100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b038">38</xref>
+###xml 101 103 101 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b039">39</xref>
+###xml 183 185 183 185 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b040">40</xref>
+###xml 263 265 263 265 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b041">41</xref>
+###xml 266 268 266 268 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b043">43</xref>
+###xml 362 364 362 364 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b044">44</xref>
+###xml 365 367 365 367 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b045">45</xref>
+###xml 490 491 490 491 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b005">5</xref>
+###xml 575 582 575 582 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 595 597 595 597 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b014">14</xref>
+###xml 850 851 850 851 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b001">1</xref>
+###xml 852 854 852 854 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b046">46</xref>
+###xml 918 919 918 919 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b003">3</xref>
+###xml 43 50 <span type="species:ncbi:562">E. coli</span>
+###xml 575 582 <span type="species:ncbi:562">E. coli</span>
+The average conformation of DNA inside the E. coli cell is a double helix underwound by about 6% [38,39]. Such conformation serves at least a dual purpose: it makes DNA more compact [40] and promotes reactions that use DNA as a template, including transcription [41-43]. DNA is maintained in the underwound state in large part due to the activity of DNA gyrase [44,45]. Recent studies revealed that inhibition of gyrase affects transcription of a broad spectrum of genes across the genome [5] and causes degradation of the spatial patterns of transcriptional activity in the E. coli chromosome [14]. The interpretation of the transcriptional effects of gyrase inhibition experiments is, however, complicated by the fact that the gyrase activity is required for various reactions and processes, including initiation and elongation of DNA replication [1,46], and inhibition of the gyrase activity results in DNA damage [3]. Moreover, dissecting out the relaxation-dependent effects of the gyrase inhibition cannot be done without evaluating the contribution of a relaxation activity. Discounting those effects may lead to an inadequate representation of the transcriptional consequences of gyrase inhibition and/or obscure the contribution of different regulatory processes to the transcriptional state of the cell. The goal of the proposed approach was to define which part of the response depends on replication, relaxation, DNA damage, or a combination of the effects. Since in the wild-type cells these effects are concomitant, the proper way to model their contribution to the observed transcriptional response is by fitting them simultaneously in a multivariate context. Unlike in a conventional multivariate analysis, the effects of interest could not be measured in parallel in one treatment. Instead, we had to collect measurements of the individual effects following the inhibition of gyrase in the individual mutant strains in which a specific effect of interest could not be generated, and then fit the observed changes in transcription into a global model to estimate the contributions of the individual effects.
+###end p 32
+###begin p 33
+###xml 543 547 543 547 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+In this report, we delineated the contribution of the effects of relaxation by Topo I, replication, and DNA damage to the transcriptional patterns of gyrase inhibition. We concluded that: (1) DNA replication is required for the formation of the spatial patterns of transcriptional activity; (2) the transcriptional response to the gyrase inhibition is coordinated between at least two modules involved in DNA maintenance, relaxation and damage response; (3) the genes whose transcriptional response to gyrase inhibition does not depend on the topA activity (29% of all gyrase-dependent genes) can be classified on the basis of the G + C excess in their upstream and coding sequences into, respectively, those activated and repressed by gyrase inhibition; and (4) relaxation by Topo I dominates the transcriptional response, followed by the effects of replication and RecA.
+###end p 33
+###begin p 34
+###xml 108 110 108 110 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b047">47</xref>
+###xml 125 126 125 126 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b008">8</xref>
+###xml 189 191 189 191 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b048">48</xref>
+###xml 307 311 307 311 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 517 522 517 522 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA,</italic>
+###xml 587 589 587 589 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b049">49</xref>
+###xml 923 926 923 926 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">leu</italic>
+###xml 941 949 941 949 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(leuABCD</italic>
+###xml 954 959 954 959 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">leuO)</italic>
+###xml 993 998 993 998 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(lamB</italic>
+###xml 1000 1007 1000 1007 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">proVWX,</italic>
+###xml 1012 1018 1012 1018 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">malE),</italic>
+###xml 1145 1149 1145 1149 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1377 1380 1377 1380 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">leu</italic>
+###xml 1535 1539 1535 1539 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1704 1709 1704 1709 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA,</italic>
+###xml 1813 1817 1813 1817 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1903 1908 1903 1908 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA,</italic>
+###xml 2000 2008 2000 2008 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen-0020152-st004">Table S4</xref>
+Inhibition of gyrase causes DNA relaxation. Relaxation of plasmid DNA in vivo can be carried out by Topo I [47] and Topo IV [8]; although Topo III can catalyze plasmid relaxation in vitro [48], there is no evidence for such an activity in vivo. The inhibition of gyrase by norfloxacin in the absence of the topA gene did not affect the distribution of topoisomers of the plasmid pBR322, indicating that under the conditions employed in this study, Topo I is the major relaxing activity in the cell. In the absence of topA, a fraction of plasmid DNA became hyper-negatively supercoiled ([49]; this study), indicating that the supercoiling activity of the cell is not balanced by the relaxation activity. Assuming that chromosomal DNA is also in a hyper-underwound state, such unbalancing results in somewhat limited changes in the transcriptional activity of the chromosome, including, but not limited to, activation of the leu cluster genes (leuABCD and leuO) and supercoiling-dependent genes (lamB, proVWX, and malE), and repression of genes involved in flagellar assembly and bacterial chemotaxis (ten genes). Although it is possible that the topA loss is compensated by the activity of another topoisomerase(s) in the cell, this compensatory effect is likely to be limited because of the unmitigated induction of supercoiling-dependent promoters such as the promoter of the leu cluster. Moreover, about 71% of all transcriptional changes observed as a result of the gyrase targeting were dependent on the presence of the functional topA gene. In fact, the observed transcriptional effects can be classified with respect to the Topo I activity as follows. Class I: the genes affected in the absence of topA, independent of the gyrase inactivation; class II: the genes affected in the presence of the functional topA when gyrase was inactivated; and class III: the genes affected in the absence of the topA, dependent on the gyrase inactivation. (The detailed description of classes can be found in Table S4.)
+###end p 34
+###begin p 35
+###xml 146 150 146 150 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 150 151 150 151 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8211;</sup>
+###xml 156 160 156 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 160 161 160 161 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+</sup>
+###xml 227 231 227 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 231 232 231 232 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+</sup>
+###xml 312 316 312 316 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+Similarly we can classify the genes whose transcriptional regulation was gyrase-dependent: class I: affected by the gyrase inhibition in both the topA- and topA+ strains; class II: affected by the gyrase inhibition only in the topA+ strain; and class III: affected by the functional gyrase in the absence of the topA.
+###end p 35
+###begin p 36
+Although the classes II of the two classifications are identical, class III of the gyrase-dependent classification includes genes whose transcription is sensitive to DNA (hyper)-underwinding.
+###end p 36
+###begin p 37
+###xml 4 8 4 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 343 347 343 347 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gyrA</italic>
+###xml 352 356 352 356 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gyrB</italic>
+###xml 388 390 388 390 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b013">13</xref>
+###xml 825 829 825 829 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 996 1000 996 1000 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1287 1289 1287 1289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b050">50</xref>
+###xml 1475 1479 1475 1479 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1679 1686 1679 1686 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s2">Results</xref>
+###xml 2178 2182 2178 2182 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+The topA-independent changes in transcription resulting from the gyrase targeting (class I of the gyrase-dependent classification) can be explained by either invoking a residual relaxation activity or by assuming a more direct, local involvement of gyrase in a transcriptional control of the target genes. The set of such targets includes the gyrA and gyrB genes themselves (this study, [13]). Although it is plausible that another topoisomerase relaxes DNA in the vicinity of the promoters of those and other genes, the parameters of that relaxation reaction have to be comparable to the ones of the reaction catalyzed by Topo I, because the rate and the extent of activation of those genes following the gyrase inhibition was the same with or without Topo I. The stratification of the supercoiling-sensitive genes into the topA dependent and independent allowed us to extract the salient properties of the classified gene sets. We found that the genes repressed by the gyrase inhibition in the topA-independent manner had an unusually high GC content in the 5' regions of their coding sequences. It is plausible that transcription through such regions may require facilitation by means of an efficient unwinding ahead of the moving RNA polymerase, analogous to the replication swivel [50]. The genes whose transcription was induced by the inhibition of the supercoiling activity (a somewhat enigmatic property of the supercoiling-relaxation homeostasis in the cell) in the topA-independent fashion can be characterized as a group on the basis of a high GC content in their upstream regions. On the basis of the length and compositional characteristics of those GC regions (see Results section), it is tempting to speculate that gyrase preferentially binds to those sites and maintains supercoiling density in their vicinity. Without the gyrase activity, the supercoiling density of DNA in those regions may drop, after the passage of a replication fork or diffusion of positive supercoils generated by transcription of the neighboring genes, leading to activation of the relaxation-inducible promoters in the region. It is also possible that the feedback up-regulation of the topA-independent promoters occurs through the direct de-repression in the absence of gyrase, which might normally inhibit transcription of the genes located downstream of its preferential binding sites.
+###end p 37
+###begin p 38
+###xml 523 525 523 525 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b051">51</xref>
+###xml 817 821 817 821 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaB</italic>
+###xml 906 907 906 907 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b007">7</xref>
+###xml 1546 1550 1546 1550 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 1604 1607 1604 1607 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lac</italic>
+###xml 1665 1667 1665 1667 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b052">52</xref>
+The estimation of the contribution of replication to the transcriptional response elicited by the gyrase inhibition revealed, according to our model, that replication is the second factor, after relaxation by Topo I, modulating transcription globally: in the absence of replication, the response to the gyrase inhibition is subdued across the board by about 84%-89%. Sassanfar and Roberts demonstrated that the LexA cleavage occurs at the normal rate and level without DNA replication, in the presence of a quinolone drug [51]. Our finding is consistent with the fact that the formation of the damage that generates the SOS signal and presumably prevents subsequent colony formation does not depend on DNA replication. While this manuscript was in preparation, Zhao et al. reported that the replication arrest in the dnaB(Ts) mutant did not rescue the cells from the bactericidal effect of the quinolones [7], which may be consistent with the phenomenon observed in the present study. It is conceivable that in the absence of DNA replication, the LexA cleavage does not result in effective de-repression of the SOS regulon, which in turn may make the cells more susceptible to the drug, as was observed in the present study. The bactericidal effect of the drug can be completely reversed by an inhibitor of the transcription initiation, rifampicin, suggesting that the effect of norfloxacin in the absence of replication is mediated by transcription (unpublished data). This, along with the observations that, at the restrictive temperature, the dnaC mutant incorporated tritiated uracil and induced the lac operon by IPTG to the expected level (unpublished data, [52]), suggests that the cells do not lose their capacity to transcribe DNA in the absence of replication. That, in turn, implies that the replication itself, or the state of the cell associated with normal replication, is necessary for induction of the SOS transcriptional response and for the formation of the spatial transcriptional domains.
+###end p 38
+###begin p 39
+###xml 92 94 92 94 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b015">15</xref>
+###xml 95 97 95 97 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b053">53</xref>
+###xml 98 100 98 100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b055">55</xref>
+###xml 315 317 315 317 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b056">56</xref>
+###xml 410 412 410 412 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b053">53</xref>
+###xml 850 857 850 857 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 870 872 870 872 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b014">14</xref>
+###xml 1710 1733 1710 1733 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptomyces coelicolor</named-content>
+###xml 1735 1737 1735 1737 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b055">55</xref>
+###xml 1764 1778 1764 1778 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S. typhimurium</italic>
+###xml 1780 1782 1780 1782 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b054">54</xref>
+###xml 850 857 <span type="species:ncbi:562">E. coli</span>
+###xml 1710 1733 <span type="species:ncbi:1902">Streptomyces coelicolor</span>
+###xml 1764 1778 <span type="species:ncbi:90371">S. typhimurium</span>
+Spatial transcriptional domains have been observed in the chromosomes of various organisms [15,53-55]. Such spatial correlations of transcriptional activity have been attributed to the phenomenon of coordinated opening up of chromosomal regions, making the DNA template accessible to the transcriptional machinery [56]. A favorable state of the DNA template, such as, for example, within a supercoiled domain [53], can potentially be formed in parallel in multiple regions on the chromosome, giving rise to a longer-range correlation components. Despite a strong evidence for the existence of the transcriptional domains in different organisms, the mechanism(s) of the domain formation have not been addressed. Our earlier results indicated that the inhibition of DNA gyrase resulted in the diminishing of the spatial transcriptional patterns in the E. coli chromosome [14]. In corroboration of that observation, here we presented the evidence that the formation of the spatial domains in the region of the chromosome surrounding the replication terminus is particularly sensitive to the gyrase activity. Moreover, the results presented here strongly suggest that replication is required for the formation of the domains. It is plausible that coordinated transcription within, and across, domains is modulated most effectively on the newly replicated, hemi-methylated and supercoiled, DNA emerging from the replisome. Even in an asynchronous population of bacterial cells, the existence of the average replication gradient may be sufficient to detect the domain formation in newly replicated DNA. It remains to be seen to what extent replication determines the wide-range positional transcriptional effects in Streptomyces coelicolor [55] and the local effects in S. typhimurium [54].
+###end p 39
+###begin p 40
+###xml 208 215 208 215 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 231 235 231 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 240 244 240 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA</italic>
+###xml 354 358 354 358 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 567 568 567 568 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b003">3</xref>
+###xml 868 873 868 873 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(dnaJ</italic>
+###xml 875 879 875 879 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaK</italic>
+###xml 881 886 881 886 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">htpG,</italic>
+###xml 891 896 891 896 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">yrfI)</italic>
+###xml 1003 1007 1003 1007 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1012 1016 1012 1016 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 1401 1405 1397 1401 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1699 1703 1695 1699 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 1703 1704 1699 1700 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+</sup>
+###xml 1797 1801 1793 1797 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ompF</italic>
+###xml 1923 1925 1919 1921 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b057">57</xref>
+###xml 3080 3082 3076 3078 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b058">58</xref>
+###xml 3167 3171 3163 3167 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 3176 3180 3172 3176 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 3256 3258 3252 3254 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b059">59</xref>
+###xml 3259 3261 3255 3257 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b062">62</xref>
+###xml 208 215 <span type="species:ncbi:562">E. coli</span>
+The capacity to respond to DNA damage was the third factor that we included as a part of the model describing the transcriptional effects of the gyrase inhibition. The induction of the DNA damage response in E. coli depends on the recA and lexA gene products, with RecA being a positive and LexA a negative regulator of the module. In the absence of the recA gene, the cells are expected to become susceptible to suboptimal concentrations of the drug, likely due to their inability to mount the SOS response and repair low-level DNA damage induced by the quinolones [3]. Our results were consistent with that expectation. Additionally, it appears that the inability to cope with DNA damage, or at least a quinolone-induced type of damage, is accompanied by a more generic stress response, as manifested by up-regulation of genes encoding folding and ushering proteins (dnaJ, dnaK, htpG, and yrfI). More surprising, however, was our finding that transcription of the dozens of genes was affected by both recA and topA. Although uncovered initially on purely statistical grounds by modeling the parameters obtained in different mutant strains, this interaction appears to be real and is manifested by the altered initial rates of repression, or activation, of transcription as well as, in some cases, the end-point levels of the transcripts following inhibition of the supercoiling activity in the DeltarecA strain. Although such an outcome could have been brought about either indirectly, by the state of the DNA template in the presence of persistent damage, or directly, through the interference of RecA with the relaxation reaction, we were intrigued by the cases of accelerated repression in the recA+ background. Most prominently this was exemplified by the repression of transcription of the ompF gene. Since transcription of the gene is known to be dependent on negative supercoiling and inhibited by DNA relaxation [57], one would have to assume that the functional RecA, either directly or indirectly, accelerates this process. We examined the possibility of a direct effect by carrying out the Topo I relaxation assay in vitro with or without RecA and found that, at the physiological concentrations, the RecA protein stimulated the Topo I catalyzed relaxation reaction by about 10-fold in the ATP-dependent manner. Although it is possible that the stimulation is the result of the conformational changes induced in the supercoiled plasmid DNA by the RecA protein, making it a better substrate for the Topo I reaction, the species-dependent enzyme specificity suggests that the stimulation cannot be explained solely on the basis of the induced preferential conformation of the substrate. The biochemical mechanism of the interaction between Topo I and RecA is currently under investigation. The interaction on the level of transcription may help explain the observation made by E. Witkin and co-workers more than 20 y ago where they showed that the efficient shut-down of the OmpF synthesis in the cells treated with nalidixic acid required the functional RecA protein [58]. It is worth noting that the synthetic conditional interactions between the mutant recA and topA alleles affecting cell physiology and viability have been reported before [59-62] but, to the best of our knowledge, this is the first study that implicated the two activities in the concerted regulation of transcription and the direct interaction.
+###end p 40
+###begin p 41
+###xml 153 155 153 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b063">63</xref>
+Genome-wide transcriptional profiles often result from contributions of multiple effects including, but not limited to, transcript initiation and decay [63], differentially controlled regulatory networks, and indirect effects on a transcriptional state of cells. Assuming that these effects can be separated, genetically or by other means, a compound transcriptional profile can be explained in terms of contributing effects, thus allowing for a more realistic, accurate, and meaningful representation of the transcriptional activity of a genome. Here we demonstrated the utility of such an approach by delineating the transcriptional response of the bacterial cells to the gyrase inhibition. The multivariate approach allowed us to interpret the complex profile as a function of three effects known to be triggered in the cells by the loss of the gyrase function. The analysis not only yielded all of the expected features of the response, but also uncovered subtleties of the individual effects and the interactions between them, which are readily missed by a conventional pair-wise analysis. Moreover, the response can be fully explained by the combination of the three factors: DNA relaxation by Topo I, DNA damage, and inhibition of DNA replication.
+###end p 41
+###begin title 42
+Materials and Methods
+###end title 42
+###begin title 43
+Strains, cultures, and treatments.
+###end title 43
+###begin p 44
+###xml 7 11 3 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 27 34 23 30 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 113 115 109 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b064">64</xref>
+###xml 137 141 129 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 143 145 135 137 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b021">21</xref>
+###xml 169 176 161 168 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 212 216 200 204 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 331 335 319 323 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 515 517 503 505 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b065">65</xref>
+###xml 733 736 721 724 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 912 916 899 903 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 1088 1090 1075 1077 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b066">66</xref>
+###xml 27 39 <span type="species:ncbi:83333">E. coli K-12</span>
+###xml 169 176 <span type="species:ncbi:562">E. coli</span>
+A DeltarecA mutation in an E. coli K-12 strain MG1655 was constructed by a Red recombinase-mediated replacement [64]. A strain with DeltatopA [21] was obtained from the E. coli Genetic Stock Center, and the DeltatopA allele was transferred into MG1655 by P1 transduction. To assess DNA replication effects, a temperature-sensitive dnaC allele linked to the Tn10 was transferred into the MG1655 strain. Bacteria were cultured in Luria-Bertani (LB) or Vogel-Bonner (VB) minimal medium supplemented with 0.2% glucose [65], and the analysis is reported for the wild-type and mutant strains grown and treated in the minimal medium. Bacterial cultures were grown in shake flasks with standard aeration to an optical density (measured at OD600) of approximately 0.4, at which point norfloxacin (1 mug/ml) was added, and samples were collected at 5, 10, 15, and 20 min after the addition. The norfloxacin treatment of a dnaC(Ts) mutant was done when the culture reached the same optical density, but after the initiation of DNA replication was blocked at a non-permissive temperature for 90 min [66].
+###end p 44
+###begin title 45
+Microarray/RT-PCR.
+###end title 45
+###begin p 46
+###xml 115 122 115 122 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 382 384 382 384 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b067">67</xref>
+###xml 702 704 696 698 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b068">68</xref>
+###xml 805 807 799 801 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b069">69</xref>
+###xml 1080 1082 1074 1076 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen-0020152-b037">37</xref>
+###xml 115 122 <span type="species:ncbi:562">E. coli</span>
+Relative mRNA abundances between treated and non-treated cells, or a mutant and the wild type, were compared using E. coli whole-genome DNA microarrays containing 99% of all annotated open reading frames and the stable RNA genes. The protocols for slide preparation, RNA purification, reverse transcription with the Cy-dyes, hybridization, and image scanning were described before [67]. Briefly, total RNA purified using hot phenol extraction was subjected to reverse transcription with a Cy3 or a Cy5 fluorophore (Amersham, Little Chalfont, United Kingdom). The fluorescent probes were hybridized to an array at 65 degreesC for 6 h. Intensities in both channels were smoothed using the lowess method [68], and dye- and array-specific noise was removed using the analysis of variance (ANOVA) error model [69]. A detailed description of statistical analysis of DNA microarray data is provided in the supporting information Text S1. In pair-wise comparisons, differentially expressed genes were identified at an estimated false discovery rate of less than 1% using the SAM package [37]. Real-time PCR for RNA quantification was carried out using Syber-Green kit and ABI prism 7900 (Applied Biosystems, Foster City, California, United States) according to the manufacturer's protocol.
+###end p 46
+###begin title 47
+Linear model analysis.
+###end title 47
+###begin p 48
+###xml 168 171 168 171 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"> ij</sub>
+###xml 168 171 168 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub> ij</sub></italic>
+###xml 168 171 168 171 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic><sub> ij</sub></italic></bold>
+###xml 190 191 190 191 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 190 191 190 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>2</sub></italic>
+###xml 210 211 210 211 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 213 214 213 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 251 252 243 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 254 255 246 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 418 419 402 403 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 472 473 453 454 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 562 563 540 541 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 629 630 604 605 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 630 631 605 606 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 636 637 608 609 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 637 638 609 610 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 637 638 609 610 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>,</italic></bold>
+###xml 647 648 616 617 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sub>
+###xml 713 718 678 683 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA,</italic>
+###xml 724 729 685 690 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA,</italic>
+###xml 734 738 695 699 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 831 832 789 790 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 832 833 790 791 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 838 839 793 794 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 839 840 794 795 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 849 850 801 802 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sub>
+###xml 940 945 888 893 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA,</italic>
+###xml 951 956 895 900 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA,</italic>
+###xml 961 965 905 909 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 969 970 913 914 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 986 993 930 931 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#603;</italic>
+###xml 1109 1116 1047 1048 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#603;</italic>
+###xml 1281 1282 1213 1214 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1326 1333 1258 1265 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen-0020152-sd001">Text S1</xref>
+###xml 1338 1346 1270 1278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen-0020152-st003">Table S3</xref>
+To characterize the effects of inhibition of gyrase by the drug in different genetic backgrounds, a linear regression model was fitted for each gene as follows: where Y ij represents the log2 intensity of gene i (i = 1,2,3,em leader4,069) and channel j (j = 1,2,em leader32). The coding information of the variables and the design matrix can be found in Text S1. For the sake of simplicity, we will omit the subscript i from the following presentation. In this model, beta0 represents the gene expression level for a wild-type strain without drug treatment; beta1 is the coefficient for the drug effect on the wild type; the beta2, beta3, and beta4 correspond to transcriptional differences in the untreated DeltarecA, DeltatopA, and dnaC(Ts) strains, respectively, relative to the untreated wild-type sample; the coefficients beta5, beta6, and beta7 represent the difference in treatment effects between wild-type and mutant strains (DeltarecA, DeltatopA, and dnaC(Ts), respectively). epsilon is the measurement error that stands for the difference between the observed and the model-predicted response, and epsilon is assumed to follow an independent normal distribution. The point and variance estimation of the coefficients were performed in R package () and the corresponding p-values were used to do the inference. (See Text S1 and Table S3 for details).
+###end p 48
+###begin title 49
+DNA relaxation assays.
+###end title 49
+###begin p 50
+###xml 91 92 91 92 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+Reaction mixtures contained 50 mM Tris-HCl (pH 8.0), 100 mM potassium glutamate, 10 mM MgCl2, 5 mM ATP (or the indicated cofactor), 100-mg/ml BSA, 10% (w/w) glycerol, 0.29 mug [ = 100 fmol] of pBR322 form I DNA, either 0 or 5,600 ng [ = 3 bp per RecA monomer] (or the indicated amounts) of RecA, and 0 or 0.1 pmol (or the indicated amounts) of Topo I. The reaction mixtures were assembled on ice. First, RecA was added and incubated at 37 degreesC for 5 min, then Topo I was added and incubated at 37 degreesC for 30 min. Reactions were terminated by the addition of EDTA to 25 mM and incubation at 37 degreesC for 2 min. SDS and proteinase K were then added to 1% and 100 mg/ml, respectively, and the incubation was continued for an additional 15 min. The DNA products were purified by extraction of the reaction mixtures with phenol-chloroform (1:1, v/v) and then analyzed by electrophoresis through vertical 1.2% agarose gels (14 x 10 x 0.3 cm) at 2 V/cm for 12 h in a running buffer of 50 mM Tris-HCl (pH 7.9), 40 mM sodium acetate, and 1 mM EDTA (TAE buffer). Gels were stained with ethidium bromide and photographed using an Eagle Eye II system (Stratagene, La Jolla, California, United States).
+###end p 50
+###begin p 51
+###xml 105 109 105 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+To assess DNA supercoiling in vivo, the plasmid pBR322 was transformed into the wild-type MG1655 and the topA deletion mutant. Cells in a mid-exponential phase were treated with 1-, 10-, and 50-mug/ml norfloxacin for 10 min, and the plasmid DNA was isolated with Midipreps kit (Promega, Madison, Wisconsin, United States). Topoisomers were resolved in a 1% agarose gel in TAE buffer supplemented with 3-mug/ml chloroquine, at 3 V/cm for 16-20 h.
+###end p 51
+###begin title 52
+Supporting Information
+###end title 52
+###begin title 53
+###xml 89 93 89 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+Distribution of Topoisomers of the Plasmid pBR322 Isolated from the Wild-Type Cells or a topA Mutant after the Norfloxacin Treatment
+###end title 53
+###begin p 54
+(A) Cells were treated with indicated concentrations of norfloxacin, and the plasmid DNA was isolated after 10 min of treatment.
+###end p 54
+###begin p 55
+(B) Cells were treated with norfloxacin after the temperature downshift from 37 degreesC to 30 degreesC.
+###end p 55
+###begin p 56
+(1.1 MB EPS)
+###end p 56
+###begin p 57
+Click here for additional data file.
+###end p 57
+###begin title 58
+Effect of Replication Initiation Arrest on Transcriptional Activity of the SOS Regulon
+###end title 58
+###begin p 59
+###xml 156 160 156 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+###xml 299 303 299 303 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+Transcript levels, as measured by DNA microarrays, of representative genes of the SOS regulon were compared between the wild type ([A] upper panel) and the dnaC mutant ([B] lower panel). Although the norfloxacin-treated wild-type cells exhibited significant induction of the SOS genes in 5 min, the dnaC mutant cells showed a relatively low level of induction in the absence of ongoing DNA replication.
+###end p 59
+###begin p 60
+(949 KB EPS)
+###end p 60
+###begin p 61
+Click here for additional data file.
+###end p 61
+###begin title 62
+Quantitative Analysis of Relative Transcript Levels by RT-PCR
+###end title 62
+###begin p 63
+(A) The recA-dependent transcript levels of the supercoiling-dependent genes were determined at 0, 5, and 10 min of the norfloxacin treatment.
+###end p 63
+###begin p 64
+(B) Correspondence between the transcript levels estimated from microarray and RT-PCR measurements. The mRNA abundances at 5 min after the norfloxacin treatment were compared with mRNA abundances of the non-treated samples in three independent biological replicates. The RT-PCR measurements were done three times in one randomly chosen sample. Error bars represent two standard errors of the mean.
+###end p 64
+###begin p 65
+(1.4 MB EPS)
+###end p 65
+###begin p 66
+Click here for additional data file.
+###end p 66
+###begin title 67
+Functional Classification of the Differentially Expressed Genes
+###end title 67
+###begin p 68
+(88 KB DOC)
+###end p 68
+###begin p 69
+Click here for additional data file.
+###end p 69
+###begin title 70
+Cell Viability during the Norfloxacin Treatment
+###end title 70
+###begin p 71
+(28 KB DOC)
+###end p 71
+###begin p 72
+Click here for additional data file.
+###end p 72
+###begin title 73
+###xml 17 18 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+Coefficients and p-Values Determined by the Linear Model
+###end title 73
+###begin p 74
+(751 KB XLS)
+###end p 74
+###begin p 75
+Click here for additional data file.
+###end p 75
+###begin title 76
+Transcriptional Effects with Respect to the Topo I Activity
+###end title 76
+###begin p 77
+(31 KB DOC)
+###end p 77
+###begin p 78
+Click here for additional data file.
+###end p 78
+###begin title 79
+Overall Analysis Plan and the Design Matrix for the Linear Model
+###end title 79
+###begin p 80
+(88 KB DOC)
+###end p 80
+###begin p 81
+Click here for additional data file.
+###end p 81
+###begin title 82
+Accession Numbers
+###end title 82
+###begin p 83
+###xml 73 77 73 77 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">acnB</italic>
+###xml 86 92 86 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, aldA</italic>
+###xml 101 107 101 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, argR</italic>
+###xml 116 122 116 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, argS</italic>
+###xml 131 137 131 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, cydD</italic>
+###xml 146 152 146 152 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, dnaC</italic>
+###xml 161 167 161 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, dnaJ</italic>
+###xml 176 182 176 182 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, dnaK</italic>
+###xml 191 197 191 197 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, fadL</italic>
+###xml 206 212 206 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, fruR</italic>
+###xml 221 227 221 227 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, fumC</italic>
+###xml 236 242 236 242 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, gltA</italic>
+###xml 251 257 251 257 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, glyA</italic>
+###xml 266 271 266 271 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, gor</italic>
+###xml 280 286 280 286 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, htpG</italic>
+###xml 295 301 295 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, lamB</italic>
+###xml 310 316 310 316 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, leuA</italic>
+###xml 325 331 325 331 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, leuB</italic>
+###xml 340 346 340 346 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, leuC</italic>
+###xml 355 361 355 361 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, leuD</italic>
+###xml 370 376 370 376 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, leuO</italic>
+###xml 385 391 385 391 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, lexA</italic>
+###xml 400 406 400 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, lldD</italic>
+###xml 415 421 415 421 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, lldP</italic>
+###xml 430 436 430 436 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, malE</italic>
+###xml 445 451 445 451 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, metK</italic>
+###xml 460 466 460 466 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, ompF</italic>
+###xml 475 481 475 481 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, parC</italic>
+###xml 490 496 490 496 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, parE</italic>
+###xml 505 511 505 511 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, pdhR</italic>
+###xml 520 525 520 525 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, pps</italic>
+###xml 534 540 534 540 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, proV</italic>
+###xml 549 555 549 555 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, proW</italic>
+###xml 564 570 564 570 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, proX</italic>
+###xml 581 585 581 585 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rbsD</italic>
+###xml 594 600 594 600 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, recA</italic>
+###xml 609 615 609 615 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, rfaZ</italic>
+###xml 624 630 624 630 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, speB</italic>
+###xml 639 645 639 645 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, sulA</italic>
+###xml 654 660 654 660 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, tolC</italic>
+###xml 671 675 671 675 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 684 690 684 690 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, topB</italic>
+###xml 699 705 699 705 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, trxA</italic>
+###xml 714 720 714 720 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, yccS</italic>
+###xml 729 735 729 735 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">, ychB</italic>
+###xml 746 750 746 750 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">yecD</italic>
+###xml 759 760 759 760 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 765 769 765 769 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">yrfI</italic>
+The SwissProt () accession numbers for genes described in this study are acnB (P36683), aldA (P25553), argR (P15282), argS (P11875), cydD (P29018), dnaC (P07905), dnaJ (P08622), dnaK (P04475), fadL (P10384), fruR (P21168), fumC (P05042), gltA (P00891), glyA (P00477), gor (P06715), htpG (P10413), lamB (P02943), leuA (P09151), leuB (P30125), leuC (P30127), leuD (P30126), leuO (P10151), lexA (P03033), lldD (P33232), lldP (P33232), malE (P02928), metK (P04384), ompF (P02931), parC (P20082), parE (P20083), pdhR (P06957), pps (P23538), proV (P14175), proW (P14176), proX (P14177), rbsD (P04982), recA (P03017), rfaZ (P27241), speB (P16936), sulA (P08846), tolC (P02930), topA (P06612), topB (P14294), trxA (P00274), yccS (P75870), ychB (P24209), yecD (P37347), and yrfI (P45803).
+###end p 83
+###begin p 84
+The Gene Expression Omnibus () accession number for the transcript levels of the four strains used in this study is GSE 4408.
+###end p 84
+###begin p 85
+We thank the editor and anonymous reviewers for thoughtful and encouraging comments.
+###end p 85
+###begin title 86
+Abbreviations
+###end title 86
+###begin p 87
+base pair
+###end p 87
+###begin p 88
+kilobase
+###end p 88
+###begin p 89
+self-organizing maps
+###end p 89
+###begin p 90
+topoisomerase I
+###end p 90
+###begin title 91
+References
+###end title 91
+###begin article-title 92
+###xml 72 88 72 88 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 72 88 <span type="species:ncbi:562">Escherichia coli</span>
+Complete enzymatic replication of plasmids containing the origin of the Escherichia coli chromosome
+###end article-title 92
+###begin article-title 93
+Bacterial chromosome segregation: Evidence for DNA gyrase involvement in decatenation
+###end article-title 93
+###begin article-title 94
+DNA gyrase, topoisomerase IV, and the 4-quinolones
+###end article-title 94
+###begin article-title 95
+Analysis of topoisomerase function in bacterial replication fork movement: use of DNA microarrays
+###end article-title 95
+###begin article-title 96
+###xml 72 88 72 88 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 72 88 <span type="species:ncbi:562">Escherichia coli</span>
+Genomic transcriptional response to loss of chromosomal supercoiling in Escherichia coli
+###end article-title 96
+###begin article-title 97
+###xml 117 133 117 133 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 117 133 <span type="species:ncbi:562">Escherichia coli</span>
+A microarray-based antibiotic screen identifies a regulatory role for supercoiling in the osmotic stress response of Escherichia coli
+###end article-title 97
+###begin article-title 98
+###xml 87 103 87 103 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 87 103 <span type="species:ncbi:562">Escherichia coli</span>
+Lethal action of quinolones against a temperature-sensitive dnaB replication mutant of Escherichia coli
+###end article-title 98
+###begin article-title 99
+###xml 72 88 72 88 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 72 88 <span type="species:ncbi:562">Escherichia coli</span>
+Roles of topoisomerases in maintaining steady-state DNA supercoiling in Escherichia coli
+###end article-title 99
+###begin article-title 100
+DNA gyrase-mediated wrapping of the DNA strand is required for the replication fork arrest by the DNA gyrase-quinolone-DNA ternary complex
+###end article-title 100
+###begin article-title 101
+Application of false discovery rate procedure to pairwise comparisons of refractive index of glass fragments
+###end article-title 101
+###begin article-title 102
+###xml 46 62 46 62 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 46 62 <span type="species:ncbi:562">Escherichia coli</span>
+Topoisomerase IV is a target of quinolones in Escherichia coli
+###end article-title 102
+###begin article-title 103
+SOS repair hypothesis: phenomenology of an inducible DNA repair which is accompanied by mutagenesis
+###end article-title 103
+###begin article-title 104
+###xml 28 35 28 35 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 28 35 <span type="species:ncbi:562">E. coli</span>
+Regulation of the genes for E. coli DNA gyrase: homeostatic control of DNA supercoiling
+###end article-title 104
+###begin article-title 105
+###xml 66 82 66 82 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 66 82 <span type="species:ncbi:562">Escherichia coli</span>
+Spatial patterns of transcriptional activity in the chromosome of Escherichia coli
+###end article-title 105
+###begin article-title 106
+A computational analysis of whole-genome expression data reveals chromosomal domains of gene expression
+###end article-title 106
+###begin article-title 107
+###xml 67 83 67 83 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 67 88 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+Isolation and characterization of norfloxacin-resistant mutants of Escherichia coli K-12
+###end article-title 107
+###begin article-title 108
+###xml 60 76 60 76 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 60 76 <span type="species:ncbi:562">Escherichia coli</span>
+Mechanisms of quinolone resistance in a clinical isolate of Escherichia coli highly resistant to fluoroquinolones but susceptible to nalidixic acid
+###end article-title 108
+###begin article-title 109
+DNA strand cleavage is required for replication fork arrest by a frozen topoisomerase-quinolone-DNA ternary complex
+###end article-title 109
+###begin article-title 110
+The mechanism of inhibition of topoisomerase IV by quinolone antibacterials
+###end article-title 110
+###begin article-title 111
+###xml 110 126 110 126 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 110 126 <span type="species:ncbi:562">Escherichia coli</span>
+Different mechanisms of thioredoxin in its reduced and oxidized forms in defense against hydrogen peroxide in Escherichia coli
+###end article-title 111
+###begin article-title 112
+###xml 13 29 13 29 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 13 29 <span type="species:ncbi:562">Escherichia coli</span>
+Viability of Escherichia coli topA mutants lacking DNA topoisomerase I
+###end article-title 112
+###begin article-title 113
+###xml 94 104 94 104 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Salmonella</italic>
+Activation and silencing of leu-500 promoter by transcription-induced DNA supercoiling in the Salmonella chromosome
+###end article-title 113
+###begin article-title 114
+Long-range interaction between two promoters: activation of the leu-500 promoter by a distant upstream promoter
+###end article-title 114
+###begin article-title 115
+###xml 33 50 33 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli:</italic>
+###xml 33 49 <span type="species:ncbi:562">Escherichia coli</span>
+Topological promoter coupling in Escherichia coli: delta topA-dependent activation of the leu-500 promoter on a plasmid
+###end article-title 115
+###begin article-title 116
+###xml 0 16 0 16 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 0 16 <span type="species:ncbi:562">Escherichia coli</span>
+Escherichia coli mutants with temperature-sensitive synthesis of DNA
+###end article-title 116
+###begin article-title 117
+Characterization of dnaC2 and dnaC28 mutants by flow cytometry
+###end article-title 117
+###begin article-title 118
+Repetitive extragenic palindromic sequences: A major component of the bacterial genome
+###end article-title 118
+###begin article-title 119
+Structural and functional diversity among bacterial interspersed mosaic elements (BIMEs)
+###end article-title 119
+###begin article-title 120
+DNA gyrase binds to the family of prokaryotic repetitive extragenic palindromic sequences
+###end article-title 120
+###begin article-title 121
+###xml 20 36 20 36 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 20 36 <span type="species:ncbi:562">Escherichia coli</span>
+In vivo cleavage of Escherichia coli BIME-2 repeats by DNA gyrase: Genetic characterization of the target and identification of the cut site
+###end article-title 121
+###begin article-title 122
+BioProspector: Discovering conserved DNA motifs in upstream regulatory regions of co-expressed genes
+###end article-title 122
+###begin article-title 123
+DNA gyrase on the bacterial chromosome. Oxolinic acid-induced DNA cleavage in the dnaA-gyrB region
+###end article-title 123
+###begin article-title 124
+###xml 90 104 90 104 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. typhimurium</named-content>
+###xml 109 116 109 116 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 90 104 <span type="species:ncbi:90371">S. typhimurium</span>
+###xml 109 116 <span type="species:ncbi:562">E. coli</span>
+A physiological role for DNA supercoiling in the osmotic regulation of gene expression in S. typhimurium and E. coli
+###end article-title 124
+###begin article-title 125
+###xml 29 45 <span type="species:ncbi:562">Escherichia coli</span>
+The SOS regulatory system of Escherichia coli
+###end article-title 125
+###begin article-title 126
+###xml 68 84 68 84 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 68 84 <span type="species:ncbi:562">Escherichia coli</span>
+Identification of additional genes belonging to the LexA regulon in Escherichia coli
+###end article-title 126
+###begin article-title 127
+Significance analysis of microarrays applied to the ionizing radiation response
+###end article-title 127
+###begin article-title 128
+Supercoiled DNA
+###end article-title 128
+###begin article-title 129
+Histonelike proteins of bacteria
+###end article-title 129
+###begin article-title 130
+Conformational and thermodynamic properties of supercoiled DNA
+###end article-title 130
+###begin article-title 131
+###xml 130 146 130 146 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 130 146 <span type="species:ncbi:562">Escherichia coli</span>
+Topological unwinding of strong and weak promoters by RNA polymerase. A comparison between the lac wild-type and the UV5 sites of Escherichia coli
+###end article-title 131
+###begin article-title 132
+DNA supercoiling and the anaerobic and growth phase regulation of tonB gene expression
+###end article-title 132
+###begin article-title 133
+###xml 61 77 61 77 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 61 82 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+Influence of DNA topology on expression of the tdc operon in Escherichia coli K-12
+###end article-title 133
+###begin article-title 134
+DNA topoisomerases: structure, function, and mechanism
+###end article-title 134
+###begin article-title 135
+DNA gyrase: an enzyme that introduces superhelical turns into DNA
+###end article-title 135
+###begin article-title 136
+Replication of superhelical DNAs in vitro
+###end article-title 136
+###begin article-title 137
+DNA supercoiling in vivo
+###end article-title 137
+###begin article-title 138
+###xml 52 68 52 68 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 52 68 <span type="species:ncbi:562">Escherichia coli</span>
+Identification of a potent decatenating enzyme from Escherichia coli
+###end article-title 138
+###begin article-title 139
+###xml 0 16 0 16 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 0 16 <span type="species:ncbi:562">Escherichia coli</span>
+Escherichia coli DNA topoisomerase I inhibits R-loop formation by relaxing transcription-induced negative supercoiling
+###end article-title 139
+###begin article-title 140
+Need for DNA topoisomerase activity as a swivel for DNA replication for transcription of ribosomal RNA
+###end article-title 140
+###begin article-title 141
+###xml 37 54 37 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli.</italic>
+###xml 37 53 <span type="species:ncbi:562">Escherichia coli</span>
+Nature of the SOS-inducing signal in Escherichia coli. The involvement of DNA replication
+###end article-title 141
+###begin article-title 142
+###xml 95 112 95 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli:</italic>
+###xml 95 111 <span type="species:ncbi:562">Escherichia coli</span>
+Reinitiation of deoxyribonucleic acid synthesis by deoxyribonucleic acid initiation mutants of Escherichia coli: Role of ribonucleic acid synthesis, protein synthesis, and cell division
+###end article-title 142
+###begin article-title 143
+###xml 36 52 36 52 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 36 52 <span type="species:ncbi:562">Escherichia coli</span>
+Topological domain structure of the Escherichia coli chromosome
+###end article-title 143
+###begin article-title 144
+###xml 61 82 61 82 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Salmonella typhimuriu</named-content>
+###xml 61 83 <span type="species:ncbi:90371">Salmonella typhimurium</span>
+Transcription-induced barriers to supercoil diffusion in the Salmonella typhimurium chromosome
+###end article-title 144
+###begin article-title 145
+###xml 44 67 44 67 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptomyces coelicolor</named-content>
+###xml 44 67 <span type="species:ncbi:1902">Streptomyces coelicolor</span>
+Regional organization of gene expression in Streptomyces coelicolor
+###end article-title 145
+###begin article-title 146
+Transcription generates positively and negatively supercoiled domains in the template
+###end article-title 146
+###begin article-title 147
+Osmotic regulation of porin expression: A role for DNA supercoiling
+###end article-title 147
+###begin article-title 148
+###xml 139 155 139 155 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 139 155 <span type="species:ncbi:562">Escherichia coli</span>
+Evidence for RecA protein association with the cell membrane and for changes in the levels of major outer membrane proteins in SOS-induced Escherichia coli cells
+###end article-title 148
+###begin article-title 149
+###xml 42 58 42 58 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 42 58 <span type="species:ncbi:562">Escherichia coli</span>
+Expression of the recA gene is reduced in Escherichia coli topoisomerase I mutants
+###end article-title 149
+###begin article-title 150
+###xml 18 34 18 34 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 18 34 <span type="species:ncbi:562">Escherichia coli</span>
+The expression of Escherichia coli SOS genes recA and uvrA is inducible by polyamines
+###end article-title 150
+###begin article-title 151
+###xml 26 42 26 42 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 26 42 <span type="species:ncbi:562">Escherichia coli</span>
+RecA-dependent mutants in Escherichia coli reveal strategies to avoid chromosomal fragmentation
+###end article-title 151
+###begin article-title 152
+###xml 42 58 42 58 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 42 58 <span type="species:ncbi:562">Escherichia coli</span>
+Tus-mediated arrest of DNA replication in Escherichia coli is modulated by DNA supercoiling
+###end article-title 152
+###begin article-title 153
+###xml 47 63 <span type="species:ncbi:562">Escherichia coli</span>
+Global analysis of mRNA decay and abundance in Escherichia coli at single-gene resolution using two-color fluorescent DNA microarrays
+###end article-title 153
+###begin article-title 154
+###xml 46 62 46 62 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 46 67 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+One-step inactivation of chromosomal genes in Escherichia coli K-12 using PCR products
+###end article-title 154
+###begin article-title 155
+###xml 21 38 21 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli:</italic>
+###xml 21 37 <span type="species:ncbi:562">Escherichia coli</span>
+Acetylornithinase of Escherichia coli: Partial purification and some properties
+###end article-title 155
+###begin article-title 156
+###xml 64 80 64 80 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 64 80 <span type="species:ncbi:562">Escherichia coli</span>
+Replication arrests during a single round of replication of the Escherichia coli chromosome in the absence of DnaC activity
+###end article-title 156
+###begin article-title 157
+###xml 0 16 0 16 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 0 16 <span type="species:ncbi:562">Escherichia coli</span>
+Escherichia coli spotted double-strand DNA microarrays: RNA extraction, labeling, hybridization, quality control, and data management
+###end article-title 157
+###begin article-title 158
+Normalization for cDNA microarray data: A robust composite method addressing single and multiple slide systematic variation
+###end article-title 158
+###begin article-title 159
+Statistical tests for differential expression in cDNA microarray experiments
+###end article-title 159
+###begin article-title 160
+###xml 90 106 90 106 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 90 106 <span type="species:ncbi:562">Escherichia coli</span>
+Comparative gene expression profiles following UV exposure in wild-type and SOS-deficient Escherichia coli
+###end article-title 160
+###begin title 161
+Figures and Tables
+###end title 161
+###begin title 162
+Spatial Correlations of Temporal Transcriptional Profiles Elicited by Gyrase Inhibition
+###end title 162
+###begin p 163
+###xml 274 278 274 278 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">oriC</italic>
+###xml 336 337 336 337 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 347 348 347 348 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 356 357 356 357 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 395 396 395 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">y</italic>
+###xml 463 464 463 464 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 470 471 470 471 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 479 480 479 480 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 486 487 486 487 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 496 497 496 497 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 504 505 504 505 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 518 519 518 519 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 526 527 526 527 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+Temporal transcriptional profiles observed in the wild-type (A) and isogenic mutant strains (B). Pair-wise correlations of temporal transcript profiles of 4,000 genes, arranged in the chromosomal order, are shown on a colorimetric scale for the whole chromosome (A) and the oriC proximal region (B). For spatial correlations around the n-th gene (n on the x-axis) in the chromosomal order, each y-axis includes 20 Pearson correlations of temporal profile pairs, (n - 1, n + 1), (n - 2, n +2),...(n - 19, n + 19), and (n - 20, n + 20). Chromosomal regions with high correlations exhibit symmetric red (positive) or blue (negative) triangles. Differentially expressed genes were significantly enriched in the regions marked with horizontal bars. The regions in which at least 16 consecutive genes show significant high correlations are enumerated. The statistical significance is estimated by the comparison with 5,000 randomly sampled subsets of temporal profiles.
+###end p 163
+###begin title 164
+SOM Analysis of Temporal Transcriptional Profiles
+###end title 164
+###begin p 165
+###xml 206 210 206 210 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 216 220 216 220 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+###xml 229 233 229 233 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dnaC</italic>
+U-matrix (left side of panel) and weight vectors (right side of panel) of a self-organizing feature map of temporal transcriptional profiles observed after the addition of norfloxacin to the wild-type (A), recA (B), topA (C), or dnaC(Ts) (D) mutant. Transcript levels measured at 5, 10, 15, and 20 min of the treatment were compared with those of the non-treated cells (0 min; first time point) for 1,109 genes that showed differential expression in at least one strain. Each contoured hexagon (left side of panel) has a corresponding weight vector that represents temporal responses (0 to 20 min, right side of panel). Small hexagons indicate map units that are colored according to the medians of the surrounding hexagon with a contour line passing through.
+###end p 165
+###begin title 166
+Average Coefficients of Gene-Drug Interactions
+###end title 166
+###begin p 167
+###xml 8 9 5 6 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 8 9 5 6 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>5</sub></bold>
+###xml 15 16 9 10 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 15 16 9 10 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>6</sub></bold>
+###xml 4 17 4 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;<bold><sub>5</sub></bold>, &#946;<bold><sub>6</sub></bold>,</italic>
+###xml 26 27 17 18 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sub>
+###xml 26 27 17 18 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>7</sub></bold>
+###xml 22 27 16 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#946;<bold><sub>7</sub></bold></italic>
+###xml 98 102 89 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA</italic>
+###xml 107 111 98 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+The beta5, beta6, and beta7 values in different functional groups (A) and association between the recA and topA mutation effects (B) are shown.
+###end p 167
+###begin p 168
+###xml 94 95 91 92 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 94 95 91 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>5</sub></italic>
+###xml 95 96 92 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 102 103 96 97 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 102 103 96 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>6</sub></italic>
+###xml 114 115 105 106 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sub>
+###xml 114 115 105 106 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>7</sub></italic>
+(A) For the sake of convenience, the average coefficients are shown with opposite signs (-beta5, -beta6, and -beta7), so that the positive values indicate the increase in transcript levels and the negative indicates the decrease. The number of genes in each functional group is in parenthesis, and the error bars represent two standard errors.
+###end p 168
+###begin p 169
+###xml 33 38 33 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recA&#8211;</italic>
+###xml 49 50 46 47 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 43 50 43 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#8722;&#946;<sub>5</sub></italic>
+###xml 56 61 53 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA&#8211;</italic>
+###xml 72 73 66 67 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 66 73 63 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(&#8722;&#946;<sub>6</sub></italic>
+###xml 146 148 140 142 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(r</italic>
+###xml 157 158 151 152 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 178 179 169 170 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 178 179 169 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>5</sub></italic>
+###xml 189 190 177 178 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sub>
+###xml 189 190 177 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>6</sub></italic>
+(B) The interactions between the recA-drug (-beta5) and topA-drug (-beta6) effects can be seen as the positive correlations for 36 selected genes (r = 0.82; p < 0.1 in both -beta5 and -beta6).
+###end p 169
+###begin title 170
+Comparison of the GC Content in Upstream and Coding Regions of Activated and Repressed Genes
+###end title 170
+###begin p 171
+(A) The GC content of the DNA regions from -2,000 to +1,500 nt, relative to the translation start site, of 84 activated (red) and 95 repressed (blue) genes was calculated with a 100-nt moving window (black: the average GC content of the genome). The significance of the GC content differences in a given region was determined by comparing the average GC content of the repressed genes with the GC content of 10,000 randomly sampled sets of similar fragments in the genome.
+###end p 171
+###begin p 172
+###xml 112 113 112 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+(B) DNA windows, from 1 nt to 500 nt, were compared to assess their GC content in -500-nt upstream regions. The p-values were determined by comparing the averages of the maximal GC content values of the activated (red square), or repressed (blue triangle), genes with the corresponding values of 10,000 randomly sampled sets from the whole genome.
+###end p 172
+###begin title 173
+Effect of RecA on the Topo I-Catalyzed Relaxation Reaction
+###end title 173
+###begin p 174
+###xml 351 372 345 366 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Materials and Methods</xref>
+(A) DNA relaxation reaction catalyzed by Topo I in the presence of RecA. The substrate (lanes 1 and 7), cccDNA of pBR322, was incubated with increasing amounts of Topo I in the absence (lanes: 2-6) or presence of 5,600 ng (3 nt per RecA monomer) of RecA (lanes: 8-11) at 37 degreesC for 30 min and resolved on the vertical agarose gel as described in Materials and Methods.
+###end p 174
+###begin p 175
+(B) ATP-dependence of the RecA effect. The substrate plasmid DNA (lane: 1) was incubated with 0.1 pmol of Topo I and the indicated amounts of RecA in the absence (lanes: 2-5) or presence of ATP (lanes: 6-9).
+###end p 175
+###begin p 176
+RecA-Dependent Activation and Genes of the LexA Regulon
+###end p 176
+###begin p 177
+###xml 2 6 2 6 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">topA</italic>
+A topA-Dependent Classification of Differentially Expressed Genes
+###end p 177
+###begin p 178
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing interests.</bold>
+Competing interests. The authors have declared that no competing interests exist.
+###end p 178
+###begin p 179
+A previous version of this article appeared as an Early Online Release on August 2, 2006 (DOI: ).
+###end p 179
+###begin p 180
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Author contributions.</bold>
+Author contributions. KSJ and ABK conceived and designed the experiments. KSJ and HH performed the experiments. KSJ, YX, and ABK analyzed the data. HH and ABK contributed reagents/materials/analysis tools. KSJ and ABK wrote the paper.
+###end p 180
+###begin p 181
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding.</bold>
+Funding. This work was supported in part by National Institutes of Health grants GM66098 (to ABK) and GM59465 (to HH).
+###end p 181
+

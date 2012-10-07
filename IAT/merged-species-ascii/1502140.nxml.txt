@@ -1,0 +1,1770 @@
+###begin article-title 0
+Integrated biclustering of heterogeneous genome-wide datasets for the inference of global regulatory networks
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+###xml 222 235 222 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink">co-regulated </italic>
+###xml 279 291 279 291 <italic xmlns:xlink="http://www.w3.org/1999/xlink">co-expressed</italic>
+###xml 390 403 390 403 <italic xmlns:xlink="http://www.w3.org/1999/xlink">biclustering </italic>
+###xml 424 428 424 428 <italic xmlns:xlink="http://www.w3.org/1999/xlink">and </italic>
+###xml 614 623 614 623 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a priori </italic>
+###xml 852 860 852 860 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo </italic>
+The learning of global genetic regulatory networks from expression data is a severely under-constrained problem that is aided by reducing the dimensionality of the search space by means of clustering genes into putatively co-regulated groups, as opposed to those that are simply co-expressed. Be cause genes may be co-regulated only across a subset of all observed experimental conditions, biclustering (clustering of genes and conditions) is more appropriate than standard clustering. Co-regulated genes are also often functionally (physically, spatially, genetically, and/or evolutionarily) associated, and such a priori known or pre-computed associations can provide support for appropriately grouping genes. One important association is the presence of one or more common cis-regulatory motifs. In organisms where these motifs are not known, their de novo detection, integrated into the clustering algorithm, can help to guide the process towards more biologically parsimonious solutions.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 192 200 192 200 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo </italic>
+We have developed an algorithm, cMonkey, that detects putative co-regulated gene groupings by integrating the biclustering of gene expression data and various functional associations with the de novo detection of sequence motifs.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+###xml 47 61 47 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 225 270 225 270 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori, Saccharomyces cerevisiae</italic>
+###xml 276 292 276 292 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 402 416 402 416 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 495 513 495 513 <italic xmlns:xlink="http://www.w3.org/1999/xlink">bacteriorhodopsin </italic>
+###xml 225 244 <span type="species:ncbi:210">Helicobacter pylori</span>
+###xml 246 270 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 276 292 <span type="species:ncbi:562">Escherichia coli</span>
+We have applied this procedure to the archaeon Halobacterium NRC-1, as part of our efforts to decipher its regulatory network. In addition, we used cMonkey on public data for three organisms in the other two domains of life: Helicobacter pylori, Saccharomyces cerevisiae, and Escherichia coli. The biclusters detected by cMonkey both recapitulated known biology and enabled novel predictions (some for Halobacterium were subsequently confirmed in the laboratory). For example, it identified the bacteriorhodopsin regulon, assigned additional genes to this regulon with apparently unrelated function, and detected its known promoter motif. We have performed a thorough comparison of cMonkey results against other clustering methods, and find that cMonkey biclusters are more parsimonious with all available evidence for co-regulation.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 190 192 190 192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 193 195 193 195 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+###xml 222 239 222 239 <italic xmlns:xlink="http://www.w3.org/1999/xlink">underconstrained </italic>
+###xml 469 477 469 477 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cluster </italic>
+###xml 488 501 488 501 <italic xmlns:xlink="http://www.w3.org/1999/xlink">co-expressed </italic>
+###xml 773 790 773 790 <italic xmlns:xlink="http://www.w3.org/1999/xlink">co-regulated, i.e</italic>
+The statistical elucidation of genetic regulatory networks from experimental data (commonly mRNA expression levels) is an important problem that has been the center of a large body of work [29,43]. Because this problem is underconstrained (the number of free parameters is far greater than the dimensionality of the data), many efforts include some means for dimensionality reduction. A common practice for reducing the dimensionality of this problem space has been to cluster genes into co-expressed groups based on their expression profiles, prior to network inference. Such a practice has the additional advantage that, if done properly, the signal-to-noise in the data can thereby be reduced through signal averaging. The genes in such clusters are often assumed to be co-regulated, i.e. to share the same regulatory controls, thereby implying biological relevance for such a pre-clustering step. However, gene transcript levels can be correlated either by chance (due to experimental noise or systematic error) or because of indirect effects, and therefore they might not actually be directly co-regulated. The integration of additional biologically-relevant evidence into a clustering procedure may be used to provide constraints on the identification of groups of co-regulated genes.
+###end p 9
+###begin p 10
+###xml 110 112 110 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 113 115 113 115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 116 118 116 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B58">58</xref>
+###xml 119 121 119 121 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B63">63</xref>
+###xml 122 124 122 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B66">66</xref>
+###xml 125 127 125 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B67">67</xref>
+###xml 872 875 872 875 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 878 880 878 880 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 881 883 881 883 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B60">60</xref>
+###xml 884 886 884 886 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B62">62</xref>
+###xml 1010 1021 1010 1021 <italic xmlns:xlink="http://www.w3.org/1999/xlink">post-facto </italic>
+Co-regulated genes are often functionally (physically, spatially, genetically, and/or evolutionarily) linked [33,34,58,63,66,67]. For example, genes whose products form a protein complex are likely to be co-regulated. Other types of associations among genes, or their protein products, that (can) imply functional couplings include (a) presence of common cis-regulatory motifs; (b) co-occurrence in the same metabolic pathway (s); (c) cis-binding to common regulator(s); (d) physical interaction; (e) common ontology; (f) paired evolutionary conservation among many organisms; (g) common synthetic phenotypes upon joint deletion with a third gene; (h) sub-cellular co-location; and (i) proximity in the genome, or in bacteria and archaea, operon co-occurrence. These associations can be either derived experimentally or computationally (either pre-computed ahead-of-time, e.g. [23,60,62], or on-the-fly during the clustering process); indeed it is common practice to use one or more of these associations as a post-facto measure of the biological quality of a gene cluster. However, it is important to note that some of these data types, to varying degrees, can contain a high rate of false positives, or may imply relationships that have no implication for co-regulation. Therefore in their consideration as evidence for co-regulation, these different sources of evidence should be treated as priors, with appropriately different weights, based upon prior knowledge (or assumptions) of their quality and/or relevance.
+###end p 10
+###begin p 11
+###xml 579 592 579 592 <italic xmlns:xlink="http://www.w3.org/1999/xlink">biclustering </italic>
+###xml 730 731 730 731 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 732 734 732 734 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 735 737 735 737 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B52">52</xref>
+###xml 738 740 738 740 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B76">76</xref>
+###xml 741 743 741 743 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B80">80</xref>
+###xml 744 746 744 746 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B86">86</xref>
+###xml 747 749 747 749 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B98">98</xref>
+###xml 901 903 901 903 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1106 1109 1106 1109 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 1112 1113 1112 1113 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 1114 1116 1114 1116 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B56">56</xref>
+###xml 1117 1119 1117 1119 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B88">88</xref>
+Because a biological system's interaction with its environment is complex and gene regulation is multi-factorial, genes might not be co-regulated across all experimental conditions observed in any comprehensive set of transcript or protein levels. Also, genes can be involved in multiple different processes, depending upon the state of the organism during a given experiment. Therefore, a biologically-motivated clustering method should be able to detect patterns of co-expression across subsets of the observed experiments, and to place genes into multiple clusters. So-called biclustering (clustering both genes and experimental conditions), is a widely studied problem and many different approaches to it have been published [6,25,52,76,80,86,98]. Unlike standard clustering methods, most biclustering algorithms place genes into more than one cluster. Because biclustering is an NP-hard problem [25], no solution is guaranteed to find the optimal set of biclusters. However, many of these procedures have successfully demonstrated the value of biclustering when applied to real-world biological data (e.g. [6,56,88]).
+###end p 11
+###begin p 12
+###xml 59 61 59 61 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 981 983 981 983 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B56">56</xref>
+###xml 1130 1132 1130 1132 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1140 1145 1140 1145 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1148 1150 1148 1150 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B98">98</xref>
+###xml 1177 1179 1177 1179 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B53">53</xref>
+###xml 1299 1300 1299 1300 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 1301 1303 1301 1303 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B86">86</xref>
+###xml 1339 1341 1339 1341 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B80">80</xref>
+###xml 1576 1577 1576 1577 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 1619 1621 1619 1621 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1737 1739 1737 1739 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B53">53</xref>
+###xml 1856 1861 1856 1861 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1864 1866 1864 1866 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B98">98</xref>
+###xml 2025 2030 2025 2026 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#948;</italic>
+We have previously described a procedure, the INFERELATOR [22], for learning global regulatory influences from expression data using continuous models of transcript levels. For this analysis (and most regulatory network inference algorithms), a pre-clustering step is desired to reduce the dimensionality of the data and enable noise reduction through signal averaging of clustered gene profiles. Low-level (but still significantly coherent) changes in expression of the clusters play an important role in constraining the model parameters, and the inclusion of these conditions in the biclusters can be important. Thus, a trade-off needs to be found between including as many experiments as possible in each cluster (to increase the constraints on the model parameters), while enforcing that these experiments be co-expressed. Different biclustering methods have different models of a "perfect" bicluster; for example constant rows/columns, coherent values, coherent "evolution" [56]. For our modeling purposes, only methods which derive biclusters with coherent, or correlated, gene profiles, such as those of Cheng and Church [25], Yang et al. [98], and Lazzeroni and Owen [53] are suitable. For example, algorithms which identify biclusters with constant levels of activation and/or repression [6,86] and/or which discretize the data [80] do not contain low or intermediate-levels of expression changes to constrain the regulatory network inference; indeed they often do not generate biclusters with many experimental conditions at all. Our analysis and previous reviews [6] of the Cheng and Church (CC) algorithm [25] show that it is not suitable for large-scale expression analysis. It, and the Plaid models of Lazzeroni and Owen [53] both produce biclusters that focus on low-variance sub-matrices of the expression data. The FLOC algorithm of Yang et al. [98] (an update to the CC algorithm which can handle missing values) provided the early inspiration for this work, which is essentially a re-formulation of their delta-cluster model with a basic probabilistic model for the expression data. This enables a more rigorous and intuitive integration of the model of expression data with models for the additional data types, as well as with prior distributions for constraining bicluster sizes and redundancy.
+###end p 12
+###begin p 13
+###xml 265 273 265 273 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo </italic>
+###xml 391 405 391 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 756 801 756 801 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori, Saccharomyces cerevisiae</italic>
+###xml 807 823 807 823 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 918 925 918 925 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Gaggle </italic>
+###xml 926 928 926 928 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B79">79</xref>
+###xml 934 944 934 944 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Cytoscape </italic>
+###xml 945 947 945 947 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B78">78</xref>
+###xml 967 968 967 968 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 756 775 <span type="species:ncbi:210">Helicobacter pylori</span>
+###xml 777 801 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 807 823 <span type="species:ncbi:562">Escherichia coli</span>
+Guided by these motivations and requirements, we herein describe an algorithm that detects genes putatively co-regulated over subsets of experimental conditions by integrating the biclustering of gene expression data and multiple gene association networks with the de novo detection of cis-regulatory motifs. We applied this method to a global expression data set collected for the archaeon Halobacterium NRC-1, to find co-regulated gene sets as part of our ongoing efforts to model its regulatory network, and we present detailed evidence for the biological utility of this procedure as part of our modeling procedure. In addition, we used cMonkey to compute co-regulated gene clusters for three additional organisms in the two remaining domains of life: Helicobacter pylori, Saccharomyces cerevisiae, and Escherichia coli. The biclusters are presented to the biologist using the interactive visualization tools, the Gaggle [79] and Cytoscape [78], at our web site [4].
+###end p 13
+###begin title 14
+Results
+###end title 14
+###begin p 15
+###xml 163 177 163 177 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 233 235 233 235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 474 484 474 484 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Cytoscape </italic>
+###xml 492 499 492 499 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Gaggle </italic>
+###xml 500 502 500 502 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B78">78</xref>
+###xml 503 505 503 505 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B79">79</xref>
+###xml 524 525 524 525 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+In this section we summarize the results of the application of our algorithm to four organisms, and describe its usefulness as a first step in our modeling of the Halobacterium regulatory network in conjunction with the Inferelator [22]. We perform a detailed analysis of its capabilities and assess its global performance, both internally and in comparison to other biclustering methods. The complete set of biclusters for all organisms are available for exploration using Cytoscape and the Gaggle [78,79] at our web site [4].
+###end p 15
+###begin title 16
+The bacteriorhodopsin regulon in Halobacterium
+###end title 16
+###begin p 17
+###xml 40 60 40 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium NRC-1 </italic>
+###xml 285 299 285 299 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 383 385 383 385 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 466 479 466 479 <italic xmlns:xlink="http://www.w3.org/1999/xlink">bop, brp, bat</italic>
+###xml 485 490 485 490 <italic xmlns:xlink="http://www.w3.org/1999/xlink">crtB1</italic>
+###xml 517 519 517 519 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 629 631 629 631 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 675 688 675 688 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium</italic>
+###xml 788 789 788 789 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 922 923 922 923 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 1101 1103 1101 1103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B64">64</xref>
+The induction of phototrophic growth of Halobacterium NRC-1 under anaerobic conditions triggers the synthesis of bacteriorhodopsin (bR; a complex of the protein Bop and retinal), a light-driven proton pump that is further assembled into a purple membrane. Br is the major component of Halobacterium phototrophy, one of two anaerobic ATP generation pathways utilized by the organism [14]. Four genes responsible for bR synthesis (Bop and isoprenoid synthesis genes), bop, brp, bat, and crtB1, are co-regulated by Bat [13] through a common transcription factor motif that was characterized by saturation mutagenesis (the Bat UAS) [12]. This is the most well-studied regulon in Halobacterium, and the only one whose cis-regulatory motif has been experimentally verified. Bicluster #11 (Fig. 1) recapitulates much of what is known about this regulon, including all four bR genes, and a very close match to the Bat UAS (Figure 2). The additional genes in this bicluster are consistent with the co-regulation of bR with anaerobic respiration, including phytoene synthases, members of a DMSO-related operon [64], alcohol dehydrogenases, and an iron transporter. While the Bat UAS is not found upstream of many of these latter genes, a second significant motif (which was found upstream of the bR operon as well) was identified by cMonkey upstream of these genes.
+###end p 17
+###begin p 18
+###xml 6 7 6 7 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 302 310 302 310 <italic xmlns:xlink="http://www.w3.org/1999/xlink">outside </italic>
+###xml 356 363 356 363 <italic xmlns:xlink="http://www.w3.org/1999/xlink">inside </italic>
+###xml 460 462 460 462 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 502 503 478 479 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 527 529 503 505 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 1057 1070 1009 1022 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium</italic>
+Table 1 shows correlations between and among genes containing the putative Bat UAS (denoted "bR genes") and between and among genes containing the 2nd detected motif (denoted "DMSO genes"), over experiments within and outside the bicluster. While the bR genes are as tightly correlated with each other outside the bicluster as they are with the DMSO genes inside the bicluster, they are significantly less-correlated with the DMSO genes outside the bicluster (p inverted exclamation mark 0.026; paired t-test), and vice versa (p inverted exclamation mark 0.00095). This suggests that cMonkey partitioned the experiments between those in which the regulator which binds to the 2nd motif is controlling most of the genes in the bicluster (thereby causing them to appear tightly co-expressed) while over the conditions outside the bicluster, Bat is active, binds to the UAS, and bifurcates the regulation of the two sets of genes. Thus, cMonkey identified a novel relationship between phototrophy and DMSO (two of the four ATP-generating pathways available to Halobacterium), implying that the organism produces energy simultaneously via these two pathways under some environmental conditions.
+###end p 18
+###begin p 19
+###xml 28 34 28 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cdc48a</italic>
+###xml 270 272 270 272 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 463 465 463 465 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+The bicluster also includes cdc48a, which encodes a cell-division cycle - associated protein, with a strong match to the Bat UAS. We note that initial studies of the Bat UAS suggested that the regulatory sequences of as many as 108 genes contain instances of the motif [12]; clearly not all of these instances are active over the experiments used here. No similar bicluster, in terms of completeness of gene membership or similarity of motifs detected (via MEME [10]) to the Bat UAS, was found using other bi/clustering methods (see below for a list of methods attempted). When the cMonkey motif-detection component was turned off (see below), the UAS was not detected.
+###end p 19
+###begin title 20
+SirR as a regulator of transport processes in Halobacterium
+###end title 20
+###begin p 21
+###xml 42 43 42 43 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 952 965 952 965 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium</italic>
+cMonkey detected a bicluster (#76, Figure 3) primarily composed of transporter genes, including two phosphate transport systems, Co(II) transporters, a Mn(II) uptake system, glycerol phosphate transporters, and two peptide transport systems. While the phosphate, peptide, and Mn(II) transport systems might have been included in the bicluster by virtue of their functional associations, the glycerol phosphate and Co(II) transport system genes appear to have been included due to a strong match in the biclusters' putative motif #1. We can hypothesize that motif #1, which is present upstream to 24 out of the bicluster's 30 genes, is responsible for the high degree of expression correlation over ~150 conditions in this bicluster. None of the other bi/clustering methods tested identified a cluster containing the complete set of these transporters that enabled the generation of this type of model of the joint regulation of transporter activity in Halobacterium.
+###end p 21
+###begin p 22
+###xml 42 50 42 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo </italic>
+###xml 949 951 949 951 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 995 1000 995 1000 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sirR </italic>
+###xml 1021 1023 1021 1023 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B49">49</xref>
+###xml 1078 1103 1078 1103 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Staphylococcus epidermis </italic>
+###xml 1107 1129 1107 1129 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Staphylococcus aureus </italic>
+###xml 1206 1208 1206 1208 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+###xml 1217 1222 1217 1222 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sirR </italic>
+###xml 1414 1421 1414 1421 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sirR's </italic>
+###xml 1107 1128 <span type="species:ncbi:1280">Staphylococcus aureus</span>
+A potential advantage of the inclusion of de novo motif detection as part of the cMonkey biclustering procedure is that, for transcription factors that are not autoregulated, motif detection can break the causal symmetry between regulator targets and regulators controlling those targets. For example, an activator and several of its targets might seem co-expressed (and would therefore be placed in the same bicluster) when considering expression data alone. The absence of the regulator's binding site from its upstream sequence could, however, cause cMonkey to exclude the regulator from the bicluster, and thus assist any subsequent regulatory network inference on that bicluster. Although the above case is somewhat idealized, we find specific examples where motif detection correctly separates co-regulated groups from the co-expressed super sets that merge regulators and their targets together. SirR was predicted to regulate bicluster #76 [22] and this relationship was confirmed via a sirR knockout experiment [49]. SirR is annotated as an iron-dependent regulator in Staphylococcus epidermis and Staphylococcus aureus and is associated with Mn and Fe stress response in other microbial systems [44]. While sirR is correlated with the bicluster (Pearson correlation of 0.77, versus 0.69-0.92 for the genes in the bicluster), it was omitted from the bicluster by cMonkey, in part due to the poor match of sirR's upstream sequence to the bicluster's significant motif #1. While PhoU and Prpl (the transcriptional regulators that were included in bicluster #76) are also putative regulators of genes in bicluster 76, the inclusion of motif detection (along with the high stringency for co-expression used by cMonkey) suggests that SirR may have a more general role in the regulation of these transporter genes than PhoU and Prpl.
+###end p 22
+###begin title 23
+###xml 40 47 <span type="species:ncbi:562">E. coli</span>
+###xml 52 61 <span type="species:ncbi:210">H. pylori</span>
+Regulation of flagellar biosynthesis in E. coli and H. pylori
+###end title 23
+###begin p 24
+###xml 3 10 3 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 308 309 308 309 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 310 312 310 312 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 313 315 313 315 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B47">47</xref>
+###xml 357 362 357 358 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 362 365 358 361 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70 </sup>
+###xml 469 474 465 470 <italic xmlns:xlink="http://www.w3.org/1999/xlink">fliA </italic>
+###xml 478 482 474 478 <italic xmlns:xlink="http://www.w3.org/1999/xlink">flgM</italic>
+###xml 483 490 479 486 <italic xmlns:xlink="http://www.w3.org/1999/xlink">. fliA </italic>
+###xml 494 499 490 495 <italic xmlns:xlink="http://www.w3.org/1999/xlink">flgM </italic>
+###xml 628 630 624 626 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 665 673 661 669 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 679 680 675 676 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+###xml 756 760 752 756 <italic xmlns:xlink="http://www.w3.org/1999/xlink">flgM</italic>
+###xml 761 763 757 759 <italic xmlns:xlink="http://www.w3.org/1999/xlink">; </italic>
+###xml 837 838 833 834 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+###xml 919 921 915 917 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 999 1000 995 996 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 1136 1141 1132 1133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 1141 1143 1133 1135 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70</sup>
+###xml 1579 1581 1571 1573 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 1696 1701 1688 1689 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 1701 1703 1689 1691 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70</sup>
+###xml 1951 1959 1939 1947 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 3 10 <span type="species:ncbi:562">E. coli</span>
+###xml 665 672 <span type="species:ncbi:562">E. coli</span>
+###xml 1951 1958 <span type="species:ncbi:562">E. coli</span>
+In E. coli, the repertoire of more than 50 genes that encode proteins involved in motility (flagellar and chemotaxis system) are regulated in a cascade that can be separated into three classes. These regulatory classes correspond to the ordering of the genes' temporal requirement during flagellar assembly [7,26,47]. Class-2 genes are regulated by an RpoD/sigma70 and FlhDC activation complex, and encode flagellar structural and assembly proteins and two regulators (fliA and flgM). fliA and flgM subsequently activate the Class-3 operons (which include chemotaxis signaling and flagellar activation/motion-associated genes) [26]. cMonkey detected a bicluster in E. coli (Fig. 4) that is enriched in flagellar biosynthesis genes (including the regulator flgM); most of these genes' upstream sequences contain motifs (#1 and #2 in Fig. 4) that correspond to the known promoter binding site for this activator complex [26]. While several other bi/clustering methods (see below for details), such as k-means and SAMBA, detected clusters that were enriched in both flagellar- and chemotaxis-associated genes, we were unable to detect the sigma70/FlhDC binding motif in any of these clusters due to the presence of many additional unrelated sequences that added noise to the search. The cMonkey bicluster included only two (of 11) annotated "chemotaxis"-related genes (which are all in Class-3, and do not contain the detected motif), whereas the larger SAMBA bicluster, for example, did not discriminate between these two related functions (containing 9 of the 11 genes). If MEME [10] is run independently on upstream sequences of the flagellar function-annotated genes (43 in all), it detects the sigma70/FlhDC binding motif in ~20 of them, while it does not detect a motif for the 11 chemotaxis-annotated genes (nor in the combined set of 54 sequences). This analysis suggests that while many genes in both Class-2 and Class-3 are co-expressed in the E. coli data, cMonkey can correctly separate the two classes on the basis of motif detection and association networks.
+###end p 24
+###begin p 25
+###xml 4 14 4 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 30 31 30 31 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 138 143 138 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 143 145 139 141 <sup xmlns:xlink="http://www.w3.org/1999/xlink">54</sup>
+###xml 175 177 171 173 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B65">65</xref>
+###xml 293 295 289 291 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B65">65</xref>
+###xml 320 325 316 317 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 325 328 317 320 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70 </sup>
+###xml 344 352 336 344 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 353 355 345 347 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 417 427 409 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 730 734 722 726 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k = </italic>
+###xml 753 757 745 749 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k = </italic>
+###xml 768 778 760 770 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 1129 1130 1121 1122 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 1383 1385 1375 1377 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B46">46</xref>
+###xml 1386 1388 1378 1380 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B85">85</xref>
+###xml 4 13 <span type="species:ncbi:210">H. pylori</span>
+###xml 344 351 <span type="species:ncbi:562">E. coli</span>
+###xml 417 426 <span type="species:ncbi:210">H. pylori</span>
+###xml 768 777 <span type="species:ncbi:210">H. pylori</span>
+The H. pylori cluster in Fig. 5 is also highly enriched in Class-2 flagellar-associated genes, many of which are associated with the RpoN/sigma54-regulated flagellar regulon [65]. The most significant motif detected in this cluster corresponds to the RpoN binding site: 5'-GGaa-N5-tttGCtT-3' [65] that is similar to the sigma70 binding site in E. coli [26]. Other biclustering algorithms identified biclusters in the H. pylori data containing some of the same genes as this cMonkey bicluster, however most of those clusters contain > 50 additional genes (several with > 200), and thus the RpoN-binding motif was undetectable for clusters generated by any of these methods. Individual clusters found using hierarchical clustering (k = 300) and fc-means (k = 50) on the H. pylori data had matches to this motif, suggesting that because the data set is small (~60 experiments), biclustering is not always necessary here. However, neither of these respective clusters were as complete in their list of genes with the RpoN-binding motif as was the cMonkey version (6 of 6 for the hierarchical clustering cluster, and 12 of 19 for the k-means cluster, versus 14 of 15 for cMonkey). The similarity in function and putative regulatory motifs for these two orthologous biclusters points to the potential future use of algorithms such as cMonkey for cross-species analyses of gene regulation [46,85].
+###end p 25
+###begin title 26
+###xml 37 46 <span type="species:ncbi:210">H. pylori</span>
+A novel putative ricin-like toxin in H. pylori
+###end title 26
+###begin p 27
+###xml 372 382 372 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Cytoscape </italic>
+###xml 383 385 383 385 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B78">78</xref>
+###xml 395 402 395 402 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Gaggle </italic>
+###xml 403 405 403 405 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B79">79</xref>
+###xml 459 469 459 469 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 802 804 802 804 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B61">61</xref>
+###xml 805 807 805 807 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B94">94</xref>
+###xml 983 994 983 994 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cag8, cag12</italic>
+###xml 1000 1006 1000 1006 <italic xmlns:xlink="http://www.w3.org/1999/xlink">virB11</italic>
+###xml 1059 1064 1059 1064 <italic xmlns:xlink="http://www.w3.org/1999/xlink">flaA </italic>
+###xml 1068 1072 1068 1072 <italic xmlns:xlink="http://www.w3.org/1999/xlink">flaB</italic>
+###xml 1111 1113 1111 1113 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 1199 1202 1199 1202 <italic xmlns:xlink="http://www.w3.org/1999/xlink">omp</italic>
+###xml 1205 1209 1205 1209 <italic xmlns:xlink="http://www.w3.org/1999/xlink">omp9</italic>
+###xml 1211 1216 1211 1216 <italic xmlns:xlink="http://www.w3.org/1999/xlink">omp29</italic>
+###xml 1250 1269 1250 1269 <italic xmlns:xlink="http://www.w3.org/1999/xlink">murC, murF and murG</italic>
+###xml 1334 1336 1334 1336 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B81">81</xref>
+###xml 1337 1339 1337 1339 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B95">95</xref>
+###xml 1486 1496 1486 1496 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 1512 1514 1512 1514 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B79">79</xref>
+###xml 459 468 <span type="species:ncbi:210">H. pylori</span>
+###xml 1486 1495 <span type="species:ncbi:210">H. pylori</span>
+The integrated analysis of the full set of biclusters in the context of additional biological knowledge (such as detailed annotations for individual genes) can result in biological insights into the combined roles of multiple biological modules. Such an analysis requires the presentation and integration of cMonkey biclusters with the visualization and exploration tools Cytoscape [78] and the Gaggle [79] (see below for details). An illustrative example in H. pylori involves a group of biclusters containing CAG pathogenicity genes. It has been hypothesized that a drop in pH may act as a signal to induce genes encoding several virulence factors including CagA (Cag26), which upon injection into target cells plays a role in the early events of gastric colonization. A known promoter motif TTTTAA [61,94] appears conserved upstream to several of these pH-induced genes. Several biclusters were detected which contain this motif and numerous pathogenicity island genes, including cag8, cag12, and virB11, which encode type IV secretion system proteins and flaA and flaB, which encode key flagellin subunits [32]. Other processes represented in these biclusters include outer membrane biogenesis (omp5, omp9, omp29) and peptidoglycan biosynthesis (murC, murF and murG)- which have all been implicated as important for pathogenesis [81,95]. Through the analysis of these related biclusters and their common motif, we identified a novel putative ricin-like toxin among the un-annotated H. pylori genes (HP1028) [79].
+###end p 27
+###begin title 28
+###xml 14 27 <span type="species:ncbi:4932">S. cerevisiae</span>
+Biclusters in S. cerevisiae
+###end title 28
+###begin p 29
+###xml 63 76 63 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae</italic>
+###xml 215 232 215 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 307 317 307 317 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Cytoscape </italic>
+###xml 325 332 325 332 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Gaggle </italic>
+###xml 333 335 333 335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B78">78</xref>
+###xml 336 338 336 338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B79">79</xref>
+###xml 357 358 357 358 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 539 553 539 553 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 659 676 659 676 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 63 76 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 257 262 <span type="species:ncbi:4932">yeast</span>
+###xml 419 424 <span type="species:ncbi:4932">yeast</span>
+###xml 539 552 <span type="species:ncbi:4932">S. cerevisiae</span>
+The algorithm detected many strongly significant biclusters in S. cerevisiae, many of which with known or previously-observed cis-regulatory motifs, and combinations thereof. Some examples of these are included in [Additional File 1]; all cMonkey-generated yeast biclusters may be viewed and explored using Cytoscape and the Gaggle [78,79] at our web site [4]. Histograms of the positions of the detected motifs in the yeast upstream sequences show a marked peak near -150 bp, which hints that many of the motifs identified by cMonkey for S. cerevisiae are functional, since the motifs are actually searched for in the first 500 bp upstream of each gene [see Additional File 1, Figure Twelve].
+###end p 29
+###begin title 30
+Validation and comparisons with available methods
+###end title 30
+###begin title 31
+Tracking the cMonkey optimization
+###end title 31
+###begin p 32
+###xml 217 231 217 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 249 250 249 250 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 298 300 298 300 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B98">98</xref>
+###xml 331 333 331 333 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 349 350 349 350 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 424 426 424 426 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 486 489 486 489 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i.e</italic>
+###xml 559 563 559 563 <italic xmlns:xlink="http://www.w3.org/1999/xlink">not </italic>
+###xml 619 620 619 620 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 795 812 795 812 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+By tracking the mean progression of all biclusters during their optimization, we can quantify the degree to which the biclusters improved with regard to each model component (data type). Examples of such measures for Halobacterium are shown in Fig. 6. The scores shown are mean bicluster residual [98], the mean motif log-p-value [10], and mean log p-values of mutual clustering coefficient in certain association networks [37]. It is clear that most of these measures greatly improve (i.e. decrease) throughout the optimization, even though the procedure is not optimizing any of the "scores" that are plotted in Fig. 6; rather it is optimizing a joint discriminative model that includes terms which are related to these measures. We obtain similar trends in cMonkey runs on all organisms [see Additional File 1, Figure Ten].
+###end p 32
+###begin title 33
+Testing the cMonkey model
+###end title 33
+###begin title 34
+Tests of data integration
+###end title 34
+###begin p 35
+###xml 966 983 966 983 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 1079 1080 1079 1080 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1172 1186 1172 1186 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 1534 1551 1534 1551 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 1172 1185 <span type="species:ncbi:4932">S. cerevisiae</span>
+We tested whether cMonkey is correctly optimizing the joint model with respect to the different data types by varying the weights which parameterize the influence of each of those data types on the joint model (the default for these mixing parameters is set such that the three major data types have roughly equivalent influence). When we down-weight the mixture parameter for a given data type and thus eliminate its influence on the bicluster optimization, as expected, we find that this down-weighted component is poorly-optimized. At the same time, the remaining components are almost always optimized better. Thus each model component serves to regularize the bicluster model, preventing the biclusters from being over-fit to one or more individual subsets of the data. Not surprisingly, we also find that when certain components are up-weighted, they are better optimized, at the expense of a somewhat diminished ability to optimize the remaining components. [Additional File 1, Figure Fifteen] displays mean measures of bicluster quality (here, residual against motif log-p-value) for these different cMonkey runs with weights adjusted in this manner (here, on the S. cerevisiae data). These tests show that our inclusion of the three data types results in biclusters that simultaneously satisfy our joint model better than biclusters supported by subsets of the data types (model components). A similar conclusion may be drawn from comparisons of these different cMonkey runs to "external" sources of evidence (see below and [Additional File 1, Figures Sixteen and Eighteen]).
+###end p 35
+###begin title 36
+Additional tests of the relationship between multiple data types and model components
+###end title 36
+###begin p 37
+###xml 328 330 328 330 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 1188 1190 1188 1190 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B93">93</xref>
+By successively removing individual components of the model, we can also characterize relationships that exist between an individual data type and the others, that have not been removed, by observing the degree to which the optimization of the removed data type still improves. For example, by turning off an individual network N (setting  to zero), we can rank that network with respect to the degree to which it improves (using the scores described above) when the other components (co-expression, motifs, and other networks) are optimized. For example, we find that the operon associations and protein-DNA interaction networks are well-optimized via the indirect optimization of co-expression, while metabolic pathways and phylogenetic profile associations show weaker, but still significant, correlation to co-expression. Protein interaction networks and Rosetta Stone associations appear to be the least-significantly correlated with co-expression, possibly due to their higher false-positive rate. Carrying out this type of analysis on-the-fly could allow us to iteratively update the weighting parameters as cMonkey optimizes the biclusters (so-called "Pareto-front" optimization [93]).
+###end p 37
+###begin title 38
+Randomization and shuffling tests
+###end title 38
+###begin p 39
+###xml 1226 1240 1226 1240 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 1344 1345 1344 1345 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1359 1361 1359 1361 <sub xmlns:xlink="http://www.w3.org/1999/xlink">10</sub>
+As an alternative to the difficult task of generating biologically realistic "synthetic" data, we chose to randomize the data instead, in order to further assess the significance of patterns discovered by cMonkey. If we completely shuffle an individual data type, then we effectively eliminate any signal that exists in that component but preserve any influence that the noise component of that data type adds to the procedure (possibly interfering with optimization of other model components). The resulting effect is very similar to strongly down-weighting that component of the model, as described above. A more stringent test can be performed by randomizing only the associations between each gene's expression data, its sequence, and its location in the association networks. This preserves the higher-order structure of each data type, but scrambles the mutual support each data type might present to the overall model. On data randomized in this manner, cMonkey is unable to find biclusters that, on average, are as well-optimized (in terms of the "scores" described above) as in the original data. The significance of this result varies depending upon the organism and the quality and amount of data available; on the Halobacterium data, this type of data shuffling results in average bicluster residuals ~20% higher, and average motif p-values ~1 log10-unit higher than in the un-shuffled data. The algorithm does not find significant association subnetworks in any of the shuffled trial runs.
+###end p 39
+###begin title 40
+Comparison of cMonkey with other methods
+###end title 40
+###begin p 41
+###xml 159 161 159 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 200 202 200 202 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 232 234 232 234 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 246 248 246 248 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B55">55</xref>
+###xml 258 259 258 259 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 273 275 273 275 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B86">86</xref>
+###xml 337 338 337 338 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 357 359 357 359 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 366 368 366 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 764 781 764 781 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 882 892 882 892 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Cytoscape </italic>
+###xml 900 907 900 907 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Gaggle </italic>
+###xml 908 910 908 910 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B78">78</xref>
+###xml 911 913 911 913 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B79">79</xref>
+###xml 932 933 932 933 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+In our assessment of cMonkey's performance, we compared cMonkey-generated biclusters against those generated using the following algorithms: Cheng-Church (CC [25]), Order Preserving Sub-matrix (OPSM [18]), Iterative Signature (ISA [19]), xMOTIF [55], BIMAX [6], and SAMBA [86]. We also compared our method to hierarchical clustering and k-means clustering [30] with k varying between 10 and 300 (see Methods for details). In addition, we performed these analyses on cMonkey runs with various model parameters up- and down-weighted, as described above, to demonstrate the effect of including various subsets of the cMonkey model components in the comparisons. Additional details on the analysis are provided in the Methods section; supporting figures are shown in [Additional File 1]. All bi/clusters generated by the various algorithms are available for interactive exploration via Cytoscape and the Gaggle [78,79] at our web site [4].
+###end p 41
+###begin title 42
+Comparison in the context of regulatory network inference
+###end title 42
+###begin p 43
+###xml 761 778 761 778 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 957 960 957 960 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i.e</italic>
+###xml 1219 1221 1219 1221 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1353 1355 1353 1355 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 1493 1495 1493 1495 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B86">86</xref>
+###xml 1501 1515 1501 1515 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 1691 1693 1691 1693 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 1924 1925 1924 1925 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1949 1950 1949 1950 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 1966 1969 1966 1969 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-22</sup>
+A major motivation of this work is to provide a method for deriving co-regulated groups of genes for use in subsequent regulatory network inference procedures. To do this, we wish to find coherent groups of genes over those conditions with a large amount of variation. In other words, we are hoping to detect submatrices in the expression data matrix which are coherent and simultaneously have high information content or overall variance. In addition, we need to find biclusters with many conditions/observations included, as this increases the significance of each bicluster and also of the subsequently inferred regulatory influences for that bicluster. Some relevant summary statistics of the runs of various algorithms on all four organisms are listed in [Additional File 1, Table Two]. In general we see that cMonkey generates biclusters with a significantly greater number of experiments than the other methods. Even with this additional constraint (i.e. including a greater number of experiments in the clusters) and further constraints that cMonkey imposes with the association- and motif- priors, the algorithm in general generates biclusters with a "tighter" profile, as measured by mean bicluster residual [25]. Thus, we find that biclusters generated by cMonkey are generally better-suited for inference algorithms such as the Inferelator [22], and potentially other linear or continuous models as well. We tested this by running the Inferelator on biclusters generated by SAMBA [86] for Halobacterium and then comparing the predictive performance of the resultant regulatory network models on newly-collected data, relative to those generated for cMonkey-generated biclusters [22]. We found that, largely due to the smaller number of experiments included in SAMBA biclusters, the inferred network was significantly less able to predict new experiments (an increase in the predictive error from 0.368 to 0.470; p-value of difference by t-test = 1.0 x 10-22).
+###end p 43
+###begin title 44
+Comparison against external measures
+###end title 44
+###begin p 45
+###xml 109 111 109 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 576 588 576 588 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sensitivity </italic>
+###xml 748 750 748 750 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 761 763 761 763 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B48">48</xref>
+###xml 811 813 811 813 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B60">60</xref>
+###xml 902 904 902 904 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 936 950 936 950 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 951 968 951 968 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 1000 1014 1000 1014 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 1015 1032 1015 1032 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 1098 1110 1098 1110 <italic xmlns:xlink="http://www.w3.org/1999/xlink">specificity </italic>
+###xml 1388 1397 1388 1397 <italic xmlns:xlink="http://www.w3.org/1999/xlink">coverage </italic>
+###xml 1558 1575 1558 1575 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 1704 1718 1704 1718 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 1719 1736 1719 1736 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 1764 1778 1764 1778 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 1779 1796 1779 1796 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 2728 2729 2728 2729 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 2911 2914 2911 2914 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 2917 2918 2917 2918 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 3009 3011 3009 3011 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 3012 3014 3012 3014 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B60">60</xref>
+###xml 3067 3069 3067 3069 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 3614 3631 3614 3631 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 936 949 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 1704 1717 <span type="species:ncbi:4932">S. cerevisiae</span>
+Defining an unbiased external measure of "success" of a bi/clustering algorithm is a very difficult problem [30]. In fact, even if a good, unbiased measure were to be found, a comparison of different bi/clustering results in the context of that measure is also not straightforward. We have attempted to estimate various measures of success of different algorithms in various contexts, with regard to sensitivity, selectivity, and two measures of coverage, in order to provide the reader with a fair comparison of cMonkey with other previously published methods. We define the sensitivity of a bi/cluster set as the commonly-used fraction of bi/clusters that are significantly enriched with genes that (a) have the same functional annotation in GO [40] or KEGG [48], or (b) contain a known cis-regulatory motif [60], or (c) mimic groups of co-regulated genes, from experiments such as ChlP-chip assays [39]. These measures are shown for S. cerevisiae [Additional File 1, Figure Sixteen (A-D)] and for Halobacterium [Additional File 1, Figure Eighteen (A-D)] for the different algorithms. Bi/cluster specificity measures how well the bi/clusters segregate genes along the same lines as the different Classes; here, we use a measure of the fraction of genes in each significantly-annotated bi/cluster that have the same significantly-enriched annotation(s) found for that bi/cluster. We use coverage to describe two distinct measures: (a) the fraction of all observed genes and experimental conditions in the data which are included in at least one bi/cluster [Additional File 1, Table Two], and (b) the fraction of all groups in a given Class that are significantly enriched in at least one bi/cluster for S. cerevisiae [Additional File 1, Figure Sixteen E] and for Halobacterium [Additional File 1, Figure Eighteen E]. We should note that it is debatable which of these metrics of bicluster quality represent the best measures of "correctness" for a bi/clustering method. For example, genes that modulate the protein and transcript levels of other proteins might have similar GO functional categories (protein degradation, transcription factor, regulation, etc.) but may be correctly partitioned separately with the processes they individually regulate. It is also important to note that all of these statistical measures of bi/cluster validity contain inherent flaws or biases that correlate strongly with bi/cluster size, overlap degree, and gene coverage. For example, OPSM generated 8 biclusters which excluded less than ~1/2 of all measured genes from its clusters, yet it outperforms all other methods in the sensitivity measure. We have used the false discovery rate (which is larger for bigger clusters) to correct these p-values for multiple testing (see Methods), however, we still find a size bias in the corrected scores (which is also seen in previously-written comparisons of biclustering methods, e.g. [6]). In addition to GO and KEGG, we assess bi/clusters against known cis-regulatory motifs [39,60], and high-throughput protein-DNA interaction sets [39]. We included the runs from various test parameterizations of cMonkey in the analysis (see above), so the effect of the different input data sets could be seen. We also divided each tested bicluster set into "BIG" and "SMALL" halves, so that the size-related biases in this measurement may be seen and accounted for in the comparisons (for example, the BIG half of cMonkey's bicluster set have about the same mean number of genes per bicluster as the SMALL half of SAMBA's bicluster set, which therefore makes them more readily comparable [see Additional File 1, Figures Seventeen and Nineteen]).
+###end p 45
+###begin p 46
+###xml 1017 1034 1017 1034 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+In general, we find that cMonkey performs well in comparison to all other methods when the trade off between sensitivity, specificity, and coverage is considered, particularly in context of the other bulk characteristics (cluster size, residual, etc.). We find that SAMBA also performs well when these measures are considered; however because its biclusters contain on average 3 x more genes than cMonkey's, and far fewer experiments (and therefore SAMBA, like most other methods, cover less of the data space), the direct comparison is difficult. cMonkey, as it was designed to do, covers more of the data space (and therefore more of the different Classes defined above) for each organism, and it is therefore more suitable for our regulatory network learning motivations. In particular, while it includes far more experiments per cluster and restricts its clusters to have significantly tighter co-expression, it still does comparably well when assessed against the external measures due to its data integration. [Additional File 1, Figure Sixteen] shows, for example, that the cMonkey runs carried out with the association networks up-weighted, in particular, do partition the functional classes better (and vice versa when they are turned down). The final judgement is that because cMonkey biclusters do a better job at regenerating the expression data than other methods, and at least a comparable job at recapitulating the external (as well as internal) measures of bicluster quality, they are, overall, more parsimonious with, and more generative of the patterns found in the available data. Thus, cMonkey biclusters are arguably well-suited for the inference of gene co-regulation and regulatory networks, in comparison to available bi/clustering methods.
+###end p 46
+###begin title 47
+Bicluster visualization
+###end title 47
+###begin p 48
+###xml 362 363 362 363 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 444 446 444 446 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B74">74</xref>
+###xml 782 783 782 783 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 985 995 985 995 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Cytoscape </italic>
+###xml 996 998 996 998 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B78">78</xref>
+###xml 1138 1140 1138 1140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 1149 1151 1149 1151 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B48">48</xref>
+###xml 1162 1164 1162 1164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B89">89</xref>
+###xml 1548 1550 1548 1550 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B83">83</xref>
+###xml 1853 1854 1853 1854 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 1875 1885 1875 1885 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Cytoscape </italic>
+###xml 1894 1901 1894 1901 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Gaggle </italic>
+###xml 1902 1904 1902 1904 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B79">79</xref>
+###xml 2160 2163 2160 2163 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 2190 2191 2190 2191 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+Because a population of biclusters will contain some overlapping elements which can confuse their interpretation, it is important to present them to the biologist in a format that promotes their interpretation and exploration in the context of supporting information, cMonkey automatically generates, for each bicluster, a "bicluster diagram" (example in Figure 5), presents to the biologist the bicluster's co-expression pattern, motif logos [74] and upstream sequence locations (in this study, for as many as three detected motifs), as well as the various functional associations among the bicluster's gene members. We have found that a useful and intuitive visualization scheme for a population of overlapping and often redundant biclusters is via an association network (Figure 7) of rectangular bicluster nodes (whose sizes are proportional to their gene/condition membership); analogous to "module networks" published in previous works. We visualize this bicluster network using Cytoscape [78]. Each bicluster is annotated with its gene and condition members, a measure of its co-expression, significant functional annotations (GO [40], KEGG [48] and COG [89]), and significant motifs. Edges are drawn between two biclusters if they contain non-redundant genes which are connected individually in any association networks. Connections are also added between pairs of biclusters that have a large amount of overlap in gene membership, motif similarity, expression correlation, and/or functional annotation. A spring-embedded layout algorithm [83] is used to spatially organize the network, placing highly-connected (and therefore related) biclusters spatially closer to each other. As a result, groups of biclusters with common function(s), or which lie in adjacent biochemical pathways, may be easily identified in the network, as shown in Figure 7. The integration of Cytoscape with the Gaggle [79] automatically cross-references biclusters with their respective "bicluster diagrams", and enables searching and browsing of additional biological information (such as expression data submatrices, gene browsers, annotation databases) or further analysis (e.g. via direct connection to R) of a bicluster's gene members, greatly facilitating their analysis.
+###end p 48
+###begin title 49
+Discussion and conclusion
+###end title 49
+###begin p 50
+###xml 306 314 306 314 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo </italic>
+###xml 344 346 344 346 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B75">75</xref>
+###xml 372 374 372 374 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 375 377 375 377 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B54">54</xref>
+###xml 426 428 426 428 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 429 431 429 431 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B86">86</xref>
+###xml 432 434 432 434 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B87">87</xref>
+###xml 924 934 924 934 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 938 946 938 946 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1770 1771 1770 1771 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 509 514 <span type="species:ncbi:4932">yeast</span>
+###xml 924 933 <span type="species:ncbi:210">H. pylori</span>
+###xml 938 945 <span type="species:ncbi:562">E. coli</span>
+The integration of clustering or biclustering of expression data with additional information is a problem of growing interest. The method presented here may be compared favorably with several recently published clustering and biclustering algorithms that have integrated different types of data, including de novo detection of sequence motifs [75], known sequence motifs [28,54], and various types of association information [28,86,87]. We have (to date) seen each of these other methods applied primarily to yeast, which is unique in the quantity of data available relative to the complexity of its genome. Many aspects of our method are inspired by these works. cMonkey does not require discretization of expression data, and is therefore capable of capturing patterns in low-level responses, while still being robust to noise due to its integration of different types of biological information. For example, although the H. pylori and E. coli data was limited in size and quality (with many expression experiments containing only one replicate, and many missing values), we were able to detect several interesting biclusters with significant putative (or known) motifs. In addition, cMonkey includes a greater number of experiments in each bicluster than other methods, while still obtaining a higher amount of correlation among its gene members. Finally, cMonkey is model-based and variables (such as the distribution of bicluster sizes, and the distribution of overlap between biclusters) are parameterized using simple statistical distributions. Therefore, their adjustment is intuitive and understandable, as well as robust to varying data size and quality. In our experience, this is in contrast to other biclustering algorithms, which often require tweaking of p-value cutoffs, dimensionless variables, or thresholds, which often result in unpredictable effects on the biclusters' properties.
+###end p 50
+###begin p 51
+###xml 564 567 564 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 618 620 618 620 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B97">97</xref>
+###xml 666 668 666 668 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 796 798 796 798 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 856 858 856 858 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B69">69</xref>
+###xml 1333 1335 1333 1335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+###xml 1508 1510 1508 1510 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B50">50</xref>
+###xml 1534 1542 1534 1542 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo </italic>
+###xml 1792 1794 1792 1794 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B69">69</xref>
+###xml 2260 2263 2260 2263 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 2294 2296 2294 2296 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B93">93</xref>
+We believe that the ability for the cMonkey user to explicitly control the contribution of different data types through their weights opens up many potential uses for the algorithm beyond the basic identification of co-expressed clusters of genes. This flexibility enables the detection of biclusters which stress certain type(s) of biological information over others. Indeed, in many cases it is still not known whether a certain type of pair-wise association between genes is actually correlated with co-expression. Such "guilt-by-association" is often assumed, e.g. between co-expression and functional categories [97], but such conclusions can be controversial [11], as bioinformatics has "only codified a small proportion of the biological knowledge required to understand microarray data" [27] (obviously other types of associations, such as operon [69] or cis-motif co-occurrence are more strongly tied to co-expression). cMonkey users can easily choose to generate tightly-co-expressed biclusters that are strongly supported by evidence provided by one or more other sources of information for their system of interest, and they can do so by including them as highly-weighted components of the bicluster model. For example, they could (a) identify active or co-expressed signaling or regulatory pathways or complexes, as in [45], by up-weighting protein interaction networks or metabolic networks; (b) reconstruct metabolic pathways, by up-weighting the metabolic network and expression data, as in [50]; (c) attempt putative de novo cis-regulatory motif detection in newly-sequenced genomes (without expression data), by setting the expression weight to zero; (d) assess the quality of complete networks or individual edges in operon associations or protein-DNA interactions, as in [69], by up-weighting these associations and the expression data. Future improvements to the method could be made to learn the appropriate weights for each data type, from the data (rather than as input parameters), for example by using an unconstrained multi-parametric logistic regression as briefly described in the Methods section, or by adaptively constraining the weights such that no component of the model over-regularizes with respect to the other components (e.g. "Pareto-front" optimization [93]).
+###end p 51
+###begin p 52
+###xml 1202 1204 1202 1204 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 1611 1613 1611 1613 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 1626 1628 1626 1628 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 1629 1631 1629 1631 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B68">68</xref>
+###xml 1782 1784 1782 1784 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B83">83</xref>
+###xml 1856 1858 1856 1858 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B96">96</xref>
+For sake of simplicity, flexibility and statistical transparency, we have used simple models for each of the individual data types and logistic regression to integrate them into a joint model. However, this simplicity comes at the expense of several trade-offs, which could be improved upon. Whereas it may be more appropriate to treat some associations as a property of sets rather than networks, we have treated all the same. Certain types of associations (such as protein-DNA networks and functional annotation classes) could be treated differently. In addition, any confidence values associated with individual edges in some of the networks are currently ignored. While edge weights could currently be included, for example, by dividing the high and low confidence edges into separate networks with different weights, it would be preferable to more cleanly model such association evidence. Third, we have reason to believe that our use of MEME for motif detection may be increasing our sensitivity to noise. The method could benefit from an assessment of different algorithms for detecting motifs in conjunction with biclustering, or the consensus of more than one method can be integrated, as in [39]. Also, as we move to more complex organisms, we find that multiple motifs cooperate in their regulation function, with conserved patterns, orientations, and upstream locations, such additional motif correlation and positional information may be exploited, with little modification to the current framework, to increase the sensitivity and specificity of identified motif patterns, such as via meta-MEME, [38] or others [20,68]. Also possible is the move toward the integrated multi-species biclustering of expression data, merging the multi-species clustering motivations of [83] with additional phylogenetic associations and motif detection (as in [96]).
+###end p 52
+###begin p 53
+###xml 102 105 102 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i.e</italic>
+###xml 196 198 196 198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 727 730 727 730 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 1107 1109 1107 1109 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+Because the goals of the development of cMonkey are unique relative to previous biclustering methods (i.e. coupled to a continuous regulatory network inference procedure, such as the Inferelator [22]), the resulting biclusters have unique characteristics when compared to many previously-published methods. We have shown that the procedure "works harder" to insure that a greater percentage of genes that are observed in the data set are included in at least one cluster, while reducing redundancy between overlapping biclusters and maximizing the number of experiments that are included in each bicluster. Because of these characteristics, standard methods of assessment of biological relevance of cMonkey-generated clusters (e.g. by functional annotation over-representation) are far from ideal, as they do not account for varying bicluster sizes, redundancy, and coverage of the data. Choosing the appropriate biclustering procedure for one's needs therefore involves finding a balance of these different bicluster-set properties that returns the desired outcome. As was written by Patrick D'haeseleer, [30] "There is no one-size-fits-all solution to clustering, or even a consensus of what a 'good' clustering should look like."
+###end p 53
+###begin title 54
+Methods
+###end title 54
+###begin title 55
+Materials and data
+###end title 55
+###begin title 56
+Expression data
+###end title 56
+###begin p 57
+###xml 20 34 20 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 178 180 178 180 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 226 236 226 236 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 240 254 240 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 308 309 308 309 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 557 567 557 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 598 611 598 611 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae</italic>
+###xml 622 630 622 630 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 226 235 <span type="species:ncbi:210">H. pylori</span>
+###xml 240 253 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 557 566 <span type="species:ncbi:210">H. pylori</span>
+###xml 598 611 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 622 629 <span type="species:ncbi:562">E. coli</span>
+Expression data for Halobacterium were collected by members of the Baliga lab, containing genome-wide measurements of mRNA expression in 292 conditions, as described in full in [22] and references therein. Expression data for H. pylori and S. cerevisiae were collected from the Stanford Microarray Database [3]. Certain experiments such as strain comparisons, genomic DNA, and RNA decay experiments which are unlikely to relate to gene regulation were removed from the sets prior to analysis. This filtering resulted in 58 of an original 250 conditions for H. pylori and 667 of 1051 conditions for S. cerevisiae. Data for E. coli was compiled from publicly-available data provided to us by E. A1m, including 86 conditions. As a pre-processing step, genes were removed from the expression data for which there was not significant (1.5-fold) expression in any of the experiments. The data were then row-normalized (each gene's expression levels normalized to mean = 0, SD = 1). No further pre-processing or filtering of the microarray data was performed.
+###end p 57
+###begin title 58
+Association and metabolic networks
+###end title 58
+###begin p 59
+###xml 152 161 152 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Prolinks </italic>
+###xml 162 164 162 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 170 181 170 181 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Predictome </italic>
+###xml 182 184 182 184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B62">62</xref>
+###xml 452 454 452 454 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B48">48</xref>
+###xml 643 645 643 645 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+Genetic associations derived from comparative genomics, such as phylogenetic profile, Rosetta Stone, gene neighbor and gene cluster, were compiled from Prolinks [23] and Predictome [62] for all organisms. These networks include predicted operon "associations," which were also used to identify "unique" regulatory sequences that are to be used in the motif detection. Metabolic network reconstructions from the Kyoto Encyclopedia of Genes and Genomes [48] were represented as associations between two genes if they participate in a reaction sharing one or more ligands, after removing the most highly-connected ligands, such as water and ATP [16].
+###end p 59
+###begin title 60
+Interaction networks
+###end title 60
+###begin p 61
+###xml 0 10 0 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 86 88 86 88 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B70">70</xref>
+###xml 91 105 91 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. Cerevisiae </italic>
+###xml 185 187 185 187 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B73">73</xref>
+###xml 199 200 199 200 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 0 9 <span type="species:ncbi:210">H. pylori</span>
+H. pylori protein-protein interactions were collected from the global experiments of [70]. S. Cerevisiae protein-protein, protein-DNA, and genetic interactions were collected from DIP [73] and BIND [9]. The protein-DNA interactions were converted into a network of associations between all pairs of genes whose upstream sequences were found to bind to the same regulator(s).
+###end p 61
+###begin title 62
+Upstream sequences
+###end title 62
+###begin p 63
+###xml 116 118 116 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B92">92</xref>
+###xml 292 305 292 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gene cluster </italic>
+###xml 340 349 340 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Prolinks </italic>
+###xml 350 352 350 352 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 358 369 358 369 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Predictome </italic>
+###xml 370 372 370 372 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B62">62</xref>
+###xml 612 613 612 613 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+Upstream sequences for all organisms were obtained from GenBank using the Regulatory Sequence Analysis Tools (RSAT [92]). Using these tools, we extracted 1000-bp cis-regulatory sequences. For bacteria and archaea, these sequences were shortened to 500 bp, and then "operon-shifted" using the gene cluster (operon association) networks from Prolinks [23] and Predictome [62]. Upstream sequences for genes in the same operon were converted to "operon-shifted" sequences by using the (same) upstream sequence of the first gene in the operon Similar "operon-shifted" upstream sequences were identified using BLASTN [8] using a 50 bp non-gapped alignment window, to avoid using multiple copies of the same sequence in the motif detection.
+###end p 63
+###begin title 64
+Functional annotations for comparison tests
+###end title 64
+###begin p 65
+###xml 20 22 20 22 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 112 113 112 113 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 232 233 232 233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 310 324 310 324 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 330 332 330 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 333 335 333 335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B60">60</xref>
+###xml 346 354 346 354 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 360 362 360 362 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B71">71</xref>
+###xml 363 365 363 365 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B72">72</xref>
+###xml 310 323 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 346 353 <span type="species:ncbi:562">E. coli</span>
+Gene ontology (GO) [40] annotations for each organism were obtained from the European Bioinformatics Institute [1] and matched to annotation names obtained from the GO web site. KEGG annotations were downloaded from their web site [2]. Predicted and experimentally-derived DNA binding motifs were obtained for S. cerevisiae from [39,60], and for E. coli from [71,72]. When these binding motifs were provided as position weight matrices (PWMs), they were converted into regular expressions, in order to enable rapid scanning of upstream sequences.
+###end p 65
+###begin title 66
+The bicluster model
+###end title 66
+###begin title 67
+Model overview
+###end title 67
+###begin p 68
+###xml 316 333 316 333 <italic xmlns:xlink="http://www.w3.org/1999/xlink">conditioned upon </italic>
+###xml 449 457 449 457 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a priori</italic>
+###xml 613 614 613 614 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 890 891 890 891 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 949 960 949 960 <italic xmlns:xlink="http://www.w3.org/1999/xlink">expression </italic>
+###xml 975 984 975 984 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sequence </italic>
+###xml 1003 1011 1003 1011 <italic xmlns:xlink="http://www.w3.org/1999/xlink">network </italic>
+Each bicluster is modeled via a Markov chain process, in which the bicluster is iteratively optimized, and its state is updated based upon conditional probability distributions computed using the cluster's previous state. This enables us to define probabilities that each gene or condition belongs in the bicluster, conditioned upon the current state of the bicluster, as opposed to requiring us to build a complete (joint) model for the bicluster, a priori. The components of this conditional probability are modeled independently (one for each of the different types of information which we are integrating) as p-values based upon individual data likelihoods, which are then combined into a regression model to derive the full conditional probability. In this work, three major distinct data types are used (gene expression, upstream sequences, and association networks), and accordingly p-values for three such model components are computed: the expression component, the sequence component, and the network component.
+###end p 68
+###begin p 69
+###xml 27 31 27 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink">seed</italic>
+###xml 433 434 433 434 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 434 437 434 437 <sub xmlns:xlink="http://www.w3.org/1999/xlink">max</sub>
+###xml 575 576 575 576 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+Each bicluster begins as a seed, or starting cluster, that is iteratively optimized by adding/removing genes and conditions to/from the cluster by sampling from the conditional probability distribution using a Monte Carlo procedure, to prevent premature convergence. Such an iterative machine learning technique is akin to a Markov chain Monte Carlo (MCMC) process. Additional clusters are seeded and optimized until a given number (kmax) of clusters have been generated, or significant optimization is no longer possible. The complete process is shown schematically in Fig. 8, and described in detail below.
+###end p 69
+###begin p 70
+###xml 33 35 33 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 60 62 60 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 111 113 111 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 116 118 115 117 <bold xmlns:xlink="http://www.w3.org/1999/xlink">K </bold>
+###xml 155 156 154 155 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 156 158 155 157 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 156 158 155 157 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 186 187 185 186 <bold xmlns:xlink="http://www.w3.org/1999/xlink">J</bold>
+###xml 187 188 186 187 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 187 188 186 187 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 205 206 204 205 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 206 209 205 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lk </italic>
+###xml 206 209 205 208 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>lk </italic></sub>
+###xml 240 243 238 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink">or </italic>
+###xml 253 255 251 253 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l </italic>
+###xml 268 270 266 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 346 347 344 345 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 348 349 346 347 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 349 352 347 350 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lk </italic>
+###xml 349 352 347 350 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>lk </italic></sub>
+In the following discussion, let i be an arbitrary gene and j an arbitrary experimental condition. A bicluster k in K is fully defined by its set of genes Ik and experimental conditions Jk. The membership ylk in {0, 1} of an arbitrary gene or condition l in bicluster k is an independent Bernoulli indicator variable with conditional probability p(ylk = 1).
+###end p 70
+###begin title 71
+The expression component
+###end title 71
+###begin p 72
+###xml 54 56 54 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 59 61 58 60 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I </bold>
+###xml 78 80 77 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 83 84 81 82 <bold xmlns:xlink="http://www.w3.org/1999/xlink">J</bold>
+###xml 100 101 98 99 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 106 107 104 105 <bold xmlns:xlink="http://www.w3.org/1999/xlink">J</bold>
+###xml 116 117 114 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 117 120 115 118 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij </italic>
+###xml 117 120 115 118 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij </italic></sub>
+###xml 123 124 120 121 <bold xmlns:xlink="http://www.w3.org/1999/xlink">X</bold>
+###xml 141 143 138 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 154 155 151 152 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 155 156 152 153 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 155 156 152 153 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 161 162 158 159 <bold xmlns:xlink="http://www.w3.org/1999/xlink">J</bold>
+###xml 162 163 159 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 162 163 159 160 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 175 176 172 173 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 176 181 173 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i'j' </italic>
+###xml 176 181 173 178 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i'j' </italic></sub>
+###xml 184 185 180 181 <bold xmlns:xlink="http://www.w3.org/1999/xlink">X</bold>
+###xml 185 186 181 182 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 185 186 181 182 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 188 191 184 187 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i' </italic>
+###xml 194 195 189 190 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 195 197 190 192 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 195 197 190 192 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 204 205 194 195 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 207 210 197 200 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j' </italic>
+###xml 213 214 202 203 <bold xmlns:xlink="http://www.w3.org/1999/xlink">J</bold>
+###xml 214 216 203 205 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 214 216 203 205 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 223 224 207 208 <bold xmlns:xlink="http://www.w3.org/1999/xlink">J</bold>
+###xml 275 277 259 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 340 342 324 326 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 367 368 351 352 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 368 369 352 353 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 368 369 352 353 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 422 423 406 407 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 423 426 407 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij </italic>
+###xml 423 426 407 410 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij </italic></sub>
+The expression data is a set of measurements of genes i in I over experiments j in J, comprising a |I| x |J| matrix xij in X. Each bicluster k defines a |Ik| x |Jk| submatrix xi'j' in Xk: i' in Ik subset I; j' in Jk subset J. The variance in the measured levels of condition j is , where . We compute the mean expression level of condition j over the cluster's genes Ik, . Then, the likelihood of an arbitrary measurement xij relative to this mean expression level is
+###end p 72
+###begin p 73
+
+###end p 73
+###begin p 74
+###xml 24 32 24 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949; </italic>
+###xml 77 78 71 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 116 117 110 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 140 145 134 135 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 145 147 135 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 145 147 135 137 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+###xml 162 164 152 154 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I </bold>
+###xml 178 183 168 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 183 186 169 172 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jk </italic>
+###xml 183 186 169 172 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>jk </italic></sub>
+###xml 200 201 186 187 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 201 203 187 189 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 201 203 187 189 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 233 234 219 220 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 235 236 221 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 236 238 222 224 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij</italic>
+###xml 236 238 222 224 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij</italic></sub>
+###xml 261 263 247 249 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+which includes the term epsilon for an unknown systematic error in condition j, here assumed to be the same for all j. Note that the use of sigmaj over all genes I rather than a sigmajk computed over Ik results in a lower likelihood p(xij) for those conditions j that have a small overall variance, and are therefore more likely to be correlated by random chance. Also, such low-variance conditions could be the result of poor labeling, or other systematic problems.
+###end p 74
+###begin p 75
+###xml 56 58 56 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 92 94 92 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 144 145 144 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 240 254 240 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink">co-expression </italic>
+###xml 254 255 254 255 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 277 281 277 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i, r</italic>
+###xml 281 283 281 283 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 281 283 281 283 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 308 312 308 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j, r</italic>
+###xml 312 314 312 314 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jk</italic>
+###xml 312 314 312 314 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>jk</italic></sub>
+###xml 338 339 338 339 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+The likelihood of the measurements of an arbitrary gene i among the conditions in bicluster k are , and similarly the likelihood of a condition j's measurements are . We integrate the two tails of the Normal distribution in Eq. 1 to derive co-expression p-values for each gene i, rik, and for each condition j, rjk, relative to bicluster k.
+###end p 75
+###begin title 76
+Sequence component (motif co-occurrence)
+###end title 76
+###begin p 77
+###xml 10 12 10 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 52 53 52 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 53 55 53 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 53 55 53 55 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 94 95 94 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l</italic>
+###xml 95 96 95 96 <sub xmlns:xlink="http://www.w3.org/1999/xlink">S</sub>
+###xml 113 115 113 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 142 143 142 143 <bold xmlns:xlink="http://www.w3.org/1999/xlink">S</bold>
+###xml 143 145 143 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 143 145 143 145 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 153 154 153 154 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 154 156 154 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i'</italic>
+###xml 154 156 154 156 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i'</italic></sub>
+###xml 158 159 158 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 164 165 163 164 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 165 166 164 165 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 165 166 164 165 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 228 229 227 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 229 230 228 229 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 229 230 228 229 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 270 271 269 270 <bold xmlns:xlink="http://www.w3.org/1999/xlink">S</bold>
+###xml 271 272 270 271 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 271 272 270 271 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 346 347 345 346 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 347 349 346 348 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 347 349 346 348 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 434 435 433 434 <bold xmlns:xlink="http://www.w3.org/1999/xlink">S</bold>
+###xml 435 436 434 435 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 435 436 434 435 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 456 459 455 458 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Si </italic>
+###xml 486 487 485 486 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 487 488 486 487 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 487 488 486 487 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+Each gene i has an upstream cis-regulatory sequence Si (a string of DNA nucleotides of length lS), and bicluster k defines a set of sequences Sk for all Si'; i' in Ik. The decision whether an arbitrary gene's upstream sequence, Si, shares common motif(s) with sequences Sk, is determined via a two-step process: (1) identify one or more motif(s) Mk that is (are) significantly overrepresented in many (if not all) bicluster sequences Sk, and then (2) scan Si to see if it also contains Mk.
+###end p 77
+###begin p 78
+###xml 173 175 173 175 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B91">91</xref>
+###xml 449 451 449 451 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B91">91</xref>
+###xml 550 554 550 554 <italic xmlns:xlink="http://www.w3.org/1999/xlink">all </italic>
+###xml 564 565 564 565 <bold xmlns:xlink="http://www.w3.org/1999/xlink">S</bold>
+###xml 565 566 565 566 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 565 566 565 566 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 617 618 617 618 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 705 707 705 707 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 990 992 990 992 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 1014 1015 1014 1015 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1222 1224 1222 1224 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 1273 1282 1273 1282 <italic xmlns:xlink="http://www.w3.org/1999/xlink">one copy </italic>
+###xml 1324 1327 1324 1327 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i.e</italic>
+###xml 1506 1523 1506 1523 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+In this work, we are not advancing the basic methodology for motif detection (step 1), as relatively mature methods exist for finding motifs given a fixed set of sequences [91]. Instead, we are describing an overall strategy that incorporates previously existing motif finding algorithm(s) into a clustering procedure. As such, the procedure is motif-detection-algorithm agnostic, and the search may be performed using one of many existing methods [91]. Our only requirements are that (a) significantly overrepresented motifs do not have to exist in all sequences Sk, and (b) it can produce a score (preferentially a p-value) that an arbitrary sequence contains the detected motif(s). The MEME algorithm [10], which identifies significant sequence motifs using expectation maximization of one or more probabilistic motif models given a fixed set of sequences and a background residue model, is used to perform step (1), as it meets the first criterion (a). MEME's companion algorithm MAST [10], which computes the p-value that an arbitrary sequence matches the set of motifs detected with MEME, is used to perform step (2), as it meets the second criterion (b). During the motif detection step, for any genes in bicluster k which are in an operon, we make sure to use only one copy of the upstream sequence for that operon (i.e. upstream of the first gene in that operon), as described above ("Upstream sequences"). Additional details on the specific parameters passed to these procedures are provided in [Additional File 1, Table Three].
+###end p 78
+###begin p 79
+###xml 64 65 64 65 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 65 67 65 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 65 67 65 67 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 80 81 80 81 <bold xmlns:xlink="http://www.w3.org/1999/xlink">S</bold>
+###xml 81 82 81 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 81 82 81 82 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 98 99 98 99 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 122 123 122 123 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 123 125 123 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 123 125 123 125 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 163 164 163 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 187 192 187 192 <italic xmlns:xlink="http://www.w3.org/1999/xlink">each </italic>
+###xml 255 262 255 262 <italic xmlns:xlink="http://www.w3.org/1999/xlink">within </italic>
+###xml 270 271 270 271 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 287 293 287 293 <italic xmlns:xlink="http://www.w3.org/1999/xlink">motif </italic>
+###xml 293 294 293 294 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 303 304 303 304 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 304 306 304 306 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 304 306 304 306 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 322 324 322 324 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 346 347 346 347 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+Thus, using these two algorithms, we can detect a set of motifs Mk in sequences Sk, and compute a p-value that a sequence Si contains those motifs. Note that this p-value is computed for each upstream sequence in the genome, including those for the genes within cluster k, to derive the motif p-values, sik, for each gene i relative to bicluster k, at each iteration of the MCMC procedure.
+###end p 79
+###begin title 80
+Association network component
+###end title 80
+###begin p 81
+###xml 330 331 330 331 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 462 463 462 463 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 494 496 494 496 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 499 500 498 499 <bold xmlns:xlink="http://www.w3.org/1999/xlink">N</bold>
+###xml 646 649 645 648 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 745 765 744 764 <italic xmlns:xlink="http://www.w3.org/1999/xlink">network association </italic>
+###xml 765 766 764 765 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 830 832 829 831 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 848 850 847 849 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 859 860 858 859 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 860 862 859 861 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 860 862 859 861 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 875 876 874 875 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 934 936 933 935 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 961 965 960 964 <italic xmlns:xlink="http://www.w3.org/1999/xlink">not </italic>
+###xml 976 977 975 976 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 1040 1041 1039 1040 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 1041 1043 1040 1042 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 1041 1043 1040 1042 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+To build up a highly-connected subnetwork among genes that are in a bicluster (given a full set of associations), we aim to add genes preferentially that have a greater number of connections to those currently in the bicluster than one would expect (at random) based upon the overall connectivity in the network. Thus, we compute p-values for observing the associations between a gene or experimental condition and the genes or conditions currently in bicluster k, given an association network N in N. In the following discussion, genes are the primary consideration, but networks of associations between experimental conditions are conceivable (e.g., we might wish to preferentially group conditions that are part of the same time series). The network association p-value, , is computed based upon the number of edges in network N connecting gene i to genes Ik in bicluster k, relative to the total number of edges connected between i and the genes  (that are not in cluster k), as well as the connections within and between the gene sets Ik and . The hypergeometric distribution is used to compute the probability of observing such an arrangement of connections by chance:
+###end p 81
+###begin p 82
+
+###end p 82
+###begin p 83
+###xml 6 8 6 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A </bold>
+###xml 12 14 10 12 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B </bold>
+###xml 82 84 80 82 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A </bold>
+###xml 102 103 100 101 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+###xml 109 110 107 108 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 110 111 108 109 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 114 116 110 112 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B </bold>
+###xml 110 116 108 112 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>A</bold>&#8594;<bold>B </bold></sub>
+###xml 258 260 254 256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 383 386 379 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i.e</italic>
+###xml 421 423 417 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 450 451 446 447 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 451 452 447 448 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 451 452 447 448 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 628 630 624 626 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 653 655 649 651 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 678 682 674 678 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i's </italic>
+###xml 835 836 831 832 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 861 863 857 859 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 880 882 876 878 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 909 911 905 907 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+where A --> B represents the set of associations between the elements in gene set A with those in set B, and nA-->B is the number of these associations. Expression (2) is analogous to the hypergeometric measure of mutual clustering coefficient described by [37]. However, it does not account for the global structure of the network; it is only concerned with the local associations, i.e. those directly connected to gene i and the bicluster's genes, Ik. This choice of connectivity measure allows a single value to be directly computed for each gene, relative to each cluster, and gives greater preference to an individual gene i being added to cluster k if a large fraction of i's associations are with the other genes in the cluster (and vice versa), independent of the global distribution of associations in the network. Individual p-values, , for each gene i and each network N are computed for bicluster k by integrating the lower tail of the distribution in Eq. 2.
+###end p 83
+###begin title 84
+The joint cluster membership probability
+###end title 84
+###begin p 85
+###xml 123 124 123 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 132 133 132 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 133 135 133 135 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 133 135 133 135 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 137 138 137 138 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 138 140 138 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 138 140 138 140 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 146 147 146 147 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 147 150 147 150 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 147 150 147 150 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 215 217 215 217 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 234 237 234 237 <italic xmlns:xlink="http://www.w3.org/1999/xlink">or </italic>
+###xml 403 405 403 405 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 424 425 424 425 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 507 508 507 508 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 509 510 509 510 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 510 513 510 513 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 510 513 510 513 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+The ultimate goal is to decide gene or condition bicluster membership jointly on the basis of the three individual sets of p-values rik, sik, and qik computed above (for the remainder of this discussion, we now use i to denote a gene or experimental condition). A common procedure for combining "scores" such as these into a single joint likelihood is to perform a multi-parametric logistic regression [41] that treats each p-value measure as a random variable and estimates the joint membership likelihood p(yik = 1) using the logistic function,
+###end p 85
+###begin p 86
+
+###end p 86
+###begin p 87
+###xml 92 93 92 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 93 95 93 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 93 95 93 95 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 97 98 97 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 98 100 98 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 98 100 98 100 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 106 107 106 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 107 109 107 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 107 109 107 109 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 159 163 159 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946;</italic>
+###xml 163 165 160 162 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 186 187 183 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 187 188 184 185 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 190 191 187 188 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 191 192 188 189 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 198 199 195 196 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 199 201 196 198 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 288 289 285 286 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 289 290 286 287 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 289 290 286 287 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 597 599 594 596 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 625 627 622 624 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 657 658 654 655 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 658 660 655 657 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+This model approximates a (probabilistic) discriminating hyperplane in the space defined by rik, sik, and qik, parameterized by the four independent variables beta0 (the intercept), and r0, s0, and q0 (the slope) that maximally discriminates the genes or conditions within the bicluster (Ik) from those outside (). Conceptually, the model implies that a gene or condition that poorly matches the bicluster based on one data type can still be added to the bicluster if it matches well to the other data types, analogous to, for example, the explicit "softening" of cluster boundaries performed by [15]. Note that when element i is an experimental condition, s0 (the motif parameter) is zero.
+###end p 87
+###begin p 88
+###xml 239 240 239 240 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 240 241 240 241 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 243 244 243 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 244 245 244 245 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 250 251 250 251 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 251 252 251 252 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 533 536 533 536 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+In practice, during early iterations when the bicluster is not well-discriminated from the background, such an unconstrained regression leads to unstable situations such as unwarranted over-weighting or inversion of one or more variables (r0, s0, or q0). Additionally, depending upon the quality of the data set(s) being used and the predisposition (or prior knowledge) of the researcher, different runs of the algorithm stressing different data types may be desired. Finally, there is good reason to expect that certain data types (e.g. sequence motifs) will be less informative early in the procedure when the biclusters are poorly-defined, and only later will it make sense to incorporate them into the bicluster model.
+###end p 88
+###begin p 89
+###xml 24 36 24 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink">constrained </italic>
+###xml 104 105 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 105 107 105 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 105 107 105 107 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 109 110 109 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 110 112 110 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 110 112 110 112 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 118 119 118 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 119 122 119 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 119 122 119 122 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 161 162 161 162 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 192 193 192 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 193 195 193 195 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 193 195 193 195 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+Therefore, we perform a constrained logistic regression by transforming the regression space defined by rik, sik, and qik into one dimension, projecting the log-p-values onto a single vector, gik,
+###end p 89
+###begin p 90
+
+###end p 90
+###begin p 91
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 7 8 7 8 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 10 11 10 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 11 12 11 12 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 18 19 18 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 19 21 19 21 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 178 179 178 179 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 233 235 233 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 233 235 233 235 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 244 247 244 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#967;</italic>
+###xml 247 250 245 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 247 250 245 248 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 254 256 252 253 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 256 257 253 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 256 257 253 254 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 259 264 256 257 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 264 265 257 258 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 264 265 257 258 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 273 275 266 267 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 275 277 267 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 275 277 267 269 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 281 286 273 274 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 286 288 274 276 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 286 288 274 276 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 335 336 323 324 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 344 347 332 335 <italic xmlns:xlink="http://www.w3.org/1999/xlink">log</italic>
+###xml 348 351 336 337 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#967;</italic>
+###xml 351 353 337 339 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 351 353 337 339 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 356 359 342 343 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#967;</italic>
+###xml 359 362 343 346 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 359 362 343 346 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 377 378 361 362 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 378 380 362 364 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 378 380 362 364 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 382 383 366 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 383 385 367 369 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 383 385 367 369 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 390 391 374 375 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 391 393 375 377 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 391 393 375 377 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 448 453 432 436 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i &#8712; </italic>
+###xml 454 455 437 438 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 454 455 437 438 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 488 489 471 472 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 622 623 605 606 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 899 900 882 883 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 900 901 883 884 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 903 904 886 887 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 904 905 887 888 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 911 912 894 895 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 912 913 895 896 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 940 944 923 924 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946;</italic>
+###xml 944 946 924 926 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 1143 1144 1123 1124 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 1144 1146 1124 1126 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 1144 1146 1124 1126 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 1380 1383 1360 1363 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+where r0, s0, and q0 are specified for each iteration according to an "annealing schedule," described below. Here, each of the dimensions have been standardized to place the log-p-values for each data set on the same scale, with log(ik) = [log(chiik ) - muk]/sigmak, where muk and sigmak are the mean and standard deviation of the log-p-values log(chiik) (chiik denotes either rik, sik, or qik), only over the genes or conditions in the bicluster (i in Ik). This is necessary because the p-values for each component of our model were derived for different types of data, each with widely differing sizes. For example, the p-values are likely to be smaller (on average) for the component with the most data (here, the expression data), or for motifs with larger lengths. The projection described in Eq. 4 constrains the regression by fixing the slope of the discriminating hyperplane (via parameters r0, s0, and q0), with only the intercept beta0 permitted to vary from cluster to cluster. These parameters may also be interpreted as mixing parameters that control the fractional contribution of each model component to the cluster likelihood, gik. They may be defined by the user, and/or may be modified throughout the course of cluster optimization. For example, early in the procedure when the bicluster is a poorly-defined seed, co-expression and certain association networks (e.g. operon associations, for bacteria and archaea) are extremely informative, whereas a common cis-regulatory motif is less likely exist among the genes in the bicluster. Only later (when the bicluster has been optimized on the basis of expression data and operon associations) does it make sense to incorporate sequence motifs into the bicluster model. Therefore we employ a strategy for slowly varying the relative contribution of each of the regression parameters, as the cluster is optimized, as part of an annealing schedule (described further, below). The constrained binomial regression is now given by
+###end p 91
+###begin p 92
+###xml 0 2 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#960;</italic>
+###xml 2 5 1 4 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 2 5 1 4 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 20 21 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 22 23 8 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 23 26 9 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 23 26 9 12 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 30 31 16 17 <bold xmlns:xlink="http://www.w3.org/1999/xlink">X</bold>
+###xml 31 32 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 31 32 17 18 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 34 35 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 35 36 21 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 35 36 21 22 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 38 39 24 25 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 39 40 25 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 39 40 25 26 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 42 43 28 29 <bold xmlns:xlink="http://www.w3.org/1999/xlink">N</bold>
+###xml 71 75 37 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946;</italic>
+###xml 75 77 38 40 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 79 83 42 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946;</italic>
+###xml 83 84 43 44 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 85 87 45 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 85 87 45 47 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+piik identical with p(yik = 1|Xk, Si, Mk, N) proportional, variant exp(beta0 + beta1gik),     (5)
+###end p 92
+###begin p 93
+###xml 17 22 17 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946; </italic>
+###xml 17 22 17 19 <bold xmlns:xlink="http://www.w3.org/1999/xlink"><italic>&#946; </italic></bold>
+###xml 25 29 22 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946;</italic>
+###xml 29 30 23 24 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 32 36 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946;</italic>
+###xml 36 37 27 28 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 97 98 88 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 99 100 90 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 100 103 91 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 100 103 91 94 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 131 133 122 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 146 147 137 138 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+where parameters beta = [beta0, beta1] fully determine the conditional probability of membership p(yik = 1) of a gene or condition i in bicluster k.
+###end p 93
+###begin p 94
+###xml 300 304 300 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946;</italic>
+###xml 304 306 301 303 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 353 357 350 351 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946;</italic>
+###xml 357 359 351 353 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 461 463 455 457 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 493 495 487 489 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 525 530 519 521 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946; </italic>
+###xml 708 713 699 701 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#946; </italic>
+###xml 808 810 796 798 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+One additional complication arises near the end of a bicluster optimization, that a bicluster may be perfectly discriminated from the background (resulting in an infinite negative log-likelihood and undefined regression). This may be addressed in two ways: the first is to constrain or fix the slope beta1 of the regression, allowing only the intercept beta0 to vary. We chose a second option, to perform a penalized maximum likelihood estimation described by [42] and originally proposed by [35]. This penalized estimate of beta provides bias reduction in the case of small sample sizes (small biclusters), and solves the separation problem in the context of perfect discrimination and infinite likelihood. beta can be determined with this penalized likelihood measure using an efficient iterative process [35].
+###end p 94
+###begin p 95
+###xml 36 38 36 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#960;</italic>
+###xml 38 40 37 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 38 40 37 39 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 70 72 69 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 101 103 100 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 176 179 175 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i.e</italic>
+###xml 337 339 336 337 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#960;</italic>
+###xml 339 341 337 339 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 339 341 337 339 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+We now have a set of probabilities, piik, that each gene or condition i is associated with bicluster k given the bicluster's current state. We would now like to perform moves (i.e. add or remove genes and conditions) that are most likely to improve the likelihood of the bicluster based upon the model. We do this by sampling moves from piik. These probabilities may be further adjusted via additional (prior) constraints on the model, as described below.
+###end p 95
+###begin title 96
+The cMonkey iterative procedure
+###end title 96
+###begin title 97
+Seeding the clusters
+###end title 97
+###begin p 98
+###xml 558 568 558 568 <italic xmlns:xlink="http://www.w3.org/1999/xlink">different </italic>
+###xml 1098 1102 1098 1102 <italic xmlns:xlink="http://www.w3.org/1999/xlink">can </italic>
+The Markov chain process by which a bicluster is optimized requires "seeding" of the bicluster to start the procedure. We experimented with many data-driven methods for generating seed biclusters, including (a) single-gene seeds, (b) random or semi-correlated seeds using a pre-specified distribution of cluster sizes, and (c) seeding on the basis of co-expressed edges in association networks (for example, operon associations). In principle, any seeding method may be used, including the clusters produced by other clustering or biclustering methods. Many different seeding methods are used in order to broaden the parameter space which is searched, and depending upon the annealing schedule used, the algorithm can be made more- or less-sensitive to the selected starting points. As biclusters are optimized sequentially, in order to maximize our coverage of the overall (gene) search space, they are seeded only with genes that have not previously been placed into any other biclusters. It should be noted, however, that during subsequent iterations, genes that are already in other biclusters can still be added to new biclusters, with additional constraints that are described later.
+###end p 98
+###begin p 99
+###xml 180 181 180 181 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 251 253 251 253 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 284 285 284 285 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 291 292 291 292 <bold xmlns:xlink="http://www.w3.org/1999/xlink">J</bold>
+###xml 292 294 292 294 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 292 294 292 294 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 328 330 328 330 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+Each bicluster is seeded using a random choice from one of a variety of methods, each of which utilizes one or more different types of input data. For each newly-seeded bicluster, I' be the set of genes that are currently not in any other biclusters, i is a randomly-chosen gene from I' and Ji is the set of conditions in which i has the highest amount of variance. The seeding methods available are:
+###end p 99
+###begin p 100
+###xml 3 23 3 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A single random gene</italic>
+###xml 52 54 52 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 58 59 58 59 <bold xmlns:xlink="http://www.w3.org/1999/xlink">J</bold>
+###xml 59 60 59 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 59 60 59 60 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+1. A single random gene: The cluster is seeded with i and Ji. For the first few iterations of this bicluster's optimization, only gene additions are allowed (forcing the bicluster to grow in size, early on).
+###end p 100
+###begin p 101
+###xml 3 54 3 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n co-expressed genes from another clustering method</italic>
+3. n co-expressed genes from another clustering method: Clusters are generated using an other clustering or biclustering method, and these are used as seeds for further optimization.
+###end p 101
+###begin p 102
+###xml 3 28 3 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n semi-co-expressed genes</italic>
+###xml 36 38 36 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 64 65 64 65 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 131 132 131 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 132 134 132 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c </italic>
+###xml 132 134 132 134 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>c </italic></sub>
+###xml 146 148 146 148 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 162 163 162 163 <bold xmlns:xlink="http://www.w3.org/1999/xlink">J</bold>
+###xml 163 164 163 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 163 164 163 164 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 260 262 260 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 270 272 269 270 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+2. n semi-co-expressed genes: Up to n - 1 additional genes from I' are randomly chosen from those with a high Pearson correlation (Pc > 0.8) with i in conditions Ji. n is chosen randomly from a set of pre-defined cluster seeding sizes, currently 2, 5, 10, 20, mu, where mu, is described Methods.
+###end p 102
+###begin p 103
+###xml 3 27 3 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n highly-connected genes</italic>
+###xml 35 37 35 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 59 60 59 60 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 88 89 88 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 89 91 89 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c </italic>
+###xml 89 91 89 91 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>c </italic></sub>
+###xml 100 101 100 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 132 134 132 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 166 168 166 168 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+4. n highly-connected genes: Up to n - 1 random genes from I' are added from those with Pc > 0 with i, and are first neighbors with i in a given association network, n is chosen as in (2); the association network is chosen randomly from the following (if available for that organism): operons, metabolic assoc., protein-DNA interactions, protein-protein interactions.
+###end p 103
+###begin p 104
+###xml 3 30 3 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n genes with a common motif</italic>
+###xml 38 40 38 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 55 56 55 56 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 94 95 94 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 95 97 95 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c </italic>
+###xml 95 97 95 97 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>c </italic></sub>
+###xml 106 107 106 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 132 133 132 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 143 145 143 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 193 195 193 195 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l </italic>
+###xml 216 218 216 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 251 253 251 253 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d </italic>
+###xml 261 263 261 263 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l </italic>
+5. n genes with a common motif: Up to n - 1 genes from I' are randomly chosen from those with Pc > 0 with i, and also have a common d-mer with i in their upstream sequences, allowing for up to l residue differences, n is chosen as in (2); defaults of d = 9 and l = 1 were used.
+###end p 104
+###begin title 105
+Annealing the clusters
+###end title 105
+###begin p 106
+###xml 25 27 25 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 207 209 207 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#960;</italic>
+###xml 209 212 208 211 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 209 212 208 211 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 239 241 238 240 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 309 311 308 310 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B51">51</xref>
+###xml 356 358 355 357 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 371 373 370 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 420 421 419 420 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 421 424 420 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 421 424 420 423 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 432 434 431 432 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#960;</italic>
+###xml 434 437 432 435 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 434 437 432 435 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 553 554 539 540 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 554 557 540 543 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 554 557 540 543 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 565 567 551 552 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#960;</italic>
+###xml 567 570 552 555 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik </italic>
+###xml 567 570 552 555 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik </italic></sub>
+###xml 777 778 750 751 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+A newly-seeded bicluster k is iteratively improved with respect to the joint likelihood derived above. At each iteration, significant motifs are detected (using MEME), and the joint membership probabilities piik for each gene or condition i are computed. We then perform moves using Simulated Annealing (SA) [51], to preferentially add genes or conditions i to bicluster k if they have a high probability of membership (yik = 0 and piik approximately 1), and to drop genes or conditions from that bicluster if they have a low probability of membership (yik = 1 and piik approximately 0). Moves which may decrease the likelihood of the cluster model are permitted, with a frequency that decreases during the course of the procedure, as parameterized by an annealing temperature T:
+###end p 106
+###begin p 107
+
+###end p 107
+###begin p 108
+###xml 196 197 196 197 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 197 201 197 201 <sub xmlns:xlink="http://www.w3.org/1999/xlink">max </sub>
+###xml 610 612 610 612 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+All moves are performed by sampling them from the probability in Eq. 6. This Simulated Annealing procedure is dampened by restricting the total number of gene/condition moves at each iteration to nmax = 5, in order to reduce the chance that a bicluster will change drastically before its model is reevaluated. We find that Simulated Annealing, while not the most efficient search strategy available, improves upon greedy search strategies such as Expectation Maximization, by being able to escape local minima and therefore being able to more completely assign genes and conditions to clusters as appropriate [24]. Other stochastic or greedy search strategies may be applicable to solving this model, for example if speed is deemed to be a more important consideration than completeness of the solution.
+###end p 108
+###begin title 109
+Additional model constraints: bicluster size and overlap
+###end title 109
+###begin p 110
+###xml 356 363 356 363 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ad hoc </italic>
+###xml 541 542 541 542 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z</italic>
+###xml 542 544 542 544 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 542 544 542 544 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 565 567 565 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 659 660 659 660 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z</italic>
+###xml 660 662 660 662 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 660 662 660 662 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 723 724 723 724 <italic xmlns:xlink="http://www.w3.org/1999/xlink">F</italic>
+###xml 724 725 724 725 <italic xmlns:xlink="http://www.w3.org/1999/xlink">v</italic>
+###xml 724 725 724 725 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>v</italic></sub>
+###xml 727 728 727 728 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 727 728 727 728 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 737 739 737 739 <italic xmlns:xlink="http://www.w3.org/1999/xlink">v </italic>
+###xml 830 832 830 832 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 850 851 850 851 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 853 854 853 854 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 859 861 859 860 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#960;</italic>
+###xml 861 863 860 862 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 861 863 860 862 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+###xml 869 870 868 869 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 876 878 875 876 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#960;</italic>
+###xml 878 880 876 878 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ik</italic>
+###xml 878 880 876 878 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ik</italic></sub>
+The search space for this problem is often dominated by very strong attractors and if we do not restrict the gene/condition move set, biclusters are likely to repeatedly descend into the same set of deep local minima (thereby increasing the bicluster overlap, or redundancy). This is an issue seen in many biclustering algorithms, and a commonly-practiced ad hoc remedy is to post-filter the bicluster set to remove redundant ones. We choose a more straightforward, easily-parameterized solution: to constrain the total number of biclusters zi into which each gene i may fall (and in effect to reduce the amount of "gene overlap" of the final bicluster set), zi is modeled as a Poisson process with cumulative distribution Fv(zi) (where v is the expected number of biclusters per gene). Then the probability of adding or dropping i to/from bicluster k, p(add|piik) and p(drop|piik) (Eq. 6), is multiplied with this prior probability of observing the gene in that many biclusters (relative to the expected number):
+###end p 110
+###begin p 111
+
+###end p 111
+###begin p 112
+###xml 125 127 125 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">v </italic>
+Thus the solution is constrained to what seems to be a more biologically intuitive model: include each gene in an average of v = 2 (the default) clusters. This constraint results in an increased tendency to drop a gene from a bicluster if it is already in more than two biclusters, and a decreased tendency to drop the gene if it is in less than two biclusters.
+###end p 112
+###begin p 113
+###xml 126 127 126 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 193 195 193 195 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 221 222 221 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 255 256 255 256 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 256 257 256 257 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 256 257 256 257 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 300 301 300 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 303 304 303 304 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 304 305 304 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 304 305 304 305 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 308 310 308 309 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 312 317 311 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 345 346 340 341 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 346 347 341 342 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 346 347 341 342 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+Bicluster sizes can also vary widely between biclustering methods; some generate biclusters with only three genes on average [6], to single biclusters with nearly 3/4 of all genes in the data [18]. We constrain bicluster k's final size (number of genes, |Ik|), using a cumulative Normal distribution N(|Ik|, mu, sigma) as a prior constraint on |Ik|. This conditional distribution is applied by further adjusting the relative ratios of the distributions (Eq. 6) from which the gene moves are sampled:
+###end p 113
+###begin p 114
+
+###end p 114
+###begin p 115
+###xml 23 24 23 24 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 24 25 24 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 24 25 24 25 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 28 30 28 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 160 161 159 160 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 161 162 160 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 161 162 160 161 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 166 168 165 166 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 233 236 231 233 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956; </italic>
+###xml 238 244 235 237 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963; </italic>
+###xml 323 326 316 319 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 707 710 700 703 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 713 715 706 708 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 716 718 709 711 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B86">86</xref>
+The result is that if |Ik| <mu, the number of genes sampled to add to the bicluster will tend to be greater than the number sampled to drop, and vice versa if |Ik| > mu. We parameterize our prior expectation of bicluster sizes using mu = sigma = 30, to match previous estimates of regulon sizes for well-studied organisms (e.g. Alkema, Lenhard, and Wasserman, 2004). This amounts to a soft constraint, which still allows for considerable variation in final bicluster sizes. A similar constraint may be applied to the biclusters' experiment sizes, which enables the generation of biclusters with a larger number of experiments (on average) than are typically included in biclusters derived by other methods (e.g. [19,86]).
+###end p 115
+###begin title 116
+The annealing schedule
+###end title 116
+###begin p 117
+###xml 61 63 61 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 172 174 172 174 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 383 384 383 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 433 434 433 434 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 434 435 434 435 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 437 438 437 438 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 438 439 438 439 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 445 446 445 446 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 446 448 446 448 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 543 544 543 544 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 544 545 544 545 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 581 582 581 582 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 582 583 582 583 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 585 588 585 588 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 738 739 738 739 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 739 740 739 740 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 788 789 788 789 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9</xref>
+###xml 894 897 894 897 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i.e</italic>
+###xml 1027 1044 1027 1044 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+To enforce convergence we schedule the annealing temperature T to slowly decrease during the procedure, as in standard simulated annealing procedures. We find that varying T linearly from 0.15 to 0.05 over 100-150 optimization steps is generally effective for all organisms for which biclustering was performed. As was described previously, there are reasons to vary (in addition to T) the three model mixture constraint parameters, r0, s0, and q0 with each iteration. We have found that the most effective schedule up-weights the expression (r0) and certain association networks (q0; e.g. operons and metabolic networks) early in a run to build up co-expressed biclusters, and then slowly increases the influence of the sequence motifs (s0) as the biclusters become better-defined (Fig. 9). For similar reasons, additional parameters, such as the number of motifs searched for, can also vary (i.e. increase or decrease monotonically) with iteration. Details on the default cMonkey parameters used for this work are listed in [Additional File 1, Table Three].
+###end p 117
+###begin title 118
+Implementation
+###end title 118
+###begin p 119
+###xml 30 32 30 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R </italic>
+###xml 66 67 66 67 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 191 193 191 193 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B84">84</xref>
+###xml 217 218 217 218 <underline xmlns:xlink="http://www.w3.org/1999/xlink">S</underline>
+###xml 228 229 228 229 <underline xmlns:xlink="http://www.w3.org/1999/xlink">N</underline>
+###xml 236 237 236 237 <underline xmlns:xlink="http://www.w3.org/1999/xlink">O</underline>
+###xml 239 240 239 240 <underline xmlns:xlink="http://www.w3.org/1999/xlink">W</underline>
+###xml 253 257 253 257 <italic xmlns:xlink="http://www.w3.org/1999/xlink">snow</italic>
+###xml 259 261 259 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R </italic>
+###xml 684 701 684 701 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 186 189 <span type="species:ncbi:11263?0.47540983606557374|species:ncbi:12167?0.09016393442622951">PVM</span>
+cMonkey is implemented in the R statistical programming language [5], a highly-flexible cross-platform language widely used in the statistical community. It has been parallelized, using PVM [84] as implemented in the Simplified Network Of Workstations (snow) R library, and runs efficiently on a multi-node Linux cluster; it can be run on a single-processor desktop computer as well. On a typical single-2 GHz processor, the algorithm can generate ~100 biclusters in between 12 and 48 hours, depending on the organism, data size, and motif detection parameters chosen. All parameters relevant to the biclustering procedure that have not been described in the main text are listed in [Additional File 1, Table Three].
+###end p 119
+###begin title 120
+Comparison with other biclustering and clustering methods
+###end title 120
+###begin p 121
+###xml 97 99 97 99 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 136 138 136 138 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 168 170 168 170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 182 184 182 184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B55">55</xref>
+###xml 198 199 198 199 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 267 269 267 269 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 280 282 280 282 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B86">86</xref>
+###xml 336 338 336 338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B77">77</xref>
+###xml 379 380 379 380 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 399 401 399 401 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 424 425 424 425 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 466 467 466 467 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 862 864 862 864 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 880 894 880 894 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 973 987 973 987 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 1176 1177 1176 1177 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1293 1295 1293 1295 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 1332 1333 1332 1333 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1394 1410 1394 1410 <italic xmlns:xlink="http://www.w3.org/1999/xlink">experiment-wise </italic>
+###xml 1476 1477 1476 1477 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1596 1597 1596 1597 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 2001 2003 2001 2003 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 2068 2076 2068 2076 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo </italic>
+###xml 880 893 <span type="species:ncbi:4932">S. cerevisiae</span>
+###xml 973 986 <span type="species:ncbi:4932">S. cerevisiae</span>
+The different bi/clustering algorithms used for the comparative analysis included: Cheng-Church [25], Order Preserving Submatrix (OPSM [18]), Iterative Signature (ISA [19]), xMOTIF [55], and BIMAX [6] (all of these algorithms were run using the BICAT implementation [17]), SAMBA [86] (as implemented by the authors as part of EXPANDER [77]), and both hierarchical clustering and k-means clustering [30] with cluster number (k) ranging from 10 to 300 (implemented in R). None of these methods utilize data integration, and all were run on the same data sets as cMonkey. All biclustering procedures were run using their default parameters and data normalization/discretization schemes (while the effects of varying the parameters for each of these methods would be a worthwhile study, it is beyond the scope of this work). The analysis was performed on the Gasch [36] subset of the S. cerevisiae data containing measurements of 2993 genes over 173 stress-related conditions. S. cerevisiae was chosen for these comparisons because of the high-quality data and varied external "references" available for this organism, against which clusters could be compared. In all cases where p-values for judging annotation over-representation are listed, they were computed following a procedure similar to [21]; namely, cumulative hypergeometric p-values were corrected for multiple hypothesis testing in an experiment-wise manner for each cluster, by computing the fraction of uncorrected p-values derived for 1000 randomized instances of the cluster (the null model) that were less than or equal to the best p-value obtained for that cluster. To assess the effect of various biases caused by inclusion of different parts of the cMonkey model, we performed these same analyses on cMonkey runs with various model parameters up- and down-weighted, as described in the Results section. In all cases where we compared the motif-detection results of specific biclusters (in the Results section), we used MEME and MAST [10] (with the same parameters as for cMonkey) to search for motifs de novo in the upstream sequences of the clusters' genes.
+###end p 121
+###begin p 122
+###xml 373 390 373 390 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+###xml 418 419 418 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 496 498 496 498 <bold xmlns:xlink="http://www.w3.org/1999/xlink">X </bold>
+###xml 644 646 644 646 <bold xmlns:xlink="http://www.w3.org/1999/xlink">X </bold>
+Each different biclustering algorithm returned bicluster sets with wide differences in cluster count, cluster size (genes and experiments), amount of overlap/redundancy, expression coherence, and other general characteristics only related to their treatment of the expression data. We therefore computed "bulk" measurements for each bicluster set, such as those listed in [Additional File 1, Table Two]. One of these, f, is defined as the total fraction of elements in the expression data matrix X which fall in at least one bicluster. A measurement that quantifies the degree to which each complete bicluster set recapitulates the variance in X is defined as follows:
+###end p 122
+###begin p 123
+
+###end p 123
+###begin p 124
+###xml 62 63 62 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 69 70 69 70 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 70 73 70 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij </italic>
+###xml 70 73 70 73 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij </italic></sub>
+###xml 93 94 76 77 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 93 94 76 77 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 94 96 77 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 99 100 81 82 <bold xmlns:xlink="http://www.w3.org/1999/xlink">I</bold>
+###xml 100 102 82 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 100 102 82 84 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 108 110 86 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 113 114 90 91 <bold xmlns:xlink="http://www.w3.org/1999/xlink">J</bold>
+###xml 114 116 91 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 114 116 91 93 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 163 164 140 141 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 164 166 141 143 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij</italic>
+###xml 164 166 141 143 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij</italic></sub>
+###xml 223 225 200 202 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f </italic>
+###xml 833 834 810 811 <bold xmlns:xlink="http://www.w3.org/1999/xlink">X</bold>
+where, as above,  is the mean expression profile of bicluster k, and nij = summation operatorki in Ik wedge j in Jk is the number of biclusters containing element xij. This measure is dependent upon the fractional coverage f of the expression data matrix by the bicluster set (better coverage will generally lead to better RMSD) as well as the average bicluster residual (better residual leads to better RMSD), but is nearly independent of bicluster redundancy. It therefore is a good measure of the tradeoff that each bi/clustering method chooses between data coverage and bicluster co-expression. Because the expression data set has been variance-normalized (see Methods), RMSD ranges between 0-1, where a smaller RMSD implies that the mean expression profiles of the biclusters more accurately "generate" the original data matrix X.
+###end p 124
+###begin p 125
+###xml 24 29 24 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink">some </italic>
+###xml 276 277 276 277 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 450 453 450 453 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e.g</italic>
+###xml 777 794 777 794 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional File 1</xref>
+In an attempt to remove some overlap and size bias related to these quality measurements (see Discussion), we also performed tests on a "filtered" set of biclusters, in which we greedily identified the largest 100 clusters with a volume-overlap (genes x conditions) of < 0.5 [6], excluding any with > 200 genes. For methods such as cMonkey, this filtering step removes a large number of non-redundant (but smaller) clusters, while for other methods (e.g. OPSM), it removes a large fraction of derived clusters and for others (such as SAMBA) it has little effect. Finally, in a further attempt to disentangle the cluster size bias inherent in these comparisons, we performed the same analyses on a set of evenly divided cluster sets ("big" and "small" halves; results shown in [Additional File 1]).
+###end p 125
+###begin title 126
+Abbreviations
+###end title 126
+###begin p 127
+Markov chain Monte Carlo (MCMC), cumulative distribution function (CDF), Position specific scoring matrix (PSSM), Gene Ontology (GO)
+###end p 127
+###begin title 128
+Authors' contributions
+###end title 128
+###begin p 129
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">DJR </bold>
+DJR Developed and implemented the cMonkey algorithm; ran the procedure and analyzed the results; wrote this manuscript.
+###end p 129
+###begin p 130
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">NSB </bold>
+NSB Contributed to the inception of this project; provided important feedback on the results; assisted with the writing of this manuscript.
+###end p 130
+###begin p 131
+###xml 0 3 0 3 <bold xmlns:xlink="http://www.w3.org/1999/xlink">RB </bold>
+RB Conceived and initiated this project; contributed to the development and implementation of cMonkey; wrote this manuscript.
+###end p 131
+###begin title 132
+Supplementary Material
+###end title 132
+###begin title 133
+Additional File 1
+###end title 133
+###begin p 134
+Supplementary file containing additional figures and tables, with captions, referenced in the main manuscript.
+###end p 134
+###begin p 135
+Click here for file
+###end p 135
+###begin title 136
+Acknowledgements
+###end title 136
+###begin p 137
+###xml 71 85 71 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 197 207 197 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Cytoscape </italic>
+###xml 215 221 215 221 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Gaggle</italic>
+###xml 506 514 506 514 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 506 513 <span type="species:ncbi:562">E. coli</span>
+We gratefully acknowledge Armadeep Kaur and Min Pan for generating the Halobacterium microarray data used in this work, and Paul Shannon, for his assistance in interfacing the cMonkey results with Cytoscape and the Gaggle. We would like to thank Vesteinn Thorsson, Amy Schmid, Charlie E.M. Strauss, Ilya Shmulevich, Marc Facciotti, Nathan Price, and Werner Stuetzle for their feedback on the cMonkey algorithm and this manuscript. We would also like to thank Eric A1m for providing his collation of public E. coli expression data, and our local colony of brine shrimp, for providing inspiration and moral support. This work was supported by research grants to NB from NSF (MCB-0425825, EIA-0220153, EF-0313754), DoD (DAAD13-03-O-0057) and and DoE (DE-FG02-04ER63807, DE-AC01-05CH11231).
+###end p 137
+###begin article-title 138
+European bioinformatics institute gene ontology annotations
+###end article-title 138
+###begin article-title 139
+Kegg genomes web site
+###end article-title 139
+###begin article-title 140
+Stanford microarray database
+###end article-title 140
+###begin article-title 141
+CMONKEY web site
+###end article-title 141
+###begin article-title 142
+The R project for statistical computing
+###end article-title 142
+###begin article-title 143
+A systematic comparison and evaluation of biclustering methods for gene expression data
+###end article-title 143
+###begin article-title 144
+Regulation of flagellar assembly
+###end article-title 144
+###begin article-title 145
+Basic local alignment search tool
+###end article-title 145
+###begin article-title 146
+BIND: the Biomolecular Interaction Network Database
+###end article-title 146
+###begin article-title 147
+Fitting a mixture model by expectation maximization to discover motifs in biopolymers
+###end article-title 147
+###begin article-title 148
+A graph-theoretic approach to testing associations between disparate sources of functional genomics data
+###end article-title 148
+###begin article-title 149
+Saturation mutagenesis of the haloarchaeal bop gene promoter: identification of DNA supercoiling sensitivity sites and absence of TFB recognition element and UAS enhancer activity
+###end article-title 149
+###begin article-title 150
+Genomic and genetic dissection of an archaeal regulon
+###end article-title 150
+###begin article-title 151
+###xml 56 72 56 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium sp</italic>
+###xml 56 72 <span type="species:ncbi:2243">Halobacterium sp</span>
+Coordinate regulation of energy transduction modules in Halobacterium sp. analyzed by a global systems approach
+###end article-title 151
+###begin article-title 152
+Computational discovery of gene modules and regulatory networks
+###end article-title 152
+###begin article-title 153
+Emergence of scaling in random networks
+###end article-title 153
+###begin article-title 154
+BicAT: A Biclustering Analysis Toolbox
+###end article-title 154
+###begin article-title 155
+Discovering local structure in gene expression data: the order-preserving submatrix problem
+###end article-title 155
+###begin article-title 156
+Iterative signature algorithm for the analysis of large-scale gene expression data
+###end article-title 156
+###begin article-title 157
+###xml 128 138 <span type="species:ncbi:7227">Drosophila</span>
+Exploiting transcription factor binding site clustering to identify cis-regulatory modules involved in pattern formation in the Drosophila genome
+###end article-title 157
+###begin article-title 158
+Characterizing gene sets with FuncAssociate
+###end article-title 158
+###begin article-title 159
+The Inferelator: an algorithm for learning parsimonious regulatory networks from systems-biology data sets de novo
+###end article-title 159
+###begin article-title 160
+Prolinks: a database of protein functional linkages derived from coevolution
+###end article-title 160
+###begin article-title 161
+Application of simulated annealing to the biclustering of gene expression data
+###end article-title 161
+###begin article-title 162
+Biclustering of expression data
+###end article-title 162
+###begin article-title 163
+###xml 63 103 63 103 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella enterica serovar typhimurium </italic>
+###xml 107 123 107 123 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 63 82 <span type="species:ncbi:28901">Salmonella enterica</span>
+###xml 107 123 <span type="species:ncbi:562">Escherichia coli</span>
+Coupling of flagellar gene expression to flagellar assembly in Salmonella enterica serovar typhimurium and Escherichia coli
+###end article-title 163
+###begin article-title 164
+How well do we understand the clusters found in microarray data?
+###end article-title 164
+###begin article-title 165
+Discovering transcriptional modules from motif, chip-chip and microarray data
+###end article-title 165
+###begin article-title 166
+Modeling and simulation of genetic regulatory systems: A literatre review
+###end article-title 166
+###begin article-title 167
+Genetic network inference: from co-expression clustering to reverse engineering
+###end article-title 167
+###begin article-title 168
+###xml 78 89 78 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Rhizobiales</italic>
+Prediction and overview of the RpoN-regulon in closely related species of the Rhizobiales
+###end article-title 168
+###begin article-title 169
+###xml 39 59 39 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori </italic>
+###xml 39 58 <span type="species:ncbi:210">Helicobacter pylori</span>
+Colonization of gnotobiotic piglets by Helicobacter pylori deficient in two flagellin genes
+###end article-title 169
+###begin article-title 170
+Protein function in the post-genomic era
+###end article-title 170
+###begin article-title 171
+Protein interaction maps for complete genomes based on gene fusion events
+###end article-title 171
+###begin article-title 172
+Bias reduction of maximum likelihood estimates
+###end article-title 172
+###begin article-title 173
+###xml 47 52 <span type="species:ncbi:4932">yeast</span>
+Genomic expression programs in the response of yeast cells to environmental changes
+###end article-title 173
+###begin article-title 174
+Assessing experimentally derived interactions in a small world
+###end article-title 174
+###begin article-title 175
+Meta-meme: motif-based hidden markov models of protein families
+###end article-title 175
+###begin article-title 176
+Transcriptional regulatory code of a eukaryotic genome
+###end article-title 176
+###begin article-title 177
+The Gene Ontology (GO) database and informatics resource
+###end article-title 177
+###begin article-title 178
+A solution to the problem of separation in logistic regression
+###end article-title 178
+###begin article-title 179
+Reconstruction of microbial transcriptional regulatory networks
+###end article-title 179
+###begin article-title 180
+###xml 42 68 42 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Staphylococcus epidermidis</italic>
+###xml 42 68 <span type="species:ncbi:1282">Staphylococcus epidermidis</span>
+SirR, a novel iron-dependent represser in Staphylococcus epidermidis
+###end article-title 180
+###begin article-title 181
+Discovering regulatory and signalling circuits in molecular interaction networks
+###end article-title 181
+###begin article-title 182
+###xml 93 110 93 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Candida albicans </italic>
+###xml 93 109 <span type="species:ncbi:5476">Candida albicans</span>
+Comparative gene expression analysis by differential clustering approach: application to the Candida albicans transcription program
+###end article-title 182
+###begin article-title 183
+Ordering genes in a flagella pathway by analysis of expression kinetics from living bacteria
+###end article-title 183
+###begin article-title 184
+KEGG: kyoto encyclopedia of genes and genomes
+###end article-title 184
+###begin article-title 185
+Survival strategies of an archaeal organism to withstand stress from transition metals
+###end article-title 185
+###begin article-title 186
+Filling gaps in a metabolic network using expression information
+###end article-title 186
+###begin article-title 187
+Optimization by simulated annealing
+###end article-title 187
+###begin article-title 188
+Spectral biclustering of microarray data: coclustering genes and conditions
+###end article-title 188
+###begin article-title 189
+Plaid models for gene expression data
+###end article-title 189
+###begin article-title 190
+Comprehensive quantitative analyses of the effects of promoter sequence elements on mRNA transcription
+###end article-title 190
+###begin article-title 191
+Extracting conserved gene expression motifs from gene expression data
+###end article-title 191
+###begin article-title 192
+Biclustering algorithms for biological data analysis: a survey
+###end article-title 192
+###begin article-title 193
+###xml 124 129 <span type="species:ncbi:4932">yeast</span>
+Rpn4p acts as a transcription factor by binding to PACE, a nonamer box found upstream of 26S proteasomal and other genes in yeast
+###end article-title 193
+###begin article-title 194
+Detecting protein function and protein- protein interactions from genome sequences
+###end article-title 194
+###begin article-title 195
+###xml 49 73 49 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 49 73 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Genomic analysis of stationary-phase and exit in Saccharomyces cerevisiae: gene expression and identification of novel essential genes
+###end article-title 195
+###begin article-title 196
+TRANSFAC: transcriptional regulation, from patterns to profiles
+###end article-title 196
+###begin article-title 197
+###xml 21 41 21 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori </italic>
+###xml 21 40 <span type="species:ncbi:210">Helicobacter pylori</span>
+Promoter analysis of Helicobacter pylori genes with enhanced expression at low pH
+###end article-title 197
+###begin article-title 198
+Predictome: a database of putative functional links between proteins
+###end article-title 198
+###begin article-title 199
+A powerful non-homology method for the prediction of operons in prokaryotes
+###end article-title 199
+###begin article-title 200
+###xml 58 74 58 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium sp</italic>
+###xml 58 74 <span type="species:ncbi:2243">Halobacterium sp</span>
+Genomic analysis of anaerobic respiration in the archaeon Halobacterium sp. strain NRC-1: dimethyl sulfoxide and trimethylamine N-oxide as terminal electron acceptors
+###end article-title 200
+###begin article-title 201
+###xml 101 120 101 120 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori</italic>
+###xml 101 120 <span type="species:ncbi:210">Helicobacter pylori</span>
+Genome-wide analysis of transcriptional hierarchy and feedback regulation in the flagellar system of Helicobacter pylori
+###end article-title 201
+###begin article-title 202
+The use of gene clusters to infer functional coupling
+###end article-title 202
+###begin article-title 203
+Assigning protein functions by comparative genome analysis: protein phylogenetic profiles
+###end article-title 203
+###begin article-title 204
+Identifying regulatory networks by combinatorial analysis of promoter elements
+###end article-title 204
+###begin article-title 205
+OpWise: Operons aid the identification of differentially expressed genes in bacterial microarray experiments
+###end article-title 205
+###begin article-title 206
+###xml 39 58 39 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori</italic>
+###xml 39 58 <span type="species:ncbi:210">Helicobacter pylori</span>
+The protein-protein interaction map of Helicobacter pylori
+###end article-title 206
+###begin article-title 207
+###xml 93 109 <span type="species:ncbi:562">escherichia coli</span>
+A comprehensive library of dna-binding site matrices for 55 proteins applied to the complete escherichia coli k12 genome
+###end article-title 207
+###begin article-title 208
+###xml 25 42 25 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 25 41 <span type="species:ncbi:562">Escherichia coli</span>
+Regulondb (version 5.0): Escherichia coli k-12 transcriptional regulatory network, operon organization, and growth conditions
+###end article-title 208
+###begin article-title 209
+The Database of Interacting Proteins: 2004 update
+###end article-title 209
+###begin article-title 210
+Sequence logos: A new way to display consensus sequences
+###end article-title 210
+###begin article-title 211
+Genome-wide discovery of transcriptional modules from DNA sequence and gene expression
+###end article-title 211
+###begin article-title 212
+Module networks: identifying regulatory modules and their condition-specific regulators from gene expression data
+###end article-title 212
+###begin article-title 213
+EXPANDER-an integrative program suite for microarray data analysis
+###end article-title 213
+###begin article-title 214
+Cytoscape: a software environment for integrated models of biomolecular interaction networks
+###end article-title 214
+###begin article-title 215
+The Gaggle: an open-source software system for integrating bioinformatics software and data sources
+###end article-title 215
+###begin article-title 216
+Biclustering microarray data by gibbs sampling
+###end article-title 216
+###begin article-title 217
+###xml 16 36 16 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori </italic>
+###xml 16 35 <span type="species:ncbi:210">Helicobacter pylori</span>
+###xml 103 118 <span type="species:ncbi:9544">rhesus macaques</span>
+Modification of Helicobacter pylori outer membrane protein expression during experimental infection of rhesus macaques
+###end article-title 217
+###begin article-title 218
+###xml 72 97 72 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 66 71 <span type="species:ncbi:4932">yeast</span>
+###xml 72 96 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Comprehensive identification of cell cycle-regulated genes of the yeast Saccharomyces cerevisiae by microarray hybridization
+###end article-title 218
+###begin article-title 219
+A gene-coexpression network for global discovery of conserved genetic modules
+###end article-title 219
+###begin article-title 220
+###xml 0 3 <span type="species:ncbi:11263?0.47540983606557374|species:ncbi:12167?0.09016393442622951">PVM</span>
+PVM: A Framework for Parallel Distributed Computing
+###end article-title 220
+###begin article-title 221
+###xml 95 100 <span type="species:ncbi:4932">yeast</span>
+Conservation and evolvability in regulatory networks: the evolution of ribosomal regulation in yeast
+###end article-title 221
+###begin article-title 222
+Discovering statistically significant biclusters in gene expression data
+###end article-title 222
+###begin article-title 223
+Integrative analysis of genome-wide experiments in the context of a large high-throughput data compendium
+###end article-title 223
+###begin article-title 224
+The COG database: an updated version includes eukaryotes
+###end article-title 224
+###begin article-title 225
+Gibbs Recursive Sampler: finding transcription factor binding sites
+###end article-title 225
+###begin article-title 226
+Assessing computational tools for the discovery of transcription factor binding sites
+###end article-title 226
+###begin article-title 227
+Regulatory sequence analysis tools
+###end article-title 227
+###begin article-title 228
+Multi-criterion optimization for genetic network modeling
+###end article-title 228
+###begin article-title 229
+###xml 66 86 66 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori </italic>
+###xml 66 85 <span type="species:ncbi:210">Helicobacter pylori</span>
+Inferring regulatory elements from a whole genome. An analysis of Helicobacter pylori sigma(80) family of promoter signals
+###end article-title 229
+###begin article-title 230
+###xml 48 68 48 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori </italic>
+###xml 48 67 <span type="species:ncbi:210">Helicobacter pylori</span>
+Nod1 responds to peptidoglycan delivered by the Helicobacter pylori cag pathogenicity island
+###end article-title 230
+###begin article-title 231
+Combining phylogenetic data with co-regulated genes to identify regulatory motifs
+###end article-title 231
+###begin article-title 232
+Systematic survey reveals general applicability of guilt-by-association within gene coexpression networks
+###end article-title 232
+###begin article-title 233
+Enhanced biclustering on expression data
+###end article-title 233
+###begin title 234
+Figures and Tables
+###end title 234
+###begin p 235
+###xml 18 32 18 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 78 79 78 79 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 232 233 232 233 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+###xml 300 301 300 301 <bold xmlns:xlink="http://www.w3.org/1999/xlink">C</bold>
+###xml 324 325 324 325 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 386 387 386 387 <bold xmlns:xlink="http://www.w3.org/1999/xlink">D</bold>
+###xml 771 772 771 772 <bold xmlns:xlink="http://www.w3.org/1999/xlink">E</bold>
+Bacteriorhodopsin Halobacterium bicluster with known Bat-binding motif (UAS). A: expression ratios of the bicluster's genes, over all experimental conditions (conditions within the bicluster are to the left of the red dotted line). B: expression ratios over only the conditions within the bicluster. C: motif logos [74] and E-values [10] for motifs that were detected in the bicluster. D: network of associations between the bicluster's genes in the various association networks used by CMONKEY, including operons, KEGG [48] metabolic pathways ("met" - see Methods; only present in Figures 4 and 5), and Prolinks [23] associations. The nodes are color coded by COG [89] functional groupings. Genes labeled in red text encode known or putative transcriptional regulators. E: diagram of the upstream positions of the motifs, colored red, green and blue for motifs #1, 2 and 3, respectively. The genes' names are color-coded by COG functional annotation as in the network subfigure. The colors of the lines for each gene's sequence correspond to those in the expression ratio plots.
+###end p 235
+###begin p 236
+Motif logo for Bat-binding motif discovered in the bicluster of Figure 1 (top) compared to the saturation mutagenesis pattern observed for this regulator [12] (bottom).
+###end p 236
+###begin p 237
+###xml 0 14 0 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 102 107 102 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sirR </italic>
+Halobacterium bicluster containing genes encoding the members of several transporter complexes. While sirR was not included by CMONKEY in the bicluster, we have added it to the figure and highlighted its expression profile.
+###end p 237
+###begin p 238
+###xml 38 45 38 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 83 88 83 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 88 90 84 86 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70</sup>
+###xml 38 45 <span type="species:ncbi:562">E. coli</span>
+Flagellar biosynthesis bicluster from E. coli. Motifs #1 and 2 make up part of the sigma70(RpoD)/FlhDC activator complex binding site for activation of Class-2 flagellar genes.
+###end p 238
+###begin p 239
+###xml 19 29 19 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 19 28 <span type="species:ncbi:210">H. pylori</span>
+Flagellar-function H. pylori bicluster with known RpoN-binding motif (motif #1).
+###end p 239
+###begin p 240
+###xml 26 40 26 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 195 196 195 196 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 249 250 249 250 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+Mean external measures of Halobacterium bicluster "quality", as a function of iteration of bicluster optimization. Left: co-expression ("residual," [98]). Center: motif co-occurrence ("Motif log(p-value)"). Right: mutual clustering coefficient (log-p-value [37]) in four different association networks: operons, KEGG [48] metabolic pathways ("met" - see Methods), and Prolinks [23] associations.
+###end p 240
+###begin p 241
+###xml 0 14 0 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Halobacterium </italic>
+###xml 52 62 52 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Cytoscape </italic>
+Halobacterium bicluster network as visualized using Cytoscape [78]. Biclusters are represented as rectangular nodes, colored based upon significant functional annotations [40]. Different colored edges represent different measures of cluster similarity or connectivity in various association networks (dark blue: KEGG [48] metabolic pathways; dark red: GO [40] functional similarity; light blue: motif similarity; yellow: operon membership; light red: COG [89] functional similarity; green: gene membership). Highly-connected (and therefore functionally-related) biclusters are placed near each other in the layout. The selected (grey) bicluster group near the bottom contains bacteriorhodopsin-associated biclusters, including the one in Fig. 1. Note that these biclusters have not been filtered to remove redundancy.
+###end p 241
+###begin p 242
+A schematic diagram of the CMONKEY biclustering procedure. The inner (red) loop depicts the optimization for each newly-seeded bicluster.
+###end p 242
+###begin p 243
+###xml 81 82 81 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 82 83 82 83 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 85 86 85 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 86 87 86 87 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 93 94 93 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 94 95 94 95 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 123 124 123 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+Example annealing schedule applied to the three CMONKEY model component weights (r0, p0, and q0) and annealing temperature T, during a bicluster optimization, as a function of iteration.
+###end p 243
+###begin p 244
+###xml 165 172 165 172 <italic xmlns:xlink="http://www.w3.org/1999/xlink">within </italic>
+###xml 176 184 176 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink">outside </italic>
+Means of Pearson correlation coefficients of genes in bR or DMSO putative regulons (rows) with mean profile of genes in bR or DMSO operons (columns) over conditions within and outside the bicluster.
+###end p 244
+

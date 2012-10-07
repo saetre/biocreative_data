@@ -1,0 +1,837 @@
+###begin article-title 0
+Target prediction for small, noncoding RNAs in bacteria
+###end article-title 0
+###begin p 1
+Present addresses: Sarah S. Goodwin, University of California, San Francisco, CA 94143, USA
+###end p 1
+###begin p 2
+Daniel X. Fu, California Institute of Technology, Pasadena, CA 91126, USA
+###end p 2
+###begin p 3
+The online version of this article has been published under an open access model. Users are entitled to use, reproduce, disseminate, or display the open access version of this article for non-commercial purposes provided that: the original authorship is properly and fully attributed; the Journal and Oxford University Press are attributed as the original place of publication with the correct citation details given; if an article is subsequently reproduced or disseminated not in its entirety but only in part or as a derivative work this must be clearly indicated. For commercial re-use, please contact journals.permissions@oxfordjournals.org
+###end p 3
+###begin p 4
+###xml 294 303 294 303 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 512 528 512 528 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 705 714 705 714 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 512 528 <span type="species:ncbi:562">Escherichia coli</span>
+Many small, noncoding RNAs in bacteria act as post-transcriptional regulators by basepairing with target mRNAs. While the number of characterized small RNAs (sRNAs) has steadily increased, only a limited number of the corresponding mRNA targets have been identified. Here we present a program, TargetRNA, that predicts the targets of these bacterial RNA regulators. The program was evaluated by assessing whether previously known targets could be identified. The program was then used to predict targets for the Escherichia coli RNAs RyhB, OmrA, OmrB and OxyS, and the predictions were compared with changes in whole genome expression patterns observed upon expression of the sRNAs. Our results show that TargetRNA is a useful tool for finding mRNA targets of sRNAs, although its rate of success varies between sRNAs.
+###end p 4
+###begin title 5
+INTRODUCTION
+###end title 5
+###begin p 6
+###xml 228 244 228 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 664 665 664 665 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b1">1</xref>
+###xml 666 667 666 667 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b2">2</xref>
+###xml 734 740 734 740 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 228 244 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 734 740 <span type="species:ncbi:562">E.coli</span>
+In recent years, hundreds of RNAs that do not encode proteins but have intrinsic functions as regulators have been identified. These RNAs are generally denoted noncoding RNAs in eukaryotes and small RNAs (sRNAs) in bacteria. In Escherichia coli alone, >70 sRNA genes have been identified. Those bacterial sRNAs whose functions have been characterized can be sorted into three general categories: sRNAs that have intrinsic catalytic activity or are components of ribonucleoproteins, sRNAs that affect protein activity by structurally mimicking other nucleic acids and sRNAs that post-transcriptionally regulate mRNAs via basepairing interactions [reviewed in Refs (1,2)]. sRNAs in the latter category appear to be the most abundant in E.coli (more than a third of the known sRNAs) and are the focus of our study.
+###end p 6
+###begin p 7
+###xml 11 17 11 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 150 155 150 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">trans</italic>
+###xml 306 314 306 314 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig1">Figure 1</xref>
+###xml 353 357 353 357 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sodB</italic>
+###xml 406 411 406 411 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">trans</italic>
+###xml 676 677 676 677 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b3">3</xref>
+###xml 678 679 678 679 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4">4</xref>
+###xml 839 840 839 840 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b3">3</xref>
+###xml 841 842 841 842 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b5">5</xref>
+###xml 11 17 <span type="species:ncbi:562">E.coli</span>
+All of the E.coli sRNAs that act by basepairing affect either the stability or translation of the mRNA target; in most cases the mRNAs are encoded in trans at positions on the chromosome distant from the sRNA. An example of a potential basepairing interaction that can lead to mRNA degradation is shown in Figure 1 for the RyhB sRNA and its target, the sodB mRNA. For all of the basepairing sRNAs that are trans-encoded, the basepairing interaction is interrupted by gaps in the pairing. In addition, the sRNAs in this class bind to the RNA chaperone Hfq, which has been shown to facilitate the interaction between some of the more well-characterized sRNAs and their targets (3,4). When interacting with sRNAs, Hfq appears to bind preferentially to unstructured AU-rich regions, frequently between more structured loop regions of the RNA (3-5). Despite increased understanding of the physiological roles of the basepairing sRNAs, the targets for only a subset of these sRNAs are known. In addition, although many sRNAs are thought to regulate more than one mRNA transcript, frequently only a small number of targets have been identified for a given sRNA.
+###end p 7
+###begin p 8
+###xml 281 285 281 285 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sodB</italic>
+###xml 287 289 287 289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b42">42</xref>
+###xml 312 316 312 316 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sodB</italic>
+The figure depicts the secondary structure for the sRNA RyhB. The Sm-like protein Hfq binds to the AU-rich unstructured region of RyhB as indicated. Below the secondary structure, the primary sequence of RyhB is shown along with its putative binding interaction to the target mRNA sodB (42). The start codon for sodB is underlined. RyhB nucleotides that participate in the interaction are in bold.
+###end p 8
+###begin p 9
+###xml 437 438 437 438 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b6">6</xref>
+###xml 439 440 439 440 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+###xml 450 451 450 451 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8">8</xref>
+###xml 452 454 452 454 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+###xml 469 471 469 471 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b13">13</xref>
+###xml 472 474 472 474 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b16">16</xref>
+###xml 1238 1239 1226 1227 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b6">6</xref>
+###xml 1354 1355 1342 1343 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9">9</xref>
+###xml 1356 1358 1344 1346 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10">10</xref>
+###xml 1359 1361 1347 1349 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b13">13</xref>
+While the targets of basepairing sRNAs in bacteria have remained elusive, there has been better success in identifying targets of microRNAs (miRNAs) in eukaryotes. The function of miRNAs in modulating mRNA stability and translation in eukaryotes is analogous to the function of many of the basepairing sRNAs in bacteria. A number of computational approaches have been employed successfully for the prediction of miRNA targets in plants (6,7), flies (8-12) and mammals (13-16). However, while the consequences of eukaryotic miRNA and bacterial sRNA interactions with their targets are similar, there are a number of important differences between these two classes of noncoding RNAs which bring different challenges to the problem of target identification in bacteria. miRNAs are generally <25 nt in length, whereas sRNAs vary from approximately50 to several hundred nucleotides in length. The shorter length of miRNAs helps focus the search for targets to more specific nucleotide sequences. The binding interactions between sRNAs and their targets also show more variation in the regions involved in pairing than in the case of miRNAs. For instance, in plants, miRNAs have a propensity to pair to mRNAs with near-perfect complementarity (6). In animals, target complementarity to the 5' portion of a miRNA (e.g. residues 2-8) may be critical for action (9,10,13). Also, in the case of miRNAs, target identification has been facilitated by restricting searches to particular regions of the target message, such as 3'-untranslated regions (3'-UTRs).
+###end p 9
+###begin p 10
+###xml 27 36 27 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 229 238 229 238 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 329 335 329 335 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 542 548 542 548 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 583 592 583 592 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 329 335 <span type="species:ncbi:562">E.coli</span>
+###xml 542 548 <span type="species:ncbi:562">E.coli</span>
+Here we present a program, TargetRNA, that can effectively predict mRNA targets of basepairing sRNAs. Several sRNAs with targets reported previously in the literature were tested with the program in order to validate the method. TargetRNA was then used to predict novel targets for a number of sRNAs. The results for four of the E.coli sRNAs, RyhB, OmrA, OmrB and OxyS, were investigated experimentally using northern and microarray analyses, leading to the identification of new targets for these sRNAs. Although only target predictions for E.coli sRNAs were experimentally tested, TargetRNA is also generally applicable to other bacteria. The program is publicly available at .
+###end p 10
+###begin title 11
+MATERIALS AND METHODS
+###end title 11
+###begin title 12
+Individual basepair model for hybridization scoring
+###end title 12
+###begin p 13
+###xml 276 278 276 278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b17">17</xref>
+###xml 383 384 383 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 387 388 387 388 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</italic>
+###xml 388 389 388 389 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 389 390 389 390 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</italic>
+###xml 390 391 390 391 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 403 404 395 396 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 402 404 394 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s<sub>n</sub></italic>
+###xml 428 429 420 421 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 450 451 442 443 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 454 455 446 447 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 455 456 447 448 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 456 457 448 449 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 457 458 449 450 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 470 471 454 455 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</sub>
+###xml 469 471 453 455 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>m</sub></italic>
+###xml 511 512 495 496 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 547 548 531 532 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 550 551 534 535 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 546 551 530 535 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s<sub>i</sub> s<sub>i</sub></italic>
+###xml 551 553 535 537 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1</sub>
+###xml 554 555 538 539 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 553 555 537 539 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s<sub>i</sub></italic>
+###xml 555 557 539 541 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+2</sub>
+###xml 569 570 545 546 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 568 570 544 546 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s<sub>j</sub></italic>
+###xml 570 572 546 548 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">-1</sub>
+###xml 573 574 549 550 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 572 574 548 550 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s<sub>j</sub></italic>
+###xml 578 579 554 555 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 595 596 571 572 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 594 596 570 572 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S<sub>i</sub></italic>
+###xml 597 598 573 574 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 597 598 573 574 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 613 614 587 588 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 619 620 591 592 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 625 626 595 596 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 652 653 622 623 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">h</italic>
+###xml 671 672 641 642 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 677 678 647 648 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 693 694 663 664 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 699 700 669 670 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 767 768 733 734 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 766 768 732 734 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s<sub>n</sub></italic>
+###xml 771 772 737 738 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</sub>
+###xml 770 772 736 738 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>m</sub></italic>
+###xml 853 854 815 816 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 852 854 814 816 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s<sub>n</sub></italic>
+###xml 872 873 834 835 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</sub>
+###xml 871 873 833 835 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>m</sub></italic>
+###xml 885 886 842 843 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</sub>
+###xml 885 886 842 843 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>z</sub></italic>
+###xml 921 922 878 879 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</italic>
+###xml 1334 1335 1278 1279 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</sub>
+###xml 1334 1335 1278 1279 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>z</sub></italic>
+###xml 1372 1373 1311 1312 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</sub>
+###xml 1372 1373 1311 1312 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>z</sub></italic>
+###xml 1373 1375 1312 1314 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">-1</sub>
+###xml 1379 1380 1318 1319 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</italic>
+###xml 1396 1397 1335 1336 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</italic>
+###xml 1692 1693 1622 1623 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</sub>
+###xml 1692 1693 1622 1623 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>z</sub></italic>
+###xml 1858 1860 1784 1786 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nm</italic>
+The interaction between a given sRNA and a candidate mRNA target is predicted by calculating a hybridization score for the two RNA sequences. The individual basepair model of hybridization scoring is based on a straightforward extension of the Smith-Waterman dynamic program (17), except that instead of assessing homology potential, basepairing potential is assessed. Formally, let S = s1s2 em leader sn be an sRNA sequence of n nucleotides and let T = t1t2 em leader tm be a candidate target mRNA sequence of m nucleotides, where a subsequence si si+1si+2 em leader sj-1sj of S is denoted as Si,j for any 1 </= i </= j </= n. The hybridization score h of two sequences S and T, with lengths n and m, respectively, is expressed recursively as follows:  where delta(sn, tm) is the entry in matrix delta corresponding to the hybridization of nucleotide sn with nucleotide tm, and Lambdaz is the score for a loop of length z in the interaction. Here, the 4 x 4 matrix delta represents the basepairing affinity of individual nucleotides, as opposed to the similarity of nucleotides as in the case of the Smith-Waterman algorithm. The default setting for the parameter delta is given by the matrix (A, C, G, U) x (A, C, G, U) = [(6, 6, 6, -5), (6, 6, -5, 6), (6, -5, 6, 1), (-5, 6, 1, 6)], and the default setting for the parameter Lambdaz is defined recursively as 3 + Lambdaz-1 if z > 1, and 12 if z = 1, following an affine score penalty for bulge and internal loops. Default parameter settings were determined by exploring the parameter space and evaluating the program's performace with a given set of parameters on the set of training data. Different parameter settings for delta and Lambdaz did not yield significantly different results on the training set. The time requirement for this method is linear in the product of the RNA sequence lengths, Theta(nm).
+###end p 13
+###begin title 14
+Stacked basepair model for hybridization scoring
+###end title 14
+###begin p 15
+###xml 283 285 283 285 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b18">18</xref>
+###xml 494 496 494 496 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b19">19</xref>
+###xml 523 525 523 525 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b20">20</xref>
+###xml 538 540 538 540 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b21">21</xref>
+###xml 560 562 560 562 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b22">22</xref>
+###xml 952 954 952 954 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b23">23</xref>
+###xml 955 957 955 957 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b24">24</xref>
+###xml 966 973 966 967 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#603;</italic>
+###xml 973 980 967 974 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">stacked</sub>
+###xml 1050 1057 1044 1045 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#603;</italic>
+###xml 1057 1062 1045 1050 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">bulge</sub>
+###xml 1151 1158 1139 1140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#603;</italic>
+###xml 1158 1166 1140 1148 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">internal</sub>
+###xml 1346 1347 1328 1329 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+###xml 1345 1347 1327 1329 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s<sub>n</sub></italic>
+###xml 1353 1354 1335 1336 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</sub>
+###xml 1352 1354 1334 1336 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>m</sub></italic>
+###xml 1396 1397 1378 1379 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">h</italic>
+###xml 1415 1416 1397 1398 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 1421 1422 1403 1404 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 1437 1438 1419 1420 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 1443 1444 1425 1426 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+The stacked basepair model of hybridization scoring is based on stacking and destabilizing energies of interacting sequences. The calculation of the optimal hybridization score for two sequences using this model is comparable with the traditional approach for folding RNA sequences (18). The stacked basepair model calculates the minimum free energy of hybridization for two RNA sequences, without allowing intramolecular basepairings. Indeed, a number of RNA folding approaches such as MFold (19), the Vienna RNA Package (20), DINAMelt (21) and MultiRNAFold (22) enable estimation of the hybridization of two RNA sequences. Often these approaches work by concatenating the two sequences via a short linker sequence and then 'folding' the new concatenated sequence. The stacked basepair model is a straightforward extension of these approaches. Similar thermodynamic information and free energy parameters are used for loops and for stacked basepairs (23,24). Here, epsilonstacked denotes the free energy parameter for a given pair of stacked bases, epsilonbulge denotes the free energy parameter for a given bulge loop and its closing basepairs, and epsiloninternal denotes the free energy parameter for a given internal loop and its closing basepairs. Each of the free energy parameters may take a value of infinity if the closing nucleotides sn and tm do not basepair. The hybridization score h of two sequences S and T, with lengths n and m, respectively, is expressed recursively as follows: 
+###end p 15
+###begin p 16
+###xml 448 449 444 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 449 450 445 446 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 450 451 446 447 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 451 452 447 448 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 607 609 599 601 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nm</italic>
+Technically, the above formulation does not correctly reflect the thermodynamics of hybridization because it lacks energy contributions for dangling ends, terminal mismatches and initiation of hybridization. These omitted parameters are added after dynamic tabulation to appropriately reflect the free energy of hybridization of the two RNA sequences. The time requirement for this method is quadratic in the product of the sequence lengths, Theta(n2m2). However, if an upper bound is placed on the possible length of loops, then the time requirement is linear in the product of the sequence lengths, Theta(nm), though the hidden constant factors are much higher than in the case of the individual basepair model.
+###end p 16
+###begin title 17
+###xml 0 1 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+P-value calculation
+###end title 17
+###begin p 18
+###xml 130 131 130 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</italic>
+###xml 181 190 181 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 246 247 246 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</italic>
+###xml 299 301 299 301 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b25">25</xref>
+###xml 382 383 382 383 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">u</italic>
+###xml 414 415 414 415 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</italic>
+###xml 460 462 460 462 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b26">26</xref>
+Extreme-value distributions are well known to model the smallest (or largest) value among a set of independent random values. Let H be the optimal hybridization score determined by TargetRNA for two random RNA sequences. Then the distribution of H approximates an extreme-value type I distribution (25), whose probability density function is given by the following equation:  where u is the location parameter and s is the scale parameter of the distribution (26). Accordingly, the cumulative distribution function is described by the following equation: 
+###end p 18
+###begin p 19
+###xml 64 73 64 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 167 176 167 176 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 429 437 429 437 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig2">Figure 2</xref>
+###xml 561 563 561 563 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b27">27</xref>
+###xml 591 592 591 592 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">h</italic>
+###xml 663 664 663 664 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 705 706 705 706 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+One of the program parameters which can be set before executing TargetRNA on a given sRNA gene is the searchable region of the candidate mRNA. For instance, a user of TargetRNA can choose to focus his or her search around the 5'-UTRs of messages as opposed to searching messages in their entirety. Searching longer regions of messages leads to lower expected hybridization scores, as illustrated by the distribution functions in Figure 2. To account for this dependency on the lengths of the sequences searched, following the use of Karlin-Altschul statistics (27), the hybridization score, h, is normalized by the log of the product of the sRNA sequence length, n, and the size of the mRNA search space, m, as follows: 
+###end p 19
+###begin p 20
+###xml 564 565 564 565 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+The graph shows the cumulative distribution function of hybridization scores for the sRNA RyhB. The curve on the right represents the hybridization scores calculated for RyhB against a message search space consisting of messages 50 nt in length (corresponding to a neighborhood around the ribosome-binding site). The curve on the left represents the hybridization scores calculated for RyhB against a message search space consisting of entire messages. Consequently, a hybridization score of -60 when searching messages 50 nt in length would lead to a significant P-value (<0.01), whereas a hybridization score of -60 when searching entire messages would not be significant.
+###end p 20
+###begin p 21
+###xml 55 56 55 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 139 140 139 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">u</italic>
+###xml 145 146 145 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</italic>
+###xml 490 491 490 491 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">u</italic>
+###xml 496 497 496 497 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</italic>
+###xml 571 573 571 573 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b28">28</xref>
+###xml 667 668 667 668 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">h</italic>
+###xml 690 691 690 691 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+Once a normalized hybridization score is computed, the P-value for the score can be calculated. In order to do so, however, the parameters u and s of the distribution of scores must first be determined. Ten thousand random RNA sequences are generated where the nucleotides of the random sequences are drawn from the first-order distribution of nucleotides contained in the actual mRNA search space. After computing normalized hybridization scores using the random sequences, the parameters u and s of the distribution of scores are estimated using the method of moments (28). With these parameter estimates, the probability of observing a score equal to or less than h' by chance, i.e. the P-value, can be calculated as follows: 
+###end p 21
+###begin title 22
+Whole genome expression analysis
+###end title 22
+###begin p 23
+###xml 0 9 0 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 613 624 609 620 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ara714 ryhB</italic>
+###xml 682 683 678 679 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 683 686 679 682 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 737 739 733 735 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b29">29</xref>
+###xml 753 759 745 751 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ara714</italic>
+###xml 765 770 753 758 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">omrAB</italic>
+###xml 797 803 781 787 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ara714</italic>
+###xml 809 814 789 794 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">omrAB</italic>
+###xml 903 905 883 885 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+###xml 924 930 900 906 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ara714</italic>
+###xml 936 940 908 912 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">oxyS</italic>
+###xml 1000 1001 972 973 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 1001 1004 973 976 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 626 629 <span type="species:ncbi:9685">cat</span>
+TargetRNA predictions were compared with whole genome expression data for four sRNAs. In each case, the sRNA was expressed from an inducible pBAD promoter in a strain deleted for the chromosomal copy of the sRNA gene, and the RNA levels were compared with those for an induced vector control strain. Duplicate experiments were performed; changes of 2-fold or better relative to the control were considered highly significant; changes of 1.5-fold or better were considered likely to be significant. Short expression times (15-20 min) were used to avoid some of the indirect effects of sRNA expression. MG1655 Deltaara714 ryhB::cat/pBAD-RyhB was grown in Luria-Bertani (LB) medium to A600 = 0.5 and induced with 0.1% arabinose for 15 min (29),MG1655 Deltaara714 DeltaomrAB/pBAD-OmrA and MG1655 Deltaara714 DeltaomrAB/pBAD-OmrB were grown in LB medium overnight and induced with 0.2% arabinose for 20 min (30), and MG1655 Deltaara714 DeltaoxyS::kan (GSO112) carrying pBAD-OxyS was grown in LB medium to A600 = 0.6 and induced with arabinose for 15 min (J. A. Opdyke and G. Storz, unpublished data).
+###end p 23
+###begin title 24
+Strain construction and northern analysis
+###end title 24
+###begin p 25
+###xml 40 44 40 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gntP</italic>
+###xml 106 110 106 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gntP</italic>
+###xml 193 197 193 197 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">uxuR</italic>
+###xml 228 232 228 232 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gntP</italic>
+###xml 727 729 727 729 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b31">31</xref>
+###xml 736 749 736 745 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#916;uxuR::cm</italic>
+###xml 796 798 792 794 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+To assay the effect of OmrA and OmrB on gntP mRNA, it was necessary to first create a strain in which the gntP gene was expressed at a detectable level. This was done by creating a deletion of uxuR, which encodes a repressor of gntP, by homologous recombination. Briefly, the chloramphenicol resistance cassette was amplified with the Expand High Fidelity PCR System (Roche) with oligonucleotides 5'uxuR::cm (GAT TAA CCG CAC CTA ACG GAC ACA ACA CCA TGA AAT CTG CCC CTG TGA CGG AAG ATC ACT TCG C) and 3'uxuR::cm (CGC AAG GAA CGT TTA CCC TTG CGC TTA TTA TAA TAA GTC AGG CTT ATC ACT TAT TCA GGC GTA GCA CC). The PCR product was then recombined into the chromosome of a DJ480 strain carrying a mini-lambda as described previously (31). The DeltauxuR::cm allele was then moved into the strain MG1099 (30) by P1 transduction to create strain MG1132.
+###end p 25
+###begin p 26
+###xml 92 94 92 94 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+###xml 141 142 141 142 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 142 145 142 145 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 169 170 166 167 <sc xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">d</sc>
+###xml 365 367 358 360 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b32">32</xref>
+###xml 601 605 590 594 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gntP</italic>
+###xml 610 614 599 603 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ompA</italic>
+###xml 780 782 765 767 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b33">33</xref>
+###xml 1054 1058 1033 1037 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ompA</italic>
+###xml 1085 1087 1064 1066 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+###xml 1094 1098 1073 1077 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gntP</italic>
+MG1132 was transformed with pBR-plac-OmrA, pBR-plac-OmrB or the corresponding empty vector (30) and grown in LB medium with ampicillin to an A600 of 0.4, isopropyl-beta-d-thiogalactopyranoside (IPTG) was added at a final concentration of 100 microM, and the incubation was continued for 7 min. Total RNA was then extracted using hot phenol as described previously (32). Northern blot analysis for OmrA or OmrB was performed with 5 microg total RNA, separated on an 8% urea-acrylamide gel (SequaGel; National Diagnostics) and transferred onto a positively charged nylon membrane at 200 mA for 1 h. For gntP and ompA (used as a loading control), total RNA (20 microg) was separated on a 1% denaturing agarose gel and transferred onto a positively charged nylon membrane as in Ref. (33). Membranes were hybridized overnight at 42degreesC in Ultrahyb solution (Ambion, Austin, TX) with 100 ng/ml specific biotinylated probes. Detection was performed with the BrightStar BioDetect kit (Ambion) following manufacturer's instructions. Probes for OmrA, OmrB and ompA are as described in Ref. (30). The gntP probe was (Bio)-CTA CCG GTT GAT CTG CTT TCA GGA ATG ATG GCG TTG G.
+###end p 26
+###begin p 27
+###xml 64 68 60 64 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">oxyS</italic>
+###xml 70 72 66 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cm</italic>
+###xml 123 127 115 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">oxyS</italic>
+###xml 129 131 121 123 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cm</italic>
+###xml 213 215 205 207 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b34">34</xref>
+###xml 263 264 255 256 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 264 267 256 259 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 428 430 404 406 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b33">33</xref>
+###xml 941 943 911 913 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+To assay the effects of OxyS, overnight cultures of MG1655 DeltaoxyS::cm (GSO113, generated by P1 transduction of the DeltaoxyS::cm allele into MG1655) carrying pKK177-3 or poxyS (constitutively expressing OxyS) (34) were grown in LB medium with ampicillin to an A600 approximately0.7. Total RNA was then isolated using hot phenol as above. Total RNA (5 microg) from each strain was fractionated on a 1% denaturing agarose gel (33) (with or without 3.3% formaldehyde) together with a Millenium Marker (Ambion) and transferred to Zeta Probe GT membranes (Bio-Rad Laboratories, Hercules, CA). The membranes were hybridized overnight at 45degreesC in Ultrahyb Oligo buffer (Ambion) with oligonucleotide probes (OxyS-A1: GCA GTG ACT TCA AGG GTT AAA AGA GGT GCC; yobF-1: GGC TCG GCA GAG AAG CGG TAT TCA ACG TCA ACG TG; wrbA-A1: TAA TTG CGG CGG CAT GGT TTC CGG TAC ACG; ybaY-1: CGG ATC CAG ACG GTA CCG GAG ACA TTC GGT TGC TGG) 5'-end labeled with 32P using T4 polynucleotide kinase (New England Biolabs, Beverly, MA). The membranes were washed twice with a solution of 2x SSC and 0.1% SDS, first 30 s at room temperature and then 15 min at 45degreesC, and five times with a solution of 0.2x SSC and 0.1% SDS, each for 30 s at room temperature.
+###end p 27
+###begin title 28
+RESULTS
+###end title 28
+###begin title 29
+Training set
+###end title 29
+###begin p 30
+###xml 91 97 91 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 159 166 159 166 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl1">Table 1</xref>
+###xml 302 306 302 306 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dppA</italic>
+###xml 316 320 316 320 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">oppA</italic>
+###xml 428 435 428 435 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl1">Table 1</xref>
+###xml 91 97 <span type="species:ncbi:562">E.coli</span>
+We first compiled a training set composed of putative mRNA targets of Hfq-binding sRNAs in E.coli, based on findings reported in the literature prior to 2005 (Table 1). The training set consists of 9 sRNAs interacting with a total of 12 message targets. For all but 2 of the 12 training examples (GcvB:dppA and GcvB:oppA), the putative location of interaction between the sRNA and its target mRNA has been described previously (Table 1).
+###end p 30
+###begin p 31
+###xml 44 50 44 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 44 50 <span type="species:ncbi:562">E.coli</span>
+Putative mRNA targets of sRNA regulation in E.coli reported prior to 2005
+###end p 31
+###begin p 32
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</sup>
+###xml 221 222 221 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 253 254 253 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 422 423 422 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+aFor each sRNA above, our computational approach was used to predict a set of candidate message targets of the sRNA. The final three columns in the table indicate the hybridization score of the predicted interaction, the P-value, and the rank (based on P-value) of the putative target among the set of predictions. For 4 of the 12 reported interactions, our approach did not predict the target with sufficient confidence (P-value < 0.01) using the default program parameters.
+###end p 32
+###begin p 33
+###xml 542 546 530 534 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 556 560 544 548 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 724 728 700 704 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 735 737 711 713 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b35">35</xref>
+###xml 738 740 714 716 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b36">36</xref>
+###xml 910 914 886 890 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fhlA</italic>
+###xml 1025 1027 1001 1003 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b37">37</xref>
+###xml 1155 1161 1131 1137 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 1170 1187 1146 1163 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Shigella flexneri</italic>
+###xml 1192 1214 1168 1190 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Salmonella typhimurium</italic>
+###xml 1155 1161 <span type="species:ncbi:562">E.coli</span>
+###xml 1170 1187 <span type="species:ncbi:623">Shigella flexneri</span>
+###xml 1192 1214 <span type="species:ncbi:90371">Salmonella typhimurium</span>
+These targets were then examined, along with their corresponding sRNA interactions, for common features. The binding interactions of the sRNAs with their mRNA targets contain gaps, mismatches and G:U basepairs. The longest stretches of contiguous nucleotides participating in duplex interaction range from 5 to 16 nt. In 8 of the 10 cases where the interaction has been described, the sRNA interacts with the message target near the translation start site (within approximately30 bases of translation initiation). The two exceptions are DsrA:rpoS and RprA:rpoS, in which the target interaction occurs approximately100 bases upstream of the translation start site and leads to positive rather than negative regulation of the rpoS mRNA (35,36). We also noted that, with the exception of DicF, which is processed from a longer transcript, each sRNA has a terminator stem-loop in its predicted structure. The OxyS:fhlA interaction is the only reported example of a terminator stem-loop participating in the target hybridization (37). Finally, with the exception of the DicF sRNA, each of the sRNAs shows evidence of conservation in closely related species to E.coli such as Shigella flexneri and Salmonella typhimurium.
+###end p 33
+###begin title 34
+Computational approach
+###end title 34
+###begin p 35
+###xml 22 31 22 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 235 237 235 237 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b38">38</xref>
+###xml 531 540 531 540 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 695 696 695 696 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 737 746 737 746 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+We present a program, TargetRNA, which, given the sequence of an sRNA gene in a particular organism, outputs a ranked list of predicted message targets for the sRNA. The program begins by consulting a database of protein coding genes (38) for the organism of interest. For each protein coding gene in the organism, the program extracts the mRNA sequence corresponding to the protein coding region along with user-specified regions upstream and downstream of the coding sequence, extending into the 5'-UTR and 3'-UTR, respectively. TargetRNA then evaluates the potential for interaction between every extracted mRNA sequence and the sRNA, and assigns each a hybridization score and corresponding P-value (Materials and Methods). Finally, TargetRNA outputs a ranked list of the candidate message targets along with a graphical representation of each predicted interaction along the length of the sRNA. The program is freely available for use as a web application.
+###end p 35
+###begin p 36
+###xml 359 368 359 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 688 690 688 690 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b17">17</xref>
+###xml 1061 1063 1061 1063 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b18">18</xref>
+The interaction between a given sRNA and a candidate mRNA target is predicted by calculating a hybridization score for the two RNA sequences. In determining the hybridization score for two RNA sequences, intramolecular basepairings are not considered and pseudoknots are not allowed. To calculate the hybridization score of an sRNA and candidate mRNA target, TargetRNA can use either of two different hybridization score models for RNA sequence interactions: an individual basepair model or a stacked basepair model. The individual basepair model of hybridization scoring (described in Materials and Methods) is based on a straightforward extension of the Smith-Waterman dynamic program (17), except that instead of assessing homology potential, basepairing potential is assessed. The stacked basepair model of hybridization scoring (described in Materials and Methods) is based on stacking and destabilizing energies of interacting sequences, where the calculation of the optimal hybridization score for two sequences is comparable with folding RNA sequences (18) without allowing intramolecular basepairings.
+###end p 36
+###begin title 37
+Program parameters
+###end title 37
+###begin p 38
+###xml 64 73 64 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 1097 1104 1097 1104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl1">Table 1</xref>
+###xml 1138 1140 1138 1140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P-</italic>
+In order to model the variations in action of individual sRNAs, TargetRNA has a number of user-adjustable parameters. For example, the program can use either of two different energy models, described above, for calculating the score of RNA:RNA hybridization. In addition, a seed, which corresponds to a minimum required length for at least one stretch of consecutive basepaired nucleotides in the RNA:RNA interaction, can be varied: different minimum numbers of contiguous nucleotides participating in the duplex interaction can be allowed and G:U basepairs may or may not be included. The seed is meant to reflect, biologically, the initial interaction between sRNA and mRNA, which has been shown in some cases to be a stretch of unpaired nucleotides in a loop of the sRNA that first basepairs with the target message. Other program parameters include options for removing the terminator stem-loop of the sRNA from the hybridization calculation and restricting the search in the target mRNA sequence to a neighborhood around the ribosome-binding site, where most of the known interactions occur (Table 1). Finally, the threshold for the P-value of predicted hybridization interactions can be varied.
+###end p 38
+###begin title 39
+Evaluation of program parameters
+###end title 39
+###begin p 40
+###xml 118 127 118 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 682 688 682 688 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 682 688 <span type="species:ncbi:562">E.coli</span>
+To explore the effects of various parameter settings on the program's performance, the sensitivity and specificity of TargetRNA were evaluated with regard to the training set. The sensitivity (i.e. the true positive rate) is defined, for a given set of parameters, as the percentage of the 12 interactions in the training set which are correctly predicted by the program: True Positives/(True Positives + False Negatives). The specificity (i.e. the true negative rate) is defined, for a given set of parameters, as the percentage of non-interactions which are correctly predicted as non-interactions by the program: True Negative/(True Negatives + False Positives). For example, in E.coli each of the nine sRNAs in the training set may potentially interact with any of the 4244 messages. Thus, there are 9 x 4244 possible interactions, of which 12 are considered true interactions and the rest are considered non-interactions, for the purpose of evaluating the program's performance. In practice, the 9 sRNAs in the training set interact with >12 messages, so some of the program's predictions which we have classified as 'false positives' may indeed correspond to actual interactions. Thus, the estimated sensitivity and specificity of the program on the training set may in fact be conservative.
+###end p 40
+###begin p 41
+###xml 52 53 52 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 267 275 267 275 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig2">Figure 2</xref>
+###xml 567 568 567 568 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 729 730 729 730 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 870 871 870 871 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+To evaluate the significance of target predictions, P-values rather than raw hybridization scores are employed. Hybridization scores have the disadvantage that they are dependent on the lengths of the sRNA and message sequences under consideration. As illustrated in Figure 2, longer sequences lead to lower expected hybridization scores than shorter sequences. Thus a hybridization score predicted for short sequences may be unlikely to have occurred by chance, whereas the same hybridization score for longer sequences may be likely to have occurred by chance. The P-value of a prediction corresponds to the probability of observing by chance a hybridization score at least as small as the predicted score. In other words, the P-value provides an indication as to the significance of a prediction. Based on evaluation of the program's performance on the training set, P-values </= 0.01 are considered significant.
+###end p 41
+###begin p 42
+Under all parameter settings tested, the individual basepair model of hybridization scoring (default method) resulted in a greater sensitivity on the training set than that of the stacked basepair model of hybridization (indicated as an option in the program). Closer inspection of the results revealed that the stacked basepair model favors longer regions of interaction between two RNAs, whereas the individual basepair model favors interactions of more parsimonious lengths. The bias of the stacked basepair model for longer basepairing interactions can be explained, in part, by the fact that the expected hybridization score for two random RNA sequences with the model is negative (i.e. favorable). Consequently, the stacked basepair model has a propensity for long, random interactions as opposed to short, functionally meaningful interactions. Thus, this model may be more appropriate for identifying interactions in which the length of the interaction is known a priori, such as when the entire RNA gene participates in the interaction.
+###end p 42
+###begin p 43
+###xml 56 65 56 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 206 214 206 214 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig3">Figure 3</xref>
+###xml 573 582 573 582 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+Using the individual basepair model, the performance of TargetRNA was assessed as each parameter was varied, in turn, while all others were held fixed. The receiver operating characteristic (ROC) curves in Figure 3 illustrate the trade-offs between sensitivity and specificity of the program on the training set as different parameters are varied. Each ROC curve is generated from 21 data points corresponding to the sensitivity and false positive rate (1.0 - specificity) as the seed is varied from 0 to 20 nt. The four different ROC curves demonstrate the performance of TargetRNA as the seed length varies when G:U basepairs are allowed in the seed interaction, when G:U pairs are disallowed in the seed, when the sRNA terminator loop is removed from the hybridization interaction, and when the sRNA terminator loop is retained. A similar analysis was carried out to identify the target sub-regions which yield the most advantageous sensitivity/specificity trade-off (data not shown).
+###end p 43
+###begin p 44
+ROC curves depict the trade-offs in sensitivity (ordinate) and false positive rate (abscissa) on the training dataset. Each ROC curve is generated from 21 data points, as the initial seed of interaction is set to a value ranging from 0 to 20 nt. The four ROC curves correspond to different combinations of parameters, including allowing G:U wobble pairs in the hybridization seed, disallowing G:U pairs in the seed, removing the terminator loop from the hybridization score calculation and retaining the terminator loop. Default parameter settings correspond to the top left point among the ROC curves.
+###end p 44
+###begin p 45
+###xml 66 75 66 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 475 483 475 483 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig3">Figure 3</xref>
+The ROC analyses were then used to suggest default parameters for TargetRNA. Since the sensitivity, which ranges from 0 to 70%, appears to be more heavily influenced by the choice of parameters than the specificity, which ranges from 98.5 to 100%, default parameter values were chosen which minimize the false positive rate at the maximum sensitivity value, i.e. default parameters were chosen to correspond to the top left-most point along the ROC curves, as illustrated in Figure 3. Default parameters include removal of the terminator stem-loop of the sRNA, restricting the target message search from 30 nt upstream of translation initiation to 20 nt downstream of translation initiation, and necessitating a seed of at least 9 continuous nucleotides without G:U basepairs.
+###end p 45
+###begin title 46
+Performance on training set
+###end title 46
+###begin p 47
+###xml 49 58 49 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 157 164 157 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl1">Table 1</xref>
+Using the default parameters as described above, TargetRNA was run on the training set of 12 interactions between sRNAs and their targets. As illustrated in Table 1, for 8 of the 12 instances, the program predicted the reported message target among its set of top candidate targets. For each of these eight cases, the predicted interaction closely matched the reported interaction.
+###end p 47
+###begin p 48
+###xml 145 149 145 149 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 159 163 159 163 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 433 442 421 430 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 458 462 446 450 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoS</italic>
+###xml 492 501 480 489 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 571 575 559 563 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fhlA</italic>
+###xml 586 590 574 578 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fhlA</italic>
+###xml 890 899 878 887 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 974 978 962 966 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ftsZ</italic>
+###xml 989 993 977 981 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ftsZ</italic>
+###xml 1217 1221 1205 1209 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fhlA</italic>
+###xml 1246 1250 1234 1238 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ftsZ</italic>
+###xml 1264 1273 1252 1261 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 1719 1727 1683 1691 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig3">Figure 3</xref>
+The four cases where the program did not predict the reported message target were examined more closely. In two of these four cases, namely DsrA:rpoS and RprA:rpoS, the reported interactions between the sRNAs and their targets occur approximately100 nt upstream of the messages' translation start sites, outside of the region specified in our search. When the mRNA sequences were extended upstream to include >100 nt in the 5'-UTRs, TargetRNA predicted DsrA:rpoS as its top target candidate. TargetRNA did not predict the interaction between the sRNA OxyS and its target fhlA. The OxyS:fhlA interaction is the only example in the training set of a disjoint interaction where there are two separate regions of basepairing, which are >20 nt apart, the first region residing around the ribosome-binding site of the message target and the second residing downstream within the coding sequence. TargetRNA also did not predict the interaction between the sRNA DicF and its target ftsZ. The DicF:ftsZ interaction is the only example of an interaction where the longest stretch of contiguous nucleotides participating in the interaction is <7 nt. Altering the program parameters did not lead to prediction of either the OxyS:fhlA interaction or the DicF:ftsZ interaction. TargetRNA's inability to predict, under any set of parameters, a few of the documented sRNA targets, suggests that the approach does not model effectively all sRNA:mRNA interactions. Given that 8 of the 12 targets were correctly predicted by the program, its sensitivity on the training set using the default parameters is approximately67%. The specificity of the program on the training set using default parameters was estimated to be approximately99% (Figure 3).
+###end p 48
+###begin title 49
+###xml 19 28 19 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+New predictions of TargetRNA
+###end title 49
+###begin p 50
+###xml 397 403 397 403 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 792 801 792 801 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 397 403 <span type="species:ncbi:562">E.coli</span>
+Given the paucity of sRNA targets which have been reported previously, as evinced by the small size of the training set, many of the predicted targets classified as false positives may actually be uncharacterized targets. To further explore how many of the high-scoring target candidates predicted by the program in fact correspond to novel message targets, we predicted targets for four sRNAs in E.coli (RyhB, OmrA, OmrB and OxyS) using somewhat more permissive parameters (removal of the terminator stem-loop of the sRNA, extending the target message search from 30 nt upstream of translation initiation to 30 nt downstream of translation initiation, and necessitating a seed of at least 7 continuous nucleotides with G:U basepairs, rather than a 9 nt seed). We then compared the output of TargetRNA with the results of whole genome expression analyses following induction of the sRNAs.
+###end p 50
+###begin p 51
+###xml 433 435 433 435 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b29">29</xref>
+###xml 436 438 436 438 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+###xml 1115 1124 1115 1124 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 2104 2112 2104 2112 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vitro</italic>
+Although the four sRNAs chosen for the predictions are normally synthesized in response to different regulatory signals, for this work, we examined the effects of each of the sRNAs after brief expression from the ectopic pBAD promoter. For the RyhB, OmrA and OmrB sRNAs, it has been shown previously that negatively regulated target mRNAs are degraded upon pairing with an sRNA and this could be monitored using microarray analysis (29,30). We found mRNA targets of OxyS were also degraded and the effects likewise could be monitored by microarray analysis (see below, Figure 5). Consequently, the results of whole genome expression analyses were compared with the target predictions for each of the four above-mentioned sRNAs. It is worth noting two limiting assumptions in this approach. The first assumption is that the action of an sRNA on its targets will result in mRNA degradation. In previous work with RyhB and OmrA and OmrB, this was found to be the case for many targets, but may not be true in all cases; translational repression without degradation would lead to an underestimate of the specificity of TargetRNA. The second assumption is that the effects measured in the arrays are the direct effect of the sRNA, rather than secondary effects; this assumption might lead to an overestimate of the number of correctly identified targets. A relatively short expression time for the sRNAs was used to minimize this possibility. For the purposes of this study, changes in gene expression of at least 1.5-fold in duplicate experiments upon expression of the sRNAs were considered potentially significant, with changes of at least 2-fold considered highly significant. Genes for which the signals were deemed 'absent' or 'marginal' on the arrays for the vector control strains were excluded from the analysis. In some cases, northern blot analysis also was used to examine the levels of predicted target mRNAs. Although potential targets for which we observe a significant decrease in mRNA level are assumed to be direct targets of the sRNAs, further assays, such as compensatory mutations and/or in vitro-binding studies, are required to verify sRNA:mRNA basepairing.
+###end p 51
+###begin title 52
+RyhB target predictions
+###end title 52
+###begin p 53
+###xml 147 149 147 149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b29">29</xref>
+###xml 150 152 150 152 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b32">32</xref>
+###xml 153 155 153 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b33">33</xref>
+###xml 466 468 466 468 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b29">29</xref>
+The 90 nt RyhB RNA is synthesized upon iron starvation and has been shown to cause the rapid degradation of a number of target mRNAs upon pairing (29,32,33). Expression of RyhB from an ectopic promoter for 15 min, followed by examination of changes in mRNA abundance by microarray analysis, revealed potential targets, many of them corresponding to genes with the characteristics expected of RyhB targets, which primarily encode non-essential iron-binding proteins (29). RyhB is currently unique in the large number of known targets. From array analysis and other work, 18 operons and 56 genes have been shown to be regulated by RyhB, and interpreted as being directly regulated by this sRNA.
+###end p 53
+###begin p 54
+###xml 40 49 40 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 74 75 74 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 225 232 225 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+###xml 303 306 303 306 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sdh</italic>
+###xml 311 315 311 315 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sodB</italic>
+###xml 621 628 621 628 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+###xml 890 892 890 892 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b29">29</xref>
+###xml 893 895 893 895 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b33">33</xref>
+Among the predictions for RyhB from the TargetRNA program, 33 are below a P-value of 0.01; of these 15 were excluded from further analysis because the gene expression signals were too low to be significant (deemed as Absent, Table 2) or the gene was not on the array. Of the remaining 18 predictions 2 (sdh and sodB) were part of the training set; these 2 genes also show significant regulation in the arrays (6-fold and 19-fold decrease in signal after RyhB expression). Of the remaining 16 predictions, 2 others have changes in the array signal of >2-fold, and 6 others have signal changes between 1.5-fold and 2-fold (Table 2). Thus for RyhB, 10 out of 18 predictions (56%) are supported by the microarray data. It is worth noting that a number of targets for RyhB, thought to be direct targets based on either array or northern analysis, do not appear in the list of predicted targets (29,33); modification of program parameters leads to predictions for some but not all of these.
+###end p 54
+###begin p 55
+Predicted targets for RyhB
+###end p 55
+###begin p 56
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</sup>
+aStandard Affymetrix signal determined for indicated genes in two independent experiments.
+###end p 56
+###begin p 57
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</sup>
+bAverage of ratios for pBAD control/pBAD-RyhB signal for the two experiments. For ratios >2, the predicted targets are highlighted in dark gray. For ratios 1.5-2, the predicted targets are highlighted in light gray.
+###end p 57
+###begin p 58
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</sup>
+cSignals were determined to be A = absent, M = marginal or P = present by standard Affymetrix program and are listed in the following order: pBAD-RNA (1)/pBAD (1); pBAD-RNA (2)/pBAD(2). Only predicted targets for which the signal was scored as P for both of the two pBAD samples were considered.
+###end p 58
+###begin p 59
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">d</sup>
+###xml 1 5 1 5 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sodA</italic>
+###xml 143 146 143 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fur</italic>
+###xml 194 198 194 198 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sodA</italic>
+###xml 333 335 333 335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b29">29</xref>
+dsodA is regulated by the Fur repressor, but repression is more complete after induction of RyhB. In a parallel experiment, carried out with a fur mutant background, the ratio of mRNA level for sodA in the vector-containing cells and RyhB expressing cells was 1.7, still sufficiently high to be considered a direct predicted target (29).
+###end p 59
+###begin title 60
+OmrA and OmrB target predictions
+###end title 60
+###begin p 61
+###xml 251 253 251 253 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+###xml 373 382 373 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 486 487 486 487 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 638 645 638 645 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl3">Table 3</xref>
+###xml 805 809 805 809 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecD</italic>
+###xml 896 904 896 904 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecABCDE</italic>
+###xml 934 936 934 936 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+###xml 1043 1047 1043 1047 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecD</italic>
+The 88 nt OmrA RNA and 82 nt OmrB RNA (previously RygA and RygB) are two partially homologous sRNAs, induced under high osmolarity conditions. They have been shown to regulate a number of genes encoding outer membrane proteins and surface structures (30). These sRNAs were each expressed ectopically and again the microarray results were compared with the predictions from TargetRNA. The results are strikingly different from the RyhB results. For OmrA, 36 targets are predicted with a P-value below 0.01, of which 10 were excluded from the analysis because the gene was missing or the signal for the vector controls was low or marginal (Table 3). Of the 26 remaining predictions, none showed differential expression in the array experiments of at least 1.5-fold, our cut-off value. One predicted target, fecD, is in an operon with four other genes; in previous work it was demonstrated that the fecABCDE operon is regulated by OmrA (30), and, in fact, the array data for other genes in the operon exceeds the 1.5-fold cut-off. If we consider fecD a correct prediction, 1 out of 26 predictions (4%) for OmrA is supported by the microarray data.
+###end p 61
+###begin p 62
+Predicted targets for OmrA
+###end p 62
+###begin p 63
+###xml 0 5 0 5 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a,b,c</sup>
+###xml 19 26 19 26 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+a,b,cAs defined in Table 2.
+###end p 63
+###begin p 64
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">d</sup>
+###xml 50 52 50 52 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+dOperon previously found to be regulated by OmrA (30).
+###end p 64
+###begin p 65
+###xml 42 43 42 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 132 139 132 139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl4">Table 4</xref>
+###xml 168 172 168 172 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gntP</italic>
+###xml 262 266 262 266 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gntP</italic>
+###xml 303 311 303 311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig4">Figure 4</xref>
+###xml 428 432 428 432 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gntP</italic>
+###xml 456 460 456 460 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gntP</italic>
+###xml 522 531 522 531 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+For OmrB, 18 targets are predicted with a P-value < 0.01, with 5 excluded because of low expression signals in control experiments (Table 4). Of the remaining 13, one, gntP, has differential expression of at least 2-fold in the array data. The effect of OmrB on gntP was confirmed by northern analysis (Figure 4). Interestingly, the northern analysis revealed that increased levels of OmrA expression also resulted in decreased gntP levels suggesting that gntP is also a target of OmrA, although this was not predicted by TargetRNA using the above parameters. For OmrB the microarray data supports 1 out of 13 predictions (8%). Thus, the percentages of target predictions which are supported by the microarray experiments are much lower for these two related RNAs than for RyhB.
+###end p 65
+###begin p 66
+###xml 47 51 47 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gntP</italic>
+###xml 74 87 74 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#916;uxuR::cm</italic>
+###xml 188 189 184 185 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 189 192 185 188 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+Northern analysis of the predicted OmrB target gntP. MG1132 (carrying the DeltauxuR::cm allele) cells carrying pBR-plac, pBR-plac-OmrA or pBR-plac-OmrB were grown to midexponential phase (A600 approximately0.4) and half of the sample was treated with IPTG for 7 min. Total RNA isolated from these samples was probed with oligonucleotides complementary to the indicated genes.
+###end p 66
+###begin p 67
+Predicted targets for OmrB
+###end p 67
+###begin p 68
+###xml 0 5 0 5 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a,b,c</sup>
+###xml 19 26 19 26 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+a,b,cAs defined in Table 2.
+###end p 68
+###begin title 69
+OxyS target predictions
+###end title 69
+###begin p 70
+###xml 287 289 287 289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b34">34</xref>
+###xml 479 483 479 483 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fhlA</italic>
+###xml 514 516 514 516 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b37">37</xref>
+###xml 517 519 517 519 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b39">39</xref>
+###xml 560 564 560 564 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fhlA</italic>
+###xml 760 769 760 769 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 771 778 771 778 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl5">Table 5</xref>
+###xml 823 824 823 824 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1143 1147 1143 1147 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">yobF</italic>
+###xml 1176 1180 1176 1180 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cspC</italic>
+###xml 1183 1187 1183 1187 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wrbA</italic>
+###xml 1192 1196 1192 1196 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ybaY</italic>
+###xml 1239 1247 1239 1247 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig5">Figure 5</xref>
+###xml 1307 1311 1307 1311 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">yaiZ</italic>
+The 109 nt OxyS RNA was one of the first sRNAs to be characterized. The expression of this RNA is strongly induced in response to oxidative stress and the RNA has been proposed to play a role in protecting cells against the damaging effects of elevated hydrogen peroxide concentrations (34). Although OxyS overexpression leads to a dramatic change in protein expression patterns and the sRNA has been proposed to regulate the expression of >40 genes, only one direct target, the fhlA mRNA, has been characterized (37,39). As discussed above however, this OxyS:fhlA basepairing interaction was unusual in many respects. To further explore OxyS targets, the OxyS RNA was expressed ectopically and the results of microarrays were compared with the predictions of TargetRNA (Table 5). Among the 23 OxyS target predictions with P-values <0.01, 6 were excluded because of low expression in the control samples or absence of the gene. Among the remaining 17, one showed between 1.5-fold and 1.9-fold decreases in expression and four showed at least 2-fold decreases upon OxyS expression. The effects of OxyS on three of the strongly regulated genes, yobF (which is in an operon with cspC), wrbA and ybaY were also confirmed by northern analysis (Figure 5) (no transcript of the expected size could be detected for yaiZ). Overall, 5 out of 17 predictions (29%) are supported by the microarray data.
+###end p 70
+###begin p 71
+###xml 57 61 53 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">oxyS</italic>
+###xml 63 65 59 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cm</italic>
+###xml 137 138 133 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 138 141 134 137 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+Northern analysis of predicted OxyS targets. MG1655 DeltaoxyS::cm cells carrying pKK177-3 or poxyS were grown to late exponential phase (A600 approximately 0.7). Total RNA isolated from these samples was probed with oligonucleotides complementary to the indicated genes.
+###end p 71
+###begin p 72
+Predicted Targets for OxyS
+###end p 72
+###begin p 73
+###xml 0 5 0 5 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a,b,c</sup>
+###xml 19 26 19 26 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+a,b,cAs defined in Table 2.
+###end p 73
+###begin title 74
+DISCUSSION
+###end title 74
+###begin p 75
+###xml 99 108 99 108 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+###xml 197 198 197 198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b6">6</xref>
+###xml 199 201 199 201 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b16">16</xref>
+###xml 292 301 292 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+###xml 395 401 395 401 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 495 501 495 501 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 395 401 <span type="species:ncbi:562">E.coli</span>
+###xml 495 501 <span type="species:ncbi:562">E.coli</span>
+We present a computational method for predicting targets of sRNA genes in bacteria. While numerous in silico approaches have been proposed recently for identifying targets of miRNAs in eukaryotes (6-16), there has been a relative dearth of such approaches for sRNAs in bacteria. This lack of in silico methods may be due, in part, to the paucity of reported targets of sRNA regulation. To date, E.coli contains the best-studied set of sRNAs and targets. We compiled a list of 12 such targets in E.coli, all described in the literature prior to 2005. This set of targets was examined for common features, and a computational method was developed for predicting novel targets. The effectiveness of the approach was evaluated on the training set of 12 reported targets as well as on sets of predictions for the RyhB, OmrA, OmrB and OxyS sRNAs, for which the predictions could be compared with results from whole genome expression analyses.
+###end p 75
+###begin p 76
+The percentage of computationally predicted targets for which there was experimental support from microarray and northern blot assays ranged from approximately4 to 8% for the OmrA and OmrB RNAs up to 56% for the RyhB RNA. The different success rates with different sRNAs may be due to a number of factors including limitations of the microarray analysis that lead us to mistakenly underestimate the success rate of the predictions and the possibility that the program is less useful for some RNAs than others.
+###end p 76
+###begin p 77
+The low success rate for RNAs such as OmrA and OmrB may be due to a number of caveats associated with our experimental analysis. If pairing of an sRNA frequently leads to translational inhibition without mRNA degradation, our assay method, which is dependent upon changes in the mRNA levels, would improperly count the result as negative. Future experiments that directly test translation will be necessary to address this possibility. In addition, because we only evaluated targets that were detected at a sufficient level in the vector control to be judged 'present', the nature of the targets and their level of expression may change our evaluation of success. For instance, it is possible that RyhB target mRNAs are more abundant, in general, than OmrA and OmrB target mRNAs. If this is the case, OmrA and OmrB targets would be more likely to be deemed 'absent' under the assayed growth conditions and the rate of success for our computational predictions could be underestimated.
+###end p 77
+###begin p 78
+###xml 28 37 28 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 431 440 431 440 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 768 777 768 777 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+A few caveats regarding the TargetRNA program also should be taken into consideration. The program does not account for the structures of either the sRNA or mRNA. It is possible that some predicted basepairing interactions do not occur because the corresponding regions of either the sRNA or the mRNA are occluded by secondary structure. In addition to structure, some other feature of either the sRNA or mRNA not accounted for by TargetRNA, such as the presence of an Hfq-binding site, may be required for productive basepairing. Finally, while all of the sRNAs examined here bind Hfq and are believed to act by basepairing, they may represent different classes of sRNAs and may not follow the same rules for basepairing. Because the training set used to develop the TargetRNA program used RyhB and OxyS substrates, and not OmrA and OmrB substrates, the program is not optimized for the latter RNAs. As an attempt to address this issue, we revisited the program parameters with a new training set, derived from the experiments presented here and recent results from the literature. The new training set of 25 targets included a number of OmrA and OmrB targets. However, we did not find a set of parameters that led to significant improvement in recognizing targets for the OmrA and OmrB sRNAs.
+###end p 78
+###begin p 79
+Alternatively some sRNAs may act on only a limited number of targets, while others may have many targets. For RyhB and OxyS, 209 and 186 genes, respectively, showed at least 2-fold changes while for OmrA and OmrB, 34 and 24 genes, respectively, showed at least 2-fold changes after expression of each of the sRNAs in one microarray experiment. While some of the effects of RyhB expression are known to be indirect, there were still more global effects, in general, of RyhB expression than of OmrA or OmrB expression.
+###end p 79
+###begin p 80
+###xml 37 46 37 46 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 375 384 375 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 534 538 534 538 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gltI</italic>
+###xml 540 544 540 544 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">livJ</italic>
+###xml 546 550 546 550 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">livK</italic>
+###xml 552 556 552 556 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ytfT</italic>
+###xml 558 562 558 562 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">aroP</italic>
+###xml 567 571 567 571 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">argT</italic>
+Despite some limitations of both the TargetRNA program and whole genome expression analysis, we suggest that the combination of the two approaches will be an effective approach for identifying direct targets for an uncharacterized sRNA. Functional annotation may also be a useful indicator for identifying candidate targets. In several cases, the set of targets predicted by TargetRNA for a given sRNA was enriched for genes that appear functionally similar. For instance, among the top candidate targets for the sRNA GcvB were mRNAs gltI, livJ, livK, ytfT, aroP and argT, all genes encoding periplasmic transport proteins. Similarly, a number of top candidate targets for the sRNA RyhB encode non-essential iron-binding proteins.
+###end p 80
+###begin p 81
+###xml 54 60 54 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 175 192 175 192 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Bacillus subtilis</italic>
+###xml 258 262 258 262 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rplU</italic>
+###xml 316 320 316 320 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rplU</italic>
+###xml 339 349 339 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B.subtilis</italic>
+###xml 382 384 382 384 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b40">40</xref>
+###xml 419 423 419 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rplU</italic>
+###xml 432 454 432 454 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Listeria monocytogenes</italic>
+###xml 505 520 505 520 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L.monocytogenes</italic>
+###xml 947 951 947 951 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dppA</italic>
+###xml 965 967 965 967 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b41">41</xref>
+###xml 1000 1013 1000 1013 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S.typhimurium</italic>
+###xml 1015 1025 1015 1025 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S.flexneri</italic>
+###xml 1027 1042 1027 1042 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Yersinia pestis</italic>
+###xml 1047 1071 1047 1071 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Photorhabdus luminescens</italic>
+###xml 1108 1112 1108 1112 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dppA</italic>
+###xml 1240 1244 1240 1244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dppA</italic>
+###xml 54 60 <span type="species:ncbi:562">E.coli</span>
+###xml 175 192 <span type="species:ncbi:1423">Bacillus subtilis</span>
+###xml 339 349 <span type="species:ncbi:1423">B.subtilis</span>
+###xml 432 454 <span type="species:ncbi:1639">Listeria monocytogenes</span>
+###xml 505 520 <span type="species:ncbi:1639">L.monocytogenes</span>
+###xml 1000 1013 <span type="species:ncbi:90371">S.typhimurium</span>
+###xml 1015 1025 <span type="species:ncbi:623">S.flexneri</span>
+###xml 1027 1042 <span type="species:ncbi:632">Yersinia pestis</span>
+###xml 1047 1071 <span type="species:ncbi:29488">Photorhabdus luminescens</span>
+While the method was evaluated on targets of sRNAs in E.coli, the approach is applicable to bacteria more generally. For example, in searching for targets of the sRNA BsrA in Bacillus subtilis (using a seed of at least eight nucleotides), the message target rplU which encodes a ribosomal protein was predicted. The rplU target of BsrA in B.subtilis has been documented previously (40). In addition, an ortholog of the rplU gene in Listeria monocytogenes was predicted as a target of the BsrA ortholog in L.monocytogenes. More generally, when searching for targets of an sRNA in a given organism, the program calculates the hybridization scores of orthologous targets with orthologous sRNAs in other bacteria. Since many sRNA genes are conserved across related species, the program can thus evaluate whether the targets are conserved and whether the hybridization interaction is conserved across species. One of the training examples was the GcvB:dppA interaction (41). For orthologous GcvB genes in S.typhimurium, S.flexneri, Yersinia pestis and Photorhabdus luminescens, the program identifies orthologous dppA targets in all four bacteria. In each of the species, the hybridization score of the orthologous GcvB gene and the orthologous dppA target places the target among the top candidate predictions.
+###end p 81
+###begin p 82
+###xml 19 28 19 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TargetRNA</italic>
+###xml 36 42 36 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 294 303 294 303 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+###xml 36 42 <span type="species:ncbi:562">E.coli</span>
+The application of TargetRNA to the E.coli RyhB, OmrA, OmrB and OxyS RNAs has already expanded the number of known targets for these regulatory sRNAs. We anticipate that as the number of known sRNA:mRNA interactions increases, we will better understand the applicability and the limitations of in silico target prediction approaches. In addition, an expanded set of known targets will allow for further refinements of computational approaches for target prediction.
+###end p 82
+###begin title 83
+SUPPLEMENTARY DATA
+###end title 83
+###begin p 84
+Supplementary Data are available at NAR Online.
+###end p 84
+###begin title 85
+Supplementary Material
+###end title 85
+###begin title 86
+[Supplementary Data]
+###end title 86
+###begin p 87
+We thank E. Masse for sharing his microarray results and P. Clote, D. FitzGerald, P. FitzGerald and E. Masse for comments on the manuscript. This work was supported by the Intramural Research Program of the NIH (NICHD and NCI). B.T. is supported by a Brachman Hoffman Fellowship at Wellesley College. Funding to pay the Open Access publication charges for this article was provided by Wellesley College.
+###end p 87
+###begin p 88
+###xml 0 30 0 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Conflict of interest statement</italic>
+Conflict of interest statement. None declared.
+###end p 88
+###begin title 89
+REFERENCES
+###end title 89
+###begin article-title 90
+###xml 28 44 28 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 28 44 <span type="species:ncbi:562">Escherichia coli</span>
+The small RNA regulators of Escherichia coli: roles and mechanisms
+###end article-title 90
+###begin article-title 91
+Versatile roles of small RNA regulators in bacteria
+###end article-title 91
+###begin article-title 92
+The Sm-like Hfq protein increases OxyS RNA interaction with target mRNAs
+###end article-title 92
+###begin article-title 93
+Hfq: a bacterial Sm-like protein that mediates RNA-RNA interaction
+###end article-title 93
+###begin article-title 94
+Identification of the Hfq-binding site on DsrA RNA: Hfq binds without altering DsrA secondary structure
+###end article-title 94
+###begin article-title 95
+Prediction of plant microRNA targets
+###end article-title 95
+###begin article-title 96
+###xml 33 53 33 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Arabidopsis thaliana</italic>
+###xml 33 53 <span type="species:ncbi:3702">Arabidopsis thaliana</span>
+Prediction and identification of Arabidopsis thaliana microRNAs and their mRNA targets
+###end article-title 96
+###begin article-title 97
+Fast and effective prediction of microRNA/target duplexes
+###end article-title 97
+###begin article-title 98
+###xml 18 28 18 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+###xml 18 28 <span type="species:ncbi:7227">Drosophila</span>
+Identification of Drosophila microRNA targets
+###end article-title 98
+###begin article-title 99
+###xml 32 42 32 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+###xml 32 42 <span type="species:ncbi:7227">Drosophila</span>
+Computational identification of Drosophila microRNA genes
+###end article-title 99
+###begin article-title 100
+Incorporating structure to predict microRNA targets
+###end article-title 100
+###begin article-title 101
+###xml 20 30 20 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+###xml 20 30 <span type="species:ncbi:7227">Drosophila</span>
+MicroRNA targets in Drosophila
+###end article-title 101
+###begin article-title 102
+Prediction of mammalian microRNA targets
+###end article-title 102
+###begin article-title 103
+###xml 56 61 <span type="species:ncbi:9606">human</span>
+A combined computational-experimental approach predicts human microRNA targets
+###end article-title 103
+###begin article-title 104
+Combinatorial microRNA target predictions
+###end article-title 104
+###begin article-title 105
+###xml 0 5 <span type="species:ncbi:9606">Human</span>
+Human microRNA targets
+###end article-title 105
+###begin article-title 106
+Identification of common molecular subsequences
+###end article-title 106
+###begin article-title 107
+Optimal computer folding of large RNA sequences using thermodynamics and auxiliary information
+###end article-title 107
+###begin article-title 108
+Mfold web server for nucleic acid folding and hybridization predicting
+###end article-title 108
+###begin article-title 109
+Vienna RNA secondary structure server
+###end article-title 109
+###begin article-title 110
+DINAMelt web server for nucleic acid melting prediction
+###end article-title 110
+###begin article-title 111
+Secondary structure prediction of interacting RNA molecules
+###end article-title 111
+###begin article-title 112
+Thermodynamic parameters for an expanded nearest-neighbor model for formation of RNA duplexes with Watson-Crick base pairs
+###end article-title 112
+###begin article-title 113
+Expanded sequence dependence of thermodynamic parameters provides robust prediction of RNA secondary structure
+###end article-title 113
+###begin article-title 114
+Local alignment statistics
+###end article-title 114
+###begin article-title 115
+Methods for assessing the statistical significance of molecular sequence features by using general scoring schemes
+###end article-title 115
+###begin article-title 116
+A nonlinear measure of subalignment similarity and its significance levels
+###end article-title 116
+###begin article-title 117
+###xml 47 63 47 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 47 63 <span type="species:ncbi:562">Escherichia coli</span>
+Effect of RyhB small RNA on global iron use in Escherichia coli
+###end article-title 117
+###begin article-title 118
+###xml 18 34 18 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 18 34 <span type="species:ncbi:562">Escherichia coli</span>
+Remodeling of the Escherichia coli outer membrane by two small regulatory RNAs
+###end article-title 118
+###begin article-title 119
+###xml 64 80 64 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 64 80 <span type="species:ncbi:562">Escherichia coli</span>
+An efficient recombination system for chromosome engineering in Escherichia coli
+###end article-title 119
+###begin article-title 120
+###xml 70 86 70 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 70 86 <span type="species:ncbi:562">Escherichia coli</span>
+Coupled degradation of a small regulatory RNA and its mRNA targets in Escherichia coli
+###end article-title 120
+###begin article-title 121
+###xml 77 93 77 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 77 93 <span type="species:ncbi:562">Escherichia coli</span>
+A small RNA regulates the expression of genes involved in iron metabolism in Escherichia coli
+###end article-title 121
+###begin article-title 122
+A small, stable RNA induced by oxidative stress: role as a pleiotropic regulator and antimutator
+###end article-title 122
+###begin article-title 123
+DsrA RNA regulates translation of RpoS message by an anti-antisense mechanism, independent of its action as an antisilencer of transcription
+###end article-title 123
+###begin article-title 124
+Regulation and mode of action of the second small RNA activator of RpoS translation, RprA
+###end article-title 124
+###begin article-title 125
+###xml 4 25 4 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli oxyS</italic>
+###xml 51 55 51 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fhlA</italic>
+###xml 4 20 <span type="species:ncbi:562">Escherichia coli</span>
+The Escherichia coli oxyS regulatory RNA represses fhlA translation by blocking ribosome binding
+###end article-title 125
+###begin article-title 126
+NCBI Reference Sequence (RefSeq): a curated non-redundant sequence database of genomics, transcripts and proteins
+###end article-title 126
+###begin article-title 127
+###xml 0 4 0 4 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fhlA</italic>
+fhlA repression by OxyS RNA: kissing complex formation at two sites results in a stable antisense-target RNA complex
+###end article-title 127
+###begin article-title 128
+###xml 63 72 63 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">aspS-yrvM</italic>
+###xml 98 115 98 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Bacillus subtilis</italic>
+###xml 98 115 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Identification and characterization of novel small RNAs in the aspS-yrvM intergenic region of the Bacillus subtilis genome
+###end article-title 128
+###begin article-title 129
+###xml 4 8 4 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">gcvB</italic>
+###xml 125 141 125 141 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 125 141 <span type="species:ncbi:562">Escherichia coli</span>
+The gcvB gene encodes a small untranslated RNA involved in expression of the dipeptide and oligopeptide transport systems in Escherichia coli
+###end article-title 129
+###begin article-title 130
+Hfq, a new chaperoning role: binding to messenger RNA determines access for small RNA regulator
+###end article-title 130
+###begin article-title 131
+###xml 52 56 52 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ftsZ</italic>
+Regulation of the expression of the cell-cycle gene ftsZ be DicF antisense RNA. Division does not require a fixed number of FtsZ molecules
+###end article-title 131
+###begin article-title 132
+###xml 18 34 18 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 18 34 <span type="species:ncbi:562">Escherichia coli</span>
+Riboregulation in Escherichia coli: DsrA RNA acts by RNA:RNA interactions at multiple loci
+###end article-title 132
+###begin article-title 133
+###xml 64 80 64 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 64 80 <span type="species:ncbi:562">Escherichia coli</span>
+MicC, a second small RNA regulator of Omp protein expression in Escherichia coli
+###end article-title 133
+###begin article-title 134
+###xml 16 20 16 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">micF</italic>
+###xml 26 30 26 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">micF</italic>
+###xml 98 114 98 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 98 114 <span type="species:ncbi:562">Escherichia coli</span>
+The function of micF RNA. micF RNA is a major factor in the thermal regulation of OmpF protein in Escherichia coli
+###end article-title 134
+###begin article-title 135
+###xml 53 59 53 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 53 59 <span type="species:ncbi:562">E.coli</span>
+Spot 42 RNA mediates discoordinate expression of the E.coli galactose operon
+###end article-title 135
+

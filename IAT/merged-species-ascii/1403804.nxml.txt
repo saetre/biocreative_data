@@ -1,0 +1,401 @@
+###begin article-title 0
+MassSorter: a tool for administrating and analyzing data from mass spectrometry experiments on proteins with known amino acid sequences
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+Proteomics is the study of the proteome, and is critical to the understanding of cellular processes. Two central and related tasks of proteomics are protein identification and protein characterization. Many small laboratories are interested in the characterization of a small number of proteins, e.g., how posttranslational modifications change under different conditions.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+We have developed a software tool called MassSorter for administrating and analyzing data from peptide mass fingerprinting experiments on proteins with known amino acid sequences. It is meant for small scale mass spectrometry laboratories that are interested in posttranslational modifications of known proteins. Several experiments can be compared simultaneously, and the matched and unmatched peak values are clearly indicated. The hits can be sorted according to m/z values (default) or according to the sequence of the protein. Filters defined by the user can mark autolytic protease peaks and other contaminating peaks (keratins, proteins co-migrating with the protein of interest, etc.). Unmatched peaks can be further analyzed for unexpected modifications by searches against a local version of the UniMod database. They can also be analyzed for unexpected cleavages, a highly useful feature for proteins that undergo maturation by proteolytic cleavage, creating new N- or C-terminals. Additional tools exist for visualization of the results, like sequence coverage, accuracy plots, different types of statistics, 3D models, etc. The program and a tutorial are freely available for academic users at .
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+MassSorter has a number of useful features that can promote the analysis and administration of MS-data.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 756 757 756 757 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 758 759 758 759 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+Proteomics is the study of the proteome, the protein complement of the genome, and is critical for the understanding of cellular biological processes. Two central and related tasks of proteomics are protein identification and protein characterization. Identification is commonly done by peptide mass fingerprinting (PMF), where the masses of a set of peptides from the protein(s) are determined by mass spectrometry (MS), followed by a search in a sequence database. Alternatively, single peptides can after MS be selected for fragmentation followed by another MS experiment (tandem MS or MS/MS). The resulting MS/MS spectra are used for searching in a sequence database. For reviews of mass spectrometry and bioinformatics in proteomics, see for example [1-4].
+###end p 9
+###begin p 10
+Although there has been an enormous increase in large-scale proteomics, there is still a need for tools for researchers concentrating on the characterization of single or a small number of proteins. One of the most important tasks for characterization of a known protein (known sequence) is the determination of posttranslational modifications, which can be done both by MS- and MS/MS experiments. Typically an MS experiment can discover that a modification has occurred, but not the position in the peptide (if there are several alternatives). The exact position can be determined by MS/MS.
+###end p 10
+###begin p 11
+###xml 129 130 129 130 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 141 142 141 142 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 155 156 155 156 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 168 169 168 169 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 180 181 180 181 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 191 193 191 193 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 455 457 455 457 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 689 691 689 691 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 754 756 754 756 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+There are a number of programs intended for the identification of proteins by PMF, e.g., MS-Fit, a program in ProteinProspector [5], Mascot [6], Profound [7], Aldente [8], Phenyx [9], GPMAW [10], etc. As a part of the search parameters, the user can choose different modifications believed to be present in the proteins analyzed, but other modifications are not considered. Thereby a partial characterization is also achieved. A program like MS-Screener [11] may promote the identification of proteins by removing common contaminating peaks from different samples. Other programs are directed towards further characterization of PMF data from the identified proteins. For example FindMod [12] can suggest modifications present in peptides, and FindPept [13] can suggest whether unexpected cleavages have occurred.
+###end p 11
+###begin p 12
+Among all these programs, only Phenyx has an administrative unit that collects and analyzes data from several experiments. Phenyx is mostly directed toward protein identification, and not the detailed and repeated analysis of single proteins. Furthermore, it is intended for large-scale, high-throughput MS and MS/MS, and it is machine-demanding. A software application for small-scale proteomics should include an administrative unit that can function as a database of results, and it should be possible to directly compare several experiments in a table or a spreadsheet. The analytical tools should be integrated around this administrative unit. All the analytical tools should have a uniform and user-friendly style, such that the data flow between the tools becomes easy. Furthermore, it should be platform and server independent, and optimized for small scale analysis.
+###end p 12
+###begin p 13
+We have developed a set of tools, MassSorter, that satisfies these requirements. MassSorter sorts, systematizes and analyzes data obtained from MS experiments where a known protein is analyzed for sequence coverage, posttranslational modifications, modifications occurring during sample handling, and induced chemical modifications. MassSorter functions as a database for all the peptides detected in the experiments and at the same time sorts the data according to given parameters by comparing obtained data with theoretical data. Data not recognized by this first comparison can go through a second round of analysis where other tools can suggest the origin of the still unidentified data. MassSorter is intended as a tool for small mass spectrometry laboratories that are interested in characterization of known proteins.
+###end p 13
+###begin title 14
+Implementation
+###end title 14
+###begin p 15
+###xml 170 171 170 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+The basic idea is to compare experimental m/z values from MS experiments with theoretical m/z values from a theoretical digestion of the same protein, as shown in Figure 1. The goal is to maximize the number of experimental values for which a possible origin can be found.
+###end p 15
+###begin p 16
+The basic procedure of MassSorter The experimental masses are compared to theoretical values.
+###end p 16
+###begin title 17
+Modifications, enzymes, terminals and amino acid data
+###end title 17
+###begin p 18
+A given set of default modifications, enzymes and terminals are included in MassSorter, along with information about the 20 standard amino acids. The user may add his/her own alternatives and/or edit the existing ones. In this way, MassSorter can be tailored to the individual user's needs. For a user-specified modification, the following data are needed: i) an abbreviation, ii) the amino acid(s) affected, iii) the mass modification, iv) a comment explaining the details of the modification, and v) a set of rules to determine where the modification can occur. For enzymes, a name and the cleavage rules must be specified. The user can also specify his/her own amino acids, as well as N- and C-terminals.
+###end p 18
+###begin title 19
+Data tables
+###end title 19
+###begin p 20
+MassSorter contains three main data tables.
+###end p 20
+###begin title 21
+Theoretical background table (TBT)
+###end title 21
+###begin p 22
+The TBT contains the theoretical peptide peak list of the protein digested by a specific protease. It also contains the parameters used for theoretical digestion, including considered modifications.
+###end p 22
+###begin title 23
+The experimental data table (EDT)
+###end title 23
+###begin p 24
+An EDT contains four main features for each experiment: i) information about the experiment (protein, enzyme and date), ii) experimental comments, iii) a list of expected posttranslational modifications, and iv) the peak list. Additional information about each peak (e.g., intensity and manually added comments) is also included. During the import of the peak list, it is possible to manually edit the data, e.g., remove a peak that the user identifies as noise, or add a peak that the instrumental processing software has not recognized.
+###end p 24
+###begin title 25
+The data sheet table (DST)
+###end title 25
+###begin p 26
+After importing the experimental peak lists into MassSorter, each list is compared to the theoretical peak list in the TBT. Each peptide mass from an experimental peak list is compared to all the theoretical peptide masses, and matches within the selected accuracy limit are detected. If an experimental peptide mass is unmatched, i.e. there is no matching theoretical peptide mass, the given peptide mass is compared to the peptide masses from the other MS experiments, if any. The results from all of these comparisons are visualized in a spreadsheet called the data sheet table (DST).
+###end p 26
+###begin p 27
+All the experimental masses for each MS experiment will appear in the DST. The comparison of experimental masses to theoretical masses may result in one of the three following color-coded alternatives in the DST:
+###end p 27
+###begin p 28
+###xml 5 19 5 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink">primary match </italic>
+1. A primary match between an experimental and a theoretical peptide mass, colored light green. Optionally, shadings of green can be used to indicate the peak intensity.
+###end p 28
+###begin p 29
+###xml 5 21 5 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">secondary match </italic>
+2. A secondary match between an experimental and a theoretical peptide mass, colored dark green.
+###end p 29
+###begin p 30
+3. An unmatched experimental peptide mass, colored yellow.
+###end p 30
+###begin p 31
+###xml 7 8 7 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+Figure 2 shows a fraction of a DST. The mentioned colors are the default settings, but they can be changed by the user.
+###end p 31
+###begin p 32
+A fraction of a DST table for two MS experiments. Rows 11, 12, and 13 contain primary hits. Rows 6-7 and 8-9 are examples of peaks with secondary hits. Rows 5 and 14 contain unmatched masses, and rows 10 and 15 correspond to filter peaks (from a trypsin sample).
+###end p 32
+###begin p 33
+The terms primary and secondary matches are used to separate two types of matches between an experimental and a theoretical peptide mass. When comparing an experimental peptide mass to the theoretical peptide masses, more than one theoretical peptide may match within the given accuracy limit. Without further analysis of the alternatives, it is not possible to determine which is the correct match.
+###end p 33
+###begin p 34
+Although the closest match might be the correct match, this is not always the case. It is even possible that all the found matches are correct. The user of the program must therefore decide which of the matches to keep and use in the subsequent analysis. The accepted matches are labeled primary matches and the others are labeled secondary matches. As a default, the match with the least distance in ppm (part per million) or Dalton is labeled primary match and the others are labeled secondary matches.
+###end p 34
+###begin p 35
+When the comparison of an experimental mass and a theoretical mass results in a match, the theoretical peptide data are inserted into the DST on the same row as the experimental mass. The first six columns of the DST are therefore reserved for data about the theoretical peptides: the theoretical peptide mass, the start and end position of the peptide, added modifications, number of missed cleavages and the peptide sequence. For the unmatched masses, these columns are left empty. The following columns contain the information about the experiments, three columns per experiment.
+###end p 35
+###begin p 36
+###xml 158 167 158 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink">possible </italic>
+There are two kinds of theoretical peptides; modified and unmodified. If a match with a modified theoretical peptide occurs, all the modifications have to be possible on the experimental peptide for the match to be allowed.
+###end p 36
+###begin p 37
+The analytical tools included in MassSorter are centrered around the DST. Several experiments can be displayed in one DST, and the analytical tools process all experiments shown in the DST.
+###end p 37
+###begin title 38
+Detecting additional matches
+###end title 38
+###begin p 39
+After creating the initial version of the DST, there will probably still be a set of unmatched experimental masses. There are different reasons for this and MassSorter includes several tools for increasing the number of matches.
+###end p 39
+###begin p 40
+###xml 281 288 281 288 <italic xmlns:xlink="http://www.w3.org/1999/xlink">filters</italic>
+1. Masses belonging to additional proteins in the mixture, for example the protease used for digestion. There could also be contaminating proteins, like keratin or proteins comigrating with the protein of interest during gel electrophoresis. It is possible to use such proteins as filters, which are combined with the TBT. Filters can be defined in three different ways:
+###end p 40
+###begin p 41
+* As experimental masses, for example the autolytic peptide peaks from the protease
+###end p 41
+###begin p 42
+* As a protein sequence, which then has to be theoretically digested
+###end p 42
+###begin p 43
+* As masses defined by the user, either directly (the mass), or indirectly as a peptide sequence, from which the mass has to be calculated
+###end p 43
+###begin p 44
+###xml 94 111 94 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SequenceSuggester</italic>
+2. Masses from peptides resulting from unexpected cleavage sites. This is handled by the tool SequenceSuggester, which compares an unmatched mass to any linear amino acid sequence (with and without given modifications) occurring in the protein.
+###end p 44
+###begin p 45
+###xml 79 92 79 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink">UniModSearch </italic>
+###xml 147 149 147 149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 150 152 150 152 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 199 219 199 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ChangeModifications </italic>
+3. Masses resulting from unexpected modifications. This is handled by the tool UniModSearch which searches a local version of the UniMod database [14,15] for unexpected modifications, or by the tool ChangeModifications which searches for other user-specified modifications.
+###end p 45
+###begin p 46
+The two last tools take an unmatched peptide mass as input and return a list of possible explanations. It is up to the user to accept or discard the suggested explanation(s). If an explanation is accepted, the match is inserted into the DST and is colored blue.
+###end p 46
+###begin title 47
+Theoretical digestion
+###end title 47
+###begin p 48
+###xml 0 16 0 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ProteinDigester </italic>
+ProteinDigester is the tool MassSorter uses for the theoretical digestion. The basic input is an amino acid sequence along with a set of parameters that characterizes the digestion and the resulting mass calculation: i) the enzyme, ii) the peptide N- and C-terminals, iii) possible charges, iv) a list of possible modifications, v) limits for the properties of the peptides created (the minimum peptide mass, the maximum peptide mass, the minimum peptide length, the maximum number of missed cleavages), and vi) use of monoisotopic or average amino acid residue masses.
+###end p 48
+###begin p 49
+###xml 188 189 188 189 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 190 192 190 192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 214 216 214 216 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+There already exist several programs for theoretical digestion, either as separate programs or as part of database search programs, see for example MS-Digest, a tool in ProteinProspector [5,16], and PeptideCutter [17]. However, we decided to develop our own to make the connection to the other tools faster and simpler.
+###end p 49
+###begin title 50
+Presentation
+###end title 50
+###begin p 51
+The results are presented and viewed in several ways.
+###end p 51
+###begin title 52
+DST
+###end title 52
+###begin p 53
+###xml 59 60 59 60 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+The Data Sheet Table is displayed in a spreadsheet (Figure 2).
+###end p 53
+###begin title 54
+Report
+###end title 54
+###begin p 55
+###xml 0 7 0 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Report </italic>
+Report is a tool on top of the DST where all the matched and unmatched masses per experiment are grouped and counted. In addition, the sequence coverage is calculated and visualized.
+###end p 55
+###begin p 56
+The experimental masses can be grouped according to the following matching types: i) matches with unmodified theoretical peptides, ii) matches with modified theoretical peptides, iii) unexpected matches, iv) matches with filter(s), v) unmatched masses, and vi) secondary matches. The number of experimental peptide masses and the resulting match percentage are also shown.
+###end p 56
+###begin p 57
+The second part of the Report visualizes the sequence coverage, both per experiment and combined for all experiments. The entire amino acid sequence is shown and the detected parts of the sequence are colored. The possible cleavage sites of the enzyme used are marked, and also the modified residues. The Report is connected to the DST, which means that if the user wants to know which of the detected peptides include a certain residue in the protein, the user can right click on the residue and a window will appear containing the peptide information from the DST. The Report also includes an option to view the amino acid sequence as a 3D model.
+###end p 57
+###begin title 58
+Protein Viewer - 3D modeling
+###end title 58
+###begin p 59
+###xml 0 15 0 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Protein Viewer </italic>
+###xml 138 140 138 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 526 527 526 527 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 1052 1054 1052 1054 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 1119 1121 1119 1121 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+Protein Viewer is a tool which creates a 3D model of the amino acid sequence of a protein. The input to the Protein Viewer is a PDB file [18], containing the structure data for the given protein. By combining the data in the PDB file with the data from the DST, it becomes possible to display a 3D model of the protein where the detected parts of the protein structure have one color and the undetected parts have another color. This makes it possible to determine which parts of the protein structure are covered, see Figure 3. The user can rotate, zoom and move the 3D model to get the wanted view of the protein structure. It is possible to right click on an atom to get details about the atom along with information about the peptides containing the selected residue. The user may also highlight certain modifications (e.g., all phosphorylated serines), specific positions in the protein (e.g., position 110, or 110-115), or certain amino acids (e.g., all tyrosines). Protein Viewer is an extension of a program written as part of a master thesis [19] and is based on a program written at University of California [20].
+###end p 59
+###begin p 60
+Screenshot of a protein structure (MMP2, ProteinDataBank 1CK7), where the covered residues are colored red, and the uncovered residues are colored blue.
+###end p 60
+###begin title 61
+Statistical analysis
+###end title 61
+###begin p 62
+###xml 638 640 638 640 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 641 643 641 643 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 697 714 697 714 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PeptideStatistics</italic>
+###xml 909 928 909 928 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Accuracy Statistics</italic>
+After using the MassSorter tools for locating the origin of the unmatched masses, a complete sequence coverage is still unlikely to have been obtained. Our experience shows that a sequence coverage of 20-40% might be realistic in single experiments. Even if all the experimental peptide masses in an MS experiment are matched to theoretical peptide masses, a sequence coverage of 100% is still unlikely. The properties that may effect the sequence coverage can be divided into three categories: i) peptide properties, ii) instrument properties, and iii) protocol properties. Several papers have analyzed such properties, see for example [21-23]. The current version of MassSorter includes a tool, PeptideStatistics, that considers and makes statistics for the following peptide properties: hydropathy, peptide length, amino acid frequencies, cleavage site frequency and peptide mass. It also includes a tool, Accuracy Statistics, for statistical analysis of the spread of the matching accuracy to see if there are accuracy values that differ substantially from the rest. Analysing the details of the spread of the ppm (or Dalton) values might be a way of eliminating some of the less likely matches. This is because after calibration the spectrum is transformed into a spectrum where the peptide's accuracy values have a close to uniform spread. It is assumed that the correct matches will lie within a certain area of the range of accepted accuracy values. If there are any matches with a ppm (or Da) value far from the common range, this might be an indicator of an incorrect match. MassSorter therefore contains a tool for plotting the experimental m/z values against the accuracy values. Another way of detecting correct matches is to perform MS/MS experiments on the peptide mass in question and compare the results to the sequence of the proposed matching theoretical peptide.
+###end p 62
+###begin p 63
+###xml 0 18 0 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Fractional masses </italic>
+###xml 62 64 62 64 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 440 442 440 442 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+Fractional masses (also known as the half decimal point rule [11]) is dependent on the ratio of the different atoms in the peptides. As several types of modifications will change this ratio, fractional mass may help to predict peptides with such modifications. Therefore, MassSorter can display a plot of fractional masses for the peaks obtained in the experiment. The constants and borders (four standard deviations) are calculated as in [24].
+###end p 63
+###begin title 64
+User interface
+###end title 64
+###begin p 65
+###xml 76 78 76 78 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+The user interface was developed following the eight golden rules given in [25]. This has resulted in a uniform and easy to use interface, which can also easily be changed to accommodate specific user preferences.
+###end p 65
+###begin title 66
+Diagram of MassSorter
+###end title 66
+###begin p 67
+###xml 78 79 78 79 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+An overview of the basic tools and processes of MassSorter is shown in Figure 4.
+###end p 67
+###begin p 68
+The basic tools and processes of MassSorter.
+###end p 68
+###begin title 69
+Results and discussion
+###end title 69
+###begin p 70
+We have developed a software tool, MassSorter, for the administration and analysis of PMF experiments on proteins with known amino acid sequences. The software makes it possible to manually edit the experimental data if needed, to compare the detected peaks with a theoretical (in silico) digestion of the protein, to show several experiments in one spreadsheet, to easily visualize the similarities (e.g., the reproducibility of repeated experiments) and differences (e.g., new peptides showing up under certain conditions) between experiments, and to further analyze peaks that do not match any theoretical masses. Examples of cases where MassSorter promoted our analyses of PMF (MALDI-TOF-MS) spectra follow:
+###end p 70
+###begin p 71
+###xml 125 127 125 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 882 884 882 884 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+1. MMP-2 is a 72 kDa protease that may autoactivate by cleavage into a 62 kDa form. Both forms were studied by MALDI-TOF-MS [26]. The tryptic peak lists were imported into MassSorter and the two MMP-2 forms were assembled into one DST. The standard sorting of the data in the DST is according to increasing m/z ratio, but the data can also be sorted according to the amino acid sequence of the protein. This made it immediately evident that the 62 kDa form lacked all peaks N-terminal to position 115 (numbering according to GenBank accession number NP_004521). A peak at m/z 843.4 was present from the 62 kD form, but absent from the 72 kDa form. SequenceSuggester gave several alternatives for this m/z value, but only one contained a C-terminal arginine (or lysine). This peptide corresponded to positions 110-115. This is likely to be the correct N-terminus of the 62 kDa form [27]. This example is included in the tutorial.
+###end p 71
+###begin p 72
+###xml 248 254 <span type="species:ncbi:9913">Bovine</span>
+2. It is considered an advantage to perform internal calibration in PMF experiments. If possible, autolysis peaks from the protease are used. Chymotrypsin is rarely used for identification purposes, but can be useful for characterization purposes. Bovine chymotrypsin (Sigma C-6423) gave a number of autolysis peaks that fitted with chymotryptic autodigestion. However, the most intense peak at m/z 1523.8 did not fit with standard rules of chymotryptic cleavage (C-terminal to F, Y, W, L). SequenceSuggester gave three alternative peptides within the 50 ppm accuracy limit. The results of subsequent experiments (tryptic cleavage of the chymotryptic peptide, C-terminal sequencing with carboxypeptidase Y, and partial post-source decay sequencing) were consistent with the one of the three suggested peptides, 149-ANTPDRLQQASLPL-162 (cleaved C-terminal to an N, with m/z 1523.8182). As a result, this peptide could be used as an internal calibrant in later experiments.
+###end p 72
+###begin p 73
+###xml 290 291 290 291 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+3. A protein was purified from cultured cells and tryptic peptides were analyzed by MALDI-TOF-MS. While most of the peptides showed a distribution of accuracies more or less around the theoretical values, one peptide consistently showed accuracies around -30 to -60 ppm, as shown in Figure 5. Its aberrant behavior was very obvious in the accuracy plot. If the peptide is indeed generated from this protein, it is unlikely to be the indicated peptide, but rather another peptide that contains an unknown modification. No reasonable suggestions were obtained by using UniModSearch. We therefore excluded this particular peptide from subsequent analyses.
+###end p 73
+###begin p 74
+Screenshot of an accuracy plot for five PMF experiments of a protein. A peptide that consistently showed aberrant accuracies in the range of -40 to -60 ppm is boxed. Despite the hit within the accepted accuracy limit, the aberrant behavior strongly indicates that this is not the suggested peptide.
+###end p 74
+###begin p 75
+MALDI-TOF-MS instruments are becoming more abundant, and they are very useful for both identification and characterization purposes. Many laboratories are interested in detailed characterizations of a low number of proteins. Such characterizations can be performed by manual analysis of the spectra and peak lists, but this is very time consuming. A simple and basic question valid both for identification and characterization purposes is "how reproducible are our results?". In a manual analysis, this would need lengthy comparisons of the peak lists. With MassSorter, the alignment of multiple experiments can be done in seconds after the import of the experimental data, and their reproducibilities and accuracies can be viewed in several ways. Furthermore, reproducible peaks that do not fit with the theoretical digestion of the protein, are immediately evident. Such peaks can be further analyzed by the two tools, SequenceSuggester and UniModSearch. The suggestions from these tools may be used as basis for subsequent experiments as indicated in example 2 above. If the structure of the protein is known and available as a PDB file, the detected peptides can be indicated in the 3D model of the protein. Specific peptides or amino acids can be highlighted in this model and this can be used for further interpretation of the results. For example a phosphorylation or glycosylation is unlikely to be hidden in the internal structures of a protein. There is also the possibility to manually add modification definitions, e.g., modifications not available in the UniMod database. It is therefore also easy to reanalyze old data if the user becomes aware of a modification that has not been considered before.
+###end p 75
+###begin title 76
+Conclusion
+###end title 76
+###begin p 77
+We have developed MassSorter as a software tool for small-scale mass spectrometry laboratories performing PMF experiments. It is independent of the producer of the instruments and only needs the peak lists to be exported (or copied) as a text format. It has a number of features that facilitates administration and analysis of the data.
+###end p 77
+###begin title 78
+Availability and requirements
+###end title 78
+###begin p 79
+* Project name: MassSorter
+###end p 79
+###begin p 80
+* Project home page:
+###end p 80
+###begin p 81
+* Operating system(s): Platform independent
+###end p 81
+###begin p 82
+###xml 40 42 40 42 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+* Programming language: Java, Netbeans [28] used for the user interface
+###end p 82
+###begin p 83
+* Other requirements: Java 5.0 or higher, Java 3D 1.3.1
+###end p 83
+###begin p 84
+* License: The program is freely available for academic users after registration at the project's home page
+###end p 84
+###begin title 85
+Authors' contributions
+###end title 85
+###begin p 86
+HB did the programming, contributed ideas and participated in writing the manuscript. SOM made the initial descriptions of the program, performed all mass spectrometry experiments, and participated in writing the manuscript. IE supervised the programming work, contributed ideas, and participated in writing the manuscript.
+###end p 86
+###begin title 87
+Acknowledgements
+###end title 87
+###begin p 88
+###xml 413 418 413 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 445 448 <span type="species:ncbi:11313?0.3020408163265306|species:ncbi:10261?0.2571428571428571|species:ncbi:10786?0.17142857142857143|species:ncbi:10785?0.07755102040816327">FPV</span>
+Prof. Per Seglen is thanked for making the MS instrument available to us. Anders Overbye and Mads Haugen are thanked for participating in testing the program. Dr. Veronique Cruciani is thanked for useful discussions. MS experiments were supported by the Norwegian Cancer Society (through VC and prof. Jan-Oluf Winberg). Thanks also to Saywan Pasha for letting us include his Protein Viewer program, and to T. Can et al. for making their program FPV freely available, on which Protein Viewer is based. Harald Barsnes was supported by the FUGE program in The Research Council of Norway (western regional funds).
+###end p 88
+###begin article-title 89
+Mass spectrometry-based proteomics
+###end article-title 89
+###begin article-title 90
+Bioinformatics in mass spectrometry data analysis for proteomics studies
+###end article-title 90
+###begin article-title 91
+The abc's (and xyz's) of peptide sequencing
+###end article-title 91
+###begin article-title 92
+Challenges in mass spectrometry-based proteomics
+###end article-title 92
+###begin article-title 93
+ProteinProspector
+###end article-title 93
+###begin article-title 94
+Probability-based protein identification by searching sequence databases using mass spectrometry data
+###end article-title 94
+###begin article-title 95
+ProFound - an expert system for protein identification using mass spectrometric peptide mapping information
+###end article-title 95
+###begin article-title 96
+Aldente and BioGraph: An improved peptide mass fingerprinting protein identification environment
+###end article-title 96
+###begin article-title 97
+Phenyx
+###end article-title 97
+###begin article-title 98
+GPMAW - a software tool for analyzing proteins and peptides
+###end article-title 98
+###begin article-title 99
+Iterative data analysis is the key for exhaustive analysis of peptide mass fingerprints from proteins separated by two-dimensional electrophoresis
+###end article-title 99
+###begin article-title 100
+FindMod
+###end article-title 100
+###begin article-title 101
+FindPept, a tool to identify unmatched masses in peptide mass fingerprinting protein identification
+###end article-title 101
+###begin article-title 102
+UniMod: Protein modifications for mass spectrometry
+###end article-title 102
+###begin article-title 103
+UniMod
+###end article-title 103
+###begin article-title 104
+Role of accurate mass measurement (+/- 10 ppm) in protein identification strategies employing MS or MS/MS and database searching
+###end article-title 104
+###begin article-title 105
+PeptideCutter
+###end article-title 105
+###begin article-title 106
+The RCSB Protein Data bank: a redesigned query system and relational database based on the mmCIF schema
+###end article-title 106
+###begin article-title 107
+Visualization Tools for Bioinformatics, Master thesis, University of Bergen, Department of informatics
+###end article-title 107
+###begin article-title 108
+###xml 0 3 <span type="species:ncbi:11313?0.3020408163265306|species:ncbi:10261?0.2571428571428571|species:ncbi:10786?0.17142857142857143|species:ncbi:10785?0.07755102040816327">FPV</span>
+FPV: fast protein visualization using Java 3Dtrade mark
+###end article-title 108
+###begin article-title 109
+An investigation of residue-specific contributions to peptide desorption in MALDI-TOF mass spectrometry
+###end article-title 109
+###begin article-title 110
+Peptide mass fingerprinting peak intensity prediction: Extracting knowledge from spectra
+###end article-title 110
+###begin article-title 111
+The contributions of specific amino acid side chains to signal intensities of peptides in matrix-assisted laser desorption/ionization mass spectrometry
+###end article-title 111
+###begin article-title 112
+Precalibration of matrix-assisted laser desorption/ ionization-time of flight spectra for peptide mass fingerprinting
+###end article-title 112
+###begin article-title 113
+###xml 29 34 <span type="species:ncbi:9606">human</span>
+Pancreatic trypsin activates human promatrix metalloproteinase-2
+###end article-title 113
+###begin article-title 114
+###xml 18 23 <span type="species:ncbi:9606">human</span>
+The activation of human type IV collagenase proenzyme. Sequence identification of the major conversion product following organomercurial activation
+###end article-title 114
+###begin article-title 115
+Netbeans
+###end article-title 115
+

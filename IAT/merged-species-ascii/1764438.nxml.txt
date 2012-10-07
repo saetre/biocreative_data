@@ -1,0 +1,913 @@
+###begin article-title 0
+###xml 38 54 38 54 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 38 54 <span type="species:ncbi:562">Escherichia coli</span>
+Large-Scale Mapping and Validation of Escherichia coli Transcriptional Regulation from a Compendium of Expression Profiles
+###end article-title 0
+###begin p 1
+###xml 376 392 376 392 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 427 434 427 434 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 376 392 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 427 434 <span type="species:ncbi:562">E. coli</span>
+Machine learning approaches offer the potential to systematically identify transcriptional regulatory interactions from a compendium of microarray expression profiles. However, experimental validation of the performance of these methods at the genome scale has remained elusive. Here we assess the global performance of four existing classes of inference algorithms using 445 Escherichia coli Affymetrix arrays and 3,216 known E. coli regulatory interactions from RegulonDB. We also developed and applied the context likelihood of relatedness (CLR) algorithm, a novel extension of the relevance networks class of algorithms. CLR demonstrates an average precision gain of 36% relative to the next-best performing algorithm. At a 60% true positive rate, CLR identifies 1,079 regulatory interactions, of which 338 were in the previously known network and 741 were novel predictions. We tested the predicted interactions for three transcription factors with chromatin immunoprecipitation, confirming 21 novel interactions and verifying our RegulonDB-based performance estimates. CLR also identified a regulatory link providing central metabolic control of iron transport, which we confirmed with real-time quantitative PCR. The compendium of expression data compiled in this study, coupled with RegulonDB, provides a valuable model system for further improvement of network inference algorithms using experimental data.
+###end p 1
+###begin title 2
+Author Summary
+###end title 2
+###begin p 3
+###xml 771 787 771 787 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 932 939 932 939 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 771 787 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 932 939 <span type="species:ncbi:562">E. coli</span>
+Organisms can adapt to changing environments-becoming more virulent, for example, or activating stress responses-thanks to a flexible gene expression program controlled by the dynamic interactions of hundreds of transcriptional regulators. To unravel this regulatory complexity, multiple computational algorithms have been developed to analyze gene expression profiles and detect dependencies among genes over different conditions. It has been difficult to judge whether these algorithms can generate accurate global maps of regulatory interactions, however, because of the absence of a model organism with both a compendium of gene expression data and a corresponding network of experimentally determined regulatory interactions. To address this issue, we assembled 445 Escherichia coli microarrays, applied four classes of inference algorithms to the dataset, and validated the predictions against 3,216 experimentally determined E. coli interactions. The top-performing algorithm identifies 1,079 regulatory interactions at a confidence level of 60% or higher. Of these predicted interactions, 741 are novel and illuminate the regulation of amino acid biosynthesis, flagella biosynthesis, osmotic stress response, antibiotic resistance, and iron regulation. By defining the capabilities and limitations of network inference algorithms for large-scale mapping of prokaryotic regulatory networks, our work should facilitate their application to the mapping of novel microbes.
+###end p 3
+###begin p 4
+A novel, machine-learning method is developed to predict transcriptional regulatory interactions, making use of microarray data. One interaction identified appears to be important for the control of iron transport.
+###end p 4
+###begin title 5
+Introduction
+###end title 5
+###begin p 6
+###xml 404 405 404 405 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b001">1</xref>
+High-throughput genome sequencing and bioinformatics technologies have dramatically eased the task of genomic annotation, producing parts lists of living organisms as simple as Mycoplasmas and as complex as mammals. Further progress in the understanding of an organism's biology requires development and refinement of techniques to determine the dynamic interactions among an organism's molecular parts [1]. A major difficulty of this task is the context-specific nature of gene regulation. The total space of possible transcriptional regulatory interactions for an organism is the number of transcription factors multiplied by the number of genes multiplied by the number of environmental contexts in which the cell might find itself. Methods to identify regulatory interactions must efficiently determine the thousands of true regulatory interactions out of the billions of possible ones.
+###end p 6
+###begin p 7
+###xml 123 126 123 126 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cis</italic>
+###xml 222 223 222 223 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b002">2</xref>
+###xml 224 226 224 226 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b018">18</xref>
+###xml 302 304 302 304 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b019">19</xref>
+###xml 305 307 305 307 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b020">20</xref>
+###xml 371 373 371 373 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b021">21</xref>
+###xml 374 376 374 376 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b026">26</xref>
+Pioneering efforts to identify regulatory interactions on a genome scale have used machine-learning algorithms to identify cis-regulatory motifs or transcription factor target genes using a large set of expression arrays [2-18], genome-wide location analysis chromatin immunoprecipitation (ChIP-Chip) [19,20], or a combination of these and other high-throughput methods [21-26]. In general, the precision of these methods has been evaluated by testing for functional enrichment of co-regulated genes, experimental confirmation of a few selected regulatory relationships, or cross-validation within the training dataset. However, experimental validation of the precision of these methods at the genome scale has remained elusive due to the lack of a model organism with both a known regulatory structure and compatible experimental data. Therefore, the relative merits and broader utility of these approaches remain difficult to judge.
+###end p 7
+###begin p 8
+###xml 336 352 336 352 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 451 459 451 459 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli,</italic>
+###xml 587 589 587 589 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b027">27</xref>
+###xml 336 352 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 451 458 <span type="species:ncbi:562">E. coli</span>
+Here we demonstrate an unsupervised network inference method, context likelihood of relatedness (CLR), which uses transcriptional profiles of an organism across a diverse set of conditions to systematically determine transcriptional regulatory interactions. We take advantage of the extensive knowledge of transcriptional regulation in Escherichia coli to assess the performance of the CLR algorithm and several other algorithms on a genome scale. In E. coli, a set of 3,216 experimentally confirmed regulatory interactions among 1,211 genes have been curated in the RegulonDB database [27], which can be used for performance assessment.
+###end p 8
+###begin p 9
+###xml 62 69 62 69 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 304 312 304 312 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g001">Figure 1</xref>
+###xml 317 324 317 324 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0050008-t001">Table 1</xref>
+###xml 635 637 635 637 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3D</sup>
+###xml 743 745 743 745 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b028">28</xref>
+###xml 746 748 746 748 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b029">29</xref>
+###xml 759 761 759 761 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b030">30</xref>
+###xml 783 784 783 784 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b007">7</xref>
+###xml 62 69 <span type="species:ncbi:562">E. coli</span>
+We assembled a compendium of 445 new and previously published E. coli Affymetrix Antisense2 microarray expression profiles collected under various conditions including pH changes, growth phases, antibiotics, heat shock, different media, varying oxygen concentrations, and numerous genetic perturbations (Figure 1 and Table 1). This compendium, combined with the knowledge in RegulonDB, allowed us to assess the genome-scale performance of the CLR algorithm and multiple other unsupervised network inference algorithms applied to experimental data. The compendium and algorithms are available on the Many Microbe Microarrays database (M3D) Web site (). We included several versions of relevance networks (the foundation for the CLR algorithm) [28,29], ARACNe [30], Bayesian networks [7], and regression networks in this algorithm comparison. CLR, the top-performing inference method, predicted 1,079 regulatory interactions at a 60% true positive rate. Sequence analysis of the promoters of the inferred gene targets yielded many known and novel promoter motifs. We also tested, via ChIP, more than 250 of the interactions inferred for three transcription factors at all confidence levels to verify the algorithm precision estimates based on RegulonDB and to confirm 21 of the novel predictions. In addition, an analysis of the CLR inferred network led to the discovery of an unexpected regulatory link between central metabolism and the regulation of iron import into the cell, which we confirmed with real-time quantitative PCR.
+###end p 9
+###begin title 10
+Results/Discussion
+###end title 10
+###begin title 11
+The CLR Algorithm
+###end title 11
+###begin p 12
+###xml 70 72 70 72 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b028">28</xref>
+###xml 73 75 73 75 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b031">31</xref>
+###xml 288 290 288 290 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b029">29</xref>
+###xml 858 860 858 860 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b032">32</xref>
+###xml 861 863 861 863 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b033">33</xref>
+The CLR algorithm is an extension of the relevance networks approach [28,31] for identifying transcriptional regulatory interactions. Although the relevance networks algorithm was written primarily for clustering, its authors also suggest its utility for identifying regulatory networks [29]. The original relevance networks method used mutual information for scoring the similarity between the expression levels of two genes in a set of microarrays. A gene and a transcription factor are predicted to interact if the mutual information between the expression levels of the gene and its potential regulator is above some set threshold. Like correlation, mutual information is a metric that detects statistical dependence between two variables. But unlike correlation, it does not assume linearity, continuity, or other specific properties of the dependence [32,33]. As such, mutual information possesses the flexibility to detect regulatory interactions that might be missed by linear measures such as the correlation coefficient.
+###end p 12
+###begin p 13
+In the relevance networks algorithm, there are tradeoffs between true positive and false positive rates in choosing a threshold for the identification of significant regulatory interactions. A high threshold results in a smaller network with fewer false positives, but it also eliminates potential novel interactions. Conversely, a low threshold will often capture false positive interactions due to a number of factors, including background correlation and misinterpretation of indirect dependence as direct interaction.
+###end p 13
+###begin p 14
+###xml 160 168 160 168 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g002">Figure 2</xref>
+###xml 625 633 625 633 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g002">Figure 2</xref>
+The CLR algorithm builds upon the relevance network but applies an adaptive background correction step to eliminate false correlations and indirect influences (Figure 2A). After computing the mutual information between regulators and their potential target genes, CLR calculates the statistical likelihood of each mutual information value within its network context. The algorithm compares the mutual information between a transcription factor/gene pair to the "background" distribution of mutual information scores for all possible transcription factor/gene pairs that include either the transcription factor or its target (Figure 2A). The most probable interactions are those whose mutual information scores stand significantly above the background distribution of mutual information scores. This step removes many of the false correlations in the network by eliminating "promiscuous" cases, where one transcription factor weakly co-varies with a large numbers of genes, or one gene weakly co-varies with many transcription factors. Such promiscuity arises when the assayed conditions are inadequately or unevenly sampled, thus failing to distinguish direct interactions from indirect influences, or when microarray normalization fails to remove false background correlations due to inter-lab variations in methodology.
+###end p 14
+###begin p 15
+###xml 41 48 41 48 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 148 155 148 155 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 346 354 346 354 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g002">Figure 2</xref>
+###xml 436 447 436 447 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+###xml 41 48 <span type="species:ncbi:562">E. coli</span>
+###xml 148 155 <span type="species:ncbi:562">E. coli</span>
+We applied CLR to the 4,345 genes on the E. coli Antisense2 microarray using the 445 profiles in the compendium to identify the gene targets of the E. coli transcription factors. For comparison, we ran several variants of commonly used network inference algorithms on the compendium data; the top-performing variant of each algorithm is shown in Figure 2 (a detailed comparison of each algorithm and the tested variants is available in Protocol S1). As a point of reference on algorithm performance, we also show the performance attained by randomly guessing interaction scores from a uniform distribution. Interactions for all algorithms were only allowed from 328 known or predicted transcription factors to any of the 4,345 genes, enabling clear biological interpretation, assignment of direction (from transcription factors to non-transcription factor genes), and validation of the predictions. Interactions were also identified between transcription factors, but direction was not assigned.
+###end p 15
+###begin p 16
+###xml 123 125 123 125 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b027">27</xref>
+###xml 203 210 203 210 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 347 355 347 355 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g002">Figure 2</xref>
+###xml 442 449 442 449 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 203 210 <span type="species:ncbi:562">E. coli</span>
+###xml 442 449 <span type="species:ncbi:562">E. coli</span>
+To score our results, we compared our predicted interactions with the set of 3,216 interactions in the RegulonDB database [27]. We computed two measures: recall, which is the fraction of the 3,216 known E. coli interactions that CLR successfully identified; and precision, which is the fraction of identified interactions that are true positives (Figure 2B). RegulonDB contains regulatory information for about one-fourth of the genes in the E. coli genome and about one-half of the transcription factors. Thus, it is large enough to make sound estimates of algorithm performance at the genome scale. Yet, we caution that the accuracy of our performance estimates may be biased by the incomplete nature of this dataset. We also verified the accuracy of these performance estimates by performing ChIP experiments on a large number of interactions, inferred by CLR, that are not present in RegulonDB.
+###end p 16
+###begin p 17
+###xml 60 68 60 68 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g002">Figure 2</xref>
+###xml 106 107 106 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</italic>
+###xml 225 233 225 233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g003">Figure 3</xref>
+###xml 310 318 310 318 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g003">Figure 3</xref>
+###xml 468 476 468 476 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g004">Figure 4</xref>
+###xml 719 720 719 720 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</italic>
+###xml 754 763 754 763 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sg001">Figure S1</xref>
+###xml 815 817 815 817 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3D</sup>
+CLR outperforms all other algorithms run on the compendium (Figure 2B). With 60% precision (CLR threshold z-score = 5.78), CLR recovers a total of 1,079 regulatory interactions-338 of these among genes included in RegulonDB (Figure 3, blue and green edges) and 741 novel interactions not present in RegulonDB (Figure 3, red edges). In addition, the targets of many transcription factors in this network are significantly enriched for one or more biological functions (Figure 4), and the enriched biological functions reflect the conditions sampled in the microarray compendium. CLR also scores 426 of the 1,079 interactions at a higher confidence of 80%. All 426 interactions identified at 80% precision (CLR threshold z-score = 6.92) are illustrated in Figure S1. All identified interactions are available on the M3D Web site () as a graphical map and as tab-delimited text files.
+###end p 17
+###begin p 18
+###xml 151 158 151 158 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 291 302 291 302 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+###xml 434 442 434 442 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g002">Figure 2</xref>
+###xml 697 708 697 708 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+###xml 723 724 723 724 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b002">2</xref>
+###xml 1201 1210 1201 1210 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sg002">Figure S2</xref>
+###xml 1611 1622 1611 1622 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+###xml 151 158 <span type="species:ncbi:562">E. coli</span>
+Although we identified hundreds of known regulatory interactions correctly at high precision, this represents only a fraction of known interactions in E. coli. The recall of the algorithm depends on several factors, including the number and diversity of expression profiles. As discussed in Protocol S1, the CLR algorithm can achieve maximum recall and precision using as few as 60 expression profiles selected for maximum diversity (Figure 2C). Large environmental perturbations are the most common conditions amongst these 60 profiles, suggesting environmental perturbations are generally more informative than genetic perturbations for network inference, in agreement with earlier studies (see Protocol S1 for details) [2]. The remainder of the profiles in the compendium contribute mainly redundant information about gene expression responses and regulatory interactions. Thus, the recall achieved by the CLR algorithm appears to be limited largely by the low phenotypic diversity of the dataset. This conclusion is supported by a more detailed analysis of the recovered interactions. For transcription factors with at least two predicted targets, the mean recall per transcription factor is 47% (Figure S2), supporting the idea that when a transcription factor and its targets are adequately perturbed in the dataset, high recall is obtained. For example, when minimal media conditions are included in the compendium, nearly all targets of Lrp are identified (Lrp is a regulator of multiple biosynthetic operons). But when those conditions are removed, the algorithm fails to identify any Lrp targets (see Protocol S1 for details).
+###end p 18
+###begin title 19
+Discovery of Novel Regulatory Pathways
+###end title 19
+###begin p 20
+###xml 186 194 186 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g001">Figure 1</xref>
+We used the regulatory network predicted by CLR to explore and validate newly inferred regulatory interactions. We confirmed the algorithm's performance using two additional approaches (Figure 1). First, we applied the tools of sequence analysis to discover new regulatory motifs in the promoters of the regulated genes. Second, we performed ChIP experiments to verify many of the novel interactions identified by the algorithm.
+###end p 20
+###begin title 21
+Further validation of CLR by sequence analysis of regulatory motifs.
+###end title 21
+###begin p 22
+###xml 899 901 899 901 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b034">34</xref>
+Using the set of gene targets predicted for each transcription factor, we applied sequence analysis algorithms to infer the sequence motif bound by each regulator. Not all transcription factors have enough targets to allow reliable motif detection, but for those that do, the motif provides a specific location for the regulatory interaction. A significant sequence motif for a group of genes provides an additional level of validation, as it is unlikely that the group of genes would share a common motif but not a common transcription factor regulator. To detect sequence motifs, we selected all transcription factors predicted to regulate five or more operons with at least a 60% confidence (61 total). For each group of operons regulated by the same transcription factor, we analyzed approximately 150 base pairs upstream of the transcription start site with the MEME multiple alignment system [34].
+###end p 22
+###begin p 23
+###xml 402 411 402 411 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sg003">Figure S3</xref>
+###xml 472 481 472 481 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sg003">Figure S3</xref>
+###xml 560 571 560 571 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dinI, dinP,</italic>
+###xml 576 580 576 580 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">yebG</italic>
+###xml 609 611 609 611 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b035">35</xref>
+LexA, a major regulator of DNA repair, is known to have a single well-conserved DNA-binding motif. It is one of the best-perturbed regulators in the microarray compendium due to the compendium's emphasis on DNA-damaging conditions. Consequently, the LexA protein has a large set of correctly predicted targets and exhibits a highly significant motif almost identical to the known canonical LexA motif (Figure S3A). Five out of eight promoters containing the LexA motif in Figure S3A are known LexA targets according to RegulonDB. The other three promoters for dinI, dinP, and yebG are confirmed LexA targets [35] but are not catalogued in RegulonDB.
+###end p 23
+###begin p 24
+###xml 0 10 0 10 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sg003">Figures S3</xref>
+###xml 16 18 16 18 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sg003">S3</xref>
+###xml 193 194 193 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 296 305 284 293 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sg003">Figure S3</xref>
+###xml 318 322 306 310 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ymfN</italic>
+###xml 527 535 515 523 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-st001">Table S1</xref>
+Figures S3C and S3D illustrate this approach applied to two putative regulators, YmfN and YnaE. YmfN is a putative DNA-binding protein homologous to a phage terminase. We found a strong motif (p value approximately 0.0061) in all six of the operons inferred for this transcription factor by CLR (Figure S3D). The gene ymfN attains its highest levels of expression in our compendium upon exposure to norfloxacin, a DNA-damaging bactericidal agent, and its inferred targets show enrichment in prophage and DNA repair categories (Table S1).
+###end p 24
+###begin p 25
+###xml 179 181 179 181 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b036">36</xref>
+###xml 268 276 268 276 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-st002">Table S2</xref>
+###xml 410 414 410 414 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ynaE</italic>
+###xml 665 672 665 672 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 665 672 <span type="species:ncbi:562">E. coli</span>
+YnaE (Rac prophage) is another putative DNA-binding protein. The latest computational annotation for YnaE available in EcoCyc () suggests that its function is also phage-related [36]. There is enrichment for cold-shock response proteins in the predicted YnaE regulon (Table S2). Also present are rhsE, a stationary-phase survival-related protein, and b1374, a putative transposon resolvase. In the compendium, ynaE was highly expressed when Lon protease or YoeB toxin was genetically up-regulated, and when either norfloxacin antibiotic or mussel defensin protein was present. Based on our analysis, YnaE may control a small, specialized stress response network in E. coli.
+###end p 25
+###begin p 26
+###xml 58 59 58 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 132 140 132 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-st003">Table S3</xref>
+###xml 269 276 269 276 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 393 401 393 401 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-st003">Table S3</xref>
+###xml 560 569 560 569 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sg003">Figure S3</xref>
+###xml 269 276 <span type="species:ncbi:562">E. coli</span>
+Overall, we were able to detect a significant (one-tailed p value < 0.05) binding motif for 28 out of the 61 transcription factors (Table S3). Of these regulators, 13 had a known motif in PRODORIC (). We compared the predicted motifs for the 13 regulators to all known E. coli motifs. For seven of the 13 MEME-predicted motifs (54%), we identified the known motif in the top ten best matches (Table S3). Some correctly reconstructed regulators made a relatively poor match to their correct motif. In the majority of these six cases, including Lrp (rank = 15) (Figure S3B), this was due to the presence of combinatorial or conditional regulation. For Lrp, two motifs in the database (+/- leucine) were incorrectly collapsed into one by motif analysis. In other cases, a gene was regulated by multiple transcription factors, and the MEME motif analysis picks up the stronger motif in the sequence, which may not be the motif of the transcription factor we are looking for. This ambiguity in cases of combinatorial regulation is a limitation of motif analysis, because it only looks for statistical enrichment of regions of sequence and does not consider the actual binding properties of the transcription factor.
+###end p 26
+###begin title 27
+In vivo confirmation of new regulatory interactions.
+###end title 27
+###begin p 28
+We performed ChIP with quantitative PCR (ChIP-qPCR) to obtain physical confirmation for many of the regulatory interactions inferred by CLR and to verify that performance estimates based on the known subset of interactions in RegulonDB extrapolate beyond this subset. In particular, we studied three transcription factors (Lrp, PdhR, and FecI) with substantial connectivity in the network mapped by CLR. For each transcription factor, 26-35 operons with at least one inferred interaction were tested by ChIP-qPCR for a total of 93 tested operons (244 genes). We tested 24 known regulatory interactions as a positive control to verify that known interactions were detectable by ChIP for a total of 268 tested interactions.
+###end p 28
+###begin p 29
+###xml 273 280 273 280 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 273 280 <span type="species:ncbi:562">E. coli</span>
+Network inference results are typically verified for a few hand-picked samples that are studied in detail. Thus, the biological intuition of the experimenter may play a role in the success of a hand-picked verification. RegulonDB provides a way to overcome this problem in E. coli. Because we have no control over the interactions present in RegulonDB, our algorithm performance estimates are unbiased by our selective validation. Likewise, when performing ChIP validation experiments, we wanted to be as unbiased as possible. Although choosing the three transcription factors is a form of hand-picking, the targets tested for those transcription factors were selected in a systematic way, by choosing approximately 30 of the highest-scoring targets of each of the three transcription factors. Choosing this many targets results in many interactions with confidence levels below 20% in our ChIP-qPCR experiments, allowing us to verify that our confidence estimates are reliable across the entire range of precision.
+###end p 29
+###begin p 30
+###xml 0 8 0 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g005">Figure 5</xref>
+###xml 988 995 988 995 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 988 995 <span type="species:ncbi:562">E. coli</span>
+Figure 5 shows the global, RegulonDB-based precision scores assigned to the ChIP-tested interactions versus the transcription factor-specific precision estimated with RegulonDB plus ChIP, including many interactions for genes not present in RegulonDB. The global precision estimate based on RegulonDB corresponds very well to the local precision estimate based on RegulonDB plus ChIP. Only the two extreme cases of greater than 80% precision and greater than 0% precision deviate from the expected values. The greater than 0% precision interactions yield an inflated ChIP precision, because our choosing of the highest-scoring targets for validation causes this category to be undersampled. Likewise, the greater than 80% precision has only two samples, because interactions of this significance are rare in the dataset, making the ChIP estimate unreliable for this threshold. In total, 21 novel regulatory interactions were confirmed in vivo by this approach, adding to the knowledge of E. coli regulation present in RegulonDB.
+###end p 30
+###begin title 31
+A combinatorial link between central metabolism and iron transport.
+###end title 31
+###begin p 32
+###xml 174 185 174 185 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+###xml 264 268 264 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+The inferred regulatory network revealed new combinatorial regulation at many promoters. We explored these combinatorial regulation schemes, first across the entire network (Protocol S1) and second by detailed real-time quantitative PCR analysis of the novel PdhR-fecA interaction, which is an interaction that links central metabolism to the control of iron import-a link of potential importance in bacterial virulence and stress protection.
+###end p 32
+###begin p 33
+###xml 235 237 235 237 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b037">37</xref>
+###xml 449 456 449 456 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 671 673 671 673 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b038">38</xref>
+###xml 449 456 <span type="species:ncbi:562">E. coli</span>
+The presence of iron is essential for the survival of most organisms, because it plays a critical role in the tricarboxylic acid cycle, in electron transport, in reducing oxygen radicals, in DNA synthesis, and in amino acid synthesis [37]. Iron, however, is scarce in many environments because of the low solubility of its ferric form. Consequently, many organisms have developed elaborate mechanisms for scavenging soluble forms of the element. In E. coli K12, there are six different siderophore receptors, each representing a different chelator that is capable of capturing extracellular iron and converting it to a soluble form that may be transported into the cell [38]. Excess iron can be toxic to cells; iron uptake must therefore be carefully dictated by the need for cellular iron.
+###end p 33
+###begin p 34
+###xml 0 8 0 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecABCDE</italic>
+###xml 174 182 174 182 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecABCDE</italic>
+###xml 251 259 251 259 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g006">Figure 6</xref>
+###xml 299 307 299 307 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g006">Figure 6</xref>
+###xml 401 409 401 409 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecABCDE</italic>
+###xml 577 581 577 581 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 590 598 590 598 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g006">Figure 6</xref>
+###xml 690 698 690 698 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g006">Figure 6</xref>
+###xml 704 705 704 705 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g006">6</xref>
+###xml 842 846 842 846 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 872 873 872 873 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 880 881 880 881 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 958 959 958 959 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+fecABCDE is an operon that encodes a ferric citrate transporter and plays a central role in the import of cellular iron. Existing literature described only two regulators of fecABCDE-FecI and Fur. The Fur regulation is not apparent in the compendium (Figure 6A), while the FecI regulation is clear (Figure 6B). However, the bifurcation of the plot suggests a more complex combinatorial regulation for fecABCDE. The CLR algorithm identified PdhR, a pyruvate-sensing repressor and necessary component of the energy transduction cascade, as a possible additional regulator of the fecA operon (Figure 6C). We also identified a potential PdhR binding motif in the promoter region of the operon (Figure 6D and 6E). Moreover, in undefined, rich media (Luria-Bertani [LB] with 0.2% glucose), our ChIP results showed a significant enrichment for PdhR-fecA binding when judged by a t-test (p value = 0.004) and a modest enrichment using a nonparametric rank-sum test (p value = 0.1).
+###end p 34
+###begin p 35
+###xml 82 86 82 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 176 180 176 180 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 189 197 189 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g006">Figure 6</xref>
+###xml 367 371 367 371 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pdhR</italic>
+###xml 406 412 406 412 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(pdhR)</italic>
+###xml 417 423 417 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(fecI)</italic>
+###xml 446 454 446 454 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g006">Figure 6</xref>
+###xml 553 557 553 557 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 629 633 629 633 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pdhR</italic>
+###xml 649 657 649 657 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g006">Figure 6</xref>
+###xml 701 705 701 705 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecI</italic>
+###xml 712 716 712 716 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 887 891 887 891 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 965 973 965 973 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g006">Figure 6</xref>
+Inspection of the compendium data suggested that FecI and PdhR might regulate the fecA operon using AND-like logic, where both proteins must be activated for expression of the fecA operon (Figure 6F). Because PdhR is a repressor that is derepressed upon binding with pyruvate, the gate is NOT (bound PdhR) AND (bound FecI) at the promoter level; self-feedback at the pdhR promoter makes the gate appear as (pdhR) AND (fecI) at the level of mRNA (Figure 6F). To test this hypothesis, we used real-time quantitative PCR to measure the expression level of fecA over 16 combinations of pyruvate (to derepress PdhR protein and induce pdhR transcription; Figure 6G) and citrate (to activate FecI and induce fecI). The fecA operon reached its highest levels of induction only when citrate and pyruvate were both present in high concentrations, supporting the hypothesis that full activation of fecA is only possible in the presence of derepressed PdhR and activated FecI (Figure 6H).
+###end p 35
+###begin p 36
+Such an explicit regulatory link between central metabolism and iron transport has not, to our knowledge, been previously identified in microbes. This link is perhaps not surprising, given that iron is a critical component of several proteins involved in both the tricarboxylic acid cycle (aconitase and succinate dehydrogenase) and electron transport (cytochromes and ferredoxin); the magnitude of carbon/electron flux through the citric acid cycle and electron transport chain thus plays a major role in determining the cellular need for iron. It is possible that an increase in intracellular pyruvate, which is the inducer for PdhR, may signal the need for increased flow through respiratory pathways. This novel role for pyruvate is plausible given that pyruvate serves as a common catabolite for a diverse collection of carbon sources and stands just one enzymatic step away from entering the tricarboxylic acid cycle itself.
+###end p 36
+###begin title 37
+A Platform for Mapping Transcriptional Regulation
+###end title 37
+###begin p 38
+###xml 302 309 302 309 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 888 899 888 899 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+###xml 302 309 <span type="species:ncbi:562">E. coli</span>
+This work rigorously assesses the genome-scale performance of multiple network inference algorithms using an experimental compendium of 445 expression profiles and a "gold standard" of known regulatory interactions. Using the top-performing CLR algorithm, we predicted 1,079 regulatory interactions in E. coli with 60% precision or higher (and 426 interactions at 80% precision or higher). ChIP experiments confirmed 21 CLR-inferred regulatory interactions, and real-time PCR analysis combined with the inferred regulatory map suggested that iron regulation and central metabolism are linked at the level of transcriptional regulation. We also showed that CLR could infer an equally precise network map using as few as 60 expression profiles, and our results help to address persistent questions concerning the optimal design of experiments for network mapping based on machine learning (Protocol S1).
+###end p 38
+###begin p 39
+###xml 256 258 256 258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b039">39</xref>
+In recent years, ChIP techniques, particularly ChIP-Chip, have offered hope for systematic characterization of transcription factor binding in vivo. ChIP is particularly prone to errors in prokaryotes, necessitating a large number of expensive replicates [39]. Moreover, the results are condition-dependent, i.e., inactive transcription factors may not be identified because they may not bind to DNA. Finding the appropriate conditions for ChIP-Chip can be costly and time-consuming, making the comprehensive mapping of microbial transcriptional networks difficult.
+###end p 39
+###begin p 40
+By generating a compendium of microarrays, we show that it is possible to infer a high-precision regulatory map and simultaneously obtain rich data on condition-specific regulation. With this conditional regulatory information, we can also make a more informed decision about when a transcription factor might be active in any follow-up ChIP, mass-spectrometry, or real-time PCR experiments.
+###end p 40
+###begin p 41
+###xml 16 23 16 23 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 16 23 <span type="species:ncbi:562">E. coli</span>
+We suggest that E. coli, a long-standing model organism for the detailed study of small-scale regulatory circuits, can become a valuable model organism for large-scale regulatory network studies, by virtue of the availability of (1) a large and curated set of experimentally determined regulatory interactions; (2) a tested expression compendium; and (3) a reliable platform for the acquisition of additional expression data.
+###end p 41
+###begin title 42
+Materials and Methods
+###end title 42
+###begin title 43
+Microarray profiling.
+###end title 43
+###begin p 44
+###xml 332 340 332 340 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-st004">Table S4</xref>
+To explore pathways of particular importance to antibiotic resistance, we assayed 121 conditions using 266 microarrays, including more than 50 genetic perturbations (overexpression or knockout) during norfloxacin-induced DNA damage response, overexpression of the ccdB toxin, and growth to stationary phase on low and high glucose (Table S4).
+###end p 44
+###begin title 45
+Bacterial strains.
+###end title 45
+###begin p 46
+###xml 12 19 12 19 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 60 67 60 67 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 83 90 83 90 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 165 167 165 167 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b040">40</xref>
+###xml 239 244 239 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">araC,</italic>
+###xml 602 609 602 609 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 689 691 689 691 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b041">41</xref>
+###xml 825 828 825 828 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fnr</italic>
+###xml 855 857 855 857 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b042">42</xref>
+###xml 12 19 <span type="species:ncbi:562">E. coli</span>
+###xml 60 67 <span type="species:ncbi:562">E. coli</span>
+###xml 83 90 <span type="species:ncbi:562">E. coli</span>
+###xml 602 609 <span type="species:ncbi:562">E. coli</span>
+Fifty-three E. coli genes of interest were overexpressed in E. coli strain MG1655 (E. coli Genetic Stock Center, CGSC 6300) using a modified pBAD30 vector, pBADx53 [40]. pBADx53 has a low copy SC101 origin of replication, does not contain araC, and yields low and consistent levels of expression, generally increasing gene expression 2- to 10-fold above native expression levels. The 53 genes were PCR amplified from MG1655 genomic DNA. A ribosomal binding site was included at the start of the forward primer. The cloned genes were transformed into strain MG1655. Gene deletions were constructed from E. coli strain MG1655 by replacing the coding sequence from start codon to stop codon [41]. Gene deletion strains and overexpression plasmids were confirmed by DNA sequencing. Note that there is a known deletion around the fnr gene in strain CGSC 6300 [42].
+###end p 46
+###begin title 47
+Steady-state experiments.
+###end title 47
+###begin p 48
+Gene deletion strains and pBADx53 overexpression strains were grown in 96 square-well plates containing 1.6 ml LB (Miller). LB media for the overexpression strains contained 0.125% arabinose to induce cloned gene expression and appropriate antibiotics to maintain the plasmid. Plates were incubated at 37 degreesC with shaking at 300 revolutions per minute (rpm). DNA damage responses were induced by growing perturbation strains for 3 h in norfloxacin (25-100 ng/ml). Cells were harvested when the optical density (OD600) for the cultures was between 0.25 and 0.40.
+###end p 48
+###begin title 49
+Time-course experiments.
+###end title 49
+###begin p 50
+###xml 342 349 335 342 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 755 757 748 750 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b043">43</xref>
+###xml 342 349 <span type="species:ncbi:562">E. coli</span>
+For an antibiotic time-course experiment, cultures were grown in 250-ml flasks at 37 degreesC with shaking at 250 rpm. Each culture was grown in 75 ml of LB to 0.4 OD600. DNA damage was induced with 10 mug/ml of norfloxacin. Samples were taken before and 12, 24, 36, and 60 min after the addition of norfloxacin. For the glucose time series, E. coli EMG2 were diluted 1:1,000 into 150 ml LB (Miller) in 1-l baffled flasks supplemented with 0.2% or 0.4% glucose. Samples were taken 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, and 8 h post-incubation. To examine the effect of overexpression of the F-plasmid encoded toxin CcdB, we used a plasmid-borne riboregulation system that enables precise control of gene expression through highly specific RNA-RNA interactions [43]. A riboregulation system overexpressing LacZ was included as a control. Cells were diluted 1:1,000 in 50 ml LB (Miller) with appropriate antibiotics to maintain the plasmid. Samples were taken immediately before induction and then 30, 60, and 90 min after induction of CcdB or LacZ expression.
+###end p 50
+###begin title 51
+Preparation of RNA and hybridization.
+###end title 51
+###begin p 52
+RNA was prepared using Qiagen RNeasy kits (Valencia, California, United States). For time-course experiments, cultures were immediately added to 2 volumes of Qiagen RNAprotect reagent. For steady-state experiments, 1.5-ml cultures in multiwell plates were centrifuged at 3,000 g for 5 min at 4 degreesC. Media was poured off, and 500 mul of RNA protect was then immediately added to each cell pellet. cDNA was prepared and hybridized to the Affymetrix Antisense2 microarrays according to the standard Affymetrix prokaryotic sample and array processing protocol.
+###end p 52
+###begin title 53
+External data.
+###end title 53
+###begin p 54
+###xml 274 282 274 282 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g001">Figure 1</xref>
+###xml 287 294 287 294 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0050008-t001">Table 1</xref>
+A literature search was performed to locate microarray datasets to expand the phenotypic diversity of the compendium. Preference was given to larger datasets (>10 chips). In total, raw Affymetrix CEL files for 179 microarrays were compiled from nine different publications (Figure 1 and Table 1). These microarrays assayed 68 conditions including pH changes, growth phases, antibiotics, heat shock, different media, varying oxygen concentrations, numerous genetic perturbations, several carbon sources, and nitrate.
+###end p 54
+###begin title 55
+Microarray normalization.
+###end title 55
+###begin p 56
+###xml 94 96 94 96 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b044">44</xref>
+###xml 106 108 106 108 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b045">45</xref>
+###xml 125 127 125 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b046">46</xref>
+Raw probe intensities were normalized to gene expression levels using MAS5 (Affymetrix), RMA [44], GCRMA [45], and Dchip PM [46]. All methods were run using the default parameters. For GCRMA, the ad hoc algorithm was used instead of the full empirical Bayes method due to memory constraints arising from the size of the dataset. In our experience, RMA was the single best normalization method of the four that we tried, and the results presented for all algorithms use this normalization unless otherwise indicated.
+###end p 56
+###begin title 57
+Data availability.
+###end title 57
+###begin p 58
+###xml 217 219 217 219 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3D</sup>
+###xml 225 227 225 227 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3D</sup>
+The 212 Affymetrix CEL files generated from our own experiments have been submitted to Gene Expression Ominbus (GEO), the NCBI microarray database (). Raw and normalized data for all 445 microarrays are available at M3D (). M3D provides a web interface for visualizing heat plots, histograms, and scatterplots for any subset of the genes and experiments in the compendium using any of the four normalization methods mentioned above. It also allows the download of the CLR-inferred network in several different formats at both 60% and 80% precision.
+###end p 58
+###begin title 59
+Network inference algorithms.
+###end title 59
+###begin p 60
+###xml 139 141 139 141 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b029">29</xref>
+###xml 152 153 152 153 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b002">2</xref>
+###xml 179 180 179 180 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b007">7</xref>
+###xml 347 349 347 349 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3D</sup>
+We adapted several existing methods suitable for whole-genome network mapping from expression data. These methods were relevance networks [29], ARACNe [2], and Bayesian networks [7]. In addition, we developed a novel method, CLR, which constitutes a background-corrected approach to relevance networks. All tested algorithms are available at the M3D Web site.
+###end p 60
+###begin p 61
+###xml 188 189 188 189 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 194 195 194 195 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 220 221 220 221 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 217 222 217 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P(x<sub>i</sub>)</italic>
+###xml 252 253 252 253 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 247 253 247 253 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X = x<sub>i</sub></italic>
+###xml 266 267 266 267 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 272 273 272 273 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 343 344 343 344 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 342 344 342 344 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x<sub>i</sub></italic>
+###xml 350 351 350 351 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 349 351 349 351 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">y<sub>i</sub></italic>
+###xml 456 457 456 457 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 462 463 462 463 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 654 656 654 656 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b047">47</xref>
+###xml 712 714 712 714 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b047">47</xref>
+###xml 776 778 776 778 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3D</sup>
+Relevance networks, ARACNe, and CLR use mutual information as a metric of similarity between the expression profiles of two genes. The mutual information for two discrete random variables X and Y is defined as: where P(xi) is the probability that X = xi. For genes, X and Y represent a transcription factor and its potential target gene, and xi and yi represent particular expression levels. In the case of continuous random variables, the summations over X and Y are replaced by integrals. To compute mutual information, we used a B-spline smoothing and discretization method, except for comparison testing with the original algorithms, as noted below [47]. We provide a MatLab () interface to the Daub et al. [47] B-spline mutual information estimation code library at the M3D Web site. All mutual information values were computed using 10 bins and third order B-splines.
+###end p 61
+###begin p 62
+###xml 331 342 331 342 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+The performance of the ARACNe, Bayesian, and linear regression network algorithms improved if we inferred four networks, each network calculated from the compendium data that was normalized with a different one of the four normalization methods. For each edge, we then computed the mean of scores resulting from the four networks (Protocol S1). This averaging approach did not improve the results for relevance networks or CLR.
+###end p 62
+###begin title 63
+Relevance networks.
+###end title 63
+###begin p 64
+The relevance networks algorithm identifies a potential biological association as any regulator-target gene pair with a mutual information score between their expression profiles that is above a set threshold. Although originally intended as a form of clustering, we applied the algorithm to network inference by only keeping associations between transcription factors and genes. The original relevance networks algorithm generated one network at one threshold; for the algorithm comparison, we applied a range of thresholds to generate a precision versus recall curve.
+###end p 64
+###begin title 65
+ARACNe.
+###end title 65
+###begin p 66
+###xml 74 76 74 76 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b030">30</xref>
+###xml 271 272 269 270 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b002">2</xref>
+We obtained the authors' original implementation of the ARACNe algorithm [30] for Linux (). As recommended in the algorithm documentation, we restricted the tolerance threshold, tau, to between 0 and 0.15 and sampled this parameter evenly. As used by the ARACNe authors [2] and recommended in the distribution, we built mutual information tables using the "fast" method (sliding window/"naive" estimator).
+###end p 66
+###begin p 67
+###xml 348 359 348 359 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+In the original ARACNe algorithm, an edge is pruned when it falls outside of the tolerance threshold of every interaction triangle formed by applying the data processing inequality. We created a modified implementation of the ARACNe algorithm that uses the B-spline mutual information estimate and a probabilistic threshold to improve performance (Protocol S1). For the probabilistic threshold, we computed the frequencies of keeping each edge, on the basis of all of the data processing inequality comparisons in which it participated, and we pruned the network using these frequencies. We computed the mutual information matrix using every probe set (as we also did for CLR), including the intergenic regions, to make probabilistic scores using the largest possible distribution.
+###end p 67
+###begin title 68
+CLR.
+###end title 68
+###begin p 69
+###xml 718 729 718 729 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+Bias from uneven condition sampling, upstream regulation, and inter-laboratory variations in microarrays complicate network inference, because indirect regulatory influences and direct (physical) regulatory interactions may not be easily distinguishable from their expression profiles. Our new algorithm, CLR, increases the contrast between the physical interactions and the indirect relationships by taking the network context of each relationship into account. CLR uses the local network context to compute a significance estimate for any statistical metric of similarity between gene expression profiles. We have shown that CLR performs best with mutual information but also performs well with Pearson correlation (Protocol S1).
+###end p 69
+###begin p 70
+###xml 243 244 243 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 249 250 249 250 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 435 436 435 436 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 435 436 435 436 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 493 494 493 494 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 513 514 513 514 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 524 525 524 525 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 524 525 524 525 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 582 583 582 583 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 602 603 602 603 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 606 614 606 614 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0050008-g002">Figure 2</xref>
+###xml 875 876 875 876 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 875 876 875 876 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 883 884 883 884 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 883 884 883 884 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 1006 1015 1006 1015 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sg004">Figure S4</xref>
+###xml 1084 1085 1084 1085 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1083 1085 1083 1085 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z<sub>i</sub></italic>
+###xml 1091 1092 1091 1092 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 1090 1092 1090 1092 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z<sub>j</sub></italic>
+###xml 1101 1102 1101 1102 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</italic>
+###xml 1115 1117 1115 1117 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ij</sub>
+###xml 1115 1117 1115 1117 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>ij</sub></italic>
+###xml 1158 1159 1158 1159 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1157 1159 1157 1159 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z<sub>i</sub></italic>
+###xml 1161 1162 1161 1162 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1160 1162 1160 1162 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z<sub>i</sub></italic>
+Like relevance networks and ARACNe, CLR uses the matrix of mutual information values between all probe sets on the Affymetrix array. The CLR algorithm estimates a likelihood of the mutual information (MI) score for a particular pair of genes, i and j, by comparing the MI value for that pair of genes to a background distribution of MI values (the null model). The background distribution is constructed from two sets of MI values: {MIi}, the set of all the mutual information values for gene i (in row or column i), and {MIj}, the set of all the mutual information values for gene j (in row or column j) (Figure 2A). Because of the sparsity of biological regulatory networks, most MI scores in each row of the mutual matrix represent random background MI (e.g., due to indirect network relationships). We approximate this background MI as a joint normal distribution with MIi and MIj as independent variables, which provides a reasonable approximation to the empirical distribution of mutual information (Figure S4). Thus, the final form of our likelihood estimate becomes  , where Zi and Zj are the z-scores of MIij from the marginal distributions, and f(Zi,Zi) is the joint likelihood measure. We experimented with other approximations of the background MI distribution, including the generalized extreme-value distribution, the Rayleigh distribution, and the Gaussian kernel density estimator (empirical), always achieving similar results and sacrificing speed of execution for the more expensive distribution fits.
+###end p 70
+###begin p 71
+###xml 191 193 191 193 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b033">33</xref>
+###xml 210 212 210 212 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b047">47</xref>
+###xml 306 317 306 317 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+Our method of estimating the likelihood of mutual information differs from the conventional ways of estimating significance. For example, both the analytical Roulston metric of significance [33] and shuffling [47] calculate the statistical significance given a random model of the interaction in question (Protocol S1). In contrast, CLR calculates the likelihood of mutual information given the observed network context, which consists of the background distribution formed by the mutual information for all possible incoming and outgoing edges for one gene in the network.
+###end p 71
+###begin title 72
+Bayesian networks and linear regression networks.
+###end title 72
+###begin p 73
+Unlike the pairwise algorithms described above, Bayesian networks exhaustively or heuristically search through the multivariate space of possible graphs (i.e., regulatory networks), scoring each, and keeping either the best-scoring network or a network constructed by averaging over all the searched graphs and weighting them by their score. This multivariate approach comes at a computational cost. None of the publicly available Bayesian network learning software that we tried were designed to infer a network of the size we attempted with this study, nor would they run to completion. Those that did not crash due to memory problems were unable to generate a network after several weeks of computational time.
+###end p 73
+###begin p 74
+For computational tractability, we wrote a Bayesian network algorithm that implemented a series of constraints. Every gene was restricted to having at most two regulators, and interactions were only allowed between transcription factors and genes. We tested several scoring functions for the algorithm: discrete (two-state, genes are OFF or ON), linear, logistic, polynomial approximation, and hill function. Scores for the linear function were estimated with linear least-squares fitting. Scores for nonlinear functions were estimated with nonlinear least-squares fitting using the Levenberg-Marquardt algorithm. All scores were adjusted for the number of parameters using Bayesian information criterion. Of the tested scoring methods, the linear function offered the best balance between speed and quality of reconstruction.
+###end p 74
+###begin p 75
+###xml 198 199 198 199 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 199 200 199 200 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 329 330 329 330 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 330 331 330 331 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 357 358 357 358 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+We used a model averaging procedure to score the likelihood of each edge in the regulatory network. Transcription factor/gene interactions were exhaustively scored as follows. For a particular gene Ai in a regulatory network allowing only one regulator per gene, the likelihood of being regulated by a given transcription factor Bj was calculated as  where k is indexed over all identified transcription factors. This function was generalized to the case of two transcription factors per gene to account for the scoring of the same transcription factor/gene interactions in multiple network models.
+###end p 75
+###begin p 76
+###xml 498 509 498 509 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pbio-0050008-sd001">Protocol S1</xref>
+Transcription factor/transcription factor interactions were initially scored using a different approach. We sampled directed acyclic graphs of the transcription factor only network using Metropolis Coupled Markov Chain Monte Carlo. We then applied the averaging approach above for the sampled networks. However, we found that in practice, both the speed and precision of the algorithm improved if the transcription factors were scored in the same way as for transcription factor/gene interactions (Protocol S1). This resulted in networks that were no longer directed acyclic graphs, and thus the algorithm was no longer a true Bayesian network and is referred to as a linear regression network.
+###end p 76
+###begin title 77
+Construction of the reference set of interactions.
+###end title 77
+###begin p 78
+###xml 84 86 84 86 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0050008-b027">27</xref>
+###xml 296 303 296 303 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 296 303 <span type="species:ncbi:562">E. coli</span>
+We obtained all known regulatory interactions catalogued in RegulonDB version 4 () [27]. Of the interactions, 2% could not be matched to probe sets on the expression array or had only self-regulation. We removed these interactions from the reference set. In addition, several genes thought to be E. coli regulators were present in our reference set but were not known to regulate anything within it. Therefore, we also removed these genes from all inferred networks when estimating the algorithm's performance, leaving 3,216 non-self interactions among 1,211 genes as the reference network. We also obtained a list of 328 putative and known transcription factors from RegulonDB.
+###end p 78
+###begin title 79
+Measurement of algorithm performance.
+###end title 79
+###begin p 80
+###xml 347 349 347 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TP</italic>
+###xml 351 353 351 353 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TP</italic>
+###xml 356 358 356 358 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">FP</italic>
+###xml 453 455 453 455 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TP</italic>
+###xml 457 459 457 459 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TP</italic>
+###xml 462 464 462 464 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">FN</italic>
+###xml 474 476 474 476 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TP</italic>
+###xml 510 512 510 512 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">FP</italic>
+###xml 551 553 551 553 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">FN</italic>
+To evaluate the performance of all algorithms, we constrained the resulting network maps to include only the genes available in our RegulonDB control set. We computed the precision and recall of the inferred networks by comparing the inferred network to the reference network. Precision is the fraction of predicted interactions that are correct [TP/(TP + FP)], and recall is the fraction of all known interactions that are discovered by the algorithm [TP/(TP + FN)], where TP is the number of true positives, FP is the number of false positives, and FN is the number of false negatives. Precision and recall were computed over a range of pruning thresholds; interactions with scores below the pruning threshold were removed from the inferred network. Both precision and recall are reported as percentages.
+###end p 80
+###begin title 81
+Supporting Information
+###end title 81
+###begin title 82
+The Transcriptional Regulatory Map Inferred by CLR with an Estimated 80% Precision
+###end title 82
+###begin p 83
+The precision of the network is obtained by measuring the percentage of correctly inferred edges (blue lines) out of all the predicted edges for genes with known connectivity (blue lines and green lines). The green edges represent a mixture of false and novel predictions, making 80% an underestimate. The red edges are to genes without a previously identified regulator or from regulators without a previously known target. Transcription factor nodes are colored light gray.
+###end p 83
+###begin p 84
+(162 KB PDF)
+###end p 84
+###begin p 85
+Click here for additional data file.
+###end p 85
+###begin title 86
+Transcription Factor Recall
+###end title 86
+###begin p 87
+Transcription factors, with at least two inferred interactions (blue bar), have high recall (47% on average) of the their known targets (green bar versus red bar); this suggests that when the transcription factors in the compendium are perturbed by the appropriate condition, much of that transcription factor's regulon is correctly identified.
+###end p 87
+###begin p 88
+(88 KB PDF)
+###end p 88
+###begin p 89
+Click here for additional data file.
+###end p 89
+###begin title 90
+Motifs Detected for Four of the Transcription Factors with Five or More Target Operons
+###end title 90
+###begin p 91
+(A) The canonical LexA regulatory motif was detected in the promoters of eight out of the 13 genes inferred to be LexA targets.
+###end p 91
+###begin p 92
+(B) The canonical Lrp regulatory motif was also detected with high significance.
+###end p 92
+###begin p 93
+(C) A novel motif was found for YnaE, a transcription factor that may play a role in the regulation of a prophage or DNA repair.
+###end p 93
+###begin p 94
+(D) YmfN, another prophage-related transcription factor with no known regulatory targets, had a strong motif conserved in all of its predicted targets.
+###end p 94
+###begin p 95
+(153 KB PDF)
+###end p 95
+###begin p 96
+Click here for additional data file.
+###end p 96
+###begin title 97
+Estimating the Distribution of Mutual Information
+###end title 97
+###begin p 98
+###xml 205 210 205 210 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lexA,</italic>
+The distribution of mutual information for both genes of a potential regulatory interaction is used to estimate the significance of mutual information. The distribution of mutual information for one gene, lexA, illustrates different types of fit. Normal fit, while not the best approximation to the empirical distribution, penalizes the distal network neighborhood.
+###end p 98
+###begin p 99
+(661 KB PDF)
+###end p 99
+###begin p 100
+Click here for additional data file.
+###end p 100
+###begin title 101
+Functional Enrichment of YmfN Targets
+###end title 101
+###begin p 102
+(34 KB DOC)
+###end p 102
+###begin p 103
+Click here for additional data file.
+###end p 103
+###begin title 104
+Functional Enrichment of YnaE Targets
+###end title 104
+###begin p 105
+(25 KB DOC)
+###end p 105
+###begin p 106
+Click here for additional data file.
+###end p 106
+###begin title 107
+###xml 0 1 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</italic>
+z-Scores of Motifs for Transcription Factors in the 60% Precision Network with >/=5 Predicted Operon Targets
+###end title 107
+###begin p 108
+(194 KB DOC)
+###end p 108
+###begin p 109
+Click here for additional data file.
+###end p 109
+###begin title 110
+###xml 33 40 33 40 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 33 40 <span type="species:ncbi:562">E. coli</span>
+The Clustered Microarrays of the E. coli Compendium
+###end title 110
+###begin p 111
+(1.2 MB DOC)
+###end p 111
+###begin p 112
+Click here for additional data file.
+###end p 112
+###begin p 113
+Click here for additional data file.
+###end p 113
+###begin p 114
+We thank Daniel Dwyer and Iris Keren for providing unpublished microarray data; Gwo-Yu Chuang for developing the motif comparison algorithm; Jadwiga Bienkowska, Martin Steffen, and Zoltan Szallasi for critically reading the manuscript; and David Lorenz for advice regarding the ChIP experiments.
+###end p 114
+###begin title 115
+Abbreviations
+###end title 115
+###begin p 116
+chromatin immunoprecipitation
+###end p 116
+###begin p 117
+context likelihood of relatedness
+###end p 117
+###begin p 118
+Luria-Bertani
+###end p 118
+###begin p 119
+Many Microbe Microarrays database
+###end p 119
+###begin p 120
+mutual information
+###end p 120
+###begin title 121
+References
+###end title 121
+###begin article-title 122
+Systems biology: Its practice and challenges
+###end article-title 122
+###begin article-title 123
+###xml 46 51 <span type="species:ncbi:9606">human</span>
+Reverse engineering of regulatory networks in human B cells
+###end article-title 123
+###begin article-title 124
+Predicting gene expression from sequence
+###end article-title 124
+###begin article-title 125
+Integrating regulatory motif discovery and genome-wide expression analysis
+###end article-title 125
+###begin article-title 126
+Linking the genes: Inferring quantitative gene networks from microarray data
+###end article-title 126
+###begin article-title 127
+Chemogenomic profiling on a genome-wide scale using reverse-engineered gene networks
+###end article-title 127
+###begin article-title 128
+Using Bayesian networks to analyze expression data
+###end article-title 128
+###begin article-title 129
+Growing genetic regulatory networks from seed genes
+###end article-title 129
+###begin article-title 130
+Untangling the wires: A strategy to trace functional interactions in signaling and gene networks
+###end article-title 130
+###begin article-title 131
+Network component analysis: Reconstruction of regulatory signals in biological systems
+###end article-title 131
+###begin article-title 132
+Prediction of regulatory networks: Genome-wide identification of transcription factor targets from gene expression data
+###end article-title 132
+###begin article-title 133
+Assigning numbers to the arrows: Parameterizing a gene regulation network by using accurate expression kinetics
+###end article-title 133
+###begin article-title 134
+Elucidation of gene interaction networks through time-lagged correlation analysis of transcriptional data
+###end article-title 134
+###begin article-title 135
+Module networks: Identifying regulatory modules and their condition-specific regulators from gene expression data
+###end article-title 135
+###begin article-title 136
+Systematic determination of genetic network architecture
+###end article-title 136
+###begin article-title 137
+Reverse engineering gene networks: Integrating genetic perturbations with dynamical modeling
+###end article-title 137
+###begin article-title 138
+###xml 50 56 <span type="species:ncbi:10090">murine</span>
+Least absolute regression network analysis of the murine osteoblast differentiation network
+###end article-title 138
+###begin article-title 139
+The Inferelator: An algorithm for learning parsimonious regulatory networks from systems-biology data sets de novo
+###end article-title 139
+###begin article-title 140
+Transcriptional regulatory code of a eukaryotic genome
+###end article-title 140
+###begin article-title 141
+###xml 39 63 39 63 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Saccharomyces cerevisiae</named-content>
+###xml 39 63 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Transcriptional regulatory networks in Saccharomyces cerevisiae
+###end article-title 141
+###begin article-title 142
+Making the most of it: Pathway reconstruction and integrative simulation using the data at hand
+###end article-title 142
+###begin article-title 143
+Genomic analysis of regulatory network dynamics reveals large topological changes
+###end article-title 143
+###begin article-title 144
+Integrated genomic and proteomic analyses of a systematically perturbed metabolic network
+###end article-title 144
+###begin article-title 145
+Reconstruction of microbial transcriptional regulatory networks
+###end article-title 145
+###begin article-title 146
+Combining location and expression data for principled discovery of genetic regulatory network models
+###end article-title 146
+###begin article-title 147
+Computational discovery of gene modules and regulatory networks
+###end article-title 147
+###begin article-title 148
+###xml 25 41 25 41 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 25 46 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+RegulonDB (version 5.0): Escherichia coli K-12 transcriptional regulatory network, operon organization, and growth conditions
+###end article-title 148
+###begin article-title 149
+Mutual information relevance networks: Functional genomic clustering using pairwise entropy measurements
+###end article-title 149
+###begin article-title 150
+Discovering functional relationships between RNA expression and chemotherapeutic susceptibility using relevance networks
+###end article-title 150
+###begin article-title 151
+ARACNE: An algorithm for the reconstruction of gene regulatory networks in a mammalian cellular context
+###end article-title 151
+###begin article-title 152
+Cluster analysis and display of genome-wide expression patterns
+###end article-title 152
+###begin article-title 153
+Independent coordinates for strange attractors from mutual information
+###end article-title 153
+###begin article-title 154
+Significance testing of information theoretic functionals
+###end article-title 154
+###begin article-title 155
+Fitting a mixture model by expectation maximization to discover motifs in biopolymers
+###end article-title 155
+###begin article-title 156
+###xml 68 84 68 84 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 68 84 <span type="species:ncbi:562">Escherichia coli</span>
+Identification of additional genes belonging to the LexA regulon in Escherichia coli
+###end article-title 156
+###begin article-title 157
+###xml 46 62 46 62 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 46 62 <span type="species:ncbi:562">Escherichia coli</span>
+EcoCyc: A comprehensive database resource for Escherichia coli
+###end article-title 157
+###begin article-title 158
+Uptake and metabolism of iron and molybdenum
+###end article-title 158
+###begin article-title 159
+###xml 32 48 32 48 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 32 48 <span type="species:ncbi:562">Escherichia coli</span>
+Iron transport and signaling in Escherichia coli
+###end article-title 159
+###begin article-title 160
+Genes directly controlled by CtrA, a master regulator of the Caulobacter cell cycle
+###end article-title 160
+###begin article-title 161
+Inferring genetic networks and identifying compound mode of action via expression profiling
+###end article-title 161
+###begin article-title 162
+###xml 46 62 46 62 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 46 67 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+One-step inactivation of chromosomal genes in Escherichia coli K-12 using PCR products
+###end article-title 162
+###begin article-title 163
+###xml 25 41 25 41 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 25 41 <span type="species:ncbi:562">Escherichia coli</span>
+Physiological studies of Escherichia coli strain MG1655: Growth defects and apparent cross-regulation of gene expression
+###end article-title 163
+###begin article-title 164
+Engineered riboregulators enable post-transcriptional control of gene expression
+###end article-title 164
+###begin article-title 165
+Summaries of Affymetrix GeneChip probe level data
+###end article-title 165
+###begin article-title 166
+A model-based background adjustment for oligonucleotide expression arrays
+###end article-title 166
+###begin article-title 167
+Model-based analysis of oligonucleotide arrays: Expression index computation and outlier detection
+###end article-title 167
+###begin article-title 168
+Estimating mutual information using B-spline functions-an improved similarity measure for analysing gene expression data
+###end article-title 168
+###begin article-title 169
+Integrating high-throughput and computational data elucidates bacterial networks
+###end article-title 169
+###begin article-title 170
+###xml 41 57 41 57 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 41 57 <span type="species:ncbi:562">Escherichia coli</span>
+Genome-scale analysis of the uses of the Escherichia coli genome: Model-driven analysis of heterogeneous data sets
+###end article-title 170
+###begin article-title 171
+###xml 71 87 71 87 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 71 87 <span type="species:ncbi:562">Escherichia coli</span>
+Transcriptome profiles for high-cell-density recombinant and wild-type Escherichia coli
+###end article-title 171
+###begin article-title 172
+Amino acid content of recombinant proteins influences the metabolic burden response
+###end article-title 172
+###begin article-title 173
+###xml 79 95 79 95 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 79 100 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+pH regulates genes for flagellar motility, catabolism, and oxidative stress in Escherichia coli K-12
+###end article-title 173
+###begin article-title 174
+###xml 50 66 50 66 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 50 66 <span type="species:ncbi:562">Escherichia coli</span>
+Genome-wide analysis of lipoprotein expression in Escherichia coli MG1655
+###end article-title 174
+###begin article-title 175
+###xml 54 70 54 70 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 54 75 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+Genome-wide expression analysis indicates that FNR of Escherichia coli K-12 regulates a large number of genes of unknown function
+###end article-title 175
+###begin article-title 176
+Global transcriptional effects of a suppressor tRNA and the inactivation of the regulator frmR
+###end article-title 176
+###begin article-title 177
+###xml 76 92 76 92 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 76 92 <span type="species:ncbi:562">Escherichia coli</span>
+Global transcriptional programs reveal a carbon source foraging strategy by Escherichia coli
+###end article-title 177
+###begin title 178
+Figures and Tables
+###end title 178
+###begin title 179
+###xml 41 48 41 48 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 41 48 <span type="species:ncbi:562">E. coli</span>
+Overview of Our Approach for Mapping the E. coli Transcriptional Regulatory Network
+###end title 179
+###begin p 180
+###xml 246 253 246 253 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 246 253 <span type="species:ncbi:562">E. coli</span>
+Microarray expression profiles were obtained from several investigators. Our laboratory profiled additional conditions, focusing on DNA damage, stress responses, and persistence. These two data sources were combined into one uniformly normalized E. coli microarray compendium that was analyzed with the CLR network inference algorithm. The predicted regulatory network was validated using RegulonDB, sequence analysis, and ChIP. The validated network was then examined for cases of combinatorial regulation, one of which was explored with follow-up real-time quantitative PCR experiments.
+###end p 180
+###begin title 181
+The CLR Algorithm: Methods and Comparison to Other Approaches
+###end title 181
+###begin p 182
+###xml 39 40 39 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</italic>
+###xml 168 169 168 169 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 166 170 166 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(z<sub>i</sub>)</italic>
+###xml 257 258 257 258 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 255 259 255 259 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(z<sub>j</sub>)</italic>
+(A) A schema of the CLR algorithm. The z-score of each regulatory interaction depends on the distribution of MI scores for all possible regulators of the target gene (zi) and on the distribution of MI scores for all possible targets of the regulator gene (zj).
+###end p 182
+###begin p 183
+###xml 101 108 101 108 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 101 108 <span type="species:ncbi:562">E. coli</span>
+(B) Precision and recall for several different network inference methods applied to all genes in the E. coli microarray compendium were calculated using RegulonDB. The number of correctly inferred interactions (within RegulonDB) for each recall value is labeled on the top of the chart. All algorithms performed far better than the random method. Both CLR and relevance networks reach high precisions, but CLR attains almost twice the recall of relevance networks at some levels of precision.
+###end p 183
+###begin p 184
+(C) Using 60 well-chosen arrays, we can infer a network, nearly equivalent in recall and precision to the network inferred using all 445 microarrays in the compendium (dotted horizontal line), reflecting the redundancy of the compendium and the potential for improvement in choosing subsequent perturbations to profile.
+###end p 184
+###begin title 185
+The Transcriptional Regulatory Map Inferred by CLR with an Estimated 60% Precision
+###end title 185
+###begin p 186
+The precision of the network is obtained by measuring the percentage of correctly inferred edges (blue lines) out of all the predicted edges for genes with known connectivity (blue lines and green lines). The green edges represent false positives based on RegulonDB. The red edges connect genes/regulators not present in RegulonDB. A portion of the regulatory map containing many of the Lrp interactions is shown in the expanded box. Dotted lines were tested by ChIP. Magenta and cyan dotted lines are previously unknown targets of Lrp, experimentally verified by ChIP. Genes attached to cyan lines previously had no known regulator, whereas magenta indicates a gene that had at least one previously known regulator.
+###end p 186
+###begin title 187
+Annotation of Transcription Factor Function by Functional Enrichment Using Predicted Targets from the 60% Precise Network
+###end title 187
+###begin p 188
+The functional categories of the target genes of each transcription factor were tested for enrichment by a hypergeometric test. Enriched functions indicate which aspects of cellular physiology were most represented in the inferred regulatory interactions. These enriched categories also reflect the conditions sampled in the microarray compendium.
+###end p 188
+###begin title 189
+Experimental Validation of Inferred Regulatory Interactions
+###end title 189
+###begin p 190
+Global precision scores determined with RegulonDB for a set of 268 regulatory interactions were in good correspondence with the local precision scores determined via RegulonDB plus ChIP for three transcription factors. The blue bar indicates inferred interactions that are true positives based on RegulonDB and ChIP. The green bar shows the number of inferred interactions not in RegulonDB that were positive for ChIP, representing 21 new experimentally verified regulatory interactions. The red bar shows inferred interactions that are false positives based on RegulonDB and ChIP.
+###end p 190
+###begin title 191
+###xml 34 42 34 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecABCDE</italic>
+Analysis of the Regulation of the fecABCDE Iron Transport Operon
+###end title 191
+###begin p 192
+###xml 27 28 27 28 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+All expression data are log2 transformed and RNA normalized.
+###end p 192
+###begin p 193
+###xml 36 40 36 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+(A) Fur shows no correlation to the fecA operon, one of its known target operons.
+###end p 193
+###begin p 194
+###xml 54 58 54 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+(B) FecI shows correlation to its known operon target fecA with a bifurcation that suggests combinatorial regulation by another transcription factor.
+###end p 194
+###begin p 195
+###xml 75 79 75 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+(C) PdhR, a regulator of pyruvate metabolism, is not known to regulate the fecA operon. However, their expression values are correlated in the compendium.
+###end p 195
+###begin p 196
+###xml 48 52 48 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+(D) Alignment of known PdhR binding motifs with fecA promoter. The known FecI binding motif is further downstream.
+###end p 196
+###begin p 197
+###xml 61 69 61 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecABCDE</italic>
+(E) A schema of the new proposed regulatory structure of the fecABCDE operon.
+###end p 197
+###begin p 198
+###xml 30 34 30 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 40 41 40 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">z</italic>
+(F) Viewing the expression of fecA (the z-axis is represented as color changes corresponding to the values on the color bar on the right) as a function of both transcription factors suggests its regulation by FecI and PdhR might be AND-like.
+###end p 198
+###begin p 199
+###xml 4 8 4 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pdhR</italic>
+(G) pdhR expression is highly dependent on the concentration of pyruvate in the media. Expression values exhibit high uncertainty at the threshold pyruvate concentration of 0.2% (represented by vertical error bars), suggesting a bifurcation of cells into high and low expression states.
+###end p 199
+###begin p 200
+###xml 4 8 4 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 127 131 127 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecI</italic>
+###xml 136 140 136 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pdhR</italic>
+###xml 204 208 204 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 275 279 275 279 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fecA</italic>
+###xml 363 367 363 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pdhR</italic>
+(H) fecA expression was measured at 16 concentrations of two chemicals, citrate and pyruvate, known to alter the expression of fecI and pdhR, respectively. The results further support the hypothesis that fecA expression is controlled with AND-like behavior by FecI and PdhR. fecA expression exhibits high uncertainty at 0.25 mM citrate and 0.2% pyruvate. As with pdhR expression in (G), this high uncertainty may reflect the probabilistic nature of induction near the switching threshold.
+###end p 200
+###begin p 201
+###xml 21 37 21 37 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 21 37 <span type="species:ncbi:562">Escherichia coli</span>
+Data Sources for the Escherichia coli Microarray Compendium
+###end p 201
+###begin p 202
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing interests.</bold>
+Competing interests. A portion of this work was conducted in collaboration with Cellicon Biotechnologies. JJC and TSG are founders and shareholders in the company. GC and JW are also shareholders in the company. All data, results, and algorithms from this collaboration have been made publicly available.
+###end p 202
+###begin p 203
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Author contributions.</bold>
+Author contributions. JJF, BH, JJC, and TSG conceived and designed the experiments. JJF, BH, JTT, IM, JW, and GC performed the experiments. JJF, BH, IM, SK, and TSG analyzed the data and contributed reagents/materials/analysis tools. JJF, BH, JTT, JJC, and TSG wrote the paper.
+###end p 203
+###begin p 204
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding.</bold>
+Funding. This work was supported by the Pharmaceutical Research and Manufacturers of America Foundation, the United States Department of Energy Office of Science (BER) grant number DE-FG02-04ER63803, the National Institutes of Health, National Science Foundation FIBR Award EF-0425719, the National Heart, Lung, and Blood Proteomics Initiative (HHSN268200248178C), the Whitaker Foundation, and Cellicon Biotechnologies, Inc.
+###end p 204
+

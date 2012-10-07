@@ -1,0 +1,796 @@
+###begin article-title 0
+Changing Cellular Location of CheZ Predicted by Molecular Simulations
+###end article-title 0
+###begin p 1
+###xml 43 60 43 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli,</italic>
+###xml 655 660 655 660 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+###xml 43 59 <span type="species:ncbi:562">Escherichia coli</span>
+In the chemotaxis pathway of the bacterium Escherichia coli, signals are carried from a cluster of receptors to the flagellar motors by the diffusion of the protein CheY-phosphate (CheYp) through the cytoplasm. A second protein, CheZ, which promotes dephosphorylation of CheYp, partially colocalizes with receptors in the plasma membrane. CheZ is normally dimeric in solution but has been suggested to associate into highly active oligomers in the presence of CheYp. A model is presented here and supported by Brownian dynamics simulations, which accounts for these and other experimental data: A minority component of the receptor cluster (dimers of CheAshort) nucleates CheZ oligomerization and CheZ molecules move from the cytoplasm to a bound state at the receptor cluster depending on the current level of cellular stimulation. The corresponding simulations suggest that dynamic CheZ localization will sharpen cellular responses to chemoeffectors, increase the range of detectable ligand concentrations, and make adaptation more precise and robust. The localization and activation of CheZ constitute a negative feedback loop that provides a second tier of adaptation to the system. Subtle adjustments of this kind are likely to be found in many other signaling pathways.
+###end p 1
+###begin title 2
+Synopsis
+###end title 2
+###begin p 3
+In order to function effectively, a living cell must not only synthesize the correct molecules but also put them in the correct place. Understanding how this positioning occurs, and what its consequences are, is a matter of great interest and concern to contemporary biologists. The author here proposes a novel mechanism that will enhance the ability of a bacterial cell to perform chemotaxis-the ability to swim toward sources of food or away from noxious substances. In this hypothesis, a key protein in the chemotaxis pathway moves dynamically between the membrane and the cytoplasm depending on the presence of attractants or repellents. This idea is explored and tested by means of detailed molecular simulations in which all of the relevant molecules are shown in their correct location in the cell. The simulations show that the proposed shift in location of the key molecule will improve the speed, range, and robustness of the cell's response. It seems likely that similar movements of proteins will occur in many other signaling pathways.
+###end p 3
+###begin title 4
+Introduction
+###end title 4
+###begin p 5
+###xml 360 361 352 353 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b001">1</xref>
+###xml 648 649 640 641 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b002">2</xref>
+###xml 650 651 642 643 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b003">3</xref>
+Experimental results of the past several years reveal that the bacterial cytoplasm is more complex and sophisticated than previously thought. To cite a recent review on the prokaryotic cell cycle: "Many signal transduction proteins are dynamically localized to specific subcellular addresses em leader and proper localization is essential for their function" [1]. The well-studied bacterial chemotaxis pathway is now known to depend on two kinds of large multiprotein complexes: inputs are detected by a cluster of receptors and associated proteins at one end of the cell, while flagellar motors elsewhere in the cell generate the system's output [2,3]. A small protein, CheY, achieves communication between these two complexes by diffusing freely through the cytoplasm. This protein receives its phosphate from the histidine kinase CheA, associated with the inner face of the receptor cluster, at a rate that depends on chemotactic stimulation. From there, phosphorylated CheY (CheYp) diffuses to the four-or-so motors, where it causes a change in rotational switching frequency (i.e., duration of swimming or tumbling behavior) according to its local concentration. The signal is initiated and terminated through the level of the kinase activity. It adapts to constant stimulus levels and returns to its steady-state value through changes in receptor methylation by the enzymes CheR and CheB. The signal is also stopped directly through dephosphorylation of CheYp, which is promoted by the protein CheZ.
+###end p 5
+###begin p 6
+###xml 485 486 485 486 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b004">4</xref>
+The present report adds to this picture by proposing that CheZ is a second molecule of the pathway, which changes its location during the signal transduction process. According to this model, the relocalization coincides with changes in dephosphorylation activity and leads to a second tier of adaptation, by regulating the termination of the signal. Reminiscent of the migration of proteins of the Min system that ensures the correct positioning of the bacterial cell division plane [4], the changing location of CheZ should serve to sharpen responses of the cell to attractants and repellents and make adaptation more precise. The presented proposal is based on published data, supported by quantitative computer simulations, and makes specific predictions that can be tested by experiment.
+###end p 6
+###begin title 7
+Results
+###end title 7
+###begin title 8
+Hypothesis and Biological Background
+###end title 8
+###begin p 9
+###xml 48 53 48 53 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+###xml 111 112 111 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b005">5</xref>
+###xml 154 164 154 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">homodimers</italic>
+###xml 172 177 172 177 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+###xml 457 465 457 465 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g001">Figure 1</xref>
+###xml 652 653 652 653 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+A translational variant of the CheA kinase, CheAshort, is known to be required for polar localization of CheZ [5]. A crucial element of our model is that homodimers of CheAshort nucleate CheZ oligomers. We predict that CheZ molecules move from freely diffusing in the cytoplasm to the receptor cluster according to the current level of stimulation of the cell, with repellents favoring the bound form and attractants favoring the soluble, cytoplasmic form (Figure 1). The balance between these two states is proposed to depend on the current rate of formation of CheYp at the receptor cluster. Because nucleation is entirely dependent on dimers of CheAS, in this model oligomers will form only on the receptor cluster and not in the cytoplasm.
+###end p 9
+###begin title 10
+Schematic of the Dynamic CheZ Hypothesis
+###end title 10
+###begin p 11
+###xml 164 169 164 169 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+(A) A layer of CheA dimers is positioned at the cytoplasmic face of the polar chemoreceptor cluster. Interspersed with the catalytically active CheA dimers are CheAshort homodimers, which act as anchoring points for CheZ dimers. In the absence of CheYp, a condition produced by saturating concentration of attractants, the remaining CheZ dimers diffuse freely in the cytoplasm.
+###end p 11
+###begin p 12
+###xml 148 153 148 153 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+(B) Upon increased phosphorylation of CheY, which occurs after exposure to repellent, CheZ dimers bind CheYp and oligomerize by assembly at the CheAshort-CheZ nuclei. These clustered oligomers have a greatly increased CheYp dephosphorylation activity, providing negative feedback to the system.
+###end p 12
+###begin p 13
+###xml 77 82 77 82 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+###xml 85 86 85 86 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 179 183 179 183 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cheA</italic>
+###xml 191 192 191 192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b006">6</xref>
+###xml 196 197 196 197 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 245 249 245 249 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">long</sub>
+###xml 252 253 252 253 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 256 257 256 257 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b007">7</xref>
+###xml 392 393 392 393 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 493 494 493 494 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 581 582 581 582 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b008">8</xref>
+###xml 583 584 583 584 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b009">9</xref>
+###xml 628 629 628 629 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 632 634 632 634 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b010">10</xref>
+###xml 635 637 635 637 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b011">11</xref>
+###xml 745 747 745 747 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">10</sub>
+###xml 775 777 775 777 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b010">10</xref>
+###xml 884 885 884 885 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 887 889 887 889 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b012">12</xref>
+###xml 1324 1326 1324 1326 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b013">13</xref>
+Three known features of the pathway form a basis for our hypothesis. (1) CheAshort (AS) is a truncated variant of CheA generated by translation from an in-frame start site of the cheA locus [6]. AS can form dimers either with itself or with CheAlong (AL) [7]. Both forms have the same dimerization domain, so it seems reasonable to assume that they form dimers with equal probability. Since AS lacks the histidine phosphorylation site, homodimers are enzymatically inactive. (2) In solution, AS stimulates the activity of CheZ, the enzyme that promotes dephosphorylation of CheYp [8,9]. (3) CheZ exists in solution as a dimer (Z2) [10,11] but has been proposed to self-associate into an oligomer containing approximately ten molecules of CheZ (Z10) in the presence of CheYp [10]. The oligomeric form has elevated activity and dephosphorylates CheYp an order of magnitude faster than Z2 [12]; this means that CheYp production leads to the very change that causes its breakdown by hydrolysis. Indirect support for the presence and importance of this feedback loop was recently provided by a combined experimental/theoretical study, which showed that CheYp-mediated activation of CheZ increases the robustness of the pathway and thus chemotactic efficiency and shows better agreement with experimentally measured noise levels [13]. Our model also provides a basis for methylation-independent adaptation, as discussed later.
+###end p 13
+###begin p 14
+###xml 78 79 78 79 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 103 104 103 104 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 106 107 106 107 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b005">5</xref>
+###xml 108 109 108 109 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b008">8</xref>
+###xml 110 112 110 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b014">14</xref>
+###xml 207 212 207 212 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+###xml 215 216 215 216 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 217 218 217 218 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 246 247 246 247 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 248 249 248 249 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 432 433 432 433 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 498 499 498 499 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 505 506 505 506 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 517 518 517 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b008">8</xref>
+###xml 716 732 716 732 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 760 761 760 761 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 762 763 762 763 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 772 773 772 773 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 774 775 774 775 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 786 787 786 787 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 788 789 788 789 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 874 876 874 876 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b015">15</xref>
+###xml 905 906 905 906 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 907 908 907 908 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 914 915 914 915 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 916 917 916 917 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 987 988 987 988 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b007">7</xref>
+###xml 989 991 989 991 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b016">16</xref>
+###xml 992 994 992 994 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b018">18</xref>
+###xml 1017 1018 1017 1018 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1019 1020 1019 1020 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1223 1224 1223 1224 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1225 1226 1225 1226 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1281 1282 1281 1282 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1381 1383 1381 1383 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b015">15</xref>
+###xml 1455 1463 1455 1463 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g001">Figure 1</xref>
+###xml 716 732 <span type="species:ncbi:562">Escherichia coli</span>
+Biochemical and cytological assays have shown that CheZ binds selectively to AS and at best weakly to AL [5,8,14]. We propose that this interaction is specific for the homodimer made of two molecules of CheAshort (ASAS) and that the heterodimer ALAS does not bind, or binds only weakly, to CheZ. We arrived at this conclusion from the published biochemical data showing that immunoprecipitation with antibodies to CheZ yields only AS. If heterodimers were bound, this experiment should yield both AS and AL monomers [8]. The significance of our proposal lies in the stoichiometry of the chemotaxis proteins. Based on recent estimates of the numbers of proteins in the chemotaxis pathway, we calculate that a typical Escherichia coli cell contains about 1,500 ALAL, 1,500 ALAS, and 360 ASAS dimers (numbers based on strain RP437 in rich medium and an assumed equal binding) [15]. Of these, the first two (ALAL and ALAS) have catalytic activity and are able to generate phosphoryl groups [7,16-18]. The third species, ASAS, comprising approximately 10% of the total, will be inactive and thus unable to participate directly in the generation of signals. According to our hypothesis, however, these 360 inactive molecules of ASAS could act as nuclei to attach up to 360 molecules of Z2 to the receptor cluster. We propose that a proportion of the cellular total of 1,600 CheZ dimers [15] will be recruited to the receptor cluster as highly active oligomers (Figure 1).
+###end p 14
+###begin p 15
+###xml 232 234 232 234 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b011">11</xref>
+###xml 328 336 328 336 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g002">Figure 2</xref>
+Structurally, the oligomerization could be achieved if CheYp molecules bind to the catalytic domain of one CheZ dimer and the C-terminal binding domain of another, connected by the unstructured tether which links both CheZ domains [11]. Each CheZ dimer can be attached to four CheYp monomers, and each CheYp to two CheZ dimers (Figure 2). We envisage a network of CheZ molecules on the inner face of the cluster with the remaining CheZ molecules diffusing freely as relatively inactive dimers.
+###end p 15
+###begin title 16
+###xml 30 31 30 31 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+Proposed Structure of the CheZ2Yp-Oligomeric Clusters
+###end title 16
+###begin p 17
+###xml 20 21 20 21 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 21 22 21 22 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;</sup>
+###xml 25 27 25 27 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2+</sup>
+###xml 28 29 28 29 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 33 34 33 34 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 74 76 74 76 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b011">11</xref>
+###xml 743 744 743 744 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 809 810 809 810 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b005">5</xref>
+(A) In the (CheY-BeF3--Mg2+)2CheZ2 co-crystal structure (PDB entry 1KM1, [11]), CheZ (green and gray) exists as a stable dimer. On each side of its four-helix bundle is an active site with loose affinity for a CheYp monomer (orange). The main binding affinity for CheYp is in a short C-terminal helix, which is connected to the main body of CheZ by a flexible peptide tether (dashed lines). Instead of bending back on itself, the unstructured domain, which is invisible to the crystallographer, could connect a CheYp molecule bound to the C-terminus of one CheZ dimer to the catalytic site of a neighboring one. This allows for the formation of extended oligomers. Anchorage to the polar cluster could occur via the CheZ-apical helices to CheAS homodimers (salmon-colored ovals), as suggested by mutagenesis [5].
+###end p 17
+###begin p 18
+(B) In oligomeric networks, each CheZ dimer can be connected to a maximum of four neighboring CheZ dimers, via flexible tethers and CheYp. A looser network will exist if not all CheYp binding sites are occupied. View from below, as compared to (A). Created with MacPyMOL (DeLano Scientific LLC, San Carlos, California, United States).
+###end p 18
+###begin p 19
+###xml 227 234 227 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 365 367 365 367 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b019">19</xref>
+###xml 397 404 397 404 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 450 457 450 457 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 685 692 685 692 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 852 854 852 854 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b020">20</xref>
+###xml 1180 1182 1180 1182 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b020">20</xref>
+###xml 1183 1185 1183 1185 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b022">22</xref>
+###xml 1407 1409 1407 1409 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b020">20</xref>
+###xml 450 457 <span type="species:ncbi:562">E. coli</span>
+What will be the distribution of CheZ molecules at any instant of time, and how will this be affected by the chemotactic signals entering the cell? To address these questions, we employed a recently developed computer program, Smoldyn, which allows the movement and interaction of a large number of individual molecules in a structured environment to be simulated [19]. In a recent study, we used Smoldyn to construct a three-dimensional model of an E. coli cell and examined the diffusion of CheYp from the cluster of receptors to the flagellar motors, under control conditions and in response to attractant and repellent stimuli. The high spatial resolution available to us with the Smoldyn program allowed us to calculate the locus of individual CheYp molecules in a cell and the distribution of their lifetimes under different cellular conditions [20]. In this way, we have already found that the position of CheZ can affect chemotaxis. When this protein is distributed throughout the cytoplasm, it generates a shallow gradient of CheYp concentration that is highest next to the receptor cluster, as has also been observed in parallel FRET experiments and analytical studies [20-22]. When CheZ molecules are positioned at the receptor cluster, they change the lifetime profile and reduce the cytoplasmic gradient of CheYp, ensuring equal occupancy of flagellar motors throughout the length of the cell [20].
+###end p 19
+###begin title 20
+Model Specifications
+###end title 20
+###begin p 21
+###xml 0 7 0 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 127 129 127 129 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b019">19</xref>
+Smoldyn was created to stochastically simulate chemical and biochemical reaction networks in a spatially detailed environment [19]. This is achieved by modeling each individual molecule and its exact position in a series of short time intervals. Diffusing molecules assume a new, random direction at every time step, similar to Brownian motion. They will react when finding themselves in close proximity to a reaction partner or, for unimolecular reactions, at a certain probability. Firmly based on physical chemistry, the diffusive distances, reaction radii, and probabilities are calculated from the user-defined rate constants and the time-step length (see also Materials and Methods).
+###end p 21
+###begin p 22
+###xml 23 30 23 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 130 137 130 137 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 210 211 210 211 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</sub>
+###xml 217 218 217 218 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 327 335 327 335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g003">Figure 3</xref>
+###xml 394 401 394 401 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+###xml 471 472 471 472 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 615 616 615 616 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 658 659 658 659 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 742 743 742 743 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 756 757 756 757 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 780 781 780 781 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 782 783 782 783 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 872 873 872 873 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 993 994 993 994 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 995 996 995 996 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 998 999 998 999 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1002 1003 1002 1003 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sub>
+###xml 1148 1150 1148 1150 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b023">23</xref>
+###xml 1207 1208 1207 1208 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1231 1232 1231 1232 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1263 1264 1263 1264 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1265 1266 1265 1266 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1304 1305 1304 1305 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b008">8</xref>
+###xml 1306 1308 1306 1308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b010">10</xref>
+###xml 1309 1311 1309 1311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b015">15</xref>
+###xml 1406 1414 1406 1414 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g002">Figure 2</xref>
+###xml 1482 1483 1482 1483 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1511 1512 1511 1512 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1513 1514 1513 1514 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1525 1526 1525 1526 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1578 1579 1578 1579 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1595 1596 1595 1596 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 130 137 <span type="species:ncbi:562">E. coli</span>
+Here, we have used the Smoldyn program to explore possible changes to the location and state of oligomerization of CheZ within an E. coli cell. To do this, we generated a model of a bacterium with an array of AL and AS dimers at one pole, flagellar motors on the lateral sides, and diffusible molecules within the cell volume (Figure 3A). We set up a series of binding and catalytic equations (Table 1); these are based on known interactions between CheZ, CheYp, and CheAS but include many binding and rate constants that are not presently known (see also Discussion). In these reactions, CheZ dimers in solution (Z2) bind to CheYp (Yp) to form the complex Z2Yp, which we consider the building block from which oligomers are built. Units of Z2Yp (or free Z2) then associate with ASAS dimers and thereby nucleate assembly at the receptor cluster. In our model, additional Z2Yp units add in a linear fashion up to a maximum of five, with the largest complex consequently having the composition ASAS(Z2Yp)5. Note that this mechanism ensures that Yp promotes oligomer formation, as shown experimentally (most convincingly through protein crosslinking [23]). The stoichiometry of the complexes, with one Yp per Z2 dimer and up to five Z2 dimers per oligomer (and per ASAS), is consistent with published data [8,10,15]. Although we envisage a network in which almost all CheZ molecules could be linked together (Figure 2B), at saturation there will be on average five CheZ dimers per CheAS dimer in the cluster. One ASAS-anchored Z2Yp molecule can be directly attached to four other Z2Yp molecules-a Z2Yp pentamer is therefore likely to be quite stable.
+###end p 22
+###begin title 23
+###xml 24 31 24 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+Graphical Output of the Smoldyn Simulations, Showing Differential Localization of CheZ and Its Oligomeric Forms
+###end title 23
+###begin p 24
+###xml 26 30 26 30 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">long</sub>
+(A) In the absence of CheAlong kinase activity and phosphorylated CheY, all CheZ dimers are unbound and freely diffusing in the cytoplasm.
+###end p 24
+###begin p 25
+(B, C) Upon sudden increase of kinase activity, the level of CheYp rises initially in the anterior part (B), and then, (C), in the entire cell.
+###end p 25
+###begin p 26
+###xml 110 111 110 111 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 110 111 110 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>2</sub></italic>
+(D) After 1 min at constant kinase activity, the increase of CheYp has led to the formation of oligomeric CheZ2Yp clusters at the inner face of the polar receptor cluster.
+###end p 26
+###begin p 27
+###xml 57 64 57 64 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+Snapshots of animations in OpenGL. Reactions 1, 3, 8, 9 (Table 1).
+###end p 27
+###begin p 28
+Reactions
+###end p 28
+###begin p 29
+###xml 487 495 487 495 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g002">Figure 2</xref>
+###xml 530 531 530 531 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 841 842 841 842 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+In the absence of more concrete information, we tested a variety of reaction schemes. We found, for example, that the inclusion of reactions in which oligomers simultaneously hydrolyze Yp and dissociate did not make any substantial difference (unpublished data). For simplicity, we therefore assumed that the hydrolysis of CheYp promoted by CheZ is separable from the oligomerization. This can occur if only one CheYp monomer per CheZ dimer is sufficient to stabilize an oligomer, as in Figure 2. In this case, vacant sites on a Z2Yp unit will fill and empty in an iterated cycle without causing disruption of the oligomer. Note that hydrolysis of CheYp that is separable from oligomerization is required for the presence of negative feedback. This way, unlimited numbers of CheYp can be hydrolyzed by each clustered (and highly active) CheZ2. If, on the other hand, each hydrolysis resulted in the break up of oligomers, only one Yp would be hydrolyzed per clustered CheZ dimer, which would be no advance over doing it in solution.
+###end p 29
+###begin p 30
+###xml 89 91 89 91 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b023">23</xref>
+###xml 150 157 150 157 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+###xml 269 271 269 271 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b024">24</xref>
+###xml 272 274 272 274 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b025">25</xref>
+###xml 316 325 312 321 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cheR cheB</italic>
+###xml 333 335 329 331 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b026">26</xref>
+###xml 883 884 879 880 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+Rates of hydrolysis increase in the oligomers in accordance with published observations [23] and are proportional to the number of free active sites (Table 1). We chose rate constants so as to generate the experimentally estimated level of CheYp in unstimulated cells [24,25] and to fit the activity profile of DeltacheR cheB cells [26]. (These mutants serve to distinguish the effects of CheZ oligomerization from other adaptive mechanisms, see below). Recent FRAP measurements of the CheZ diffusion coefficient are consistent with a low molecular weight species in the cytoplasm (M. A. DePristo, L. Chang, K. Lipkow, R. D. Vale, and S. Khan, unpublished data). Consequently, in the simulations presented here, the formation of CheZ oligomers takes place exclusively at the receptor cluster, unless stated otherwise. Simulations in which oligomerization occurs independently of CheAS in the cytoplasm or not at all were done as controls.
+###end p 30
+###begin title 31
+Dynamics of the Model
+###end title 31
+###begin p 32
+###xml 102 110 102 110 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g004">Figure 4</xref>
+###xml 112 113 112 113 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g004">4</xref>
+###xml 309 311 309 311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b020">20</xref>
+###xml 312 314 312 314 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b027">27</xref>
+###xml 315 317 315 317 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b029">29</xref>
+###xml 525 527 525 527 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b015">15</xref>
+###xml 576 583 576 583 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 895 903 895 903 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g003">Figure 3</xref>
+###xml 909 910 909 910 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g003">3</xref>
+###xml 1013 1014 1013 1014 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1286 1294 1286 1294 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g003">Figure 3</xref>
+###xml 1553 1561 1553 1561 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g004">Figure 4</xref>
+###xml 1563 1564 1563 1564 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g004">4</xref>
+Responses of our simulated bacterial cell to repeated addition and removal of attractant are shown in Figure 4A-4C. Changes in stimulus produce corresponding changes in the level of activation of CheA and hence changes in the level of CheYp, as seen in experiments and reproduced in previous computer models [20,27-29]. The traces show considerable noise due to the relatively small numbers of molecules under examination (there are 8,200 CheY molecules per cell, including both phosphorylated and unphosphorylated species) [15]. Because of the spatial detail included in the Smoldyn simulations, both the formation and most of the hydrolysis of CheYp are localized to the immediate vicinity of the receptor cluster. In response to stimulation by repellent (or removal of attractant) the concentration of CheYp rises, initially in the vicinity of the receptor cluster and then in the cytoplasm (Figure 3B and 3C). However, this same increase also promotes CheZ oligomerization leading to the recruitment of more Z2Yp units from the cytoplasm. Over a period of time, these added units increase CheYp hydrolysis. The concentration of CheYp in a cell exposed to repellent thus rises rapidly to a peak about 1 s after the stimulus and then falls to a lower level in the ensuing 1 to 2 min (Figure 3D). Exposure of the cell to attractant produces changes in the opposite sense: now the rate of CheYp production falls and there is a net release of CheZ which moves from an oligomeric state bound to the receptors to a freely diffusing state in the cytoplasm (Figure 4A-4C). With the parameters used here, the shifts in location are only partial, with approximately one third of the bound CheZ being released by a strong attractant stimulus.
+###end p 32
+###begin title 33
+Molecular Movements: Results of a Typical Simulation
+###end title 33
+###begin p 34
+###xml 90 91 90 91 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 96 103 96 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+###xml 250 259 246 255 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cheR cheB</italic>
+###xml 365 366 361 362 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 374 375 370 371 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+(A) The input to the simulations is the proportion of active CheA kinase dimers (orange; A2* in Table 1), which undergoes three cycles of halving and doubling. It does not include any methylation-dependent adaptation and is thus equivalent to a DeltacheR cheB strain. CheAp (yellow) is generated by autophosphorylation of active CheA. (Shown is the sum of species A2*p and A2p.) Black arrows indicate the addition and removal of attractant in an equivalent experimental system.
+###end p 34
+###begin p 35
+(B) Fraction of CheYp (red), generated by phosphotransfer from CheAp and autophosphorylation. Only unbound CheYp monomers are shown (CheYp free).
+###end p 35
+###begin p 36
+(C) CheZ dimers bound in oligomers of increasing size (light to dark green) and total CheZ in these polar oligomers (black).
+###end p 36
+###begin p 37
+###xml 87 96 83 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cheR cheB</italic>
+###xml 133 134 128 129 <sc xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">l</sc>
+###xml 158 160 153 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b026">26</xref>
+###xml 238 239 233 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</italic>
+###xml 245 247 240 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b051">51</xref>
+###xml 248 250 243 245 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b052">52</xref>
+###xml 265 266 260 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</italic>
+###xml 275 277 270 272 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b025">25</xref>
+###xml 293 314 288 309 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Materials and Methods</xref>
+(D) CheYp concentration, calculated from experimental measurements of CCW bias of DeltacheR cheB strain ST447, stimulated with 1 muM l-serine (modified from [26]). Curves were calculated with two different degrees of motor cooperativity (H = 5 [51,52] (magenta) or H = 10.3 [25] (purple), see Materials and Methods). Open circles are values where the real CCW bias was estimated to be 1% instead of the published 0%; this accounts for inaccuracies of the Hill equation at low numbers.
+###end p 37
+###begin p 38
+###xml 22 29 22 29 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+Reactions 1, 3, 8, 9 (Table 1).
+###end p 38
+###begin p 39
+###xml 256 264 256 264 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">Figure 5</xref>
+###xml 472 480 472 480 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">Figure 5</xref>
+###xml 887 895 887 895 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">Figure 5</xref>
+###xml 901 902 901 902 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">5</xref>
+###xml 1025 1033 1025 1033 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">Figure 5</xref>
+###xml 1039 1040 1039 1040 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">5</xref>
+Temporal changes in CheYp level in response to stimulation were examined in greater detail in a series of simulations employing the maximum possible change in CheA activation (corresponding to a receptor occupancy change from 100% to 0% and back to 100%) (Figure 5). The traces were averaged over 25 simulation runs in order to reduce noise. Here it is clear that the rapid rise and subsequent fall in CheYp level correlate with the formation of oligomeric CheZ clusters (Figure 5D). Note that these slower changes in the level of CheY phosphorylation constitute an adaptation of the signal that is independent of receptor methylation, since both the methylating enzyme CheR and the demethylating enzyme CheB are not present in these simulations. This feedback of free CheYp concentration in the cell is observed whether oligomers are formed in the cytoplasm or at the receptor cluster (Figure 5C and 5D). For comparison, traces for the traditional scheme, with fixed CheZ position and constant CheZ activity, are presented (Figure 5A and 5B). Here the CheYp profile adopts the shape expected of a saturation curve.
+###end p 39
+###begin title 40
+CheYp Levels, CheZ Clustering Dynamics, and Motor Occupancy in Response to an Extreme Activity Profile
+###end title 40
+###begin p 41
+###xml 62 70 62 70 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g003">Figure 3</xref>
+Simulations were carried out in cells of the architectures in Figure 3 but with four copies of each motor #1 (0.2 mum from the anterior end) and motor #2 (1.8 mum from the anterior end), one on each lateral face. As input, the phosphorylation state of CheA kinase was changed sharply from 0% to 100% and back (yellow line); this activity profile, shown in full in column 1 (A-D) was repeated 25 times. Red (free CheYp/total CheY), mean of 25 runs; black (CheZ localized in oligomers/total CheZ), mean of 25 runs. Columns 2 and 3 (E-L) are expanded sections of these simulations. Blue, occupancy (FliMYp/total FliM) of motor #1, mean of (25 runs x 4 motors =) 100 traces; cyan, occupancy of motor #2, mean of 100 traces; thin gray, corresponding curves from the top two panels in the same column. Note the differences in time scales.
+###end p 41
+###begin p 42
+###xml 107 114 107 114 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+Row 1 (A, E, I) All CheZ dimers are in an immobile lattice 40 nm from the anterior end. Reactions 2, 3, 4 (Table 1).
+###end p 42
+###begin p 43
+###xml 100 107 100 107 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+Row 2 (B, F, J), All CheZ are dimers freely diffusing in the entire cell volume. Reactions 2, 3, 5 (Table 1).
+###end p 43
+###begin p 44
+###xml 111 118 111 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+Row 3 (C, G, K), Formation of freely diffusing CheZ oligomers in the entire cell volume. Reactions 2, 3, 6, 7 (Table 1).
+###end p 44
+###begin p 45
+###xml 71 76 71 76 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+###xml 128 135 128 135 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+Row 4 (D, H, L), Dynamic CheZ localization with oligomerization at CheAshort according to our hypothesis. Reactions 2, 3, 8, 9 (Table 1).
+###end p 45
+###begin p 46
+###xml 76 85 76 85 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g004">Figures 4</xref>
+###xml 91 92 91 92 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">5</xref>
+###xml 154 156 154 156 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b026">26</xref>
+###xml 157 159 157 159 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b030">30</xref>
+###xml 162 170 162 170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g004">Figure 4</xref>
+###xml 192 201 192 201 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cheR cheB</italic>
+###xml 402 404 402 404 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b031">31</xref>
+###xml 405 407 405 407 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b033">33</xref>
+It is interesting to note that the overshoot in CheYp concentration seen in Figures 4B and 5D corresponds closely to in vivo data published 20 years ago [26,30] (Figure 4D). In these studies, cheR cheB mutant bacteria exhibited a partial adaptation of flagellar rotation within 1 to 2 min of chemoeffector addition or removal, explaining findings that these mutants retain some chemotactic capability [31-33]. Our model of dynamic CheZ relocalization and activity can completely account for these experimental results. Both methylation-defective bacteria and our simulations are unable to compensate for a complete shutdown of kinase activity but adapt perfectly to smaller attractant stimuli (not shown).
+###end p 46
+###begin title 47
+Implications for Signaling Properties
+###end title 47
+###begin p 48
+###xml 330 338 329 337 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">Figure 5</xref>
+###xml 340 341 339 340 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">5</xref>
+###xml 714 722 713 721 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">Figure 5</xref>
+###xml 728 729 727 728 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">5</xref>
+###xml 915 923 914 922 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">Figure 5</xref>
+###xml 929 930 928 929 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">5</xref>
+###xml 1040 1048 1039 1047 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">Figure 5</xref>
+###xml 1054 1055 1053 1054 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">5</xref>
+###xml 1387 1395 1386 1394 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">Figure 5</xref>
+###xml 1397 1398 1396 1397 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">5</xref>
+###xml 1404 1405 1403 1404 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">5</xref>
+###xml 1407 1408 1406 1407 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">5</xref>
+Because our simulations follow all of the CheYp molecules in the cell, we are able to monitor the changes in binding of CheYp to the flagellar motors. Detailed changes in the occupancy of motors at two different locations in the cell-one near the polar cluster (0.2 mum) and the other at the opposite end of the cell-are shown in Figure 5E-5L. These records indicate that the dynamic trafficking of CheZ produces an improved temporal response: a rise in the production of CheYp is relayed most effectively to flagellar motors if the CheZ is localized to the receptor cluster, since otherwise the phosphatase in the cytoplasm attenuates the level of the production of CheYp before it can diffuse to distant motors (Figure 5E and 5F). Conversely, a sudden fall in CheYp is best relayed to the flagellar motors if CheZ is diffusing freely in the cytoplasm since this ensures a rapid fall in local CheYp concentration (Figure 5I and 5J). In the scheme with a dynamically assigned CheZ, the occupancy-level changes give the best of both worlds (Figure 5H and 5L), i.e., it allows the cell to react to both repellent and attractant stimuli with maximum speed. This scheme also prevents the formation of intracellular CheYp gradients, which result in differences in the occupancy and bias of anterior and posterior motors when CheZ is restricted to the cytoplasm-as either dimers or oligomers (Figure 5F-5H and 5J-5L).
+###end p 48
+###begin p 49
+###xml 279 287 279 287 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g006">Figure 6</xref>
+###xml 421 429 421 429 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g006">Figure 6</xref>
+###xml 431 432 431 432 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g006">6</xref>
+###xml 564 572 564 572 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g006">Figure 6</xref>
+###xml 574 575 574 575 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g006">6</xref>
+###xml 690 698 690 698 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g006">Figure 6</xref>
+###xml 895 903 895 903 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g006">Figure 6</xref>
+###xml 905 906 905 906 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g006">6</xref>
+Analysis of the dose-response of our simulated cell revealed another consequence of CheZ redistribution. The performance of a cell in which CheZ was dynamically relocated in the manner described above was compared to a cell with either all fixed or all diffusing CheZ molecules (Figure 6). In all schemes, the level of CheYp rises initially with rising CheA activity-due, for example, to increased exposure to repellent (Figure 6A-6D). In cells with entirely polar or entirely cytoplasmic CheZ (with or without oligomerization), the CheYp level quickly saturates (Figure 6A-6C), but with dynamic CheZ localization, the level of CheYp continues to rise throughout the entire activity range (Figure 6D). This feature should allow a cell to distinguish repellent levels even at high concentrations. For decreasing activity or increasing attractant concentrations, all schemes perform equally well (Figure 6E-6H).
+###end p 49
+###begin title 50
+Dose-Response Curves
+###end title 50
+###begin p 51
+CheA activity (orange) was increased in ten equal steps from steady-state to maximum level to mimic an increasing repellent concentration (A-D) or decreased to mimic an increase in attractant (E-H). Orange, ratio of active CheA; red, free CheYp; black, oligomeric CheZ.
+###end p 51
+###begin p 52
+###xml 69 76 69 76 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+(A, E) CheZ all dimeric and fixed at the cluster. Reactions 1, 3, 4 (Table 1).
+###end p 52
+###begin p 53
+###xml 60 67 60 67 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+(B, F) CheZ all dimeric and cytoplasmic. Reactions 1, 3, 5 (Table 1).
+###end p 53
+###begin p 54
+###xml 63 70 63 70 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+(C, G) Cytoplasmic CheZ oligomerization. Reactions 1, 3, 6, 7 (Table 1).
+###end p 54
+###begin p 55
+###xml 54 61 54 61 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+(D, H) Dynamic CheZ clustering. Reactions 1, 3, 8, 9 (Table 1).
+###end p 55
+###begin p 56
+###xml 179 186 179 186 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+###xml 435 436 435 436 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 437 438 437 438 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 451 453 451 453 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b014">14</xref>
+Finally, our system is relatively robust to exact rate constants. For example, with a 100-fold increase of the oligomerization and deoligomerization constants (last four lines of Table 1, reactions 8), the CheYp levels adapt after only 2 s, but motor occupancy and dose-response curves retain the advantages described above (not shown). This also leaves room for incorporation of new experimental data, such as a higher proportion of ASAS homodimers [14].
+###end p 56
+###begin title 57
+Discussion
+###end title 57
+###begin p 58
+###xml 272 279 272 279 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 281 283 281 283 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b034">34</xref>
+###xml 459 461 459 461 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b035">35</xref>
+###xml 518 523 518 523 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+###xml 525 526 525 526 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b005">5</xref>
+###xml 688 690 688 690 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b036">36</xref>
+###xml 272 279 <span type="species:ncbi:562">E. coli</span>
+An early hint that CheZ might redistribute between the cytoplasm and the membrane was obtained almost three decades ago. In 1977, Ridgway and colleagues reported that this newly described protein was present in both the cytoplasmic and the membrane fractions of disrupted E. coli [34]. Direct visual evidence, however, came only in 2000, when Sourjik and Berg found that green fluorescent protein-labeled CheZ colocalizes with the polar cluster of receptors [35], an association shown to depend on the presence of CheAshort [5]. A common feature of these and all subsequent analyses is that considerable cell-to-cell heterogeneity exists in the amounts of CheZ located at the cell poles [36].
+###end p 58
+###begin p 59
+###xml 461 462 461 462 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 463 464 463 464 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 466 467 466 467 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 470 471 470 471 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</sub>
+The presented model predicts that the amount of CheZ associated with receptor clusters shifts in response to external stimulation. Detection of this movement will not be trivial, as the predicted changes are small, short-lived, and dependent on the formation of complex oligomeric structures, which might be disrupted by labeled fusion proteins. At this point, rate constants for association/dissociation of and hydrolysis by the different oligomeric forms of ASAS(Z2Yp)n are not known, and may be difficult to determine, as the dynamic nature of the proposal implies that cells and in vitro reactions will always contain a mixture of oligomers. Without these numbers, precise quantitative predictions cannot be made with any certainty-this, however, was not the aim of this study. Although a lot of care has been taken to incorporate and match known data, the goal was a proof of principle-to show how a novel loop and spatial reorganization in the well-studied network of bacterial chemotaxis can function and benefit the cell.
+###end p 59
+###begin p 60
+###xml 193 201 193 201 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g005">Figure 5</xref>
+If changes in localization are small, what significance can they have for cellular function? The most striking consequence will be to sharpen the chemotactic response, which is demonstrated in Figure 5. Sudden exposure to attractant will initiate a rapid fall in CheYp (due to the activity of the accumulated CheZ dimers) and cause dispersal of CheZ into the cytoplasm. The departure of CheZ will limit the extent of hydrolysis of CheYp at the receptor cluster while at the same time it will enhance CheYp capture in the cytoplasm. This could enable CheZ to scavenge CheYp from regions close to the flagellar motors, thereby ensuring that these respond in a timely fashion to the external stimulus. Note that CheYp only has to be bound by CheZ, and not necessarily hydrolyzed, to be unavailable to the motors. In reverse fashion, if the cell encounters a repellent, this will engender a rapid rise in CheYp concentration, closely followed by a movement of CheZ to the membrane. The rise in CheYp in the vicinity of the cluster will thereby be limited in duration while, at the same time, it will be accentuated at the motors.
+###end p 60
+###begin p 61
+###xml 382 390 382 390 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli,</italic>
+###xml 515 517 515 517 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b037">37</xref>
+###xml 518 520 518 520 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b038">38</xref>
+###xml 820 822 820 822 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b039">39</xref>
+###xml 997 999 997 999 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b026">26</xref>
+###xml 1109 1111 1109 1111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b012">12</xref>
+###xml 1112 1114 1112 1114 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b023">23</xref>
+###xml 1132 1134 1132 1134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b040">40</xref>
+###xml 1470 1471 1470 1471 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1509 1510 1509 1510 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1738 1745 1738 1745 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">release</italic>
+###xml 1806 1816 1806 1816 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">attachment</italic>
+###xml 1981 1983 1981 1983 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b021">21</xref>
+###xml 2391 2393 2391 2393 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b015">15</xref>
+###xml 2394 2396 2394 2396 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b041">41</xref>
+###xml 2397 2399 2397 2399 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b043">43</xref>
+###xml 382 389 <span type="species:ncbi:562">E. coli</span>
+Another consequence of the changes in localization and oligomeric state is that they will provide an additional layer of adaptation. The ability to adapt to attractants on a relatively slow time scale (slower than the initial phosphorylation of CheY) is a crucial element in chemotaxis, since it allows the organism to detect chemical gradients over a wide range of concentrations. E. coli, for instance, can detect aspartate at concentrations below 10 nM but continues to move up gradients that reach almost 1 mM [37,38]. This remarkable capacity is possible only because the system returns to its initial position after each increment of attractant. The principal mechanism for adaptation is the well-characterized methylation of receptors, which acts as a counterbalance for the inhibitory effects of the attractant [39]. However, evidence from studies of bacterial mutants lacking the methylation enzymes shows that an additional level of adaptation exists that is independent of methylation [26]. It has been suggested previously that this second tier of adaptation could be due to CheZ oligomerization [12,23]. Almogy et al. [40] showed analytically that a delayed response of CheZ to changes in CheYp would ensure a more rapid and precise return to initial conditions and hence amplify the range over which chemotaxis could work. In contrast to their work, our model proposes that CheZ is the mobile element that moves between cytoplasm and membrane, and not CheAS. Our model does not require that CheAS's affinity to the cluster is dependent on receptor activity, although it does not rule out that this could further enhance and refine CheZ-based adaptation. However, whereas active receptors in their model directly promote the release of cluster-bound molecules, in ours they indirectly promote attachment to the polar clusters. It thereby localizes the maximum dephosphorylation activity to the cluster and not the cytoplasm, which is consistent with recent FRET data [21]. Moreover, the application of a whole-cell simulation, in which the spatial location of each molecule is considered, takes the analysis to a new level of confidence. A previously unmentioned function of this second tier of adaptation is as a back-up system in conditions in which the methylation system is impaired due to toxins, mutation, or stochastic fluctuations in the low-copy enzymes CheR and CheB [15,41-43].
+###end p 61
+###begin p 62
+The described changes and advantages are quite small, but benefits do not need to be large to be selectable in evolution, especially when there is no additional cost: our model uses exactly the same components and amount of energy as the traditional scheme. Considering the astronomical numbers of generations in the lineage of present-day bacteria and their highly competitive environment, the required optimization of binding affinities and conditional reaction constants is easily covered by the subtle but real improvements. Many other features of intracellular chemistry that might seem to us to be inconsequential or even accidental could likewise have arisen because they confer subtle selective advantages on the organism.
+###end p 62
+###begin p 63
+Our model adds to the examples where an altered function of proteins (activation by phosphorylation of CheY) leads to an altered structure (oligomers, polar clusters), which in turn has an altered function (enhanced dephosphorylation). This creates a feedback loop in which a molecule (CheYp) is directly involved in its own destruction. Most known feedback loops are built of more components. It is very likely that many other intracellular systems display similar mechanisms and that dynamic changes of macromolecular localization in response to intracellular or extracellular conditions could refine and enable properties that have not yet been appreciated.
+###end p 63
+###begin p 64
+###xml 370 372 370 372 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b044">44</xref>
+###xml 447 454 447 454 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 459 476 459 476 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bacillus subtilis</named-content>
+###xml 478 480 478 480 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b045">45</xref>
+###xml 481 483 481 483 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b048">48</xref>
+###xml 858 862 858 862 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">long</sub>
+###xml 870 875 870 875 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+###xml 1016 1017 1016 1017 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</sub>
+###xml 1030 1032 1030 1032 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b049">49</xref>
+###xml 447 454 <span type="species:ncbi:562">E. coli</span>
+###xml 459 476 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Finally, it seems likely that the changes we postulate are still only part of the picture. For simplicity we have assumed that other components of the polar cluster-the receptors and molecules of CheA-are stable and unchanging. In fact it appears that both of these components do exist to some degree in the cytoplasm and in isolated groups away from the polar cluster [44], and there is some evidence that they also might show dynamic changes in E. coli and Bacillus subtilis [45-48]. Interestingly, the orientation of movements is the same: The addition of attractant leads to reduced clustering in both chemoreceptors (as observed experimentally) and CheZ (according to our model). An intriguing possibility is therefore that clustered CheZ stabilizes and tightens the receptor cluster, and vice versa. Another parameter that can vary is the ratio of CheAlong to CheAshort. It was shown that during growth of a culture, this ratio can change from 4:1 to 1:1. Maximal motility was seen at the highest level of CheAS expression [49], i.e., at maximal dynamic CheZ clustering. Once the cell has a functioning signal transduction pathway, then subsequent refinements that affect cellular localization and regulatory interactions could be easily made. They could improve performance while placing little, if any, burden on the cell.
+###end p 64
+###begin title 65
+Materials and Methods
+###end title 65
+###begin title 66
+###xml 0 7 0 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+Smoldyn.
+###end title 66
+###begin p 67
+###xml 0 7 0 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 204 211 204 211 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 225 227 225 227 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b019">19</xref>
+###xml 239 246 239 246 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 531 532 531 532 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</sub>
+###xml 530 537 530 537 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p<sub>B</sub>(r,t)</italic>
+###xml 602 603 602 603 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 613 614 613 614 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 617 618 617 618 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</sub>
+###xml 616 618 616 618 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">D<sub>B</sub></italic>
+###xml 673 674 673 674 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</sub>
+###xml 672 681 672 681 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p<sub>B</sub>(r,t)dr</italic>
+###xml 747 749 747 749 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dr</italic>
+###xml 765 766 765 766 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 775 776 775 776 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1263 1266 1263 1266 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">dt.</italic>
+Smoldyn source code, executable program, manuals, and detailed documentation are downloadable from  (Steven Andrews) and  (Dennis Bray's group). A detailed report of the theory and assumptions underlying Smoldyn is given in [19]. Briefly, Smoldyn employs the Smoluchowski level of detail, i.e., molecules have an identity and an exact position in continuous space but no volume, shape, or inertia. They diffuse in random directions by distances calculated from Fick's second law rewritten as a stochastic master equation:  , with pB(r,t), spatial probability density of a single B molecule at position r and time t; DB, diffusion coefficient for a B molecule. The product pB(r,t)dr is the probability that a specific B molecule is within a volume dr about position r at time t. Solving the above equation shows that the probability density for the displacement of a molecule after a time step has a Gaussian profile on each Cartesian coordinate. These results form the basis of the simulation method called Brownian dynamics in which diffusion is simulated by picking a normally distributed random displacement for each molecule at each step. Since space is continuous, not compartmentalized, the level of detail can be adjusted by a suitable choice of step time dt.
+###end p 67
+###begin p 68
+###xml 9 16 9 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+To run a Smoldyn simulation, the user writes a configuration file. The coordinates of the simulation volume are specified, and identified molecules are placed at specific positions within the framework of this cell box. Some molecules are anchored just inside the walls, whereas others (those that are freely diffusing) are initially assigned random locations. Each molecular species has a diffusion coefficient (which may be zero if it is membrane-associated) and a color and size for the graphical animation. The configuration file also includes a list of potential reactions and reaction probabilities. The molecules themselves are point objects and have no dimensions. At each time step, all mobile molecules undergo a diffusive step in a random direction. Diffusive distances are calculated from Fick's law, converted into probabilities. At the end of this first simulation step, molecules are moved to their new positions. Any molecule that crosses the boundary of the cell box is reflected back in like a billiard ball. Unimolecular reactions now occur with a probability calculated from the specified rate constant. Bimolecular reactions are decided by the proximity of two potential reactants: two suitable molecules that come within each other's binding radius are made to react. These radii are calculated to give the correct reaction rates following diffusive encounter. The user can specify intermittent changes, such as instantaneous reactions or the probabilistic conversion of one molecular species to another, and record the state of the system as required.
+###end p 68
+###begin title 69
+Simulations.
+###end title 69
+###begin p 70
+###xml 224 231 224 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 520 522 520 522 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b019">19</xref>
+###xml 33 38 <span type="species:ncbi:3750">Apple</span>
+Simulations were performed on an Apple Power Mac G5 (2 CPUs, 2 GHz, 3.5 GB RAM), an AMD Athlon 2000+ cluster (26 CPUs, 1.67 GHz, 1 GB RAM each), and on an AMD Athlon MP cluster (22 CPUs, 1.5 GHz, 1 GB RAM each), all running Smoldyn version 1.56. Time steps of 0.1 ms were used throughout, after it was confirmed that the simulation outcome at this level was the same as with slightly larger and much smaller time steps ("rule-of-thumb-test")-steps of this length are not expected to confer any significant inaccuracies [19]. Simulations were performed at the maximum accuracy level and virtual boxes of 150 nm side length. With this setup and molecule numbers (see below), it took approximately 8 to 24 h to simulate 1 min.
+###end p 70
+###begin p 71
+###xml 158 166 156 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g002">Figure 3</xref>
+###xml 177 182 175 180 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+###xml 397 399 395 397 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b044">44</xref>
+###xml 679 686 675 682 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+###xml 763 770 759 766 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+###xml 801 808 797 804 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020039-t001">Table 1</xref>
+###xml 866 868 862 864 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b020">20</xref>
+The simulation systems were rectangular cells of 2 mum length and 0.84 mum thickness, with a cluster of 1,250 CheA kinase dimers 20 nm from the anterior end (Figure 3). 156 CheAshort dimers, the nucleation points for CheZ oligomers, were 40 nm from the end. These lower numbers compared to those in the text reflect the finding that, on average, less than 50% of total CheA localizes to the pole [44]. Two motors, each a ring of 34 FliM molecules, were included in the analysis: motor #1 situated 0.2 mum and motor #2 situated 1.8 mum from the anterior end. 8,200 CheY monomers were randomly placed and diffuse in the cytoplasm. 1,600 CheZ dimers were either randomly diffusing (Table 1, reactions 5, 6, and 8) or placed in a lattice 40 nm from the anterior end (Table 1, reactions 4). Reactions from Table 1, as specified in the figure legends, were included. See [20] for further details of the simulation procedure.
+###end p 71
+###begin title 72
+Conversion of experimental data.
+###end title 72
+###begin p 73
+###xml 4 12 4 12 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020039-g004">Figure 4</xref>
+###xml 86 88 86 88 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b026">26</xref>
+###xml 263 264 263 264 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">u</sub>
+###xml 266 267 266 267 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 290 291 290 291 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</italic>
+###xml 288 291 288 291 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1/<italic>H</italic></sup>
+###xml 331 333 331 333 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b050">50</xref>
+###xml 412 413 412 413 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">u</sub>
+###xml 529 530 529 530 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 571 572 571 572 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">u</sub>
+###xml 614 615 614 615 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</italic>
+###xml 709 711 709 711 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b051">51</xref>
+###xml 712 714 712 714 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b052">52</xref>
+###xml 725 727 725 727 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020039-b025">25</xref>
+For Figure 4D, the measured values of counterclockwise bias (%CCW) were read in from [26], Figure 10 (fraction of tethered cells that continuously rotated CCW during the indicated 15-s intervals). Values were transformed to numbers of CheYp molecules with Yp = Ypu [c CWbias/(1 - CWbias)]1/H (rearranged from the Hill equation in [50]), where Yp is the number of CheYp molecules in the cell at each timepoint; Ypu, number of CheYp molecules in an unstimulated cell = 1,640 = 0.2 * 8,200; CWbias, clockwise bias = 1 - (%CCW/100); c, adjustment constant = 1.5 (from Yp = Ypu and CWbias = 0.4 in unstimulated cells); H, Hill coefficient, degree of cooperativity between CheYp concentration and motor bias = 5.0 [51,52] or 10.3 [25].
+###end p 73
+###begin p 74
+###xml 299 306 299 306 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Smoldyn</italic>
+###xml 395 400 <span type="species:ncbi:202634">Barna</span>
+This work was carried out in the group of Dennis Bray, whose comments and collaboration helped to shape this project throughout. Matthew D. Levin went out of his way to proofread and tighten the manuscript. I am indebted to both of them. Very many thanks also go to Steven S. Andrews for continuing Smoldyn development, to Upinder S. Bhalla for use of his "Death By Chocolate" cluster, to Jenny Barna and the Cambridge eScience Centre for their support of the CamGrid system, and to Sven Sewitz, Bernhard Windisch, Upinder S. Bhalla, Ruth Silversmith, Victor Sourjik, Ady Vaknin, Thomas S. Shimizu, and Shahid Khan for helpful discussions and/or insightful comments on the manuscript.
+###end p 74
+###begin title 75
+Abbreviations
+###end title 75
+###begin p 76
+###xml 4 8 4 8 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">long</sub>
+CheAlong
+###end p 76
+###begin p 77
+###xml 4 9 4 9 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">short</sub>
+CheAshort
+###end p 77
+###begin p 78
+phosphorylated CheY
+###end p 78
+###begin p 79
+CheZ dimer
+###end p 79
+###begin title 80
+References
+###end title 80
+###begin article-title 81
+Temporal and spatial regulation in prokaryotic cell cycle progression and development
+###end article-title 81
+###begin article-title 82
+Making sense of it all: bacterial chemotaxis
+###end article-title 82
+###begin article-title 83
+###xml 45 52 45 52 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 45 52 <span type="species:ncbi:562">E. coli</span>
+Receptor clustering and signal processing in E. coli chemotaxis
+###end article-title 83
+###begin article-title 84
+###xml 66 82 66 82 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 66 82 <span type="species:ncbi:562">Escherichia coli</span>
+Dynamic localization cycle of the cell division regulator MinE in Escherichia coli
+###end article-title 84
+###begin article-title 85
+CheZ phosphatase localizes to chemoreceptor patches via CheA-short
+###end article-title 85
+###begin article-title 86
+###xml 25 29 25 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cheA</italic>
+###xml 39 55 39 55 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 39 55 <span type="species:ncbi:562">Escherichia coli</span>
+Overlapping genes at the cheA locus of Escherichia coli
+###end article-title 86
+###begin article-title 87
+The short form of the CheA protein restores kinase activity and chemotactic ability to kinase-deficient mutants
+###end article-title 87
+###begin article-title 88
+Characterization of the CheAS/CheZ complex: A specific interaction resulting in enhanced dephosphorylating activity on CheY-phosphate
+###end article-title 88
+###begin article-title 89
+Phosphorylation of three proteins in the signaling pathway of bacterial chemotaxis
+###end article-title 89
+###begin article-title 90
+Oligomerization of the phosphatase CheZ upon interaction with the phosphorylated form of CheY. The signal protein of bacterial chemotaxis
+###end article-title 90
+###begin article-title 91
+###xml 41 48 41 48 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 41 48 <span type="species:ncbi:562">E. coli</span>
+Structure and catalytic mechanism of the E. coli chemotaxis phosphatase CheZ
+###end article-title 91
+###begin article-title 92
+Regulation of phosphatase activity in bacterial chemotaxis
+###end article-title 92
+###begin article-title 93
+Design principles of a bacterial signalling network
+###end article-title 93
+###begin article-title 94
+Distributed subunit interactions in CheA contribute to dimer stability: A sedimentation equilibrium study
+###end article-title 94
+###begin article-title 95
+Cellular stoichiometry of the components of the chemotaxis signaling complex
+###end article-title 95
+###begin article-title 96
+Intermolecular complementation of the kinase activity of CheA
+###end article-title 96
+###begin article-title 97
+Active site interference and asymmetric activation in the chemotaxis protein histidine kinase CheA
+###end article-title 97
+###begin article-title 98
+Genetic analysis of the catalytic domain of the chemotaxis-associated histidine kinase CheA
+###end article-title 98
+###begin article-title 99
+Stochastic simulation of chemical reactions with spatial resolution and single molecule detail
+###end article-title 99
+###begin article-title 100
+###xml 68 84 68 84 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 68 84 <span type="species:ncbi:562">Escherichia coli</span>
+Simulated diffusion of phosphorylated CheY through the cytoplasm of Escherichia coli
+###end article-title 100
+###begin article-title 101
+###xml 56 72 56 72 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 56 72 <span type="species:ncbi:562">Escherichia coli</span>
+Single-cell FRET imaging of phosphatase activity in the Escherichia coli chemotaxis system
+###end article-title 101
+###begin article-title 102
+Phosphatase localization in bacterial chemotaxis: Divergent mechanisms, convergent principles
+###end article-title 102
+###begin article-title 103
+Mutants with defective phosphatase activity show no phosphorylation-dependent oligomerization of CheZ. The phosphatase of bacterial chemotaxis
+###end article-title 103
+###begin article-title 104
+Response regulator output in bacterial chemotaxis
+###end article-title 104
+###begin article-title 105
+An ultrasensitive bacterial motor revealed by monitoring signaling proteins in single cells
+###end article-title 105
+###begin article-title 106
+Neither methylating nor demethylating enzymes are required for bacterial chemotaxis
+###end article-title 106
+###begin article-title 107
+A model of excitation and adaptation in bacterial chemotaxis
+###end article-title 107
+###begin article-title 108
+Perfect and near-perfect adaptation in a model of bacterial chemotaxis
+###end article-title 108
+###begin article-title 109
+###xml 69 85 69 85 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 90 107 90 107 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bacillus subtilis</named-content>
+###xml 69 85 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 90 107 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Design and diversity in bacterial chemotaxis: a comparative study in Escherichia coli and Bacillus subtilis
+###end article-title 109
+###begin article-title 110
+Temporal comparisons in bacterial chemotaxis
+###end article-title 110
+###begin article-title 111
+Impulse responses in bacterial chemotaxis
+###end article-title 111
+###begin article-title 112
+###xml 70 86 70 86 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 70 86 <span type="species:ncbi:562">Escherichia coli</span>
+Reversible receptor methylation is essential for normal chemotaxis of Escherichia coli in gradients of aspartic acid
+###end article-title 112
+###begin article-title 113
+###xml 44 60 44 60 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 44 60 <span type="species:ncbi:562">Escherichia coli</span>
+Control of transducer methylation levels in Escherichia coli: Investigation of components essential for modulation of methylation and demethylation reactions
+###end article-title 113
+###begin article-title 114
+###xml 64 80 64 80 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 64 80 <span type="species:ncbi:562">Escherichia coli</span>
+Localization of proteins controlling motility and chemotaxis in Escherichia coli
+###end article-title 114
+###begin article-title 115
+###xml 58 74 58 74 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 58 74 <span type="species:ncbi:562">Escherichia coli</span>
+Localization of components of the chemotaxis machinery of Escherichia coli using fluorescent protein fusions
+###end article-title 115
+###begin article-title 116
+###xml 96 112 96 112 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 96 112 <span type="species:ncbi:562">Escherichia coli</span>
+Effect of chemoreceptor modification on assembly and activity of the receptor-kinase complex in Escherichia coli
+###end article-title 116
+###begin article-title 117
+The range of attractant concentrations for bacterial chemotaxis and the threshold and size of response over this range. Weber law and related phenomena
+###end article-title 117
+###begin article-title 118
+Bacterial chemotaxis and the question of gain
+###end article-title 118
+###begin article-title 119
+Protein methylation in behavioural control mechanisms and in signal transduction
+###end article-title 119
+###begin article-title 120
+Multi-stage regulation, a key to reliable adaptive biochemical pathways
+###end article-title 120
+###begin article-title 121
+Non-genetic individuality: Chance in the single cell
+###end article-title 121
+###begin article-title 122
+###xml 99 115 99 115 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 99 115 <span type="species:ncbi:562">Escherichia coli</span>
+Noise in gene expression as the source of non-genetic individuality in the chemotactic response of Escherichia coli
+###end article-title 122
+###begin article-title 123
+From molecular noise to behavioural variability in a single bacterium
+###end article-title 123
+###begin article-title 124
+###xml 51 67 51 67 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 51 67 <span type="species:ncbi:562">Escherichia coli</span>
+Polar location of the chemoreceptor complex in the Escherichia coli cell
+###end article-title 124
+###begin article-title 125
+###xml 34 51 34 51 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bacillus subtilis</named-content>
+###xml 34 51 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Transmembrane organization of the Bacillus subtilis chemoreceptor McpB deduced by cysteine disulfide crosslinking
+###end article-title 125
+###begin article-title 126
+###xml 85 102 85 102 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bacillus subtilis</named-content>
+###xml 85 102 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Receptor conformational changes enhance methylesterase activity during chemotaxis by Bacillus subtilis
+###end article-title 126
+###begin article-title 127
+Attractant binding alters arrangement of chemoreceptor dimers within its cluster at a cell pole
+###end article-title 127
+###begin article-title 128
+Large increases in attractant concentration disrupt the polar localization of bacterial chemoreceptors
+###end article-title 128
+###begin article-title 129
+Phosphorylating and dephosphorylating protein complexes in bacterial chemotaxis
+###end article-title 129
+###begin article-title 130
+Computer analysis of the binding reactions leading to a transmembrane receptor-linked multiprotein complex involved in bacterial chemotaxis
+###end article-title 130
+###begin article-title 131
+Multiple kinetic states for the flagellar motor switch
+###end article-title 131
+###begin article-title 132
+Control of direction of flagellar rotation in bacterial chemotaxis
+###end article-title 132
+###begin article-title 133
+Subunit organization in a soluble complex of tar, CheW, and CheA by electron microscopy
+###end article-title 133
+###begin article-title 134
+Template-directed assembly of receptor signaling complexes
+###end article-title 134
+###begin article-title 135
+Rapid phosphotransfer to CheY from a CheA protein lacking the CheY-binding domain
+###end article-title 135
+###begin article-title 136
+Conformational coupling in the chemotaxis response regulator CheY
+###end article-title 136
+###begin article-title 137
+###xml 15 31 15 31 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 79 86 79 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vivo</italic>
+###xml 15 31 <span type="species:ncbi:562">Escherichia coli</span>
+Binding of the Escherichia coli response regulator CheY to its target measured in vivo by fluorescence resonance energy transfer
+###end article-title 137
+###begin article-title 138
+Binding of the chemotaxis response regulator CheY to the isolated, intact switch complex of the bacterial flagellar motor: lack of cooperativity
+###end article-title 138
+###begin article-title 139
+Alteration of a nonconserved active site residue in the chemotaxis response regulator CheY affects phosphorylation and interaction with CheZ
+###end article-title 139
+###begin article-title 140
+###xml 37 53 37 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 37 53 <span type="species:ncbi:562">Escherichia coli</span>
+Protein mobility in the cytoplasm of Escherichia coli
+###end article-title 140
+###begin article-title 141
+###xml 46 62 46 62 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 46 62 <span type="species:ncbi:562">Escherichia coli</span>
+Chemotactic signaling in filamentous cells of Escherichia coli
+###end article-title 141
+###begin article-title 142
+Biological physics: Energy, information, life
+###end article-title 142
+###begin p 143
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Author contributions.</bold>
+Author contributions. KL conceived and designed the simulations, performed the simulations, analyzed the data, and wrote the paper.
+###end p 143
+###begin p 144
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding.</bold>
+Funding. This work was supported by National Institute of General Medical Sciences grant GM64713.
+###end p 144
+###begin p 145
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing interests.</bold>
+Competing interests. The author has declared that no competing interests exist.
+###end p 145
+###begin p 146
+A previous version of this article appeared as an Early Online Release on March 15, 2006 (DOI: ).
+###end p 146
+###begin p 147
+Citation: Lipkow K (2006) Changing cellular location of CheZ predicted by molecular simulations. PLoS Comput Biol 2(4): e39. DOI: 10.1371/journal.pcbi.0020039
+###end p 147
+

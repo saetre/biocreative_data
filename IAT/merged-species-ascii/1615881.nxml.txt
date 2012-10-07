@@ -1,0 +1,956 @@
+###begin article-title 0
+Detection of prokaryotic promoters from the genomic distribution of hexanucleotide pairs
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+In bacteria, sigma factors and other transcriptional regulatory proteins recognize DNA patterns upstream of their target genes and interact with RNA polymerase to control transcription. As a consequence of evolution, DNA sequences recognized by transcription factors are thought to be enriched in intergenic regions (IRs) and depleted from coding regions of prokaryotic genomes.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+In this work, we report that genomic distribution of transcription factors binding sites is biased towards IRs, and that this bias is conserved amongst bacterial species. We further take advantage of this observation to develop an algorithm that can efficiently identify promoter boxes by a distribution-dependent approach rather than a direct sequence comparison approach. This strategy, which can easily be combined with other methodologies, allowed the identification of promoter sequences in ten species and can be used with any annotated bacterial genome, with results that rival with current methodologies. Experimental validations of predicted promoters also support our approach.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+Considering that complete genomic sequences of over 1000 bacteria will soon be available and that little transcriptional information is available for most of them, our algorithm constitutes a promising tool for the prediction of promoter sequences. Importantly, our methodology could also be adapted to identify DNA sequences recognized by other regulatory proteins.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 451 452 447 448 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 639 640 635 636 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+Adaptation is essential to the survival of any biological organism and requires appropriate transcriptional regulation to modulate gene expression profiles. In prokaryotes, RNA polymerase (RNAP) is responsible for the transcription of all genes. However, promoter recognition is effected by an interchangeable sigma (sigma) factor that associates to RNAP, directs the newly formed holoenzyme to a promoter and contributes to transcription initiation [1]. Transcription levels can be further modified by additional regulators (activators and repressors) that affect the recruitment or the activity of RNAP holoenzymes at various promoters [2]. A common feature of sigma factors and transcriptional regulators is their ability to recognize specific DNA patterns in order to modulate gene expression. It is presumed that, as a result of evolutionary pressure, these regulatory sequences were selected upstream of some genes or operons and excluded from the rest of the genome.
+###end p 9
+###begin p 10
+###xml 312 313 300 301 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 407 410 387 390 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70 </sup>
+###xml 418 421 394 397 <sup xmlns:xlink="http://www.w3.org/1999/xlink">54 </sup>
+###xml 424 440 400 416 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 447 449 419 421 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70</sup>
+###xml 640 641 608 609 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 642 643 610 611 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 916 917 880 881 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 950 953 906 909 <sup xmlns:xlink="http://www.w3.org/1999/xlink">54 </sup>
+###xml 1126 1129 1078 1081 <sup xmlns:xlink="http://www.w3.org/1999/xlink">54 </sup>
+###xml 1138 1141 1086 1089 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70 </sup>
+###xml 1180 1183 1124 1127 <sup xmlns:xlink="http://www.w3.org/1999/xlink">54 </sup>
+###xml 1290 1292 1230 1232 <sup xmlns:xlink="http://www.w3.org/1999/xlink">54</sup>
+###xml 424 440 <span type="species:ncbi:562">Escherichia coli</span>
+Bacterial genomes usually encode many sigma factors. Of these, the principal sigma factor would be responsible for the expression of housekeeping function genes. The remaining sigma factors are thought to direct the expression of genes required for specialized functions such as stress responses or sporulation [1]. sigma factors can also be classified according to their structural homology to either sigma70 or sigma54 of Escherichia coli. sigma70-related factors, which constitute the vast majority of known sigma factors, are composed of two major DNA-binding domains capable of sensing a certain spacing range when associated to RNAP [3,4]. These sigma factors usually recognize two DNA boxes (herein referred as the promoter) of approximately six base pairs (bp) located roughly at 10 and 35 bp upstream of the transcription start site (TSS). Spacing between these two boxes generally ranges from 16 to 20 bp [5]. sigma factors similar to sigma54 also recognize two DNA boxes in the promoter region. However these elements are located approximately 12 and 24 bp upstream of the TSS. Other major differences between sigma54 and sigma70 family members are the ability of sigma54 to bind DNA in absence of RNAP and the requirement of an isomerization step by an activator to render sigma54-containing holoenzymes processive.
+###end p 10
+###begin p 11
+###xml 105 113 101 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 118 121 110 113 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70 </sup>
+###xml 216 217 208 209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 356 357 348 349 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 429 431 417 419 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70</sup>
+###xml 463 471 451 459 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 472 473 460 461 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 683 691 671 679 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 692 693 680 681 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 706 724 694 712 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis </italic>
+###xml 725 726 713 714 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 105 112 <span type="species:ncbi:562">E. coli</span>
+###xml 463 470 <span type="species:ncbi:562">E. coli</span>
+###xml 683 690 <span type="species:ncbi:562">E. coli</span>
+###xml 706 723 <span type="species:ncbi:1423">Bacillus subtilis</span>
+sigma factors can tolerate a variety of mismatches from their consensus sequence. For example, a typical E. coli sigma70 promoter sequence contains two mismatches within both the -35 and -10 hexanucleotide elements [6]. However, there is generally a direct relationship between promoter strength and the similarity to the corresponding consensus sequence [7]. Variations over three orders of magnitude have been reported in sigma70-dependent promoter strength in E. coli [8]. In some cases, an extended -10 promoter box may be observed and may substitute for the absence of a clear -35 element. Extended -10 promoter boxes were reported to be present in 20% of promoter sequences in E. coli [6] and 45% in Bacillus subtilis [5].
+###end p 11
+###begin p 12
+###xml 765 766 761 762 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 767 769 763 765 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 853 855 849 851 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 856 858 852 854 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 997 999 993 995 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+A variety of techniques have been used to identify TSS and to characterize sigma factor-DNA interactions. However, the formal identification of promoters by molecular methods can be tedious and is currently not amenable to genome-wide applications. Consequently, it is important to develop algorithms that can rapidly and accurately evaluate the presence of promoters, without the need for extensive biochemical studies. Current algorithms for promoter detection, typically developed for a specific bacterium, exploit different characteristics of promoter sequences. Some approaches are based on sequence representation or statistical overrepresentation. Other methodologies have also been described for the detection of DNA motifs in sets of regulatory sequences [9-12] or by comparing the upstream regions of orthologous genes from different species [13-17]. A method based on the weaker stability of the DNA double-helix in promoter regions was also recently used to identify promoter regions [18]. However, most of these procedures are not suitable for the identification of precise prokaryotic promoters because of the inherent variability in promoter sequences and because they do not allow variable spacers between two DNA motifs.
+###end p 12
+###begin p 13
+###xml 310 315 310 315 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 318 320 318 320 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 417 419 417 419 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 471 474 467 470 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70 </sup>
+###xml 578 585 574 581 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 694 696 690 692 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 743 745 739 741 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 867 875 863 871 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 880 883 872 875 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70 </sup>
+###xml 1008 1010 1000 1002 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 1149 1151 1141 1143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 578 585 <span type="species:ncbi:562">E. coli</span>
+###xml 867 874 <span type="species:ncbi:562">E. coli</span>
+Sequence representation strategies designed for promoter identification are usually based on a prior knowledge of some characterized sequences. These algorithms are thus trained to recognize sequences that are similar to a previously defined representation of a promoter. This approach was first used by Galas et al. [19]. As reported by Stormo, numerous false positives (FP) are however obtained with this strategy [20]. For example, allowing two mismatches in the sigma70 consensus -10 hexanucleotide produces roughly one hit per 30 nucleotides (nt) in the complete genome of E. coli. A more accurate representation of DNA-binding motifs consists of position-specific weight matrices (PSWM) [21], and online tools such as Virtual Footprint [22] are available to facilitate their analysis in the context of bacterial gene expression. Nonetheless, searching for full E. coli sigma70 consensus promoter sequences using more flexible mismatch restrictions offered by PSWM also generates a vast amount of hits [23]. More recently, Huerta and Collado-Vides used a PSWM-derived methodology and detected approximately 15 putative promoters/100 nt in IRs [24]
+###end p 13
+###begin p 14
+###xml 317 319 317 319 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 447 459 443 455 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 460 462 456 458 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 468 489 464 485 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Campylobacter jejuni </italic>
+###xml 490 492 486 488 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 634 636 630 632 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 447 458 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 468 488 <span type="species:ncbi:197">Campylobacter jejuni</span>
+By adding several constraints such as grouping sequences and filtering with the distance from the start codon, they achieved a sensitivity of 86% with an average of 1.88 putative promoters/100 nt. Several groups have also used general neural networks but no significant improvements have been achieved over the PSWM [25]. Hidden Markov Models (HMM) have also been trained to identify promoter sequences recognized by the principal sigma factor in B. subtilis [26] and Campylobacter jejuni [27]. A learning approach based on a Support Vector Machine (SVM) employing a variant of the mismatch string kernel was also recently described [28]. Importantly, all above-mentioned approaches depend on a previously established or trained description of promoters, and were not designed to function with organisms for which promoter information is insufficient.
+###end p 14
+###begin p 15
+###xml 243 248 243 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 348 368 344 364 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori </italic>
+###xml 396 398 392 394 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 740 750 732 742 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 754 766 746 758 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 767 769 759 761 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 894 905 882 893 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 978 980 966 968 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 1030 1035 1018 1023 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1095 1103 1083 1091 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1104 1106 1092 1094 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 1138 1146 1126 1134 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1151 1154 1135 1138 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70 </sup>
+###xml 1322 1324 1306 1308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 1457 1481 1437 1461 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Streptomyces coelicolor </italic>
+###xml 1482 1484 1462 1464 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 348 367 <span type="species:ncbi:210">Helicobacter pylori</span>
+###xml 740 749 <span type="species:ncbi:210">H. pylori</span>
+###xml 754 765 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 894 905 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 1095 1102 <span type="species:ncbi:562">E. coli</span>
+###xml 1138 1145 <span type="species:ncbi:562">E. coli</span>
+###xml 1457 1480 <span type="species:ncbi:1902">Streptomyces coelicolor</span>
+Statistical overrepresentation approaches can identify short DNA sequences that are present more frequently in a subset of sequences than what would be expected by chance according to the background distribution. Using such a procedure, Vanet et al. have proposed a description of the promoter sequences recognized by the principal sigma factor of Helicobacter pylori from different sets of IRs [29]. More recently, the MITRA algorithm, which also evaluates the spacing between promoter boxes and the positional bias from the start codon, was applied to 20 bacterial genomes. Four of these genomes generated statistically strong signals possibly corresponding to principal sigma factor-dependent promoter sequences, including the ones from H. pylori and B. subtilis [30]. Using a different approach, the principal sigma factor consensus sequence was identified among over-represented motifs in B. subtilis, although the methodology was not designed especially for that purpose [31]. The latter study was based on the method of Li et al., designed to identify regulatory protein binding sites in E. coli [32]. It has been noticed that the E. coli sigma70 consensus sequence was not identified by this or other approaches, a failure that was attributed to the greater variability of promoter sequences within this organism [32]. A similar method was also unable to distinguish a motif related to the principal sigma factor promoters in the complete genome of Streptomyces coelicolor [33]. In general, although some statistical approaches had limited success, these methods do not seem appropriate in their current form for the identification of promoter sequences in a variety of organisms.
+###end p 15
+###begin p 16
+###xml 529 531 525 527 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+In this paper, we describe a novel approach based on matrices representing the genomic distribution of hexanucleotide pairs, and designed to predict precise promoter sequences using any annotated prokaryotic genome. This approach can be applied to organisms for which almost no transcriptional data is available, without the need for extensive biochemical characterization. The strategy is based on the observation that, although promoter sequences can vary for every sigma factor and according to the GC content of each genome [34], promoters are over-represented in IRs relative to the whole genome. Since this bias appears to be conserved throughout evolution, the characteristic distribution of promoter sequences is thus used to identify promoters in a variety of prokaryotic organisms. Briefly, a score is calculated based on the similarity between a matrix representing the genomic distribution of most promoter sequences reported in the literature and a matrix representing the genomic distribution of a putative promoter sequence. A Z-score is next calculated according to the background. To assess the validity of our method, over 680 characterized promoter sequences from ten genomes were gathered from databases and from the literature, and tested using various statistical indicators. Experimental validations of promoter prediction also supported our approach.
+###end p 16
+###begin title 17
+Results
+###end title 17
+###begin title 18
+Genomic distribution of regulatory sequences is biased and conserved
+###end title 18
+###begin p 19
+###xml 98 100 98 100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 101 103 101 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 1124 1125 1116 1117 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 1820 1828 1812 1820 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1833 1836 1821 1824 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70 </sup>
+###xml 2328 2329 2316 2317 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 2614 2615 2602 2603 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 1820 1827 <span type="species:ncbi:562">E. coli</span>
+Transcription initiation is an important step in the regulation of most bacterial cell processes [35,36]. For this reason, it is thought that transcription factor binding sites have been evolutionary selected in some IRs, and generally excluded from the rest of prokaryotic genomes in order to avoid aberrant gene expression. Since regulatory sequences can often tolerate a variety of mismatches with respect to the corresponding DNA motif consensus sequence and still be efficiently bound by their cognate DNA binding protein, these degenerated sequences are also believed to be subjected to a similar selective pressure. Therefore, the genomic distribution of transcription factor consensus DNA binding sequences and close derivatives is expected to be biased towards IRs possibly involved in transcription initiation relative to the whole genome. To test this latter hypothesis, we have analyzed the genomic distribution of consensus sequences representing, respectively, the recognized sequences of a principal sigma factor, an alternative sigma factor and a transcriptional regulator of three bacterial species (Figure 1 and data not shown). The global distribution of these DNA sequences is reported in "distribution matrices", which consists of tables of dimension 4 x 4 where lines and columns correspond respectively to the number of mismatches in the proximal and distal boxes of a particular DNA sequence. For every matrix cells, the proportion of hits in putative promoter-containing IRs (P) relative to the whole genome (G) was calculated, with respect to a defined spacing range between the two hexanucleotide boxes forming the evaluated sequences. Light colored cells correspond to low P/G ratios while darker cells represent higher frequencies. For example, the genome-derived distribution matrix of the E. coli sigma70 consensus promoter sequence shows that 65% of genome sequences bearing one mismatch in the -35 element (distal box) but a perfect -10 (proximal) box are localized in P regions relative to the whole genome. At three mismatches in each box (50% degeneracy of the analyzed sequence), about 16% of the hits are found in P regions, which roughly corresponds to the proportion of IRs in the genome. Such sequences are thus considered randomly distributed in the genome. Results presented in Figure 1 thus demonstrate that transcription factor consensus DNA binding sites and related mismatch(es)-containing derivatives tend to be preferentially localized inside IRs. Moreover, the genomic distribution of these sequences shows related patterns in all tested bacterial species (Figure 1).
+###end p 19
+###begin p 20
+###xml 0 128 0 128 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Genome-derived distribution matrices generated for consensus sequences from transcription factors of three different organisms. </bold>
+###xml 132 139 132 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 145 156 145 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 166 181 166 181 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis</italic>
+###xml 132 139 <span type="species:ncbi:562">E. coli</span>
+###xml 145 156 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 166 181 <span type="species:ncbi:1773">M. tuberculosis</span>
+Genome-derived distribution matrices generated for consensus sequences from transcription factors of three different organisms. (A) E. coli, (B) B. subtilis, and (C) M. tuberculosis. The name of the transcription factor is identified above each matrix. The mismatch number of each cell is indicated on both sides of matrices. The analyzed consensus sequence is shown under each matrix, along with the allowed spacing range. The first row corresponds to principal sigma factors, the second row to alternative sigma factors, and the third row to transcriptional regulators.
+###end p 20
+###begin title 21
+Principal sigma factor promoter sequences
+###end title 21
+###begin p 22
+###xml 188 189 184 185 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 310 317 306 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 319 331 315 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 335 350 331 346 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis</italic>
+###xml 497 498 489 490 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 582 587 574 579 <italic xmlns:xlink="http://www.w3.org/1999/xlink">rpoB </italic>
+###xml 681 682 673 674 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 310 317 <span type="species:ncbi:562">E. coli</span>
+###xml 319 330 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 335 350 <span type="species:ncbi:1773">M. tuberculosis</span>
+Because principal sigma factor promoter sequences are readily available and relatively abundant in many bacterial species, we decided to further explore their genomic distribution. Figure 2 (upper and middle rows) shows genome-derived distribution matrices of experimentally identified promoter sequences from E. coli, B. subtilis and M. tuberculosis. As expected, these matrices contain patterns similar to those observed with the corresponding principal sigma factor consensus sequences (Figure 1). Importantly, the genomic distribution of sequences from the coding region of the rpoB genes from the same bacterial species did not show any enrichment inside of P regions (Figure 2, last row and data not shown). These results suggest that transcription factor DNA binding sites from various bacterial species have a genomic distribution significantly different from that of non-regulatory sequences.
+###end p 22
+###begin p 23
+###xml 0 197 0 193 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Specific examples of genome-derived distribution matrices generated for characterized principal &#963; factor-dependent promoter sequences and non-regulatory sequences from three different organisms</bold>
+###xml 203 210 199 206 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 216 227 212 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 237 252 233 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis</italic>
+###xml 769 774 765 770 <italic xmlns:xlink="http://www.w3.org/1999/xlink">rpoB </italic>
+###xml 791 801 787 797 <italic xmlns:xlink="http://www.w3.org/1999/xlink">bona fide </italic>
+###xml 203 210 <span type="species:ncbi:562">E. coli</span>
+###xml 216 227 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 237 252 <span type="species:ncbi:1773">M. tuberculosis</span>
+Specific examples of genome-derived distribution matrices generated for characterized principal sigma factor-dependent promoter sequences and non-regulatory sequences from three different organisms. (A) E. coli, (B) B. subtilis, and (C) M. tuberculosis. Gene names and experimentally identified promoter sequences, as reported in the literature, are indicated above each matrix. The first row corresponds to characterized promoter sequences closely resembling to the proposed consensus. The second row presents experimentally identified promoters containing more mismatches relative to the proposed consensus. The last row shows distribution matrices of hexanucleotide pairs with approximately 3 mismatches position per box, which were extracted from the middle of the rpoB coding sequence (bona fide non-promoter sequences).
+###end p 23
+###begin title 24
+Synthetic matrices
+###end title 24
+###begin p 25
+###xml 920 937 916 933 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional file 1</xref>
+###xml 1118 1135 1114 1131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">Additional file 2</xref>
+From these observations, we hypothesized that a particular genome-derived distribution matrix may appropriately represent several promoters. Hence, it could be possible to calculate a score reflecting the similarity between the distribution matrix of a typical promoter and the genome-derived distribution matrix of any hexanucleotide pair from the same organism. A high score would indicate a strong probability that the tested sequence is also a promoter. However, the best reference matrix should not necessarily be obtained from an existing promoter sequence. In fact, an interpolated matrix could indeed offer more flexibility and be much more effective. We therefore decided to synthetically generate distribution matrices according to the values observed in each cell of the genome-derived distribution matrices for all available experimentally identified principal sigma factor-dependent promoter sequences (see Additional file 1: A schematic description of the procedures used in this work). A range of ratios was next determined for each cell, resulting in over 248 million different synthetic matrices (see Additional file 2: Detailed information on the generation of synthetic matrices). Synthetic matrices are thus not affiliated to any hexanucleotide pairs, but are rather produced from the genome-derived distribution matrices of experimentally identified promoters. Moreover, it could be possible to identify synthetic matrices suitable to detect promoter sequences for a specific organism ("organism-specialized matrix"), and perhaps for all bacteria ("general matrix").
+###end p 25
+###begin title 26
+Using distribution matrices to detect promoters
+###end title 26
+###begin p 27
+###xml 209 210 205 206 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 626 643 622 639 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">Additional file 3</xref>
+###xml 847 849 843 845 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 1479 1481 1473 1475 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 1683 1684 1677 1678 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 1719 1721 1713 1715 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 1722 1724 1716 1718 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+To measure the ability of synthetic matrices to correctly identify promoter sequences, we tested them on 684 characterized principal sigma factor dependent promoter sequences from ten bacterial species (Table 1). Complete IRs containing these promoters were extracted from their respective genomes along with 30 nt on each side. These "enlarged IRs" were next scanned using two hexanucleotide windows with respect to the allowed spacing ranges. For each hexanucleotide pair, a genome-derived distribution matrix was generated and used to calculate a score based on its similarity to the synthetic matrix under evaluation (see Additional file 3: Detailed example of score calculation). Different metrics have been tested and the selected one provided the best outcome (data not shown). Since the -10 box has a more important role in transcription [37], the mean of scores sharing the same -10 box was calculated. This latter averaged score had to be greater than the threshold to consider the corresponding sequence as a candidate promoter. Furthermore, since the distance between the TSS and the proximal hexanucleotide box can slightly vary (which may cause the experimental identification of -10 boxes to be inaccurate), signals located at +/- 4 nt of an experimentally identified proximal hexanucleotide box were considered as true positives (TP, see Methods). Indicators such as sensitivity, specificity, precision, and performance were calculated for each synthetic matrix [38]. We chose to present the FP rate per 100 nt rather than the precision indicator to facilitate comparison since the precision indicator does not take into account the length of analyzed regions (Table 1). In contrast with other studies [24,39], the analyzed regions were not limited to a maximum length, longer regions producing more FPs.
+###end p 27
+###begin p 28
+Analysis of characterized promoter sequences in ten bacterial genomes.
+###end p 28
+###begin p 29
+For each organism, the GC content, the number of gathered characterized promoter sequences, the number of distinct IRs containing these promoters, the total number of nt in these IRs, and the allowed spacing between hexanucleotide pairs are indicated. The sensitivity and FP rate obtained with the best synthetic matrix (organism-specialized) and the general matrix are also shown.
+###end p 29
+###begin p 30
+###xml 169 170 169 170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 313 325 313 325 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 483 484 483 484 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 739 747 739 747 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 751 763 751 763 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 1159 1176 1159 1176 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">Additional file 4</xref>
+###xml 313 324 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 739 746 <span type="species:ncbi:562">E. coli</span>
+###xml 751 762 <span type="species:ncbi:1423">B. subtilis</span>
+"Organism-specialized" synthetic matrices (selected on the basis of the performance and sensitivity indicators) gave interesting results for each tested organism (Table 1). For instance, the synthetic matrix #113362653 identified almost 60% of promoters among the set of 148 characterized promoter sequences from B. subtilis with approximately one FP/100 nt. Overall, the sensitivity of the best matrix for each organism ranges from 29.4% to 90.9% with 0.53 to 1.42 FP/100 nt (Table 1). Amongst the FP, some could be uncharacterized real promoter sequences. Performance, precision and specificity indicators ranged respectively between 4.6-23.8%, 5.2%-24.4% and 98.6-99.5% (data not shown). Cross-validation tests were also conducted with E. coli and B. subtilis promoter datasets and matrices very similar to the organism-specialized synthetic matrices were identified. Moreover, the sensitivity and FP rate of these cross-validation matrices were comparable to the organism-specialized matrices obtained using complete datasets, demonstrating the robustness of the approach and suggesting that the various organism-specialized matrices are appropriate (see Additional file 4: Three fold cross-validation results).
+###end p 30
+###begin p 31
+###xml 384 386 384 386 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3A</xref>
+###xml 391 408 391 408 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">Additional file 3</xref>
+###xml 517 518 517 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 645 646 645 646 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 720 737 720 737 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">Additional file 5</xref>
+###xml 910 918 910 918 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 922 934 922 934 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 1213 1230 1213 1230 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">Additional file 6</xref>
+###xml 910 917 <span type="species:ncbi:562">E. coli</span>
+###xml 922 933 <span type="species:ncbi:1423">B. subtilis</span>
+Interestingly, several synthetic matrices identified a significant fraction of promoter sequences in all tested genomes. We thus undertook to find a matrix that would be the best compromise for promoter detection in all bacteria. This was achieved by summing up the relative performance indicator of each matrix on all genomes. The best "general" synthetic matrix (#45012859) (Figure 3A and Additional file 3) usually showed a slight decrease in sensitivity relative to organism-specialized synthetic matrices (Table 1). Nonetheless, the sensitivity of this general synthetic matrix ranged from 14.7% to 90.9% with 0.70 to 1.36 FP/100 nt (Table 1), which is comparable to other approaches for an equivalent FP rate (see Additional file 5: Comparison with other bacterial promoter prediction approaches). Furthermore, we have replaced our scoring function by a function based on PSWM. The results obtained with E. coli and B. subtilis normalized PSWM promoter datasets, showed a significantly decreased sensitivity and a lower FP rate in our design, suggesting that the genomic distribution of promoter sequences is more flexible, and hence more portable between species than current promoter sequence models (see Additional file 6: Comparison with normalized PSWM scoring function).
+###end p 31
+###begin p 32
+###xml 0 88 0 88 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Graphs of enlarged IRs containing characterized promoter sequences presented in Figure 2</bold>
+###xml 718 726 718 726 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 731 743 731 743 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 751 767 751 767 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis </italic>
+###xml 801 814 801 814 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli rpoB </italic>
+###xml 718 725 <span type="species:ncbi:562">E. coli</span>
+###xml 731 742 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 751 766 <span type="species:ncbi:1773">M. tuberculosis</span>
+###xml 801 808 <span type="species:ncbi:562">E. coli</span>
+Graphs of enlarged IRs containing characterized promoter sequences presented in Figure 2. The green arrow represents the characterized promoter sequence. The start codon of the gene of interest is located at "0" on the X-axis of the enlarged IR. The Y-axis coordinate shows the calculated score. The threshold of each region is shown (dashed grey line). The sequence of all candidate promoters above the threshold is shown (5 merged overlapping -35 boxes from the different allowed spacings along with the shared -10 box). (A) The general synthetic matrix (#45012859) used to calculate the scores presented in the graphs. The name of the gene located downstream of the selected enlarged IR is indicated in each graph. E. coli (B), B. subtilis (C) and M. tuberculosis (D). Scores obtained for the full E. coli rpoB coding sequence were also plotted.
+###end p 32
+###begin p 33
+###xml 126 127 126 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 241 242 241 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 247 255 247 255 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 263 265 263 265 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3B</xref>
+###xml 268 280 268 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 288 290 288 290 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3C</xref>
+###xml 296 312 296 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis </italic>
+###xml 320 322 320 322 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3D</xref>
+###xml 329 334 329 334 <italic xmlns:xlink="http://www.w3.org/1999/xlink">rpoB </italic>
+###xml 365 373 365 373 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 421 433 421 433 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 437 453 437 453 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis </italic>
+###xml 471 472 471 472 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 516 518 516 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3C</xref>
+###xml 524 528 524 528 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lonA</italic>
+###xml 247 254 <span type="species:ncbi:562">E. coli</span>
+###xml 268 279 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 296 311 <span type="species:ncbi:1773">M. tuberculosis</span>
+###xml 365 372 <span type="species:ncbi:562">E. coli</span>
+###xml 421 432 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 437 452 <span type="species:ncbi:1773">M. tuberculosis</span>
+The scores of all possible hexanucleotide pairs for a specific enlarged IR can be presented in a graph. As an example, Figure 3 shows graphs obtained using the enlarged IRs containing the characterized promoter sequences presented in Figure 2 for E. coli (Figure 3B), B. subtilis (Figure 3C) and M. tuberculosis (Figure 3D). The rpoB scanning is also presented for E. coli since identical results were obtained using the B. subtilis and M. tuberculosis sequences (Figure 3 and data not shown). Interestingly, Figure 3C (Bsu-lonA) shows one of many examples where a -10 promoter box (consensus TATAAT) is coupled to a ribosome binding site (RBS, consensus AGGAGG).
+###end p 33
+###begin p 34
+###xml 428 430 428 430 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 1181 1188 1181 1188 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 1237 1248 1237 1248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 1181 1188 <span type="species:ncbi:562">E. coli</span>
+###xml 1237 1248 <span type="species:ncbi:1423">B. subtilis</span>
+To assess the significance of our results, the analyses were repeated on two types of shuffled genome sequences. While retaining all the original genome information, the shuffling destroys its structure, which is used by our methodology to identify promoter sequences. The first shuffling procedure was accomplished by repositioning mononucleotides one region (gene or IR) at a time, thus keeping the AT bias intact in each IR [40]. The second shuffling was performed independently of gene annotations, thus dispersing the GC content uniformly through a genome. We surmised that most regulatory sequences, and by extension their genomic distribution, would be affected differently by these procedures. The overall sensitivity obtained with shuffled genomes should thus be decreased. Indeed, genome-derived distribution matrices were completely different if calculated from the real genome or from shuffled genomes (data not shown). As expected, the second shuffling was much more detrimental to the observed sensitivity. For instance, the calculated sensitivity with the general synthetic matrix dropped respectively from 31% (intact genome) to 14% and 0.6% (shuffled genomes) for E. coli, and from 50% to, respectively 17% and 0.5% for B. subtilis. The same trend has been observed for other genomes (data not shown). Shuffling performed with longer nucleotides blocks than mononucleotide gave intermediate results (data not shown).
+###end p 34
+###begin title 35
+Coupling sequence information to genome distribution
+###end title 35
+###begin p 36
+###xml 186 198 182 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 202 210 198 206 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 231 232 227 228 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 728 739 724 735 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 1037 1049 1033 1045 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 1092 1093 1088 1089 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+###xml 186 197 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 202 209 <span type="species:ncbi:562">E. coli</span>
+###xml 728 739 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 1037 1048 <span type="species:ncbi:1423">B. subtilis</span>
+For some bacteria, consensus promoter sequences representing the sequences recognized by principal sigma factors are well characterized. For example, the consensus promoter sequence for B. subtilis and E. coli is TTGACA < >TATAAT [5]. We have thus examined the possibility of decreasing the occurrence of FPs by introducing a very simple sequence-dependent filter. Approximately half FPs were eliminated by allowing up to three mismatches in the -35 (distal) box and up to two mismatches in the -10 (proximal) box (the latter being more conserved in these organisms). For instance, a sensitivity of 49% with 0.50 FP/100 nt for the specialized matrix and 44% with 0.44 FP/100 nt for the general synthetic matrix was obtained for B. subtilis. Since fewer FPs were observed, the threshold could be lowered, which can improve the sensitivity of the algorithm. For example, the reduction of the IR specific threshold (see Methods) from three to two standard deviations upon sequence filtering gave a sensitivity of 58% with 0.80 FP/100 nt in B. subtilis using the general synthetic matrix. Figure 4 illustrates how the application of a filter may allow the identification of an otherwise missed promoter.
+###end p 36
+###begin p 37
+###xml 0 153 0 153 <bold xmlns:xlink="http://www.w3.org/1999/xlink">The application of a simple sequence-dependent filter and the subsequent diminution of the threshold allows the detection of an otherwise missed promoter</bold>
+###xml 262 279 262 279 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis ftsA </italic>
+###xml 434 446 434 446 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 262 273 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 434 445 <span type="species:ncbi:1423">B. subtilis</span>
+The application of a simple sequence-dependent filter and the subsequent diminution of the threshold allows the detection of an otherwise missed promoter. Graphs reporting scores calculated for all hexanucleotide pairs located in the enlarged IR upstream of the B. subtilis ftsA gene. (A) No filter applied. (B) Sequence-dependent filtering (3 mismatches and 2 mismatches allowed respectively in the -35 and -10 boxes relative to the B. subtilis principal sigma factor consensus sequence) followed by the reduction of the region-specific threshold from 3 to 2 standard deviations above of the mean.
+###end p 37
+###begin title 38
+Prediction and biochemical validation of promoters
+###end title 38
+###begin p 39
+###xml 170 171 170 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 203 214 203 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 216 224 216 224 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 228 244 228 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis </italic>
+###xml 534 535 534 535 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 203 214 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 216 223 <span type="species:ncbi:562">E. coli</span>
+###xml 228 243 <span type="species:ncbi:1773">M. tuberculosis</span>
+In addition to the IRs used to evaluate synthetic matrices, we have applied our promoter detection algorithm on the remaining IRs from the ten genomes mentioned in Table 1. Some predicted promoters from B. subtilis, E. coli and M. tuberculosis were chosen for further investigation using a biochemical approach. RNA was extracted from exponentially growing cultures and TSS were determined by primer extension analyses. The seven candidate promoters for which a transcription signal was observed matched the predicted sequence (Table 2). The distance between the observed TSS and the potential -10 box was in all cases either 5 or 6 nt. These results demonstrate that our algorithm represent a valuable tool for the identification of prokaryotic promoter sequences. Complete prediction lists for these three organisms, and others, are available upon request.
+###end p 39
+###begin p 40
+Experimental validation of predicted transcriptional start sites.
+###end p 40
+###begin p 41
+Bacterial species, gene names, predicted promoter sequences (underlined -35 and -10 boxes), experimentally identified transcriptional start sites (in bold) and the corresponding Z-scores are shown for all tested IRs where a primer extension signal was detected.
+###end p 41
+###begin title 42
+Discussion
+###end title 42
+###begin p 43
+###xml 1069 1086 1065 1082 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">Additional file 5</xref>
+###xml 1499 1507 1495 1503 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1511 1523 1507 1519 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 1567 1584 1559 1576 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">Additional file 6</xref>
+###xml 1499 1506 <span type="species:ncbi:562">E. coli</span>
+###xml 1511 1522 <span type="species:ncbi:1423">B. subtilis</span>
+In this work, we present evidences suggesting that regulatory sequences and their close derivatives have a biased distribution pattern for IRs that may support transcription initiation. Furthermore, our data support the idea that the preferential location of regulatory sequences is shared between bacterial species. In order to clearly demonstrate the potential of genomic distribution as an indicator of DNA motif function, we have developed an algorithm that can identify a significant fraction of principal sigma factor-dependent promoters in any prokaryotic organism, using only a genome annotation and a synthetic matrix (i.e. the general matrix, which was obtained from a training set composed of experimentally identified promoters from ten bacterial species). Promoter predictions were also made and experimentally verified, thus highlighting the potential of our approach for promoter identification in various prokaryotic organisms. Overall, our strategy yielded results similar to those from other studies considering an equivalent amount of FP/100 nt (see Additional file 5: Comparison with other bacterial promoter prediction approaches). However, our algorithm took advantage of a yet unexploited concept, can be used in a wide variety of organisms, required almost no previous knowledge of promoter sequences to be effective, and can be combined with other methodologies. The fact that our general matrix allowed the detection of more promoters in all tested genomes relative to the E. coli and B. subtilis principal sigma factor normalized PSWM (see Additional file 6: Comparison with normalized PSWM scoring function) also supports the idea that genomic distribution of promoter sequences is easier to transfer across organisms with regards to current promoter sequence models.
+###end p 43
+###begin p 44
+Although our approach is based on the genomic distribution of hexanucleotide pairs rather than a direct sequence evaluation, it is still important to know the approximate spacing range that is tolerated by a sigma factor to efficiently detect the corresponding promoter boxes (data not shown). However, this distance appears to be very similar in most bacteria. The spacing range limitation restrains putative promoter signal contamination by irrelevant hexanucleotide pairs.
+###end p 44
+###begin p 45
+An important assumption in our method is that all promoter sequences share a related genomic distribution pattern. However, it is possible that some promoters fall in distinct biological categories or slightly differ between bacterial species. As a consequence, specific matrices could be more adapted to different promoter types. For example, a matrix could be more suitable for promoters containing an extended -10 promoter box. Similarly, very weak promoter sequences could bear an altered distribution pattern when compared to strong promoters.
+###end p 45
+###begin p 46
+###xml 519 523 519 523 <italic xmlns:xlink="http://www.w3.org/1999/xlink">rrs </italic>
+###xml 534 536 534 536 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2C</xref>
+###xml 541 543 541 543 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3C</xref>
+Another important consideration in our study is the relatively small size of prokaryotic genomes. Since many of these contain only a few million bp, some hexanucleotide pairs are particularly absent from IRs and/or from the whole genome. Therefore, blanks (or 0) in mismatch containing cells can be found in some genome-derived distribution matrices, thus strongly altering the resemblance with the synthetic matrix. Nonetheless, a few promoter sequences containing a blank cell are identified by our approach (see Mtb-rrs in Figures 2C and 3C), although most of them are not (data not shown). Since the score is calculated from the mean of hexanucleotide pairs sharing the same proximal box, a blank occurring only at a particular spacing may not be too detrimental to the overall score of a sequence.
+###end p 46
+###begin p 47
+###xml 491 499 491 499 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 711 719 711 719 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 491 498 <span type="species:ncbi:562">E. coli</span>
+###xml 711 718 <span type="species:ncbi:562">E. coli</span>
+An additional possibility to explain our inability to identify some promoters is that, although present in the genome, some mismatch combinations may be relatively rare, and a small variation in absolute numbers may have a significant impact on P/G ratios. In addition, some promoter sequences contain nt triplets corresponding to codons frequently used in translation, which may flatten their distribution bias for IRs. For instance, 19% of the TP and 44% of the FN hexanucleotide pairs of E. coli evaluated with the organism-specialized matrix (22% and 41% respectively with the general synthetic matrix) include a triplet which is used as a codon more frequently than average. Thus, almost half of the FN in E. coli seem to have an impaired distribution profile because of the inclusion of at least one frequent codon.
+###end p 47
+###begin p 48
+###xml 451 459 451 459 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 463 475 463 475 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 451 458 <span type="species:ncbi:562">E. coli</span>
+###xml 463 474 <span type="species:ncbi:1423">B. subtilis</span>
+In spite of the fact that our algorithm was designed for fully sequenced and annotated genomes, preliminary tests suggest that a genomic distribution calculated from a closely related organism can be used as a reference with similar results (data not shown). Similarly, errors in genomes annotation could theoretically have an impact on the results, albeit we have not observed any significant deterioration of predictions using older versions of the E. coli and B. subtilis genome annotations (data not shown).
+###end p 48
+###begin p 49
+###xml 595 597 595 597 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 598 600 598 600 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 704 706 704 706 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+We have shown that combining different detection strategies by applying a very simple sequence-dependent filter to our promoter predictions significantly decreases the FP rate. Since accuracy is a trade-off between sensitivity and the FP rate, this procedure could allow the reduction of the threshold, thus leading to the detection of more TP and increasing the sensitivity. The integration of a more sophisticated sequence-dependent method to our strategy could be used to further reduce the FP rate. Distance filters were also successfully used by other groups to decrease the number of FPs [24,39]. However, this can hardly be justified in biological terms as underlined by Huerta and Collado-Vides [24]. Moreover, such filters may not be suitable for alternative sigma factor-dependent promoters or other transcription regulators. We have thus decided not to exploit distance constraints, although it remains possible for an eventual user to determine if a putative promoter is located at an appropriate distance from a gene of interest.
+###end p 49
+###begin title 50
+Conclusion
+###end title 50
+###begin p 51
+A simple and intuitive concept about the preferential location of regulatory sequences has allowed the identification of principal sigma factor dependent-promoter sequences in the genome of various bacteria. Minimal information about the structure of the searched pattern was only required for our algorithm to detect these promoters. Moreover, it could be possible to predict promoters in species for which little transcriptional information is available using the proposed general matrix. Since a biased distribution pattern also appear to be conserved for alternative sigma factors and other regulatory proteins in a variety of prokaryotes, it should be possible to design distribution matrices to identify their corresponding DNA binding sites.
+###end p 51
+###begin title 52
+Methods
+###end title 52
+###begin title 53
+Promoter sequences, corresponding genomes and IRs datasets
+###end title 53
+###begin p 54
+###xml 12 20 12 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 24 36 24 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 129 131 129 131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 132 134 132 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 160 162 160 162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+###xml 163 165 163 165 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+###xml 188 189 188 189 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 190 192 190 192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+###xml 321 323 321 323 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 371 379 371 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 399 401 399 401 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B46">46</xref>
+###xml 402 404 402 404 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B47">47</xref>
+###xml 439 451 439 451 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 452 454 452 454 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B48">48</xref>
+###xml 455 457 455 457 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B49">49</xref>
+###xml 702 710 702 710 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 715 717 711 713 <sup xmlns:xlink="http://www.w3.org/1999/xlink">70</sup>
+###xml 788 800 784 796 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 805 806 797 798 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A</sup>
+###xml 961 977 953 969 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis </italic>
+###xml 978 980 970 972 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B50">50</xref>
+###xml 981 983 973 975 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B51">51</xref>
+###xml 1053 1080 1045 1072 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Corynebacterium glutamicum </italic>
+###xml 1081 1083 1073 1075 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B52">52</xref>
+###xml 1086 1100 1078 1092 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. pneumoniae </italic>
+###xml 1101 1103 1093 1095 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B53">53</xref>
+###xml 1106 1120 1098 1112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. coelicolor </italic>
+###xml 1121 1123 1113 1115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B54">54</xref>
+###xml 1126 1136 1118 1128 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 1137 1139 1129 1131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B55">55</xref>
+###xml 1140 1142 1132 1134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B57">57</xref>
+###xml 1145 1155 1137 1147 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C. jejuni </italic>
+###xml 1156 1158 1148 1150 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B58">58</xref>
+###xml 1161 1174 1153 1166 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. japonicum </italic>
+###xml 1175 1177 1167 1169 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B59">59</xref>
+###xml 1178 1180 1170 1172 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B64">64</xref>
+###xml 1187 1197 1179 1189 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. aureus </italic>
+###xml 1198 1200 1190 1192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B65">65</xref>
+###xml 1201 1203 1193 1195 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B69">69</xref>
+###xml 1212 1213 1204 1205 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 1252 1268 1244 1260 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis </italic>
+###xml 1292 1294 1284 1286 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B70">70</xref>
+###xml 1295 1297 1287 1289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B71">71</xref>
+###xml 1300 1314 1292 1306 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C. glutamicum </italic>
+###xml 1339 1341 1331 1333 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B72">72</xref>
+###xml 1344 1358 1336 1350 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. pneumoniae </italic>
+###xml 1378 1392 1370 1384 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. coelicolor </italic>
+###xml 1413 1423 1405 1415 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. pylori </italic>
+###xml 1448 1450 1440 1442 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B73">73</xref>
+###xml 1451 1453 1443 1445 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B74">74</xref>
+###xml 1456 1466 1448 1458 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C. jejuni </italic>
+###xml 1491 1504 1483 1496 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. japonicum </italic>
+###xml 1523 1533 1515 1525 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. aureus </italic>
+###xml 1645 1660 1633 1648 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis</italic>
+###xml 1726 1727 1714 1715 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 1748 1750 1736 1738 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B75">75</xref>
+###xml 1799 1813 1787 1801 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. coelicolor </italic>
+###xml 1843 1844 1831 1832 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 1856 1858 1844 1846 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B54">54</xref>
+###xml 1903 1920 1891 1908 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">Additional file 7</xref>
+###xml 12 19 <span type="species:ncbi:562">E. coli</span>
+###xml 24 35 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 371 383 <span type="species:ncbi:83333">E. coli K-12</span>
+###xml 439 450 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 702 709 <span type="species:ncbi:562">E. coli</span>
+###xml 788 799 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 961 976 <span type="species:ncbi:1773">M. tuberculosis</span>
+###xml 1053 1079 <span type="species:ncbi:1718">Corynebacterium glutamicum</span>
+###xml 1086 1099 <span type="species:ncbi:2104">M. pneumoniae</span>
+###xml 1106 1119 <span type="species:ncbi:1902">S. coelicolor</span>
+###xml 1126 1135 <span type="species:ncbi:210">H. pylori</span>
+###xml 1145 1154 <span type="species:ncbi:197">C. jejuni</span>
+###xml 1161 1173 <span type="species:ncbi:375">B. japonicum</span>
+###xml 1187 1196 <span type="species:ncbi:1280">S. aureus</span>
+###xml 1252 1273 <span type="species:ncbi:83332">M. tuberculosis H37Rv</span>
+###xml 1300 1313 <span type="species:ncbi:1718">C. glutamicum</span>
+###xml 1344 1362 <span type="species:ncbi:272634">M. pneumoniae M129</span>
+###xml 1378 1391 <span type="species:ncbi:1902">S. coelicolor</span>
+###xml 1413 1428 <span type="species:ncbi:85962">H. pylori 26695</span>
+###xml 1456 1465 <span type="species:ncbi:197">C. jejuni</span>
+###xml 1491 1503 <span type="species:ncbi:375">B. japonicum</span>
+###xml 1523 1532 <span type="species:ncbi:1280">S. aureus</span>
+###xml 1645 1660 <span type="species:ncbi:1773">M. tuberculosis</span>
+###xml 1799 1812 <span type="species:ncbi:1902">S. coelicolor</span>
+Most of the E. coli and B. subtilis characterized promoter sequence datasets were respectively gathered from EcoCyc version 8.0 [41,42], and DBTBS release 3.1 [43,44], and the literature [5,45]. To circumvent possible errors in promoter datasets, consistency tests against corresponding genomic sequences were performed [38] with the ASAP gene annotation version m54 for E. coli K-12 strain MG1655 [46,47], and SubtiList release R16.1 for B. subtilis [48,49]. Binding sites that were not unambiguously detected in their corresponding genome were excluded. The complete corresponding IRs, to which 30 nt were added on both sides, were then extracted from each genome. This resulted in 377 characterized E. coli sigma70-dependent promoter sequences from 335 different enlarged IRs, and 148 B. subtilis sigmaA-dependent promoter sequences from 142 enlarged IRs. The procedure was also applied to promoter sequences found in the MtbRegList database release 1.1 for M. tuberculosis [50,51], and for characterized promoters identified from the literature for Corynebacterium glutamicum [52], M. pneumoniae [53], S. coelicolor [54], H. pylori [55-57], C. jejuni [58], B. japonicum [59-64], and S. aureus [65-69] (Table 1). Genome annotations originated from: M. tuberculosis H37Rv (TubercuList R6) [70,71], C. glutamicum ATCC13032 (NC_003450.3) [72], M. pneumoniae M129 (NC_000912.1), S. coelicolor A3(2) (NC_003888.3), H. pylori 26695 (PyloriGene R1.6) [73,74], C. jejuni NCTC11168 (NC_002163.1), B. japonicum (NC_004463.1), and S. aureus Mu50 (NC_002758.2). Since there is no principal sigma factor promoter consensus sequence clearly identified for M. tuberculosis, promoter sequences were selected as for groups A and B of Table 1 in Gomez and Smith [75] using the MtbRegList database. Similarly, only S. coelicolor promoter sequences from Table 1 of Strohl [54] were considered. Datasets are available in Additional file 7.
+###end p 54
+###begin title 55
+Genome-derived distribution matrices
+###end title 55
+###begin p 56
+###xml 775 776 775 776 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 778 779 778 779 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+Genomic distributions of hexanucleotide pairs were represented by a ratio of the number of hits in IRs located upstream of a gene (P) to total hits in the whole genome (G). Hits were counted only on the functional strand (on the same strand than the following coding sequence) for all spacings inside the allowed spacing range. Identical hexanucleotide pairs with different spacer length will thus have the same genome-derived distribution matrix provided that their respective spacings are included in the allowed range. The genomic distribution of up to three exclusive mismatches per hexanucleotide was also reported in genome distribution matrices. Ratios at various mismatches combinations were reported in genome-derived distribution matrices of dimension 4 x 4 (Figure1, 2). Columns and rows respectively represent mismatches in the -10 (proximal) and -35 (distal) boxes.
+###end p 56
+###begin title 57
+Synthetic matrices
+###end title 57
+###begin p 58
+###xml 49 59 49 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in silico </italic>
+###xml 457 474 457 474 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">Additional file 2</xref>
+248 371 200 distribution matrices were generated in silico and referred to as "synthetic matrices". To create these, the genome-derived distribution matrices of almost all characterized promoter sequences available were analyzed, and the range of variation in each cell was determined in accordance with the observed ratios. The range and step length was independently established in each cell. Detailed information about synthetic matrices is available in Additional file 2.
+###end p 58
+###begin title 59
+Score calculation
+###end title 59
+###begin p 60
+###xml 287 289 287 289 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 341 343 341 343 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 347 349 347 349 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 715 716 711 712 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 720 721 716 717 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 725 726 721 722 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3</sub>
+###xml 730 731 726 727 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+###xml 738 755 734 751 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">Additional file 3</xref>
+To calculate a score, the genome-derived distribution matrix of a hexanucleotide pair was compared to a synthetic matrix. The analytical approach was inspired by the image processing field and involved four components, each representing the mean of square differences between matrices: R1 is calculated on the raw data of the matrices, and R2 to R4 are respectively calculated on the horizontal, vertical and diagonal directional derivatives of matrices to evaluate the three different slopes of the matrices. Each slope is related to the representation of the genomic distribution of hexanucleotide pairs (proximal and distal boxes). A weight (w) of (1/4) is next applied to each component. The final score = 1/(wR1+ wR2+ wR3+ wR4). See Additional file 3 for a detailed example of score calculation.
+###end p 60
+###begin title 61
+IR scanning
+###end title 61
+###begin p 62
+###xml 724 725 724 725 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 1104 1112 1104 1112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1116 1128 1116 1128 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 1784 1789 1784 1789 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1957 1959 1957 1959 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 1104 1111 <span type="species:ncbi:562">E. coli</span>
+###xml 1116 1127 <span type="species:ncbi:1423">B. subtilis</span>
+IR scanning was accomplished by taking the first six most upstream nt of an enlarged IR along with the downstream hexanucleotide window located at the shortest distance within the specified spacing range. A genome-derived distribution matrix was then generated and a score was calculated with the above described score metric. This procedure was repeated for all allowed spacings by moving the downstream hexanucleotide window by one nt. The upstream hexanucleotide was next moved by one nt and the same procedure was repeated until all appropriate hexanucleotide pairs of the region were processed. The mean of values obtained for all hexanucleotide pairs sharing the same proximal box were then plotted on a graph (Figure 3). Using the maximum values instead of the mean gave very similar results (data not shown). Two thresholds were selected. The region threshold (tR) was set at three standard deviations above the mean of all points from a specific IR. The genome threshold (tG) was set at two standard deviations from the mean of all points from all IR of a genome. tR and tG were optimized using E. coli and B. subtilis promoters data (data not shown). The value of any point had to be higher than both thresholds to be considered as a candidate promoter. All adjacent points above thresholds were combined in one peak and represented by their highest point. The widest peak has 6 points and the mean is 1.25 point per peak. A peak had to be located within 4 nt of an experimentally identified TSS to be considered as a TP. All other points above thresholds were considered as FPs. Points representing characterized hexanucleotide pairs below the highest threshold were considered as FNs, while all other points below this threshold were considered as TNs. According to Tompa et al., sensitivity is defined as TP/(TP + FN), specificity as TN/(TN + FP), precision (or positive predictive value) as TP/(TP + FP), and performance as TP/(TP + FN + FP) [38].
+###end p 62
+###begin title 63
+Evaluation of synthetic matrices
+###end title 63
+###begin p 64
+###xml 167 168 167 168 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 444 445 444 445 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 580 581 580 581 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 580 581 580 581 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 586 588 586 588 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij</italic>
+###xml 586 588 586 588 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij</italic></sub>
+###xml 596 597 596 597 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 596 597 596 597 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic></sub>
+###xml 610 613 610 613 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij </italic>
+###xml 610 613 610 613 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij </italic></sub>
+###xml 680 681 680 681 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 694 696 694 696 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 694 696 694 696 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+###xml 769 770 769 770 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+The evaluation of over 248 million synthetic matrices on the 625 enlarged IRs (containing 684 characterized promoter sequences from the ten genomes mentioned in Table 1) was performed on the Mammouth Linux cluster of the Universite de Sherbrooke (1808 processors, 7.6 Tflops, 5.5 TB of RAM, 160 TB of HD). The performance score for each synthetic matrix was calculated and the best matrix selected as the specific matrix for each genome (Table 1). The general synthetic matrix was selected from the sum of the relative performances of each matrix on each genome following S = (sumi(perfij/maxPerfj)) where perfij represents the performance score of a given matrix in the organism j, and maxPerfj represents the maximum performance score of all matrices in the organism j.
+###end p 64
+###begin title 65
+Cross-validation tests
+###end title 65
+###begin p 66
+###xml 138 146 138 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 150 162 150 162 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 409 426 409 426 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">Additional file 4</xref>
+###xml 138 145 <span type="species:ncbi:562">E. coli</span>
+###xml 150 161 <span type="species:ncbi:1423">B. subtilis</span>
+Three-fold cross-validation tests were conducted with 1% of the synthetic matrices randomly chosen from the previously described set. The E. coli and B. subtilis datasets were randomly divided into three groups, and all possible combinations of two groups were used to select new specialized synthetic matrices. The statistical indicators were next calculated on the remaining group. Results are presented in Additional file 4.
+###end p 66
+###begin title 67
+PSWM scoring function
+###end title 67
+###begin p 68
+###xml 200 208 200 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 212 224 212 224 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 364 381 364 381 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">Additional file 6</xref>
+###xml 200 207 <span type="species:ncbi:562">E. coli</span>
+###xml 212 223 <span type="species:ncbi:1423">B. subtilis</span>
+The scoring function of our method was replaced by a function based on PSWM scores. The rest of the IR scanning procedure remained absolutely identical to the initial design. The promoter datasets of E. coli and B. subtilis were used to construct PSWMs, which were normalized according to the intergenic ATGC content of the tested genome. Results are presented in Additional file 6.
+###end p 68
+###begin title 69
+Shuffled genome
+###end title 69
+###begin p 70
+###xml 138 140 138 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+Two shuffled genomes were created. First, the regions (genes and IRs) were independently shuffled to conserve the possible AT bias of IR [40]. The second type was made on the entire genome so that no bias is kept. Shuffled genomes were next used to calculate genome-derived distribution matrices to assess the same enlarged IRs previously analyzed (data not shown).
+###end p 70
+###begin title 71
+Codon usage evaluation
+###end title 71
+###begin p 72
+###xml 227 234 227 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 425 427 425 427 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B76">76</xref>
+###xml 227 234 <span type="species:ncbi:562">E. coli</span>
+By definition, a hexanucleotide contains 4 overlapping codons. The mean of the utilization ratio of the eight codons of a hexanucleotide pair was thus compared to the average usage frequency of a codon (15.62/1000 residues for E. coli) to evaluate if there is a difference between hexanucleotide pair sequences precisely identified (TP) or missed (FN) (data not shown). Codon usages were taken from the Codon Usage Database [76].
+###end p 72
+###begin title 73
+Biochemical validation of predicted promoters
+###end title 73
+###begin p 74
+###xml 59 70 59 70 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 72 80 72 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 84 99 84 99 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis</italic>
+###xml 468 484 464 480 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. tuberculosis </italic>
+###xml 542 551 538 547 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. bovis </italic>
+###xml 563 571 559 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 589 601 585 597 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 610 612 606 608 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B77">77</xref>
+###xml 639 648 635 644 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. bovis </italic>
+###xml 803 807 799 803 <sub xmlns:xlink="http://www.w3.org/1999/xlink">600 </sub>
+###xml 1393 1410 1388 1405 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">Additional file 8</xref>
+###xml 59 70 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 72 79 <span type="species:ncbi:562">E. coli</span>
+###xml 84 99 <span type="species:ncbi:1773">M. tuberculosis</span>
+###xml 468 483 <span type="species:ncbi:1773">M. tuberculosis</span>
+###xml 542 554 <span type="species:ncbi:33892">M. bovis BCG</span>
+###xml 563 570 <span type="species:ncbi:562">E. coli</span>
+###xml 589 600 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 639 651 <span type="species:ncbi:33892">M. bovis BCG</span>
+All IRs for which no promoter sequence is characterized in B. subtilis, E. coli and M. tuberculosis, were analyzed with their respective organism-specialized matrix to predict putative promoters. In order to validate some predicted promoters under the control of the housekeeping sigma factor, predictions were selected on the basis of the putative function of their corresponding gene, the Z-score, the loci organization and the promoter sequences. Validation of the M. tuberculosis prediction was made on the closely related non-pathogenic M. bovis BCG-Russia. E. coli K12 ATCC10798 and B. subtilis NIG2001 [77] were grown in LB medium. M. bovis BCG-Russia was grown in Middlebrook 7H9 medium supplemented with Albumine-Dextrose-Saline, Tween 80 and cycloheximide. All cultures were harvested at an OD600 between 0.6 and 0.8 and RNA was extracted using the Ribopure RNA extraction kit (Ambion) or the RNeasy kit (Qiagen). RNA was quantified by spectrophotometry and integrity was verified on formaldehyde denaturing gel. Primer extensions were performed according to standard procedures. Between 30 and 60 mug of RNA were used for each reaction. Extension products were migrated on 5M urea-6% acrylamide sequencing gels along with sequencing reactions. IRs were cloned in pCR2.1-TOPO TA cloning vector (Invitrogen) or pdrive TA cloning vector (Qiagen). Oligonucleotide primers are listed in Additional file 8. Sequencing ladders were produced with the Sequenase 2.0 kit (USB) according to the manufacturer's instructions. Gels were scanned using a Molecular Dynamics Storm 840 Phosphorimager.
+###end p 74
+###begin title 75
+Authors' contributions
+###end title 75
+###begin p 76
+PEJ contributed to the basic concept of the study, elaborated the design of the study, performed almost all the analysis, and wrote the manuscript. SR contributed to the design of the study, carried out the biochemical validation, and wrote the manuscript. LG and JG contributed to the design and coordination of the study, and helped writing the manuscript. RB elaborated the basic concept of the study, contributed to the design and coordination of the study, and helped writing the manuscript. All authors read and approved the final manuscript.
+###end p 76
+###begin title 77
+Supplementary Material
+###end title 77
+###begin title 78
+Additional file 1
+###end title 78
+###begin p 79
+A schematic description of the procedures used in this work. A schematic description of the procedures used in this work.
+###end p 79
+###begin p 80
+Click here for file
+###end p 80
+###begin title 81
+Additional file 2
+###end title 81
+###begin p 82
+Detailed information on the generation of synthetic matrices. Minimum and maximum values with step length and number of values for the construction of each cell of the synthetic matrices.
+###end p 82
+###begin p 83
+Click here for file
+###end p 83
+###begin title 84
+Additional file 3
+###end title 84
+###begin p 85
+Detailed example of score calculation. Detailed example for each step of score calculation.
+###end p 85
+###begin p 86
+Click here for file
+###end p 86
+###begin title 87
+Additional file 4
+###end title 87
+###begin p 88
+Three fold cross-validation results. Cross-validation results for each of the "training" and "testing" phases, along with scores between matrices identified by each training phases and their respective organism-specialized matrix.
+###end p 88
+###begin p 89
+Click here for file
+###end p 89
+###begin title 90
+Additional file 5
+###end title 90
+###begin p 91
+Comparison with other bacterial promoter prediction approaches. Comparison between our method and other bacterial promoter prediction approaches. Three variations of the region-specific threshold are shown for organism-specialized matrices.
+###end p 91
+###begin p 92
+Click here for file
+###end p 92
+###begin title 93
+Additional file 6
+###end title 93
+###begin p 94
+Comparison with normalized PSWM scoring function. Comparison of our integral method with a method in which the scoring function was replaced by normalized PSWM scores.
+###end p 94
+###begin p 95
+Click here for file
+###end p 95
+###begin title 96
+Additional file 7
+###end title 96
+###begin p 97
+Datasets of promoter sequences and enlarged IRs. Fasta format where the title line of each sequence contains the following information: > "Organism name" _ "Gene name" "-35 hexanucleotide" < "Spacing" > "-10 hexanucleotide" _ "Name of the sigma factor when available" _ "Exclusive distance between the 3' base of the -10 hexanucleotide and the first base of the start codon" _ "Length of the complete IR". The 30 nt upstream and downstream each IR are also respectively included.
+###end p 97
+###begin p 98
+Click here for file
+###end p 98
+###begin title 99
+Additional file 8
+###end title 99
+###begin p 100
+Primer sequences used for biochemical validations. Primer sequences used for biochemical validations.
+###end p 100
+###begin p 101
+Click here for file
+###end p 101
+###begin title 102
+Acknowledgements
+###end title 102
+###begin p 103
+###xml 353 366 353 366 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. japonicum </italic>
+###xml 353 365 <span type="species:ncbi:375">B. japonicum</span>
+Authors would like to thank Francois Deschenes, Alain Gervais, and the team of the Centre de Calcul Scientifique at Universite de Sherbrooke for their help with the development of the algorithm. We also thank Francois Robert, Mathieu Blanchette, Benoit Leblanc and Karine Lemieux for their valuable comments on the manuscript, and Peter Mueller for the B. japonicum dataset. This work was supported by a NSERC-Genomic research grant to RB, LG, and JG. LG holds a Canada Research Chair on mechanisms of gene transcription. JG is a member of the RQCHP, providing an access to the Mammouth Linux cluster of the Universite de Sherbrooke. PEJ and SR are respectively the recipients of a FQRNT and a NSERC Ph.D. scholarship.
+###end p 103
+###begin article-title 104
+The functional and regulatory roles of sigma factors in transcription
+###end article-title 104
+###begin article-title 105
+Multiple sigma subunits and the partitioning of bacterial transcription space
+###end article-title 105
+###begin article-title 106
+Structural basis of transcription initiation: an RNA polymerase holoenzyme-DNA complex
+###end article-title 106
+###begin article-title 107
+###xml 21 37 <span type="species:ncbi:562">Escherichia coli</span>
+The sigma subunit of Escherichia coli RNA polymerase senses promoter spacing
+###end article-title 107
+###begin article-title 108
+###xml 28 45 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Compilation and analysis of Bacillus subtilis sigma A-dependent promoter sequences: evidence for extended contact between RNA polymerase and upstream promoter DNA
+###end article-title 108
+###begin article-title 109
+###xml 59 75 <span type="species:ncbi:562">Escherichia coli</span>
+Identification and analysis of 'extended -10' promoters in Escherichia coli
+###end article-title 109
+###begin article-title 110
+RNA polymerase-promoter interactions: the comings and goings of RNA polymerase
+###end article-title 110
+###begin article-title 111
+###xml 0 16 <span type="species:ncbi:562">Escherichia coli</span>
+Escherichia coli RNA polymerase (Es70), promoters, and the kinetics of the steps of transcription initiation
+###end article-title 111
+###begin article-title 112
+Detecting subtle sequence signals: a Gibbs sampling strategy for multiple alignment
+###end article-title 112
+###begin article-title 113
+Fitting a mixture model by expectation maximization to discover motifs in biopolymers
+###end article-title 113
+###begin article-title 114
+A statistical method for finding transcription factor binding sites
+###end article-title 114
+###begin article-title 115
+Discovering regulatory elements in non-coding sequences by analysis of spaced dyads
+###end article-title 115
+###begin article-title 116
+The evolution of DNA regulatory regions for proteo-gamma bacteria by interspecies comparisons
+###end article-title 116
+###begin article-title 117
+Conservation of DNA regulatory motifs and discovery of new motifs in microbial genomes
+###end article-title 117
+###begin article-title 118
+Phylogenetic footprinting of transcription factor binding sites in proteobacterial genomes
+###end article-title 118
+###begin article-title 119
+Prediction of transcription regulatory sites in Archaea by a comparative genomic approach
+###end article-title 119
+###begin article-title 120
+An exact algorithm to identify motifs in orthologous sequences from multiple species
+###end article-title 120
+###begin article-title 121
+A novel method for prokaryotic promoter prediction based on DNA stability
+###end article-title 121
+###begin article-title 122
+###xml 92 108 <span type="species:ncbi:562">Escherichia coli</span>
+Rigorous pattern-recognition methods for DNA sequences. Analysis of promoter sequences from Escherichia coli
+###end article-title 122
+###begin article-title 123
+DNA binding sites: representation and discovery
+###end article-title 123
+###begin article-title 124
+###xml 83 90 <span type="species:ncbi:562">E. coli</span>
+Use of the 'Perceptron' algorithm to distinguish translational initiation sites in E. coli
+###end article-title 124
+###begin article-title 125
+Virtual Footprint and PRODORIC: an integrative framework for regulon prediction in prokaryotes
+###end article-title 125
+###begin article-title 126
+###xml 93 114 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+A comprehensive library of DNA-binding site matrices for 55 proteins applied to the complete Escherichia coli K-12 genome
+###end article-title 126
+###begin article-title 127
+###xml 21 37 <span type="species:ncbi:562">Escherichia coli</span>
+Sigma70 promoters in Escherichia coli: specific transcription in dense regions of overlapping promoter-like signals
+###end article-title 127
+###begin article-title 128
+###xml 77 84 <span type="species:ncbi:562">E. coli</span>
+An assessment of neural network and statistical approaches for prediction of E. coli promoter sites
+###end article-title 128
+###begin article-title 129
+###xml 33 50 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Sigma A recognition sites in the Bacillus subtilis genome
+###end article-title 129
+###begin article-title 130
+###xml 18 38 <span type="species:ncbi:197">Campylobacter jejuni</span>
+RpoD promoters in Campylobacter jejuni exhibit a strong periodic signal instead of a -35 box
+###end article-title 130
+###begin article-title 131
+Improved prediction of bacterial transcription start sites
+###end article-title 131
+###begin article-title 132
+###xml 66 85 <span type="species:ncbi:210">Helicobacter pylori</span>
+Inferring regulatory elements from a whole genome. An analysis of Helicobacter pylori sigma(80) family of promoter signals
+###end article-title 132
+###begin article-title 133
+Genome-wide analysis of bacterial promoter regions
+###end article-title 133
+###begin article-title 134
+###xml 51 68 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Genome wide identification of regulatory motifs in Bacillus subtilis
+###end article-title 134
+###begin article-title 135
+Identification of the binding sites of regulatory proteins in bacterial genomes
+###end article-title 135
+###begin article-title 136
+###xml 72 95 <span type="species:ncbi:1902">Streptomyces coelicolor</span>
+Bioinformatic identification of novel regulatory DNA sequence motifs in Streptomyces coelicolor
+###end article-title 136
+###begin article-title 137
+Control of Mycobacterial Transcription
+###end article-title 137
+###begin article-title 138
+Views of transcription initiation
+###end article-title 138
+###begin article-title 139
+The regulation of bacterial transcription initiation
+###end article-title 139
+###begin article-title 140
+Function of the bacterial TATAAT -10 element as single-stranded DNA during RNA polymerase isomerization
+###end article-title 140
+###begin article-title 141
+Assessing computational tools for the discovery of transcription factor binding sites
+###end article-title 141
+###begin article-title 142
+Improving promoter prediction for the NNPP2.2 algorithm: a case study using E-Coli DNA sequences
+###end article-title 142
+###begin article-title 143
+Comparative genomic structure of prokaryotes
+###end article-title 143
+###begin article-title 144
+The EcoCyc database
+###end article-title 144
+###begin article-title 145
+###xml 46 62 <span type="species:ncbi:562">Escherichia coli</span>
+EcoCyc: a comprehensive database resource for Escherichia coli
+###end article-title 145
+###begin article-title 146
+The DBTBS database
+###end article-title 146
+###begin article-title 147
+###xml 49 66 <span type="species:ncbi:1423">Bacillus subtilis</span>
+DBTBS: database of transcriptional regulation in Bacillus subtilis and its contribution to comparative genomics
+###end article-title 147
+###begin article-title 148
+###xml 69 85 <span type="species:ncbi:562">Escherichia coli</span>
+Identification of a second promoter for the metY-nusA-infB operon of Escherichia coli
+###end article-title 148
+###begin article-title 149
+The ASAP database
+###end article-title 149
+###begin article-title 150
+ASAP, a systematic annotation package for community analysis of genomes
+###end article-title 150
+###begin article-title 151
+The SubtiList database
+###end article-title 151
+###begin article-title 152
+###xml 42 59 <span type="species:ncbi:1423">Bacillus subtilis</span>
+SubtiList: the reference database for the Bacillus subtilis genome
+###end article-title 152
+###begin article-title 153
+The MtbRegList database
+###end article-title 153
+###begin article-title 154
+###xml 82 108 <span type="species:ncbi:1773">Mycobacterium tuberculosis</span>
+MtbRegList, a database dedicated to the analysis of transcriptional regulation in Mycobacterium tuberculosis
+###end article-title 154
+###begin article-title 155
+###xml 13 39 <span type="species:ncbi:1718">Corynebacterium glutamicum</span>
+Promoters of Corynebacterium glutamicum
+###end article-title 155
+###begin article-title 156
+###xml 17 38 <span type="species:ncbi:2104">Mycoplasma pneumoniae</span>
+Transcription in Mycoplasma pneumoniae
+###end article-title 156
+###begin article-title 157
+Compilation and analysis of DNA sequences associated with apparent streptomycete promoters
+###end article-title 157
+###begin article-title 158
+###xml 85 104 <span type="species:ncbi:210">Helicobacter pylori</span>
+Mutational analysis of the vacA promoter provides insight into gene transcription in Helicobacter pylori
+###end article-title 158
+###begin article-title 159
+###xml 21 40 <span type="species:ncbi:210">Helicobacter pylori</span>
+Promoter analysis of Helicobacter pylori genes with enhanced expression at low pH
+###end article-title 159
+###begin article-title 160
+###xml 20 39 <span type="species:ncbi:210">helicobacter pylori</span>
+A 26 kDa protein of helicobacter pylori shows alkyl hydroperoxide reductase (AhpC) activity and the mono-cistronic transcription of the gene is affected by pH
+###end article-title 160
+###begin article-title 161
+###xml 18 38 <span type="species:ncbi:197">Campylobacter jejuni</span>
+Identification of Campylobacter jejuni promoter sequences
+###end article-title 161
+###begin article-title 162
+###xml 68 92 <span type="species:ncbi:375">Bradyrhizobium japonicum</span>
+Dissection of the transcription machinery for housekeeping genes of Bradyrhizobium japonicum
+###end article-title 162
+###begin article-title 163
+###xml 56 80 <span type="species:ncbi:375">Bradyrhizobium japonicum</span>
+Fur-independent regulation of iron metabolism by Irr in Bradyrhizobium japonicum
+###end article-title 163
+###begin article-title 164
+###xml 35 59 <span type="species:ncbi:375">Bradyrhizobium japonicum</span>
+Succinate dehydrogenase (Sdh) from Bradyrhizobium japonicum is closely related to mitochondrial Sdh
+###end article-title 164
+###begin article-title 165
+###xml 4 28 <span type="species:ncbi:375">Bradyrhizobium japonicum</span>
+The Bradyrhizobium japonicum nolA gene encodes three functionally distinct proteins
+###end article-title 165
+###begin article-title 166
+###xml 4 28 <span type="species:ncbi:375">Bradyrhizobium japonicum</span>
+The Bradyrhizobium japonicum fegA gene encodes an iron-regulated outer membrane protein with similarity to hydroxamate-type siderophore receptors
+###end article-title 166
+###begin article-title 167
+###xml 15 39 <span type="species:ncbi:375">Bradyrhizobium japonicum</span>
+Studies of the Bradyrhizobium japonicum nodD1 promoter: a repeated structure for the nod box
+###end article-title 167
+###begin article-title 168
+###xml 44 65 <span type="species:ncbi:1280">Staphylococcus aureus</span>
+Alternative transcription factor sigmaSB of Staphylococcus aureus: characterization and role in transcription of the global regulatory locus sar
+###end article-title 168
+###begin article-title 169
+###xml 48 69 <span type="species:ncbi:1280">Staphylococcus aureus</span>
+Characterization of the primary sigma factor of Staphylococcus aureus
+###end article-title 169
+###begin article-title 170
+###xml 68 89 <span type="species:ncbi:1280">Staphylococcus aureus</span>
+Transcriptional analysis of different promoters in the sar locus in Staphylococcus aureus
+###end article-title 170
+###begin article-title 171
+###xml 47 68 <span type="species:ncbi:1280">Staphylococcus aureus</span>
+Regulation of agr-dependent virulence genes in Staphylococcus aureus by RNAIII from coagulase-negative staphylococci
+###end article-title 171
+###begin article-title 172
+###xml 101 122 <span type="species:ncbi:1280">Staphylococcus aureus</span>
+Identification and characterization of SarH1, a new global regulator of virulence gene expression in Staphylococcus aureus
+###end article-title 172
+###begin article-title 173
+The TubercuList database
+###end article-title 173
+###begin article-title 174
+###xml 40 72 <span type="species:ncbi:83332">Mycobacterium tuberculosis H37Rv</span>
+Re-annotation of the genome sequence of Mycobacterium tuberculosis H37Rv
+###end article-title 174
+###begin article-title 175
+The NCBI prokaryote genome annotation
+###end article-title 175
+###begin article-title 176
+The PyloriGene database
+###end article-title 176
+###begin article-title 177
+###xml 49 68 <span type="species:ncbi:210">Helicobacter pylori</span>
+A revised annotation and comparative analysis of Helicobacter pylori genomes
+###end article-title 177
+###begin article-title 178
+Determinants of Mycobacterial Gene Expression
+###end article-title 178
+###begin article-title 179
+The Codon Usage Database
+###end article-title 179
+###begin article-title 180
+###xml 60 77 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Rapid isolation of RNA polymerase from sporulating cells of Bacillus subtilis
+###end article-title 180
+

@@ -1,0 +1,1009 @@
+###begin article-title 0
+###xml 62 67 <span type="species:ncbi:4932">yeast</span>
+Identifying gene regulatory modules of heat shock response in yeast
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+A gene regulatory module (GRM) is a set of genes that is regulated by the same set of transcription factors (TFs). By organizing the genome into GRMs, a living cell can coordinate the activities of many genes in response to various internal and external stimuli. Therefore, identifying GRMs is helpful for understanding gene regulation.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 233 238 <span type="species:ncbi:4932">yeast</span>
+Integrating transcription factor binding site (TFBS), mutant, ChIP-chip, and heat shock time series gene expression data, we develop a method, called Heat-Inducible Module Identification Algorithm (HIMIA), for reconstructing GRMs of yeast heat shock response. Unlike previous module inference tools which are static statistics-based methods, HIMIA is a dynamic system model-based method that utilizes the dynamic nature of time series gene expression data. HIMIA identifies 29 GRMs, which in total contain 182 heat-inducible genes regulated by 12 heat-responsive TFs. Using various types of published data, we validate the biological relevance of the identified GRMs. Our analysis suggests that different combinations of a fairly small number of heat-responsive TFs regulate a large number of genes involved in heat shock response and that there may exist crosstalk between heat shock response and other cellular processes. Using HIMIA, we identify 68 uncharacterized genes that may be involved in heat shock response and we also identify their plausible heat-responsive regulators. Furthermore, HIMIA is capable of assigning the regulatory roles of the TFs that regulate GRMs and Cst6, Hsf1, Msn2, Msn4, and Yap1 are found to be activators of several GRMs. In addition, HIMIA refines two clusters of genes involved in heat shock response and provides a better understanding of how the complex expression program of heat shock response is regulated. Finally, we show that HIMIA outperforms four current module inference tools (GRAM, MOFA, ReMoDisvovery, and SAMBA), and we conduct two randomization tests to show that the output of HIMIA is statistically meaningful.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+###xml 46 51 <span type="species:ncbi:4932">yeast</span>
+HIMIA is effective for reconstructing GRMs of yeast heat shock response. Indeed, many of the reconstructed GRMs are in agreement with previous studies. Further, HIMIA predicts several interesting new modules and novel TF combinations. Our study shows that integrating multiple types of data is a powerful approach to studying complex biological systems.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 197 198 197 198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 30 36 <span type="species:ncbi:4932">yeasts</span>
+###xml 265 270 <span type="species:ncbi:4932">yeast</span>
+Single-cell organisms such as yeasts constantly face changing or even harsh environments such as high temperature that threaten their survival or, at least, prevent them from performing optimally [1]. By organizing the genome into gene regulatory modules (GRMs), a yeast cell can coordinate the activities of many genes and carry out complex functions in response to high temperature. Therefore, identifying GRMs of heat response is instrumental for understanding cellular responses to heat shock.
+###end p 9
+###begin p 10
+###xml 62 63 62 63 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 64 65 64 65 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 123 124 123 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 125 126 125 126 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 262 267 262 267 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 270 271 270 271 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 423 428 423 428 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 431 432 431 432 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 606 611 606 611 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 614 615 614 615 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 632 637 632 637 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 711 716 711 716 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 719 720 719 720 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 796 801 796 801 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 804 806 804 806 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 918 923 918 923 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 926 928 926 928 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 1033 1038 1033 1038 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1041 1043 1041 1043 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 1210 1215 1210 1215 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1218 1220 1218 1220 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 1870 1872 1870 1872 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 1873 1875 1873 1875 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 184 189 <span type="species:ncbi:4932">yeast</span>
+###xml 319 324 <span type="species:ncbi:4932">yeast</span>
+###xml 371 376 <span type="species:ncbi:4932">yeast</span>
+###xml 478 483 <span type="species:ncbi:4932">yeast</span>
+###xml 584 589 <span type="species:ncbi:4932">yeast</span>
+###xml 843 848 <span type="species:ncbi:4932">yeast</span>
+###xml 949 954 <span type="species:ncbi:4932">yeast</span>
+###xml 1093 1098 <span type="species:ncbi:4932">yeast</span>
+###xml 1114 1119 <span type="species:ncbi:4932">yeast</span>
+###xml 1319 1324 <span type="species:ncbi:4932">yeast</span>
+The advances of high-throughput tools such as DNA microarray [2,3] and chromatin immunoprecipitation-DNA chip (ChIP-chip) [4,5] have made the computational reconstruction of GRMs of a yeast cell possible. Several module inference methods have been proposed. Lee et al. [6] performed ChIP-chip experiments on 106 TFs in yeast and discovered six types of network motifs in yeast gene regulation. Using microarray data, Segal et al. [7] developed a probabilistic model to identify yeast GRMs. Later, three studies were conducted to combine ChIP-chip and gene expression data to identify yeast GRMs. First, Xu et al. [8] extended Segal et al.'s probabilistic model to incorporate ChIP-chip data. Second, Bar-Joseph et al. [9] developed GRAM to identify rich medium gene regulatory modules. Third, Wu et al. [10] developed MOFA to identify GRMs of yeast cell cycle. More data sources were used in more recent studies. Kato et al. [11] identified GRMs of yeast cell cycle by combining sequence, ChIP-chip and gene expression data. Lemmens et al. [12] developed ReMoDiscovery to identify GRMs of the yeast cell cycle and yeast stress response by combining motif information, ChIP-chip and gene expression data. Tanay et al. [13] applied a graph theoretic approach and developed SAMBA to reveal the modular organization of the yeast regulatory system by combining protein interactions, growth phenotype data, ChIP-chip, and gene expression data. However, all these module inference algorithms are statistics-based methods, treating dynamic time series gene expression data the same way as static steady state gene expression data. That is, they do not consider the dependency between different time points of a time series and thus do not utilize the dynamic nature of time series data. Because many time series gene expression data sets are now available in the public domain [14-18], it is desirable to develop a module inference method that can utilize the dynamic nature of time series gene expression data. The aim of this study is to develop a module inference method that suits this need.
+###end p 10
+###begin p 11
+###xml 63 65 63 65 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 66 68 66 68 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 79 81 79 81 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 95 97 95 97 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 149 151 149 151 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 313 314 313 314 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 1057 1058 1057 1058 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 1059 1061 1059 1061 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 1764 1769 1764 1769 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1772 1774 1772 1774 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 295 300 <span type="species:ncbi:4932">yeast</span>
+By combining current transcription factor binding site (TFBS) [19,20], mutant [20], ChIP-chip [21], and heat shock time series gene expression data [18], we developed a module inference method, called Heat-Inducible Module Identification Algorithm (HIMIA), to reconstruct heat-inducible GRMs in yeast (see Figure 1). HIMIA is divided into five steps. First, three independent data sources (ChIP-chip, mutant, and TFBS data) are used to construct a high-confidence TF-promoter binding matrix (see Methods for details). From the TF-promoter binding matrix, all the TFs that bind to any specific target gene can be inferred. Second, using heat shock time series gene expression data, a dynamic system model of gene regulation is applied to describe how a target gene's expression under heat shock is controlled by the TFs that bind to its promoter (see Appendix for details). A dynamic system model is capable of utilizing the dynamic nature of time series gene expression data, making it different from the static statistics-based models in previous studies [7-13]. After the dynamic system modeling, the TFs that have significant regulatory effects on the target gene's expression can be extracted from all TFs that bind to the target gene. From this procedure, a high-confidence TF-gene regulatory matrix is constructed. Each TF-gene regulatory relationship in this matrix is supported by at least three independent data sources (gene expression and TFBS data plus ChIP-chip or/and mutant data). Third, candidate heat-inducible genes are identified. A gene is said to be heat-inducible if at least two time points of its gene expression profile measured under heat shock are induced by at least three folds compared to that under the unstressed condition. Causton et al. [18] defined a candidate heat-inducible gene by the criterion that at least one time point of its gene expression profile shows a change fold of at least three. In order to reduce the false positives, we use a criterion that requires at least two time points with a change fold of at least three. Fourth, using the list of candidate heat-inducible genes and the high-confidence TF-gene regulatory matrix, heat-responsive TF sets can be inferred by statistical methods. A TF set is said to be heat-responsive only if a significant portion of the targets that are co-regulated by all the TFs in the TF set is heat-inducible. The hypergeometric distribution is used to test the statistical significance. Fifth, for each heat-responsive TF set, we collect all their regulatory targets that are heat-inducible to form a candidate heat-inducible GRM. That is, a heat-inducible GRM consists of a set of heat-inducible genes that are regulated by the same set of heat-responsive TFs. Because genes in the same GRM are regulated by the same set of TFs, their gene expression profiles should be more similar to each other than those of a set of genes that are not in a single GRM. Therefore, for each candidate GRM we further extract a subset of genes whose gene expression profiles are more coherent than that of the set of all heat-inducible genes which are regulated by different sets of TFs. Finally, this subset of highly coherent genes forms a heat-inducible GRM that is regulated by the same set of heat-responsive TFs.
+###end p 11
+###begin p 12
+The flowchart of HIMIA.
+###end p 12
+###begin title 13
+Results
+###end title 13
+###begin p 14
+###xml 188 189 188 189 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 210 211 210 211 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 243 245 243 245 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 246 248 246 248 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 249 251 249 251 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 252 254 252 254 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 255 257 255 257 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+By integrating TFBS, mutant, ChIP-chip, and gene expression data, HIMIA identified 29 GRMs, which in total contain 182 heat-inducible genes regulated by 12 heat-responsive TFs (see Figure 2 and Additional file 1). According to the literature [19-23,25-33,35], 108 of the 182 genes and 7 of the 12 TFs are known to be involved in heat shock response.
+###end p 14
+###begin p 15
+###xml 0 36 0 36 <bold xmlns:xlink="http://www.w3.org/1999/xlink">The 29 GRMs identified in this study</bold>
+###xml 662 664 662 664 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 796 798 796 798 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 799 801 799 801 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 885 890 883 888 <italic xmlns:xlink="http://www.w3.org/1999/xlink">YAP1 </italic>
+###xml 977 981 975 979 <italic xmlns:xlink="http://www.w3.org/1999/xlink">YAP1</italic>
+The 29 GRMs identified in this study. Each rectangle stands for a module and the ovals in a rectangle indicate the TFs that regulate the module. A TF name is colored blue if it is known to be involved in heat shock response but black otherwise. The periphery of a rectangle is colored purple if the module has at least one enriched MIPS functional category but black otherwise. An oval is colored green if the TF's function is consistent with at least one of the module's enriched MIPS functional categories. Two ovals are connected by an undirected red line if these two TFs have physical interactions indicated by the current protein-protein interaction data [22]. Two ovals are connected by a directed black line if the two TFs have genetic interactions indicated by mutant or ChIP-chip data [20,21]. For example, Msn2-->Yap1 means that either TF Msn2 binds to the promoter of gene YAP1 or the disruption of TF Msn2 results in a significant change of the expression of gene YAP1.
+###end p 15
+###begin title 16
+Validation of the identified modules
+###end title 16
+###begin p 17
+###xml 455 456 455 456 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 628 630 628 630 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 631 633 631 633 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 647 648 647 648 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 777 778 777 778 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 981 983 981 983 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 1003 1004 1003 1004 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1071 1073 1071 1073 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 1137 1138 1137 1138 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 1159 1160 1159 1160 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1570 1571 1570 1571 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+Several lines of evidence support that HIMIA identifies biologically relevant heat-inducible GRMs. First, by the virtue of our method, each TF-gene regulatory relationship in a module is of high confidence because it is supported by at least three independent data sources (gene expression and TFBS data plus ChIP-chip or/and mutant data). Second, each module is assigned to at least one TF that is known to be involved in heat shock response (see Figure 2). Third, in the 24 modules that are controlled by more than one TF, 70% (32/46 counting multiplicity) of the TFs in the same module have physical or genetic interactions [20-22] (see Figure 2). Fourth, on average, 67% of genes in a heat-inducible GRM are known to be involved in heat shock response (see Additional file 1). Fifth, 59% (17/29) of the identified modules include groups of genes that function in the same cellular process: each of these modules contains at least one over-represented MIPS functional category [23] with the adjusted p-value < 0.05 (after the Bonferroni correction for multiple tests [24]) using the cumulative hypergeometric distribution (see Figure 2 and Additional file 1). Finally, the modules are generally accurate in assigning TFs to sets of genes whose functions are consistent with the TFs' known roles. For the 17 modules that contain groups of genes enriched in the same cellular process, we found that the regulatory functions of the 76% (26/34 counting multiplicity) of the TFs are consistent with one of their modules' over-represented functional categories (see Figure 2). Taken together, these results provide evidence that HIMIA identifies not only sets of biologically related heat-inducible genes, but also heat-responsive TFs that individually or collectively regulate these genes.
+###end p 17
+###begin title 18
+Identification of important heat-responsive TFs
+###end title 18
+###begin p 19
+###xml 154 155 154 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 579 581 579 581 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 582 584 582 584 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 872 874 872 874 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 875 877 875 877 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 878 880 878 880 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 1080 1082 1080 1082 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 1129 1134 1129 1134 <italic xmlns:xlink="http://www.w3.org/1999/xlink">GSH1 </italic>
+###xml 1138 1143 1138 1143 <italic xmlns:xlink="http://www.w3.org/1999/xlink">GSH2 </italic>
+###xml 1193 1195 1193 1195 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 1424 1426 1424 1426 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 1557 1559 1557 1559 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1682 1684 1682 1684 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 1890 1892 1890 1892 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 1968 1973 1968 1973 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1976 1977 1976 1977 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 278 283 <span type="species:ncbi:4932">yeast</span>
+We identified 12 heat-responsive TFs, 7 (Msn2, Msn4, Hsf1, Yap1, Hac1, Rlm1 and Cad1) of which are known to be involved in heat shock response (see Table 1). Our findings are supported by the literature. First, Msn2 and Msn4 are known to regulate the general stress response in yeast. They regulate the expression of many genes in response to several stresses, including heat shock, osmotic shock, oxidative stress, low pH, glucose starvation, sorbic acid and high ethanol concentrations, by binding to the stress response element (STRE) located in the promoters of these genes [25-27]. Second, Hsf1 is the well-known heat shock factor that binds to the heat shock element (HSE) to regulate the transcription of many heat-inducible genes, including genes involved in protein folding, detoxification, energy generation, carbohydrate metabolism, and cell wall organization [25,27,28]. All these gene products are important for cell to counteract the deleterious effects of heat. Third, Yap1, a well-known oxidative shock factor, is also known to be involved in heat shock response [29]. For example, Yap1 induces the expression of GSH1 and GSH2 to synthesize glutathione in heat shock response [30]. Fourth, heat stress can cause unfolded proteins to accumulate in the endoplasmic reticulum (ER), triggering the unfolded protein response (UPR). Hac1 binds to the UPR element (UPRE) to regulate genes that are involved in UPR [31]. Fifth, heat stress causes a weakening of cell wall and membrane stretching which stimulates the protein kinase C (PKC) pathway [25]. Rlm1, a component of the PKC pathway, is then activated to perform the function of maintaining the cell wall integrity [32]. Finally, Cad1, an AP-1 like bZIP transcriptional activator involved in stress responses (e.g. heat shock response, pleiotropic drug resistance), controls a set of genes involved in stabilizing proteins [33]. The involvement of Cad1 in stress responses was also identified by Segal et al. [7].
+###end p 19
+###begin p 20
+The number of inferred heat-inducible target genes regulated by each of the 12 heat-responsive TFs
+###end p 20
+###begin p 21
+Seven well-known heat-responsive TFs are bold-faced and colored blue. The TFs are ordered by the number of their inferred heat-inducible target genes.
+###end p 21
+###begin p 22
+###xml 255 257 255 257 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 336 338 336 338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 445 447 445 447 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 670 672 670 672 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1033 1034 1033 1034 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+In addition to the above seven known heat-responsive TFs, five novel heat-responsive TFs (Rox1, Cst6, Ume6, Ste12 and Dig1) have also been identified by HIMIA. Rox1 contains a high-mobility group (HMG) domain that is responsible for DNA bending activity [29]. Cst6 and Ume6 regulate genes involved in the cell cycle and DNA processing [23]. Ste12 and Dig1 are involved in the regulation of mating-specific genes and the invasive growth pathway [29]. Identification of these five TFs as heat-responsive TFs suggests that heat shock response may have crosstalk with other cellular processes. It is known that the cell cycle transiently arrests during a heat shock stress [25], validating our proposal that heat shock response may have crosstalk with the cell cycle process. Moreover, these five novel heat-responsive TFs and the other seven known heat-responsive TFs form a highly connected network of interactions, supporting our prediction that these five novel heat-responsive TFs may play a role in heat shock response (see Figure 3). This dense network of interactions also suggests that different combinations of a fairly small number of heat-responsive TFs may be sufficient to regulate a large number of genes involved in heat shock response.
+###end p 22
+###begin p 23
+###xml 0 71 0 71 <bold xmlns:xlink="http://www.w3.org/1999/xlink">The interaction network formed by the 12 identified heat-responsive TFs</bold>
+###xml 376 378 376 378 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 516 518 516 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 519 521 519 521 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+The interaction network formed by the 12 identified heat-responsive TFs. An oval indicates an identified heat-responsive TF. A TF name is colored blue if it is known to be involved in heat shock response but black otherwise. Two ovals are connected by an undirected red line if the two TFs have physical interactions indicated by the current protein-protein interaction data [22]. Two ovals are connected by a directed green line if these two TFs have genetic interactions indicated by the mutant or ChIP-chip data [20,21]. Note that the 12 identified heat-responsive TFs form a highly connected network of interactions.
+###end p 23
+###begin p 24
+Taken together, these results suggest that HIMIA is effective for identifying TFs that play a role in heat shock response or are involved in other cellular processes that may crosstalk with heat shock response.
+###end p 24
+###begin title 25
+Identification of important genes involved in heat shock response
+###end title 25
+###begin p 26
+###xml 355 357 355 357 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+Disruption of a large number of cellular assemblies and processes, an increased protein unfolding and aggregation, and membrane structure alterations are paramount in cells exposed to high temperature. Heat shock response serves to counteract these deleterious effects. Through it cells increase their thermotolerance or ability to withstand heat stress [25].
+###end p 26
+###begin p 27
+###xml 284 285 284 285 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 343 349 343 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP10 </italic>
+###xml 353 359 353 359 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP60 </italic>
+###xml 439 445 439 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP12 </italic>
+###xml 449 455 449 455 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP78 </italic>
+###xml 539 544 539 544 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP31</italic>
+###xml 546 552 546 552 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP104</italic>
+###xml 554 558 554 558 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SSA1</italic>
+###xml 560 565 560 565 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SSA4 </italic>
+###xml 569 574 569 574 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SSE2 </italic>
+###xml 733 737 733 737 <italic xmlns:xlink="http://www.w3.org/1999/xlink">EUG1</italic>
+###xml 739 743 739 743 <italic xmlns:xlink="http://www.w3.org/1999/xlink">LHS1</italic>
+###xml 745 750 745 750 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SCJ1 </italic>
+###xml 754 759 754 759 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ERO1 </italic>
+###xml 858 860 858 860 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 1237 1239 1237 1239 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1318 1323 1318 1323 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TSL1 </italic>
+###xml 1339 1343 1339 1343 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TSP1</italic>
+###xml 1349 1354 1349 1354 <italic xmlns:xlink="http://www.w3.org/1999/xlink">NTH1 </italic>
+###xml 1651 1653 1651 1653 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1754 1759 1754 1759 <italic xmlns:xlink="http://www.w3.org/1999/xlink">DER1 </italic>
+###xml 1763 1768 1763 1768 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PBI2 </italic>
+###xml 1828 1833 1828 1833 <italic xmlns:xlink="http://www.w3.org/1999/xlink">APG12</italic>
+###xml 1835 1839 1835 1839 <italic xmlns:xlink="http://www.w3.org/1999/xlink">UBC8</italic>
+###xml 1841 1846 1841 1846 <italic xmlns:xlink="http://www.w3.org/1999/xlink">JEM1 </italic>
+###xml 1850 1855 1850 1855 <italic xmlns:xlink="http://www.w3.org/1999/xlink">UBI4 </italic>
+###xml 1897 1902 1897 1902 <italic xmlns:xlink="http://www.w3.org/1999/xlink">LAP4 </italic>
+###xml 1906 1911 1906 1911 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ASI1 </italic>
+###xml 1954 1959 1954 1959 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ATG8 </italic>
+###xml 1963 1968 1963 1968 <italic xmlns:xlink="http://www.w3.org/1999/xlink">YSP3 </italic>
+###xml 2165 2167 2165 2167 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 2213 2217 2213 2217 <italic xmlns:xlink="http://www.w3.org/1999/xlink">CWP1</italic>
+###xml 2219 2223 2219 2223 <italic xmlns:xlink="http://www.w3.org/1999/xlink">GFA1</italic>
+###xml 2225 2229 2225 2229 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KTR2</italic>
+###xml 2231 2235 2231 2235 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FLC2</italic>
+###xml 2237 2241 2237 2241 <italic xmlns:xlink="http://www.w3.org/1999/xlink">CHS3</italic>
+###xml 2243 2248 2243 2248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HKR1 </italic>
+###xml 2252 2256 2252 2256 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SLT2</italic>
+###xml 2324 2326 2324 2326 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 2439 2441 2439 2441 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 2603 2605 2603 2605 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 2704 2708 2704 2708 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HXK1</italic>
+###xml 2710 2715 2710 2715 <italic xmlns:xlink="http://www.w3.org/1999/xlink">GLK1 </italic>
+###xml 2719 2724 2719 2724 <italic xmlns:xlink="http://www.w3.org/1999/xlink">GPH1 </italic>
+###xml 2814 2819 2814 2819 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FAA1 </italic>
+###xml 2823 2828 2823 2828 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FAA4 </italic>
+###xml 2922 2927 2922 2927 <italic xmlns:xlink="http://www.w3.org/1999/xlink">CYC7 </italic>
+###xml 2931 2937 2931 2937 <italic xmlns:xlink="http://www.w3.org/1999/xlink">COX20 </italic>
+###xml 3217 3219 3217 3219 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 21 26 <span type="species:ncbi:4932">yeast</span>
+Many events occur in yeast cells during heat shock response. First, heat shock proteins (HSPs) are rapidly synthesized. Many HSPs function as protein chaperones, so named because of their ability to bind to partially unfolded proteins to protect them from degradation or aggregation [1]. HIMIA successfully identified heat shock protein genes HSP10 and HSP60 (both in module 27) to be regulated by heat-shock transcription factor Hsf1 and HSP12 and HSP78 (both in module 25) to be regulated by the general stress factor Msn2. In addition, HSP31, HSP104, SSA1, SSA4 and SSE2 (all in module 19) are identified to be regulated by both Hsf1 and Msn2. Other genes involved in the protein folding or refolding are also found. For example, EUG1, LHS1, SCJ1 and ERO1 (all in module 28) are regulated by Hac1, a TF known to be involved in protein unfolding response [31]. Second, heat shock causes the extremely rapid accumulation of a large cytoplasmic pool of trehalose. Trehalose is one of the most effective substances known for preservation of membranous structures and enzyme activities during heating. One of the major roles for Msn2/4 in heat shock response is to regulate the expression of genes required for the synthesis of trehalose [25]. HIMIA successfully identified three genes for trehalose synthease subunits: TSL1 (in module 25), TSP1, and NTH1 (both in module 26) are indeed regulated by Msn2 or Msn4. Third, heat shock increases the synthesis of certain components of the ubiquitination system for intracellular protein turnover, indicating a much greater requirement for turnover of abnormal proteins in cells recovering from heat stress [25]. HIMIA successfully identified several genes that are known to be involved in protein degradation. DER1 and PBI2 (both in module 28) are identified to be regulated by Hac1. APG12, UBC8, JEM1 and UBI4 (all in module 27) are regulated by Hsf1. LAP4 and ASI1 (both in module 25) are regulated by Msn2. ATG8 and YSP3 (both in module 29) are regulated by Rlm1. Fourth, high temperature causes the weakness of cell walls and induces the expression of genes that are involved in cell wall biogenesis and maintenance [25]. HIMIA successfully identified seven genes (CWP1, GFA1, KTR2, FLC2, CHS3, HKR1 and SLT2) known to be involved in the cell wall biogenesis and maintenance [29]. All these seven genes are in module 29 and regulated by Rlm1, an important cell integrity maintenance factor [32]. Finally, it is known that during heat shock cells induce a variety of genes related to carbohydrate metabolism, fatty acid metabolism, respiration and others [25]. HIMIA successfully identified genes that are involved in these cellular processes. For example, HXK1, GLK1 and GPH1 (all in module 25) involved in glucose metabolism are identified to be regulated by Msn2. FAA1 and FAA4 (both in module 27) involved in fatty acid metabolism are identified to be regulated by Hsf1. CYC7 and COX20 (both in module 26) involved in respiration are identified to be regulated by Msn4. The known functions of these genes hint the cellular processes that may be affected in response to heat shock, and suggest mechanisms the cell uses to protect itself in the face of a heat stress [25].
+###end p 27
+###begin title 28
+Annotating uncharacterized genes
+###end title 28
+###begin p 29
+###xml 95 109 95 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces </italic>
+###xml 126 128 126 128 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 648 649 648 649 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+Among the 182 identified heat-inducible genes, 68 genes have unknown function according to the Saccharomyces Genome Database [29]. We suggest most if not all of these genes are involved in heat shock response. Our predictions are supported by the fact that all these 68 genes are induced by more than three folds at least at two time points of their expression profiles under heat shock. Moreover, all these 68 genes are regulated by known heat-responsive TFs and the TF-gene regulatory relationships are supported by at least three independent data sources (gene expression and TFBS plus ChIP-chip or/and mutant data). As shown in Additional file 1, 14 of these genes are regulated by Hac1, 25 by Hsf1, 24 by Msn2, 20 by Msn4, 17 by Yap1, and so on.
+###end p 29
+###begin p 30
+###xml 122 124 122 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 127 132 127 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PRM5 </italic>
+###xml 224 226 224 226 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 246 251 246 251 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PRM5 </italic>
+###xml 360 365 360 365 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PRM5 </italic>
+###xml 506 511 506 511 <italic xmlns:xlink="http://www.w3.org/1999/xlink">YRO2 </italic>
+###xml 652 657 652 657 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HBT1 </italic>
+###xml 661 667 661 667 <italic xmlns:xlink="http://www.w3.org/1999/xlink">RIM20 </italic>
+###xml 727 732 727 732 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MGR1 </italic>
+###xml 736 742 736 742 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ADD37 </italic>
+As an example, it is known that the weakening of cell wall during high temperature stimulates the cell integrity pathway [25]. PRM5 is known to be induced in the cell integrity pathway but its molecular function is unknown [29]. HIMIA identified PRM5 (in module 29) to be regulated by Rlm1, an important cell wall integrity maintenance factor, suggesting that PRM5 is indeed involved in the cell wall maintenance during heat shock. Moreover, we successfully identified the putative heat shock protein gene YRO2 (in module 26) to be regulated by Msn4. In addition, putative genes that may be involved in protein degradation are also found. For example, HBT1 and RIM20 (both in module 26) are identified to be regulated by Msn4. MGR1 and ADD37 (both in module 28) are identified to be regulated by Hac1. All these examples show that these uncharacterized genes may play a role in heat shock response. However, further experimental validations are needed to confidently annotate these uncharacterized genes as heat-inducible genes.
+###end p 30
+###begin title 31
+Assigning regulatory roles of TFs that regulate a GRM
+###end title 31
+###begin p 32
+###xml 117 118 117 118 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 306 307 306 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 440 442 440 442 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+We can assign the regulatory roles of TFs that regulate a module. A TF is said to be an activator of a module if the p-value for observing so many TF-gene pairs in the module each with a significant positive correlation (within the 5% right tail of the distribution of correlation) is less than 0.001. The p-value is the probability that an observation would be made by chance, and is calculated using the cumulative binomial distribution [10]:
+###end p 32
+###begin p 33
+###xml 6 8 6 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 50 51 50 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 51 53 51 53 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 166 167 166 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 167 169 167 169 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 322 323 322 323 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+where N is the total number of genes in a module, n0 is the number of genes in the module that show a significant positive correlation in expression with the TF, and p0 is the probability of observing an arbitrary gene in the genome that has a significant positive correlation in expression with the TF. As shown in Table 2, we assigned Cst6 as an activator of four modules, Hsf1 an activator of three modules, Msn2 an activator of five modules, Msn4 an activator of two modules, Rlm1 an activator of two modules and Yap1 an activator of four modules.
+###end p 33
+###begin p 34
+Identified activators of GRMs
+###end p 34
+###begin p 35
+###xml 51 52 51 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+A TF is said to be an activator of a module if the p-value for observing so many TF-gene pairs in the module each with a significant positive correlation is less than 0.001.
+###end p 35
+###begin title 36
+Refining the clusters of the genes involved in the same cellular process
+###end title 36
+###begin p 37
+###xml 234 236 234 236 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 512 514 512 514 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4a</xref>
+###xml 530 536 530 536 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP10 </italic>
+###xml 540 546 540 546 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP60 </italic>
+###xml 586 592 586 592 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP78 </italic>
+###xml 603 609 603 609 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP31 </italic>
+###xml 613 620 613 620 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP104 </italic>
+Heat shock causes an increased protein unfolding and aggregation in a cell. Thus, many genes that are involved in protein (re)folding are induced to bind to partially unfolded proteins to protect them from degradation or aggregation [25]. Among the 182 identified heat-inducible genes, 20 genes are known to be involved in protein (re)folding. Although these genes are functionally similar, they may be under different transcriptional controls. Indeed, HIMIA assigns these 20 genes into five modules (see Figure 4a). For example, HSP10 and HSP60 are identified to be regulated by Hsf1, HSP78 by Msn2/4, HSP31 and HSP104 by both Hsf1 and Msn2/4, and so on.
+###end p 37
+###begin p 38
+###xml 0 64 0 64 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Refining clusters of genes involved in the same cellular process</bold>
+Refining clusters of genes involved in the same cellular process. (A) Refining the cluster of genes involved in protein (re)folding. HIMIA assigns the 20 identified genes that are involved in protein (re)folding into five modules. (B) Refining the cluster of genes involved in protein degradation. HIMIA assigns the 16 identified genes that are involved in protein degradation into five modules.
+###end p 38
+###begin p 39
+###xml 197 199 197 199 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 467 469 467 469 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4b</xref>
+###xml 485 489 485 489 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PBI2</italic>
+###xml 491 496 491 496 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ADD37</italic>
+###xml 497 502 497 502 <italic xmlns:xlink="http://www.w3.org/1999/xlink">DER1 </italic>
+###xml 506 511 506 511 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MGR1 </italic>
+###xml 551 556 551 556 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ATG8 </italic>
+###xml 560 565 560 565 <italic xmlns:xlink="http://www.w3.org/1999/xlink">YSP3 </italic>
+Denatured proteins that cannot be properly refolded are targeted for degradation by ubiquitination, so it is not surprising that genes involved in protein degradation are induced under heat shock [25]. Among the 182 identified heat-inducible genes, 16 genes are known to be involved in protein degradation. Although these genes are functionally similar, they may be under different transcriptional controls. HIMIA assigns these 16 genes into five modules (see Figure 4b). For example, PBI2, ADD37,DER1 and MGR1 are identified to be regulated by Hac1, ATG8 and YSP3 by Rlm1, and so on.
+###end p 39
+###begin p 40
+Therefore, HIMIA can refine the cluster of genes involved in protein (re)folding and degradation and can provide a better understanding of how the cell regulates the complex expression program of these genes.
+###end p 40
+###begin title 41
+Discussion
+###end title 41
+###begin title 42
+Performance comparison with existing methods
+###end title 42
+###begin p 43
+###xml 59 60 59 60 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 72 74 72 74 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 188 190 188 190 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 317 319 317 319 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 942 944 942 944 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 1013 1015 1013 1015 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 1016 1018 1016 1018 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 1288 1289 1288 1289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 113 118 <span type="species:ncbi:4932">yeast</span>
+###xml 230 235 <span type="species:ncbi:4932">yeast</span>
+Several module inference methods have been proposed. GRAM [9] and MOFA [10] are intuitive algorithms to identify yeast GRMs by combining ChIP-chip and gene expression data. ReMoDiscovery [12] is an intuitive algorithm to identify yeast GRMs by combining motif information, ChIP-chip, and gene expression data. SAMBA [13] uses a graph theoretic approach to identify GRMs by combining four data sources (ChIP-chip, gene expression, protein interactions, and growth phenotype data). All these four module inference algorithms are statistics-based methods. On the contrary, HIMIA is a dynamic system model-based method that integrates four data sources (ChIP-chip, time series gene expression, mutant, and TFBS data). Since HIMIA is different from the four pervious methods, a performance comparison was conducted. We tested the ability of each of these five algorithms to retrieve the known stress-responsive TFs annotated in the MIPS database [23]. Performance comparison was based on the Jaccard similarity score [12,34], which scores the overlap between an algorithm's output and the list of known stress-responsive TFs (i.e., the true answers). Therefore, the higher the Jaccard similarity score, the better the ability of an algorithm to retrieve the known stress-responsive TFs. Table 3 shows that HIMIA has the highest Jaccard similarity score among the five tested algorithms.
+###end p 43
+###begin p 44
+Performance comparison of five module inference tools
+###end p 44
+###begin p 45
+###xml 66 68 66 68 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 69 71 69 71 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 227 229 227 229 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 230 232 230 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+Performance comparison was based on the Jaccard similarity score [12,34], which scores the overlap between an algorithm's output and the list of known stress-responsive TFs. Specifically, the score is defined as TP/(TP+FP+FN) [12,34], where TP stands for true positives, FP for false positives, and FN for false negatives. Note that the higher the Jaccard similarity score, the better the ability of an algorithm to retrieve the known stress-responsive TFs.
+###end p 45
+###begin title 46
+Randomization test and comparison with a null model
+###end title 46
+###begin p 47
+###xml 379 380 379 380 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+Two randomization tests were performed to show that the output of HIMIA is statistically meaningful. First, we randomly permuted the gene expression data 1000 times. Second, we randomly permuted the ChIP-chip data 1000 times. When either of the two randomized data sets was used as the input, HIMIA could no longer effectively identify the known stress-responsive TFs (see Table 4). This means that the output of HIMIA is statistically meaningful and is far beyond random expectation.
+###end p 47
+###begin p 48
+Randomization tests of HIMIA
+###end p 48
+###begin p 49
+Two randomization tests were performed. First, we randomly permuted the gene expression data 1000 times. Second, we randomly permuted the ChIP-chip data 1000 times. When either of the two randomized data sets was used as the input, HIMIA could no longer effectively identify the known stress-responsive TFs, indicating that the output of HIMIA is statistically meaningful and is far beyond random expectation.
+###end p 49
+###begin p 50
+###xml 145 147 145 147 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 363 364 363 364 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+In addition, we compared the performance of HIMIA and the null model to retrieve the known stress-responsive TFs annotated in the MIPS database [23]. The null model was defined as using the same input data (mutant, ChIP-chip, TFBS, and gene expression data) but only the overlap was calculated instead of going through the iterative procedure described on Figure 1. The simulation result shows that HIMIA has a better ability in retrieving the known stress-responsive TFs than does the null model (Jaccard similarity scores 0.19 v.s. 0.17).
+###end p 50
+###begin title 51
+Parameter settings of HIMIA
+###end title 51
+###begin p 52
+###xml 31 32 31 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 115 116 115 116 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 117 119 117 119 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 164 165 164 165 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 242 244 242 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 382 384 380 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 546 548 544 546 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 800 801 796 797 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+The choice of the relaxing the p-value to 0.01 (in Step 1 of HIMIA) has a biological meaning. Two previous papers [6,21] used a statistical error model to assign a p-value of the binding relationship of a TF-promoter pair. They found that if p </= 0.001, the binding relationship of a TF-promoter pair is of high confidence and can usually be confirmed by promoter-specific PCR. If p > 0.01, the binding relationship of a TF-promoter pair is of low confidence and cannot be confirmed by promoter-specific PCR most of the time. However, if 0.001 <p </= 0.01, the binding relationship of a TF-promoter pair is ambiguous and can be confirmed by promoter-specific PCR in some cases but not in the other cases. One of our aims in this study was to solve this ambiguity, so we chose 0.01 to be the relaxed p-value. However, we added the requirement that the promoter must contain one or more binding sites of the TF.
+###end p 52
+###begin p 53
+###xml 31 36 31 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 39 41 39 41 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+In the original paper, Causton et al. [18] defined a candidate heat-inducible gene by the criterion that at least one time point of its gene expression profile showed a change fold of at least three. In order to reduce the chance of including false positives, we used a criterion that at least two time points showed a change fold of at least three. Using this criterion, 528 genes were identified as candidate heat-inducible genes. Of course, some false positives might still exist among these 528 genes. In the subsequent steps, however, HIMIA further refined this set of candidate heat-inducible genes using four independent data sources (mutant, ChIP-chip, TFBS, and time series gene expression data). Finally, only 182 genes were identified heat-inducible genes, which were classified into 29 heat-inducible GRMs regulated by heat-responsive TFs. Among the 182 identified genes, 108 are known to be involved in heat shock response. We provided several lines of evidence to support the biological relevance of the 29 identified heat-inducible GRMs (see Results section for details). Therefore, the possible existence of false positives should not be a serious problem in HIMIA.
+###end p 53
+###begin title 54
+Genes in the heat-inducible GRMs
+###end title 54
+###begin p 55
+###xml 1099 1100 1099 1100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 1101 1103 1101 1103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 899 904 <span type="species:ncbi:4932">yeast</span>
+HIMIA identified 29 heat-inducible GRMs. On average, 67% of the genes in a heat-inducible GRM are known to be involved in heat shock response, 17% of the genes in a GRM are uncharacterized genes (i.e., proteins with unknown functions), and 16% of the genes in a GRM are annotated in other cellular processes. Although we cannot claim that all genes in the last two categories are heat-inducible genes, our predictions are supported by three observations. First, all these genes are induced by more than three folds at least at two time points of their expression profiles under heat shock. Second, all these genes are regulated by at least one known heat-responsive TFs in the corresponding GRMs, and the TF-gene regulatory relationships are supported by at least three independent data sources (gene expression and TFBS plus ChIP-chip or/and mutant data). Third, it is known that during heat shock yeast cells express a variety of genes related to carbohydrate metabolism, fatty acid metabolism, energy generation, respiration, signaling pathways (e.g. PKC and cell integrity pathways) and others [1,25]. For the known genes in a GRM that have not been annotated in heat shock response, most of them are related to one of the cellular processes mentioned above. This provides indirect evidence for these genes to be possibly triggered by heat shock response. However, further experimental validations are needed to reliably claim that these predicted heat-inducible genes do play a role in heat shock response.
+###end p 55
+###begin p 56
+###xml 139 140 139 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 141 143 141 143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 144 146 144 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 147 149 147 149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 150 152 150 152 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 171 176 171 176 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP31</italic>
+###xml 178 184 178 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP104</italic>
+###xml 186 190 186 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SSA4</italic>
+###xml 192 196 192 196 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SSE2</italic>
+###xml 198 202 198 202 <italic xmlns:xlink="http://www.w3.org/1999/xlink">CPR6</italic>
+###xml 204 208 204 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SPI1</italic>
+###xml 210 214 210 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TKL2</italic>
+###xml 220 227 220 227 <italic xmlns:xlink="http://www.w3.org/1999/xlink">YHR087W</italic>
+###xml 278 283 278 283 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP31</italic>
+###xml 285 291 285 291 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HSP104</italic>
+###xml 293 298 293 298 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SSA4 </italic>
+###xml 302 307 302 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SSE2 </italic>
+###xml 383 385 383 385 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 388 393 388 393 <italic xmlns:xlink="http://www.w3.org/1999/xlink">CPR6 </italic>
+###xml 470 472 470 472 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 475 480 475 480 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SPI1 </italic>
+###xml 540 542 540 542 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 545 550 545 550 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TKL2 </italic>
+###xml 625 627 625 627 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 630 638 630 638 <italic xmlns:xlink="http://www.w3.org/1999/xlink">YHR087W </italic>
+###xml 688 690 688 690 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 891 892 891 892 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 893 895 893 895 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1294 1296 1294 1296 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 850 855 <span type="species:ncbi:4932">yeast</span>
+We also found that genes with diverse functions may be in the same GRM. As an example, Hsf1, Msn2, and Yap1 are known heat-responsive TFs [1,23,25-30,35] and eight genes (HSP31, HSP104, SSA4, SSE2, CPR6, SPI1, TKL2, and YHR087W) are in the module {Hsf1, Msn2, Yap1} (module 4). HSP31, HSP104, SSA4 and SSE2 are genes encoding heat shock proteins that function as protein chaperones [29]. CPR6 encodes a protein that binds to Hsp82 and contributes to chaperone activity [29]. SPI1 encodes a protein that is involved in cell wall biogenesis [35]. TKL2 is involved in carbon metabolism and is induced in response to heat shock [27]. YHR087W is an uncharacterized gene with unknown function [29]. It is not surprising that we find genes encoding HSPs, cell wall biogenesis protein, and carbon metabolic proteins in a GRM because they are all needed when yeast cells are subjected to heat shock [1,25]. HSPs function as protein chaperones, so named because of their ability to bind to partially unfolded proteins to protect them from degradation or aggregation. High temperature causes the weakness of cell wall and induces the expression of genes that are involved in cell wall biogenesis and maintenance. It is known that heat stress imposes large demands for energy (ATP) generation by the cell [25]. In short, heat shock response is multifaceted, involving the expression of genes with diverse functions.
+###end p 56
+###begin title 57
+Conclusion
+###end title 57
+###begin p 58
+###xml 136 141 <span type="species:ncbi:4932">yeast</span>
+We developed a method, called Heat-Inducible Module Identification Algorithm (HIMIA), for reconstructing GRMs of heat shock response in yeast by integrating current ChIP-chip, mutant, TFBS, and time series gene expression data. Unlike previous module inference tools which are static statistics-based methods, HIMIA is a dynamic system model-based method that utilizes the dynamic nature of time series gene expression data. HIMIA identified 29 GRMs, which in total contain 182 heat-inducible genes regulated by 12 heat-responsive TFs. The literature indicates that 108 of the 182 genes and 7 of the 12 TFs are known to be involved in heat shock response. The biological relevance of each inferred GRM was validated by using the literature, enrichment for genes in the same MIPS functional category, protein-protein interaction data, and so on. Our analysis suggests that different combinations of a fairly small number of heat-responsive TFs may be responsible for regulating a large number of genes involved in heat shock response and that there may exist crosstalk between heat shock response and other cellular processes. In addition, HIMIA suggested that 68 uncharacterized genes may be involved in heat shock response and it also identified their plausible heat-responsive regulators. Furthermore, HIMIA is capable of assigning the regulatory roles of the TFs that regulate GRMs and Cst6, Hsf1, Msn2, Msn4, and Yap1 are found to be activators of several GRMs. In addition, HIMIA refined two clusters of genes that are involved in heat shock response and provided a better understanding of how the complex expression program of heat shock is regulated. Finally, we showed that HIMIA outperformed four current module inference tools (GRAM, MOFA, ReMoDisvovery, and SAMBA), and we conducted two randomization tests to show that the output of HIMIA is statistically meaningful.
+###end p 58
+###begin title 59
+Methods
+###end title 59
+###begin title 60
+Data sets and data preprocessing
+###end title 60
+###begin p 61
+###xml 85 90 85 90 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 93 95 93 95 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 329 334 329 334 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 345 347 345 347 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 377 379 377 379 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 391 396 391 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 717 719 717 719 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 1048 1053 1048 1053 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1064 1066 1064 1066 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 1264 1266 1264 1266 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 1468 1473 1468 1473 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1523 1525 1523 1525 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 1098 1103 <span type="species:ncbi:4932">yeast</span>
+###xml 1571 1576 <span type="species:ncbi:4932">yeast</span>
+We use four kinds of data in this study. First, the ChIP-chip data are from Harbison et al. [21]. They used genome-wide location analysis to determine the genomic occupancy of 203 TFs in rich media conditions and, for 84 of these TFs, in at least one of 12 other environmental conditions. Second, the TFBS data are from MacIsaac et al.'s study [19] and the YEASTRACT database [20]. MacIsaac et al. used evolutionarily conservative criteria to computationally identify the binding sites of many TFs. The YEASTRACT database includes a set of computational tools that can be used to identify complex motifs over-represented in the promoters of co-regulated genes. Third, the mutant data are from the YEASTRACT database [20]. The mutant data can tell us which gene's expression was changed significantly owing to the deletion (or mutation) of the gene that encodes a TF. The evidence may come from detailed gene by gene analysis or genome-wide expression analysis. Finally, the time series gene expression data under heat shock stress are from Causton et al.'s study [18]. Samples for all genes in the yeast genome are collected at six time points (0, 15, 30, 45, 60, 120 minute). That is, each gene has a 6-timepoint gene expression profile. The cubic spline method [36] is then used to interpolate extra data points into the original time profile. Note that genes that have missing values in their original time profiles are discarded in our study. We did not use Gasch et al.'s gene expression data under heat shock stress [17] because 41% (2509/6152) of the genes in the yeast genome had missing values in their time profiles.
+###end p 61
+###begin title 62
+Average standard deviation (ASD)
+###end title 62
+###begin p 63
+###xml 66 68 66 68 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 71 75 71 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ASD </italic>
+###xml 92 93 77 78 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 94 99 79 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 100 101 81 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e</italic>
+###xml 101 102 82 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 103 104 84 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 101 104 82 85 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>g</italic>,<italic>i</italic></sub>
+###xml 114 115 95 96 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e</italic>
+###xml 115 116 96 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 117 119 98 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 115 119 96 100 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>g</italic>,<italic>i </italic></sub>
+###xml 162 164 143 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g </italic>
+###xml 172 173 153 154 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 175 181 156 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963; </italic>
+###xml 223 225 200 202 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+To check the expression coherence of a set of genes, ASD is used [11]: ASD triangle, equals m(sigma(eg,i)), where eg,i is the normalized expression level of gene g at time i, sigma is the standard deviation over genes, and m is the average over time. The lower the ASD is, the closer the expression levels are to the average, i.e., the more coherent in expression profiles of the genes in a set are.
+###end p 63
+###begin title 64
+Heat-Inducible Module Identification Algorithm (HIMIA)
+###end title 64
+###begin p 65
+HIMIA are divided into five steps.
+###end p 65
+###begin title 66
+Step 1
+###end title 66
+###begin p 67
+###xml 61 63 61 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B </italic>
+###xml 66 67 66 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">b</italic>
+###xml 67 68 67 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 69 70 69 70 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 67 70 67 70 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>,<italic>j</italic></sub>
+Construction of a high-confidence TF-promoter binding matrix B = [bi,j]
+###end p 67
+###begin p 68
+###xml 16 17 16 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink">b</italic>
+###xml 17 18 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 19 21 19 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 17 21 17 21 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>,<italic>j </italic></sub>
+###xml 36 38 36 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p-</italic>
+###xml 50 52 50 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 81 83 81 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 142 144 140 142 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 184 186 182 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 213 215 211 213 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 273 275 271 273 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 300 302 298 300 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 342 343 340 341 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 356 357 354 355 <italic xmlns:xlink="http://www.w3.org/1999/xlink">b</italic>
+###xml 357 358 355 356 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 359 361 357 359 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 357 361 355 359 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>,<italic>j </italic></sub>
+In this matrix, bi,j = 1 if (1) the p-value for TFj to bind the promoter of gene i is </= 0.01 in the ChIP-chip data and the promoter of gene i contains one or more binding sites of TFj or (2) the disruption of TFj results in a significant change of the expression of gene i and the promoter of gene i contains one or more binding sites of TFj. Otherwise, bi,j = 0
+###end p 68
+###begin title 69
+Step 2
+###end title 69
+###begin p 70
+###xml 60 62 60 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C </italic>
+###xml 65 66 65 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 66 67 66 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 68 69 68 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 66 69 66 69 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>,<italic>j</italic></sub>
+Construction of a high-confidence TF-gene regulatory matrix C = [ci,j]
+###end p 70
+###begin p 71
+###xml 16 17 16 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 17 18 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 19 21 19 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 17 21 17 21 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>,<italic>j </italic></sub>
+###xml 28 29 28 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink">b</italic>
+###xml 29 30 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 31 33 31 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 29 33 29 33 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>,<italic>j </italic></sub>
+###xml 46 48 46 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 138 140 138 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 179 180 179 180 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 180 181 180 181 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 182 184 182 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 180 184 180 184 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>,<italic>j </italic></sub>
+In this matrix, ci,j = 1 if bi,j = 1 and if TFj is shown by the dynamic model to have a large regulatory effect on the expression of gene i (see Appendix for details). Otherwise, ci,j = 0
+###end p 71
+###begin title 72
+Step 3
+###end title 72
+###begin p 73
+###xml 88 90 88 90 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E </italic>
+###xml 93 94 93 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e</italic>
+###xml 94 95 94 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 96 97 96 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 94 97 94 97 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>p</italic>,<italic>q</italic></sub>
+Identification of heat-inducible genes and construction of their gene expression matrix E = [ep,q]
+###end p 73
+###begin p 74
+###xml 303 305 303 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E </italic>
+###xml 308 309 308 309 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e</italic>
+###xml 309 310 309 310 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 311 312 311 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 309 312 309 312 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>p</italic>,<italic>q</italic></sub>
+###xml 321 322 321 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e</italic>
+###xml 322 323 322 323 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 324 326 324 326 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q </italic>
+###xml 322 326 322 326 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>p</italic>,<italic>q </italic></sub>
+###xml 357 359 357 359 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p-</italic>
+###xml 396 397 396 397 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+A gene is called a heat-inducible gene if at least two time points of its gene expression profile measured under heat shock are induced by at least three folds compared to that under the unstressed condition. We then collect all the time profiles of the identified heat-inducible genes to form a matrix E = [ep,q], where ep,q is the expression value of the p-th heat-inducible gene at time point q.
+###end p 74
+###begin title 75
+Step 4
+###end title 75
+###begin p 76
+Identification of heat-responsive TF sets
+###end p 76
+###begin p 77
+###xml 320 322 320 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R </italic>
+###xml 326 327 326 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink">u</italic>
+###xml 326 327 326 327 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>u</italic></sub>
+###xml 331 332 331 332 <italic xmlns:xlink="http://www.w3.org/1999/xlink">v</italic>
+###xml 331 332 331 332 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>v</italic></sub>
+###xml 336 337 336 337 <sub xmlns:xlink="http://www.w3.org/1999/xlink">w</sub>
+###xml 352 354 352 354 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G </italic>
+###xml 362 364 362 364 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 366 367 366 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 367 368 367 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 369 371 369 371 <italic xmlns:xlink="http://www.w3.org/1999/xlink">u </italic>
+###xml 367 371 367 371 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic>,<italic>u </italic></sub>
+###xml 373 374 373 374 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 374 375 374 375 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 376 378 376 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink">v </italic>
+###xml 374 378 374 378 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic>,<italic>v </italic></sub>
+###xml 380 381 380 381 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 381 382 381 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 383 385 383 385 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w </italic>
+###xml 381 385 381 385 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic>,<italic>w </italic></sub>
+###xml 447 448 447 448 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 450 452 450 452 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 529 531 529 531 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 533 535 533 535 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G </italic>
+###xml 548 550 537 539 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 622 623 611 612 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 629 631 618 620 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Y </italic>
+###xml 685 686 674 675 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 729 730 718 719 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 732 734 721 723 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R </italic>
+###xml 785 787 774 776 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 494 499 <span type="species:ncbi:4932">yeast</span>
+###xml 662 667 <span type="species:ncbi:4932">yeast</span>
+The number of TFs in a TF set could be one, two or more. A TF set is said to be heat-responsive if a statistically significant portion of the target genes that are co-regulated by all the TFs in the TF set is heat-inducible. The hypergeometric distribution is used to test the statistical significance. For example, let R ={TFu, TFv, TFw} be a TF set, G = {gene k | ck,u = ck,v = ck,w = 1} be the set of genes that are regulated by all the TFs in R, S be the set of heat-inducible genes in the yeast genome identified in Step 3, T = G intersection S be the set of heat-inducible genes that are regulated by all the TFs in R, and Y be the set of all genes in the yeast genome. Then the p-value for rejecting the null hypothesis (H0: R is not a heat-responsive TF set) is calculated as [37]:
+###end p 77
+###begin p 78
+
+###end p 78
+###begin p 79
+###xml 7 8 7 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 43 44 43 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 51 52 51 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 175 177 175 177 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 189 191 189 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R </italic>
+###xml 246 247 246 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 254 255 254 255 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 255 264 255 264 <italic xmlns:xlink="http://www.w3.org/1999/xlink">adjusted </italic>
+###xml 255 264 255 264 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>adjusted </italic></sub>
+where |G| means the number of genes in set G. This p-value is then adjusted by the Bonferroni correction to represent the true alpha level in the multiple hypothesis testing [24]. Finally, R is said to be a heat-responsive TF set if the adjusted p-value padjusted </= 0.01
+###end p 79
+###begin title 80
+Step 5
+###end title 80
+###begin p 81
+Construction of heat-inducible GRMs
+###end p 81
+###begin p 82
+###xml 32 34 32 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R </italic>
+###xml 56 58 56 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 136 138 136 138 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 227 228 227 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 800 803 800 803 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ASD</italic>
+###xml 804 805 804 805 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 811 814 809 812 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ASD</italic>
+###xml 815 816 813 814 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 856 858 854 856 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 930 933 928 931 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ASD</italic>
+###xml 937 940 935 938 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ASD</italic>
+###xml 941 942 939 940 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 990 992 988 990 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 1306 1307 1304 1305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 1308 1309 1306 1307 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 1447 1448 1430 1431 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+For each heat-responsive TF set R identified in Step 4, T forms a heat-inducible candidate GRM. That is, a heat-inducible candidate GRM T consists of a set of heat-inducible genes that are regulated by a heat-responsive TF set R. Because genes in the same GRM are regulated by the same set of TFs, their gene expression profiles should be more similar to each other than those of a set of genes that are not in a single GRM. Therefore, we require that the gene expression profiles of the genes in the same GRM be more coherent than those of the set of all heat-inducible genes, which are regulated by different sets of TFs. For measuring the expression coherence of a set of genes, ASD is used. The lower the ASD is, the more coherent the expression profiles of the genes in a set are. Therefore, if ASD(T) >/= ASD(S) HIMIA iteratively eliminates genes in T starting from the one with the most dissimilar expression profile until ASD() <ASD(S), where  is the set of the remaining genes and S is the set of all heat-inducible genes identified in Step 3. That is, HIMIA tries to identify a subset of co-regulated heat-inducible genes whose gene expression profiles are more coherent than those of the set of all heat-inducible genes which are regulated by different sets of TFs. Finally, HIMIA outputs a GRM M(R) triangle, equals  if  contains more than a certain number of genes, say five. The above procedure goes over all heat-responsive TF sets R's identified in Step 4.
+###end p 82
+###begin title 83
+Jaccard similarity score
+###end title 83
+###begin p 84
+###xml 30 32 30 32 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 33 35 33 35 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+The Jaccard similarity score [12,34] was used to score the overlap between an algorithm's output and the list of known stress-responsive TFs. Specifically, it is defined as TP/(TP+FP+FN), where TP stands for true positives, FP for false positives, and FN for false negatives. Clearly, the higher the Jaccard similarity score, the better the ability of an algorithm to retrieve the known stress-responsive TFs.
+###end p 84
+###begin title 85
+Appendix
+###end title 85
+###begin title 86
+Dynamic system model of gene regulation
+###end title 86
+###begin p 87
+###xml 313 315 313 315 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 316 318 316 318 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+We consider the transcriptional regulatory mechanism of a target gene as a system with the regulatory profiles of several TFs as the inputs and the gene expression profile of the target gene as the output. The transcriptional regulation of a target gene is described by the following stochastic dynamic equation [38-40]:
+###end p 87
+###begin p 88
+
+###end p 88
+###begin p 89
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 8 9 8 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 78 79 78 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 81 83 81 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 199 200 199 200 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 202 203 202 203 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 203 205 203 205 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 203 205 203 205 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 244 245 244 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 247 248 247 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 248 249 248 249 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 248 249 248 249 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 250 251 250 251 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 292 294 292 294 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 308 309 308 309 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 311 313 311 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 370 377 370 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955; </italic>
+###xml 462 463 457 458 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 464 465 459 460 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 518 519 513 514 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 520 522 515 517 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t </italic>
+###xml 531 538 526 527 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949;</italic>
+###xml 539 540 528 529 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 662 669 651 652 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949;</italic>
+###xml 670 671 653 654 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 753 758 736 737 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963;</italic>
+###xml 807 808 786 787 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 809 811 788 790 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t </italic>
+###xml 920 922 899 901 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 976 982 955 956 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955;</italic>
+###xml 983 984 957 958 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 985 986 959 960 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+where y[t] represents the expression profile of the target gene at time point t, N denotes the number of TFs that bind to the promoter of the target gene inferred from the TF-promoter binding matrix B, di indicates the regulatory ability of TF i, xi[t] represents the regulatory profile of TFi at time point t, k represents the basal level induced by RNA polymerase II, lambda indicates the degrading effect of the target gene's expression at present time point y[t] on the target gene's expression at next time point y[t + 1] and epsilon[t] denotes the stochastic noise due to the modeling error and the measuring error of the target gene's expression profile. epsilon[t] is assumed to be a Gaussian noise with mean zero and unknown standard deviation sigma. The biological meaning of Equation (1) is that y[t + 1] (the target gene's expression value at next time point) is determined by  (the production effect of the N TFs at present time point and RNA polymerase II) and -lambda.y[t] (the degradation effect of the target gene at present time point).
+###end p 89
+###begin p 90
+###xml 257 259 257 259 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 260 262 260 262 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 263 265 263 265 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 289 290 289 290 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 290 291 290 291 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 290 291 290 291 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 292 293 292 293 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 324 326 324 326 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 340 341 340 341 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 368 369 368 369 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z</italic>
+###xml 369 370 369 370 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 369 370 369 370 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 371 372 371 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 408 410 408 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 424 425 424 425 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+It has been shown that TF binding usually affects gene expression in a nonlinear fashion: below some level it has no effect, while above a certain level the effect may become saturated. This type of binding behavior can be modeled using a sigmoid function [10,39-42]. Therefore, we define xi[t] (the regulatory profile of TFi at time point t) as a sigmoid function of zi[t] (the gene expression profile of TFi at time point t):
+###end p 90
+###begin p 91
+
+###end p 91
+###begin p 92
+###xml 6 8 6 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r </italic>
+###xml 64 65 64 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 65 67 65 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 65 67 65 67 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 120 121 120 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+where r denotes the transition rate of the sigmoid function and Ai denotes the mean of the gene expression profile of TFi.
+###end p 92
+###begin title 93
+Estimating the parameters of the dynamic system model
+###end title 93
+###begin p 94
+We rewrite Equation (1) into the following regression form:
+###end p 94
+###begin p 95
+
+###end p 95
+###begin p 96
+###xml 6 9 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#966;</italic>
+###xml 10 11 8 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 16 17 14 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 17 18 15 16 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 19 20 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 24 25 22 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 25 26 23 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 25 26 23 24 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>N</italic></sub>
+###xml 27 28 25 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 34 35 32 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 36 37 34 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 74 80 72 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#952; </italic>
+###xml 83 84 77 78 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 84 86 78 80 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 88 89 82 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 89 91 83 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 89 91 83 85 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>N </italic></sub>
+###xml 91 99 85 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k &#955;</italic>
+###xml 100 102 89 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 100 102 89 91 <sup xmlns:xlink="http://www.w3.org/1999/xlink"><italic>T </italic></sup>
+where phi[t] = [x1[t] ⋯ xN[t] 1 - y[t]] denotes the regression vector and theta = [d1 ⋯ dN k lambda]T is the parameter vector.
+###end p 96
+###begin p 97
+###xml 59 64 59 64 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 75 77 75 77 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 113 114 113 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 114 115 114 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 114 115 114 115 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 116 117 116 117 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 117 118 117 118 <italic xmlns:xlink="http://www.w3.org/1999/xlink">v</italic>
+###xml 117 118 117 118 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>v</italic></sub>
+###xml 121 122 121 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 123 124 123 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 124 125 124 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink">v</italic>
+###xml 124 125 124 125 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>v</italic></sub>
+###xml 132 134 132 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 146 147 145 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 150 152 149 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink">v </italic>
+###xml 165 166 163 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 175 177 173 175 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+From the gene expression data under heat shock in Caustion et al.'s study [18], it is easy to get the values of {xi[tv], y[tv]} for i in {1,2, ⋯, N}, v in {1, 2, ⋯, M}, where M is the number of the time points of a target gene's expression profile. Equation (3) at different time points can be put together as follows:
+###end p 97
+###begin p 98
+
+###end p 98
+###begin p 99
+###xml 52 54 52 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Y </italic>
+###xml 62 64 60 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">e </italic>
+For simplicity, we can further define the notations Y Phi and e to represent Equation (4) as follows:
+###end p 99
+###begin p 100
+
+###end p 100
+###begin p 101
+###xml 21 27 21 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#952; </italic>
+###xml 94 96 90 92 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+The parameter vector theta can be estimated by the maximum likelihood (ML) method as follows [38]:
+###end p 101
+###begin p 102
+
+###end p 102
+###begin p 103
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 7 9 7 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 7 9 7 9 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 48 49 48 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 77 78 77 78 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 78 80 78 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 78 80 78 80 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 93 95 93 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 194 196 194 196 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 271 273 271 273 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 341 342 341 342 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 342 344 342 344 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 342 344 342 344 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 402 403 402 403 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 403 404 403 404 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 403 404 403 404 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 435 436 434 435 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 474 476 473 475 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+###xml 484 486 483 485 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 511 512 510 511 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 553 554 552 553 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H</italic>
+###xml 554 555 553 554 <italic xmlns:xlink="http://www.w3.org/1999/xlink">0</italic>
+###xml 554 555 553 554 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>0</italic></sub>
+###xml 557 558 556 557 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d</italic>
+###xml 558 560 557 559 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 558 560 557 559 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 571 572 570 571 <italic xmlns:xlink="http://www.w3.org/1999/xlink">u</italic>
+###xml 572 575 571 574 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ii </italic>
+###xml 572 575 571 574 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ii </italic></sub>
+###xml 582 583 581 582 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 621 622 618 619 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 621 622 618 619 <sup xmlns:xlink="http://www.w3.org/1999/xlink"><italic>T</italic></sup>
+###xml 626 629 621 624 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1 </sup>
+###xml 662 668 657 659 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963; </italic>
+###xml 716 723 707 708 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949;</italic>
+###xml 724 725 709 710 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 729 731 714 716 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 738 739 723 724 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 762 763 747 748 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 893 895 874 876 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 906 908 887 889 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 974 975 955 956 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 982 983 963 964 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 983 992 964 973 <italic xmlns:xlink="http://www.w3.org/1999/xlink">adjusted </italic>
+###xml 983 992 964 973 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>adjusted </italic></sub>
+Since di stands for the regulatory ability of TFi, a small absolute value of di means that TFi only has a small effect on the target gene's expression, while a large absolute value means that TFi has a large regulatory effect on the target gene's expression. We regard TFi to be a true regulator of the target gene if its regulatory ability di is statistically significantly different from zero (i.e. |di| >> 0). The test statistic  a t-distribution with degree of freedom (M - 1) - (N + 2) is used to assign a p-value for rejecting the null hypothesis H0: di = 0, where uii is the ith diagonal element of the matrix (PhiTPhi)-1 and  is an unbiased estimator of sigma (the standard deviation of the stochastic noise epsilon[t]) [24]. The p-value computed by the i-distribution is then adjusted by the Bonferroni correction to represent the true alpha level in the multiple hypothesis testing [24]. Then, TFi is said to be a true regulator of the target gene if the adjusted p-value padjusted </= 0.01.
+###end p 103
+###begin title 104
+Authors' contributions
+###end title 104
+###begin p 105
+WSW developed the algorithm, performed the simulation and wrote the manuscript. WHL conceived the research topic, provided essential guidance and revised the manuscript. All authors read and approved the final manuscript.
+###end p 105
+###begin title 106
+Supplementary Material
+###end title 106
+###begin title 107
+Additional file 1
+###end title 107
+###begin p 108
+###xml 16 17 16 17 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+Additional file 1 contains the detailed information of the 29 identified heat-inducible GRMs, the 182 identified heat-inducible genes, the 68 identified uncharacterized genes and the performance comparison of five module inference tools.
+###end p 108
+###begin p 109
+Click here for file
+###end p 109
+###begin title 110
+Acknowledgements
+###end title 110
+###begin p 111
+This study was supported by the Taiwan National Science Council NSC-096-2917-I-564-122 and NIH grants GM30998 and GM081724.
+###end p 111
+###begin article-title 112
+Quantitative monitoring of gene expression patterns with a complementary DNA microarray
+###end article-title 112
+###begin article-title 113
+Exploring the metabolic and genetic control of gene expression on a genomic scale
+###end article-title 113
+###begin article-title 114
+Genome-wide location and function of DNA binding proteins
+###end article-title 114
+###begin article-title 115
+###xml 29 34 <span type="species:ncbi:4932">yeast</span>
+Genomic binding sites of the yeast cell-cycle transcription factors SBF and MBF
+###end article-title 115
+###begin article-title 116
+###xml 39 63 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Transcriptional regulatory networks in Saccharomyces cerevisiae
+###end article-title 116
+###begin article-title 117
+Module networks: identifying regulatory modules and their condition-specific regulators from gene expression data
+###end article-title 117
+###begin article-title 118
+Learning module networks from genome-wide location and expression data
+###end article-title 118
+###begin article-title 119
+Computational discovery of gene modules and regulatory networks
+###end article-title 119
+###begin article-title 120
+###xml 74 79 <span type="species:ncbi:4932">yeast</span>
+Computational reconstruction of transcriptional regulatory modules of the yeast cell cycle
+###end article-title 120
+###begin article-title 121
+Identifying combinatorial regulation of transcription factors and binding motifs
+###end article-title 121
+###begin article-title 122
+Inferring transcriptional modules from ChIP-chip, motif and microarray data
+###end article-title 122
+###begin article-title 123
+###xml 45 50 <span type="species:ncbi:4932">yeast</span>
+Revealing modularity and organization in the yeast molecular network by integrated analysis of highly heterogeneous genomewide data
+###end article-title 123
+###begin article-title 124
+###xml 54 59 <span type="species:ncbi:4932">yeast</span>
+The transcriptional program of sporulation in budding yeast
+###end article-title 124
+###begin article-title 125
+A genome-wide transcriptional analysis of the mitotic cell cycle
+###end article-title 125
+###begin article-title 126
+###xml 72 97 72 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 66 71 <span type="species:ncbi:4932">yeast</span>
+###xml 72 96 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Comprehensive identification of cell cycle-regulated genes of the yeast Saccharomyces cerevisiae by microarray hybridization
+###end article-title 126
+###begin article-title 127
+###xml 47 52 <span type="species:ncbi:4932">yeast</span>
+Genomic expression programs in the response of yeast cells to environmental changes
+###end article-title 127
+###begin article-title 128
+###xml 14 19 <span type="species:ncbi:4932">Yeast</span>
+Remodeling of Yeast Genome Expression in Response to Environmental Changes
+###end article-title 128
+###begin article-title 129
+###xml 50 74 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+An improved map of conserved regulatory sites for Saccharomyces cerevisiae
+###end article-title 129
+###begin article-title 130
+###xml 92 116 92 116 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 92 116 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+The YEASTRACT database: a tool for the analysis of transcription regulatory associations in Saccharomyces cerevisiae
+###end article-title 130
+###begin article-title 131
+Transcriptional regulatory code of a eukaryotic genome
+###end article-title 131
+###begin article-title 132
+###xml 8 22 8 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces </italic>
+SPIDer: Saccharomyces protein-protein interaction database
+###end article-title 132
+###begin article-title 133
+MIPS: a database for genomes and protein sequences
+###end article-title 133
+###begin article-title 134
+###xml 4 28 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+The Saccharomyces cerevisiae zinc finger proteins Msn2p and Msn4p are required for transcriptional induction through the stress response element (STRE)
+###end article-title 134
+###begin article-title 135
+###xml 27 32 <span type="species:ncbi:4932">yeast</span>
+The heat shock response in yeast: differential regulations and contributions of the Msn2p/Msn4p and Hsf1p regulons
+###end article-title 135
+###begin article-title 136
+###xml 73 97 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Genome-wide analysis reveals new roles for the activation domains of the Saccharomyces cerevisiae heat shock transcription factor (Hsf1) during the transient heat shock response
+###end article-title 136
+###begin article-title 137
+SGD: Saccharomyces Genome Database
+###end article-title 137
+###begin article-title 138
+###xml 81 105 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+The Yap1p-dependent induction of glutathione synthesis in heat shock response of Saccharomyces cerevisiae
+###end article-title 138
+###begin article-title 139
+Signalling from endoplasmic reticulum to nucleus: transcription factor with a basic-leucine zipper motif required for the unfolded protein-repsonse pathway
+###end article-title 139
+###begin article-title 140
+###xml 18 23 <span type="species:ncbi:4932">yeast</span>
+Regulation of the yeast Rlm1 transcription factor by the Mpk1 cell wall integrity MAP kinase
+###end article-title 140
+###begin article-title 141
+###xml 126 150 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+yAP-1- and yAP-2-mediated, heat shock-induced transcriptional activation of the multidrug resistance ABC transporter genes in Saccharomyces cerevisiae
+###end article-title 141
+###begin article-title 142
+Comparisons of predicted genetic modules: identification of co-expressed genes through module gene flow
+###end article-title 142
+###begin article-title 143
+###xml 24 29 <span type="species:ncbi:4932">Yeast</span>
+CYGD: the Comprehensive Yeast Genome Database
+###end article-title 143
+###begin article-title 144
+Identifying stress transcription factors using gene expression and TF-gene association data
+###end article-title 144
+###begin article-title 145
+Identification of transcription factor cooperativity via stochastic system model
+###end article-title 145
+###begin article-title 146
+Reconstructing a network of stress-response regulators via dynamic system modeling of gene regulation
+###end article-title 146
+###begin article-title 147
+Identifying regulatory targets of cell cycle transcription factors using gene expression and ChIP-chip data
+###end article-title 147
+###begin article-title 148
+###xml 79 84 <span type="species:ncbi:4932">yeast</span>
+Quantitative characterization of the transcriptional regulatory network in the yeast cell cycle
+###end article-title 148
+

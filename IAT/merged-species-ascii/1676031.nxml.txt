@@ -1,0 +1,892 @@
+###begin article-title 0
+Computational Model Explains High Activity and Rapid Cycling of Rho GTPases within Protein Complexes
+###end article-title 0
+###begin p 1
+Formation of multiprotein complexes on cellular membranes is critically dependent on the cyclic activation of small GTPases. FRAP-based analyses demonstrate that within protein complexes, some small GTPases cycle nearly three orders of magnitude faster than they would spontaneously cycle in vitro. At the same time, experiments report concomitant excess of the activated, GTP-bound form of GTPases over their inactive form. Intuitively, high activity and rapid turnover are contradictory requirements. How the cells manage to maximize both remains poorly understood. Here, using GTPases of the Rab and Rho families as a prototype, we introduce a computational model of the GTPase cycle. We quantitatively investigate several plausible layouts of the cycling control module that consist of GEFs, GAPs, and GTPase effectors. We explain the existing experimental data and predict how the cycling of GTPases is controlled by the regulatory proteins in vivo. Our model explains distinct and separable roles that the activating GEFs and deactivating GAPs play in the GTPase cycling control. While the activity of GTPase is mainly defined by GEF, the turnover rate is a sole function of GAP. Maximization of the GTPase activity and turnover rate places conflicting requirements on the concentration of GAP. Therefore, to achieve a high activity and turnover rate at once, cells must carefully maintain concentrations of GEFs and GAPs within the optimal range. The values of these optimal concentrations indicate that efficient cycling can be achieved only within dense protein complexes typically assembled on the membrane surfaces. We show that the concentration requirement for GEF can be dramatically reduced by a GEF-activating GTPase effector that can also significantly boost the cycling efficiency. Interestingly, we find that the cycling regimes are only weakly dependent on the concentration of GTPase itself.
+###end p 1
+###begin title 2
+Synopsis
+###end title 2
+###begin p 3
+A large variety of cellular processes, such as the formation of filopodia or transport vesicles, require that large protein complexes are precisely positioned on intracellular membranes to execute a specific task and then are promptly disassembled to perform their function elsewhere. Small GTPases play a major role in the spatiotemporal control of these complexes. Their function is based on the unique property of cycling between the active GTP-bound state, in which they enable complex formation, and the inactive GDP-bound state, which promotes complex dissolution. Recent experiments based on fluorescence recovery after photobleaching have found that some small GTPases rapidly cycle within protein complexes, causing continuous release and recruitment of the complex components. The seemingly futile cycling is accompanied by a large excess of the active form. This puzzling behavior challenges one's intuition and calls for the application of quantitative methods. Here, Goryachev and Pokhilko use computational modeling to identify regulatory mechanisms that could enable GTPases to cycle with the experimentally observed frequency and efficiency. They show that to achieve high activity and turnover simultaneously, the concentrations of the regulatory molecules that control GTPase cycling should be tightly maintained within the optimal range.
+###end p 3
+###begin title 4
+Introduction
+###end title 4
+###begin p 5
+###xml 38 39 38 39 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b001">1</xref>
+###xml 204 205 204 205 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b002">2</xref>
+###xml 206 207 206 207 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b004">4</xref>
+###xml 525 526 525 526 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b005">5</xref>
+###xml 566 567 566 567 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b006">6</xref>
+###xml 579 580 579 580 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b007">7</xref>
+###xml 1006 1007 1006 1007 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b008">8</xref>
+###xml 1008 1009 1008 1009 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b009">9</xref>
+###xml 1058 1059 1058 1059 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b007">7</xref>
+###xml 1060 1062 1060 1062 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b010">10</xref>
+The Ras superfamily of small GTPases [1] has recently emerged as the central element of a variety of molecular modules that provide spatial and temporal control for protein complex formation in the cell [2-4]. The operation of these ubiquitous control modules is based on the intrinsic property of GTPases to cycle between an inactive GDP-bound state (RD) and an active GTP-bound state (RT). The biological function of GTPases is performed only by the active form that binds and activates a broad range of effector proteins [5]. Many of the effectors, such as WASP [6] and CNK1 [7], are scaffold-like proteins that change their conformation and gain the ability to recruit several binding partners while they are associated with the RT. Such effectors serve as platforms for the assembly of functional multiprotein complexes. Once brought together by the GTPase-controlled scaffolds, these complexes perform structural and signaling functions crucial for cell existence, for example, actin polymerization [8,9] and activation of the p38 MAP kinase pathways [7,10].
+###end p 5
+###begin p 6
+###xml 340 342 340 342 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b011">11</xref>
+###xml 508 510 508 510 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b012">12</xref>
+###xml 540 542 540 542 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b013">13</xref>
+###xml 1274 1276 1274 1276 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b014">14</xref>
+###xml 1395 1397 1395 1397 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b015">15</xref>
+###xml 1695 1697 1695 1697 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b016">16</xref>
+###xml 528 533 <span type="species:ncbi:4932">yeast</span>
+Since the cellular localization and timing of the existence of these complexes are determined by the local availability of the RT, a simultaneous sharp increase in the local GTPase concentration and the relative abundance of its active form are expected in the hotspots of complex formation. Owing to recent advances in imaging techniques [11], such a highly localized cellular distribution of the RT was indeed observed in several in vivo systems, e.g., for cdc42 in the extending filopodia of fibroblasts [12] and in emerging yeast buds [13]. In the intracellular environment, GTPases are tightly controlled by multiple regulatory proteins. GTPase activating proteins (GAPs) inhibit the GTPase activity by accelerating hydrolysis of GTP into GDP. The activation of GTPases is catalyzed by guanine nucleotide exchange factors (GEFs) that facilitate the replacement of GDP by GTP. One would expect that to control complex formation, it is sufficient to simply segregate the activity of GEFs and GAPs spatially and/or temporally. Some small GTPases indeed appear to follow this strategy. For example, activation of the Arf family of GTPases by their cognate GEFs reversibly changes their conformation to simultaneously enable binding to the effectors and to lipid membranes [14]. Activated GTPases then anchor to a membrane and recruit specific effectors, such as coat proteins COP I and COP II [15]. Once the nascent fragment of coat is solidified by the protein-protein interactions between coatomers, GAPs deactivate Arf GTPases and return their conformation to the binding-incompetent form, thus preparing for the vesicle uncoating and release of coatomers and GTPases back to the cytoplasm [16]. Within this framework, Arf molecules were thought to undergo a single activation cycle per coat formation. Such a mechanism would seem to provide the necessary complex-control function at a low energetic cost (each cycle consumes one GTP molecule).
+###end p 6
+###begin p 7
+###xml 34 36 34 36 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b017">17</xref>
+###xml 370 372 370 372 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b013">13</xref>
+###xml 373 375 373 375 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b018">18</xref>
+###xml 376 378 376 378 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b019">19</xref>
+###xml 1004 1011 992 999 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s2">Results</xref>
+Therefore, it came as a surprise [17] that some GTPases perform rapid, seemingly futile, cycles of GTP hydrolysis within respective GTPase-controlled complexes. In their seminal work published a decade ago, Zerial and colleagues using biochemical methods discovered that Rab5 vigorously converts GTP into GDP in the absence of vesicle fusion. Recent FRAP-based studies [13,18,19] confirmed this early observation and furthermore demonstrated that, driven by cycling of GTPases, the GTPase-controlled protein complexes rapidly dissolve into the cytoplasm and reassemble on the membrane with a half-life of approximately1-5 s. Only such a dynamic exchange between the free cytoplasmic proteins and the complexes on the membrane can explain the rapid fluorescence recovery observed in these experiments. To account for these observations, the respective GTPases must cycle within protein complexes at least two orders of magnitude faster than they spontaneously cycle in vitro (see an estimate for cdc42 in Results).
+###end p 7
+###begin p 8
+###xml 571 573 571 573 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b020">20</xref>
+###xml 574 576 574 576 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b022">22</xref>
+###xml 1006 1008 1006 1008 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b023">23</xref>
+Combining these experimental data with the requirement for the activated form RT suggests that within protein complexes these GTPases cycle both efficiently and rapidly, maintaining a significant excess of the active form while keeping a high turnover rate. This phenomenon is still poorly understood and cannot be explained simply by the relative excess of GEFs over GAPs or by the spatiotemporal segregation of their activity. While separate effects of GEFs and GAPs are thoroughly studied and the kinetic parameters for some well-characterized systems are determined [20-22], the understanding of the interplay of various regulators in the control of GTPase cycling is still lacking. In particular, little is known about the concentrations of GTPases and regulatory molecules that are required to achieve experimentally observed cycling rates and efficiency. The situation is further complicated by the potential involvement of other proteins, such as guanine nucleotide dissociation inhibitors (GDIs) [23] and the GTPase effectors themselves.
+###end p 8
+###begin p 9
+###xml 73 75 73 75 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b024">24</xref>
+###xml 76 78 76 78 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b026">26</xref>
+###xml 97 99 97 99 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b027">27</xref>
+###xml 100 102 100 102 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b030">30</xref>
+###xml 462 464 462 464 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b030">30</xref>
+###xml 852 854 852 854 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b031">31</xref>
+###xml 855 857 855 857 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b034">34</xref>
+In the more developed field of G proteins, a large body of experimental [24-26] and theoretical [27-30] work was done to understand how the amplitude and the duration of G protein signaling are controlled by G protein-coupled receptors (GEFs) and GAPs. This analysis revealed intricate regulatory relationships within the GEF-G protein-GAP module and suggested that variation in the concentrations of its components may define the specific signaling phenotypes [30]. Although G proteins and Ras GTPases are similar in the principle of their operation as molecular switches, they differ in both molecular structure and cellular function. Therefore, it is logical to expect that the control of their cycling would also demonstrate divergent features. Given the critical role that small GTPases play in the regulation of a plethora of cellular functions [31-34], analysis of their control deserves special attention.
+###end p 9
+###begin p 10
+###xml 447 449 447 449 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b035">35</xref>
+Here we use computational modeling to identify regulatory mechanisms that could enable GTPases to cycle with the frequency and efficiency observed in the FRAP-based experiments. We assume a kinetic mechanism in which GTPases cycle while localized on the membrane. For the type of GTPases considered in this work, both RT and RD have high affinity to the membrane; however, the RD form is subject to rapid GDI-mediated membrane-cytoplasm exchange [35]. The counteracting transport processes that depose inactive GTPases on the membrane and return them back to the cytoplasm are thought to be much faster than the rate-limiting GTPase cycling and are not considered here explicitly. Leaving the cytoplasmic GTPase pool and the membrane-cytoplasm transport beyond the scope of the present study, we instead vary the total concentration of the GTPase on the membrane as a model parameter. We also assume that the membrane-anchored GTPases are equally accessible to GEFs and GAPs that are concurrently present on or near the membrane. This mechanism is distinct from the earlier described "Arf-type" mechanism in which only the RT is membrane-bound while RD is strictly cytoplasmic and GEFs are spatiotemporally segregated from GAPs.
+###end p 10
+###begin p 11
+###xml 191 192 191 192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b005">5</xref>
+###xml 193 195 193 195 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b036">36</xref>
+###xml 672 679 672 679 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 536 541 <span type="species:ncbi:4932">yeast</span>
+Although presently it is not yet feasible to map kinetic mechanisms onto the GTPase families, the mechanism adopted here appears to best describe the cycling dynamics of Rho and Rab GTPases [5,36]. In addition, the majority of the existing experimental data on the rapid cycling of GTPases within protein complexes comes from the same two families. Of these, members of the Rho family, such as cdc42, Rho, and Rac), have been characterized in greater biochemical detail. Therefore, we chose the Rho family of GTPases, in particular its yeast member cdc42p, as a prototype for our model and used the corresponding kinetic parameters to define the model quantitatively (see Methods).
+###end p 11
+###begin p 12
+Through a detailed kinetic analysis of the model, we demonstrate that a fast turnover and a high activity of the GTPase can be achieved together only within a specific concentration range of GEF and GAP. The estimated values of these concentrations indicate that the efficient cycling control requires an environment of dense protein complexes. We further extend the analysis by investigating the contribution of a hypothetic scaffold-like GTPase effector that can form a complex with the GEF and amplify the GEF's nucleotide exchange activity while bound to the RT. We demonstrate that such an effector can dramatically enhance GTPase performance and explain the existing experimental data.
+###end p 12
+###begin title 13
+Results
+###end title 13
+###begin title 14
+The GTPase Control Module
+###end title 14
+###begin p 15
+###xml 171 179 171 179 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g001">Figure 1</xref>
+###xml 619 626 619 626 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 807 815 807 815 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g001">Figure 1</xref>
+###xml 882 883 882 883 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 883 884 883 884 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 886 887 886 887 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 887 888 887 888 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 894 895 894 895 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 895 896 895 896 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+We developed a mathematical model to describe how the GTPase cycle is regulated by a generic GEF (E) and GAP (A). We reconstructed the core reaction mechanism as shown in Figure 1 on the basis of the analysis of published experimental data. The fundamental GTPase cycle consists of three states: RD, RT, and a short-living nucleotide-free form R. Each of the three states can bind E or A, which catalyze the respective transitions of the GTPase cycle. To simulate the in vivo conditions, concentrations of GTP and GDP were fixed at the levels that are thought to be representative of the intracellular environment (see Methods for details). The resulting reaction scheme of the complete control module consists of 11 species (nine intermediates and free E and A), and their reactions are shown by arrows in Figure 1. The total concentrations of the GTPase, GEF, and GAP, denoted as R0, E0, and A0, are the model parameters that were varied over a broad range to discover all biologically relevant regimes of cycling control.
+###end p 15
+###begin title 16
+GTPases Spontaneously Cycle In Vitro
+###end title 16
+###begin p 17
+###xml 96 104 96 104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g001">Figure 1</xref>
+###xml 417 419 417 419 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sup>
+###xml 423 425 423 425 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 590 597 590 597 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 687 688 687 688 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 688 689 688 689 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+In the absence of any regulatory molecules, the reaction scheme is given by the middle level in Figure 1 and represents a simple cycle with three states. If the GTP/GDP ratio is taken far from the equilibrium value, e.g., equal to that of a cell, the nucleotides provide a thermodynamic force that drives the GTPase cycle. In the stationary state, all three state fluxes are equal to , which takes the value 9.67 . 10-3 min-1 with our model parameters. Further calculations show that the GTPase activity and recovery time in this stationary state are 0.483 and  = 35 min, respectively (see Methods for the definitions). Completion of the entire cycle takes 1.5 h with the cycling period TC = 100 min. This spontaneous dynamic of a GTPase demonstrates an example of a very inefficient cycling characterized by nearly equal amounts of active and inactive form and a turnover rate incompatible with intracellular processes. Although devoid of biological function, the spontaneous cycling of the GTPase provides a useful baseline for comparison with regulated cycling in vivo.
+###end p 17
+###begin title 18
+GEFs Alone Have Little Effect on GTPase Turnover
+###end title 18
+###begin p 19
+###xml 226 234 226 234 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g001">Figure 1</xref>
+###xml 356 364 356 364 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g002">Figure 2</xref>
+###xml 381 382 381 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 382 383 382 383 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 484 492 484 492 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g002">Figure 2</xref>
+###xml 609 610 609 610 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 610 611 610 611 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 814 815 813 814 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 815 816 814 815 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 1100 1101 1083 1084 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1101 1102 1084 1085 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 1287 1288 1258 1259 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1288 1289 1259 1260 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+We first asked how a single GEF, unaided by other regulatory molecules, influences GTPase cycling. The reaction scheme in this partial control scenario is represented by the middle and bottom levels of the complete diagram in Figure 1. To address the above question, we analyzed model behavior in a broad range of GTPase and GEF concentrations (1 nM-1 M) (Figure 2). At a constant R0, GTPase activity shows a characteristic biphasic response to the increase in the GEF concentration (Figure 2A). First the activity rises, starting from the level of the control-free regime 0.483, reaches its maximum 0.958 at E0 = 250 muM, and subsequently decreases to zero. A detailed analysis of the reaction fluxes shows that the proportion of the GTPase that cycles without dissociation from the GEF continuously increases as E0 grows. This GTPase fraction becomes trapped in a futile cycle 3 --> 4 --> 5 --> 3 at the bottom of the reaction scheme and no longer participates in the processive cycle 1 --> 3 --> 4 --> 5 --> 2 --> 1. This explains the decrease in the apparent GTPase activity with the increase in E0. Surprisingly, the model predicts that in the physiologically relevant range of GTPase concentrations (up to approximately10 mM), the profile of the GTPase activity does not depend on R0. An important consequence of this prediction is that the same, fairly high concentration of the GEF is necessary to maximize the activity of the GTPase regardless of its total concentration.
+###end p 19
+###begin p 20
+###xml 37 38 37 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 48 56 48 56 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g002">Figure 2</xref>
+###xml 598 606 576 584 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g002">Figure 2</xref>
+###xml 745 746 723 724 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 746 747 724 725 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+The profile of the performance index P shown in Figure 2C highlights the existence of three distinct regimes of the GTPase cycling: (I) effectively control-free regime with the main cycle 1 --> 9 --> 2 --> 1, (II) processive regime 1 --> 3 --> 4 --> 5 --> 2 --> 1, and (III) GEF-chaperoned regime 3 --> 4 --> 5 --> 3. Only within the intermediate processive regime is the cycling control efficient and does it result in a significant increase in GTPase activity. At the same time, the turnover rate of GTPase in the GEF-only system is at most twice that of the control-free GTPase. As follows from Figure 2B, the GTPase recovery time is bounded between the control-free value of  = 35 min and the minimum of 17 min that is reached at saturating E0. This result demonstrates that the experimentally observed rates of GTPase turnover cannot be explained solely by the activity of GEFs.
+###end p 20
+###begin title 21
+GAP Is Necessary for the High GTPase Turnover Rate
+###end title 21
+###begin p 22
+###xml 265 273 265 273 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g003">Figure 3</xref>
+###xml 293 301 293 301 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g002">Figure 2</xref>
+###xml 417 418 417 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 418 419 418 419 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 423 424 423 424 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 424 425 424 425 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+Introduction of a GAP into the reaction scheme brings about profound changes in the operation of the GTPase control module. Simulation of the complete GEF-GAP reaction scheme reveals a regime with high GTPase activity at large GEF and small GAP concentrations (see Figure 3A). Comparison with Figure 2A shows that the addition of a GAP results in the expected erosion of the activity peak and its shift toward higher E0 as A0 increases.
+###end p 22
+###begin p 23
+###xml 96 98 94 96 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT</sub>
+###xml 96 98 94 96 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>RT</sub></italic>
+###xml 158 166 156 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g003">Figure 3</xref>
+###xml 173 175 169 171 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT</sub>
+###xml 173 175 169 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>RT</sub></italic>
+###xml 204 205 200 201 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 205 206 201 202 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+Strikingly, the model predicts that the GTPase turnover rate quantified by the recovery time tauRT is almost exclusively a function of the GAP concentration (Figure 3B). tauRT exhibits some dependence on E0 only at very large GEF concentrations, which are likely beyond the physiologically relevant range. This result suggests that GAP is the main factor that determines the observed in vivo fast turnover rates of the GTPase-controlled complexes.
+###end p 23
+###begin p 24
+###xml 38 46 38 46 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g003">Figure 3</xref>
+###xml 88 89 88 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 89 90 89 90 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 106 107 106 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 107 108 107 108 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 191 193 188 190 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT</sub>
+###xml 191 193 188 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>RT</sub></italic>
+The profile of the performance index (Figure 3C) has a single broad maximum centered at E0 = 0.776 mM and A0 = 0.66 muM. At these optimal concentrations of GEF and GAP, the recovery time, tauRT = 3 min, is more than ten times shorter than in the control-free system and is accompanied by a high activity of 0.85. Further reduction in the recovery time can be achieved by increasing the GAP concentration, however, at the expense of GTPase activity.
+###end p 24
+###begin p 25
+###xml 157 158 157 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 158 159 158 159 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 256 264 255 263 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g003">Figure 3</xref>
+###xml 281 282 280 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+Importantly, we find that profiles of activity, recovery time, and performance index are virtually insensitive to the concentration of the GTPase itself. At R0 = 1 muM, which is three orders of magnitude lower than the total concentration of the GTPase in Figure 3, the maximum of P shifts to  = 0.631 mM and  = 0.19 muM, while the values of all performance characteristics remain essentially the same.
+###end p 25
+###begin title 26
+In the Efficient Regime, the GEF-GAP Control Module Can Be Reduced to a Single Cycle
+###end title 26
+###begin p 27
+###xml 204 205 204 205 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 205 206 205 206 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 211 212 211 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 212 213 212 213 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 271 279 271 279 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g001">Figure 1</xref>
+###xml 809 810 809 810 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 810 811 810 811 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 813 814 813 814 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 814 815 814 815 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 1009 1016 1009 1016 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 1190 1191 1190 1191 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 1189 1191 1189 1191 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E<sub>0</sub></italic>
+###xml 1197 1198 1197 1198 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 1196 1198 1196 1198 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A<sub>0</sub></italic>
+###xml 1726 1727 1712 1713 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 1725 1727 1711 1713 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T<sub>C</sub></italic>
+###xml 1731 1732 1717 1718 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 1732 1734 1718 1720 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sub>
+###xml 1734 1735 1720 1721 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1736 1738 1722 1724 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 1742 1743 1728 1729 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 1743 1745 1729 1731 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">26</sub>
+###xml 1745 1746 1731 1732 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 1747 1749 1733 1735 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 1883 1884 1869 1870 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 1882 1884 1868 1870 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T<sub>C</sub></italic>
+In search for the mechanism that provides an increased efficiency and cycling rate in the GEF-GAP system, we analyzed the reaction fluxes at varied concentrations of GEF and GAP. We noticed that at large E0 and A0, only a subset of fluxes (shown by thick solid arrows in Figure 1) is significant, while the remaining fluxes have negligible values. To test the hypothesis that only the main fluxes are important for efficient functioning of the GTPase control module, we introduced a reduced model in which only the subset of significant fluxes was retained. Analysis of the complete model showed that it always possesses only one stable steady state and thus we do not risk losing a steady state by reducing the complete model. Rigorous comparison of the complete and reduced models demonstrated that in the (A0, E0) domain with efficient cycling control, where both the GTPase activity and the turnover rate are high, the flux vectors of the reduced and complete reaction schemes differ by less than 5% (see Methods). The difference between the two models continuously diminishes as the total concentrations of GAP and GEF increase. Neglecting the fluxes, which are nonessential at large E0 and A0, results in a simple, biologically intuitive reaction scheme. Thus, the reduced model shows that in the efficient regime the operation of the GEF-GAP control module is based on two linear pathways: the GEF arm 1 --> 3 --> 4 --> 5 --> 2 and the GAP arm 2 --> 6 --> 8 --> 1. These pathways catalyzed by the GEF and GAP effectively short-circuit the nonessential parasitic reactions that slow down the GTPase cycling. The cycle formed by the union of the two pathways is, in fact, the fastest GTPase cycling loop with the period TC = (k13E)-1 + (k26A)-1 + 0.2 min, where the constant term is the sum of the inverse first-order rate constants in the cycle. Note that the actual value of TC is a function of concentrations of the free GAP and GEF, which grow together with the respective total concentrations.
+###end p 27
+###begin p 28
+###xml 131 138 131 138 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 486 493 486 493 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 527 529 525 527 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT</sub>
+###xml 527 529 525 527 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>RT</sub></italic>
+###xml 565 566 563 564 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 566 567 564 565 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 569 570 567 568 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 570 571 568 569 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 828 835 826 833 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 1012 1014 1008 1010 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT</sub>
+###xml 1012 1014 1008 1010 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>RT</sub></italic>
+###xml 1033 1035 1029 1031 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A,</italic>
+The reduction of the model to a single loop allowed us to derive some analytical estimates for the activity and recovery time (see Methods for derivation). These estimates are useful for the interpretation of the above results. Thus, a straightforward calculation shows that the GTPase recovery time is a sole function of the free GAP concentration in complete agreement with the simulation results. Comparison of the numerically simulated and analytically computed recovery times (see Methods) shows that this estimate for tauRT is valid in a very broad range of (A0, E0), the total concentrations of GAP and GEF, respectively. We also derived an estimate for the GTPase activity which closely approximates the numerically simulated results and explains the biphasic dependence of the activity on the concentration of GEF (see Methods for definitions of constants). Comparison of the two derived estimates highlights the nature of the conflict between the activity and the turnover rate. While a decrease in tauRT requires a larger A, an increase in the activity demands a lower free GAP concentration.
+###end p 28
+###begin title 29
+Scaffold Effector Can Significantly Boost the Performance of GTPase Cycling
+###end title 29
+###begin p 30
+###xml 470 471 470 471 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b004">4</xref>
+###xml 539 541 539 541 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b037">37</xref>
+###xml 559 561 559 561 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b038">38</xref>
+###xml 792 793 792 793 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+###xml 823 825 823 825 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b039">39</xref>
+###xml 826 828 826 828 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b040">40</xref>
+###xml 847 848 847 848 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+###xml 1115 1116 1115 1116 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+###xml 1174 1175 1174 1175 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+###xml 1580 1582 1580 1582 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b041">41</xref>
+###xml 1583 1585 1583 1585 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b042">42</xref>
+###xml 1638 1639 1638 1639 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 1639 1641 1639 1641 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2M</sub>
+###xml 1651 1653 1650 1652 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 1656 1658 1655 1657 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 1676 1677 1675 1676 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 1677 1679 1676 1678 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M2</sub>
+###xml 1688 1690 1687 1689 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 1697 1698 1696 1697 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 1704 1706 1700 1702 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT</italic>
+###xml 1709 1710 1705 1706 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 1710 1711 1706 1707 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+###xml 1774 1776 1770 1772 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RD</italic>
+###xml 1779 1780 1775 1776 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 1785 1787 1779 1781 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT</italic>
+###xml 1790 1791 1784 1785 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 1825 1826 1819 1820 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 1826 1828 1820 1822 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">12</sub>
+###xml 1838 1840 1831 1833 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 1843 1845 1836 1838 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+Comparison of the above results with the experimental data suggests that additional levels of control may be involved to enable the observed rapid cycling rates without a significant loss in GTPase activity. Potential candidates for this role are GTPase effectors that bind a GEF and increase its activity. Indeed, in a number of molecular modules reported in recent literature, a scaffold-like effector has been found in the complex with the active GTPase and its GEF [4]. Importantly, for some of these effectors, such as intersectin-l [37] and Rabaptin-5 [38], it has been quantitatively shown that, as long as the effector stays in complex with the RT, the activity of the bound GEF increases several fold. For further analyses we assumed that scaffold-effector S forms a stable complex E* with the GEF E at all times [39,40]. Binding of the E* to the RT results in the formation of an activated tripartite complex M (RT-S-E) whose activity is substantially higher than that of the original GEF E. A detailed kinetic analysis of the complete reaction scheme that includes all possible reactions of the complex E* would require the introduction of nine intermediates (.)E*(.), where (.) stands for any of the RD, RT, or R, and the knowledge of an additional 54 reaction rate constants. Since at the present moment none of the known scaffold-effector systems has been characterized at this level of kinetic detail, we resorted to a coarse-grained modeling approach that requires only three additional rate constants. Based on the experimental data for several GTPase effectors [41,42], we estimated the rate constants for the formation k2M = 600 muM-1min-1 and dissociation kM2 = 18 min-1 of M (M <--> RT + E*) and represented the activity of M as a single catalytic step RD + M --> RT + M with effective second-order rate k12 = 0.6 muM-1min-1.
+###end p 30
+###begin p 31
+###xml 146 155 146 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g003">Figures 3</xref>
+###xml 160 161 160 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g004">4</xref>
+###xml 405 406 404 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 406 407 405 406 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+Simulation of our model demonstrates that scaffold-effector S significantly increases the performance of the GTPase control module. Comparison of Figures 3 and 4 shows that, while the recovery time does not change noticeably, the GTPase activity is considerably enhanced. This enables a high GTPase activity at the large GAP concentrations where the recovery time is short. For example, at  = 100 muM and A0 = 40 muM, the model predicts the GTPase activity 0.72 and the recovery time 3.2 s.
+###end p 31
+###begin p 32
+###xml 449 456 448 455 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020172-t001">Table 1</xref>
+###xml 580 581 579 580 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 581 582 580 581 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+Importantly, our model suggests that the involvement of a GEF-activating scaffold-effector substantially reduces the optimal concentration of a GEF. Thus, the maximum of the performance index is located at  = 27.9 muM, which is more than 20 times smaller than the corresponding value in the system without M. In a stark contrast with the GEF-GAP module, performance of the M-GAP system scales with the total concentration of GTPase. As follows from Table 1, the values of the activity and recovery time computed at the maximum of the performance index improve with an increase in R0.
+###end p 32
+###begin title 33
+Discussion
+###end title 33
+###begin p 34
+###xml 543 545 543 545 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b013">13</xref>
+###xml 554 556 554 556 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b019">19</xref>
+###xml 569 571 569 571 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b018">18</xref>
+Here we quantitatively investigated how the cycling dynamics of a small GTPase are controlled by GEFs and GAPs. Although our model is predominantly based on the Rho family of GTPases, it is mechanism- rather than molecule-specific. Under the assumptions of our model, GTPases can freely cycle and form complexes with effectors and regulatory GEFs and GAPs while remaining anchored to the membrane. According to the existing FRAP data, this "Rho-type" mechanism is exhibited by at least some members of the Rho and Rab families, such as cdc42 [13], Rac2 [19], and Rab5 [18]. Future research will undoubtedly identify more small GTPases that follow this mechanism as well as likely reveal more functional patterns of GTPase cycling, distinct from both "Arf"- and "Rho"-type mechanisms.
+###end p 34
+###begin p 35
+To elucidate the individual roles of regulatory proteins as well as their synergistic action, we compared several possible designs of the control module with progressively increasing complexity. Characterizing the stationary activity of the GTPase and its turnover rate as either high or low, one can distinguish up to four qualitatively distinct regimes of cycling. Of these we concentrated on the regime with high activity and high turnover rate since this is the only regime that is relevant for the rapid recovery of fluorescence observed in the FRAP-based studies described here. The fundamental question that we sought to address is how GTPase cycling is controlled so that high activity is achieved in parallel with a rapid turnover.
+###end p 35
+###begin p 36
+###xml 371 373 359 361 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b013">13</xref>
+###xml 533 535 521 523 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b043">43</xref>
+###xml 664 666 652 654 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b035">35</xref>
+###xml 780 782 768 770 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b043">43</xref>
+###xml 846 848 834 836 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b035">35</xref>
+###xml 849 851 837 839 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b044">44</xref>
+###xml 197 202 <span type="species:ncbi:4932">yeast</span>
+A convenient baseline for this analysis is provided by the spontaneous cycling of a GTPase in a chemostat with the intracellular concentrations of GTP and GDP. Under these control-free conditions, yeast cdc42p would cycle with the basal activity of approximately0.5 and the turnover rate nearly three orders of magnitude lower than the rate observed in the emerging bud [13]. In vivo, this slow "parasitic" cycling is thought to be prevented by GDIs that sequester the inactive form of the GTPase and block it from shedding the GDP [43]. Several lines of evidence suggest that GDIs play an important role in the transport of GTPases between cellular compartments [35]. However, once a GTPase molecule is localized on the membrane, its cycling is not appreciably affected by GDIs [43], and GDI knockouts often show no changes in GTPase functions [35,44]. Since transport processes are left outside the scope of the present analysis, we did not consider the influence of GDIs on GTPase cycling.
+###end p 36
+###begin p 37
+Analysis of the three plausible designs of the cycling control module represented by a single GEF, a GEF-GAP module, and its modification with a GEF-activating GTPase effector have revealed a number of common trends. We demonstrated that GEF and GAP play distinct and separable roles in cycling control. While the activity of GTPase in a stationary state is mainly defined by the activity of the GEF, the turnover rate, which is inversely proportional to the GTPase recovery time, is almost entirely a function of the free GAP concentration. Our model shows that in the absence of a GAP, GEF alone can only marginally increase the turnover rate. Combined action of GAP and GEF amplifies the turnover of the GTPase and reduces the recovery time by at least one order of magnitude. The involvement of a scaffold-effector that increases the activity of a GEF can significantly improve the GTPase cycling performance by boosting both the activity and turnover rate. This additional level of control reduces the recovery time by another order of magnitude, bringing it into the range reported in FRAP experiments.
+###end p 37
+###begin p 38
+###xml 150 152 150 152 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b024">24</xref>
+###xml 153 155 153 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b025">25</xref>
+###xml 960 962 960 962 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b030">30</xref>
+###xml 1139 1140 1139 1140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1140 1141 1140 1141 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 1146 1147 1146 1147 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1147 1148 1147 1148 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 1375 1382 1363 1370 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020172-t001">Table 1</xref>
+In the field of G protein signaling it has been observed that GAPs accelerate the termination of signaling without reduction of the signal amplitude [24,25]. We found that the maximization of the activity and turnover rate of a small GTPase impose conflicting requirements on the GAP concentration. While the activity is always reduced by the GAP, the turnover rate grows proportionally to the GAP concentration. Therefore, to achieve a high activity and turnover rate at once, the concentrations of GEF and GAP should be tightly controlled to remain within the optimal range. Based on the contradictory nature of the requirement for the GAP, we predict that future experiments will reveal two distinct subclasses of the GTPase-controlled systems: optimized for high turnover rate and for high activity. Cycling regimes of a small GTPase are found to be less dependent on its total concentration than the activity of G proteins on the G protein concentration [30]. For the GEF-GAP module, our model predicts that  and  , the optimal total concentrations of GEF and GAP, are almost insensitive to the variation of the GTPase concentration, R0. As R0 increases by three orders of magnitude,  modestly rises approximately3.5-fold, while  remains virtually the same. On the contrary, the performance of the modified M-GAP module steadily increases with the GTPase concentration (Table 1). This difference can be potentially utilized to experimentally distinguish the two designs of the control module.
+###end p 38
+###begin p 39
+###xml 47 49 47 49 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b030">30</xref>
+###xml 1210 1211 1210 1211 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b004">4</xref>
+###xml 1421 1423 1421 1423 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b045">45</xref>
+###xml 1475 1477 1475 1477 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b046">46</xref>
+###xml 1478 1480 1478 1480 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b047">47</xref>
+###xml 1734 1736 1734 1736 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b048">48</xref>
+###xml 1361 1366 <span type="species:ncbi:4932">yeast</span>
+Similar to the control of G protein signaling [30], concentrations of GAP and GEF were identified as the major factors that determine the character of the cycling regime. Our results indicate that for the GEF-GAP module to provide acceptable GTPase activity and turnover rate, the total concentration of the GEF should be on the order of 1 mM. Such high concentrations are possible only within dense protein clusters assembled on the membrane. For comparison, a compact hexagonal packaging of spherical protein complexes with diameter 10 nm would result in an effective 1.93 mM concentration of its components in a 10-nm-thick layer of the cytoplasm above the membrane surface. Reduction of this concentration requirement by an effector-scaffold, which was demonstrated here for the M-GAP module, allows for sparser clusters. It is also tempting to speculate that for certain low-abundant GEFs, the co-option of such effectors may provide a vital mechanism that enables effective control over the respective GTPases despite a low cellular copy number. These hypotheses may offer some insight into why GEF-effector complexes are increasingly found as a recurring motif of the complex-formation control modules [4]. Thus, apart from the quantitatively characterized cases of intersectin-l and Rabaptin-5, the increase in the GEF activity has been observed in the yeast complexes Sec4p[GTPase]-exocyst[effector]-Sec2p[GEF] [45] and Ypt7p[GTPase]-Vps/HOPS[effector]-Vps39p[GEF] [46,47]. Although all GTPases in the above examples belong to either Rho or Rab families, the phenomenon of a GEF-activating GTPase effector is likely not restricted to these two families only. Thus, Sos is simultaneously an effector and a GEF for Ras GTPase [48]. In this peculiar case, the roles of the effector and the GEF are performed by two different domains of the same protein. It is conceivable that Sos evolved as a fusion of two originally independent proteins. Regardless of the molecular implementation, the function of all GEF-activating effectors is to provide a positive feedback loop that increases the cooperativity of GTPase activation.
+###end p 39
+###begin p 40
+###xml 443 445 443 445 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b049">49</xref>
+###xml 446 448 446 448 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b050">50</xref>
+###xml 484 486 484 486 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b051">51</xref>
+###xml 487 489 487 489 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b052">52</xref>
+###xml 638 640 638 640 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b053">53</xref>
+###xml 641 643 641 643 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b054">54</xref>
+Our results indicate that maintaining optimal concentrations of regulatory proteins in the focus of complex formation is the key factor for achieving efficient GTPase cycling. Since these concentrations are typically several orders of magnitude higher than the respective cytoplasmic concentrations, powerful mechanisms must be in operation to recruit regulatory molecules to the membrane. Several candidate mechanisms based on protein-lipid [49,50] and protein-protein interactions [51,52] have been identified and require further investigation. These mechanisms often form the basis for positive and negative regulatory feedback loops [53,54] and are likely to increase the cooperativity of protein complex formation. The integration of these upstream mechanisms with the GTPase control module will result in more realistic models of GTPase-controlled complex formation and bring a better understanding of a great variety of cellular processes that depend on cycling dynamics of small GTPases.
+###end p 40
+###begin title 41
+Methods
+###end title 41
+###begin title 42
+Model formulation and rate constants.
+###end title 42
+###begin p 43
+###xml 73 81 73 81 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g001">Figure 1</xref>
+We formulated the chemical kinetics corresponding to the scheme shown in Figure 1 as a system of 11 mass-action rate law equations with 27 rate constants. For example, the equation describing the time evolution of RD is
+###end p 43
+###begin p 44
+###xml 56 63 56 63 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020172-t002">Table 2</xref>
+###xml 127 128 127 128 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+###xml 268 270 268 270 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b055">55</xref>
+###xml 549 551 547 549 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b056">56</xref>
+Detailed formulation of each model equation is given in Table 2, which also contains an equation for M, the complex of RT and E*. Concentrations of nucleotides were considered constant and equal to the average cell concentrations typically reported in the literature [55]: 500 muM for GTP (T) and 50 muM for GDP (D). Depending on the type and state of the cell, these concentrations may vary and cause a slight alteration of all reaction fluxes since the thermodynamic force that drives GTPase cycling depends on the logarithm of the GTP/GDP ratio [56]. However, if such a variation is within biologically meaningful limits and does not lead to the breakdown of cellular homeostasis, it does not affect any of the qualitative conclusions of this study.
+###end p 44
+###begin p 45
+###xml 309 317 309 317 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g005">Figure 5</xref>
+###xml 399 406 399 406 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020172-t003">Table 3</xref>
+###xml 76 81 <span type="species:ncbi:4932">yeast</span>
+###xml 295 300 <span type="species:ncbi:4932">yeast</span>
+Where available, rate constants were derived from the in vitro data for the yeast cdc42p. Remaining constants were estimated from the published experimental data on other small GTPases of the Rho family. Rate constants were further constrained by fitting the model to the available data for the yeast cdc42p (Figure 5). The values of the rate constants together with their sources are summarized in Table 3.
+###end p 45
+###begin title 46
+Reaction fluxes.
+###end title 46
+###begin p 47
+###xml 67 75 67 75 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g001">Figure 1</xref>
+###xml 242 244 242 244 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lm</sub>
+###xml 241 244 241 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J<sub>lm</sub></italic>
+###xml 267 268 267 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">l</italic>
+###xml 273 274 273 274 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 368 369 368 369 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 369 371 369 371 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sub>
+###xml 399 407 399 407 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g001">Figure 1</xref>
+###xml 425 427 425 427 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lm</sub>
+###xml 424 427 424 427 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J<sub>lm</sub></italic>
+###xml 470 471 470 471 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 683 684 683 684 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 682 684 682 684 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J<sub>i</sub></italic>
+###xml 702 703 702 703 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 701 703 701 703 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J<sub>i</sub></italic>
+###xml 751 752 751 752 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 908 909 908 909 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 909 910 909 910 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 913 914 913 914 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 914 915 914 915 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 916 917 916 917 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 917 918 917 918 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 945 946 945 946 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 966 968 966 968 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lm</sub>
+###xml 965 968 965 968 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j<sub>lm</sub></italic>
+###xml 1015 1016 1015 1016 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 1084 1085 1084 1085 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sup>
+###xml 1090 1091 1090 1091 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 1203 1204 1203 1204 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 1254 1256 1254 1256 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">d </italic>
+###xml 1258 1259 1258 1259 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sup>
+###xml 1261 1262 1261 1262 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 1289 1290 1289 1290 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 1328 1329 1328 1329 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sup>
+###xml 1335 1336 1335 1336 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 1507 1514 1507 1514 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s2">Results</xref>
+###xml 1517 1525 1517 1525 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g006">Figure 6</xref>
+Starting from arbitrary initial conditions, the reaction scheme in Figure 1 relaxes to a stationary state characterized by a time-independent set of stationary concentrations and generally nonzero reaction fluxes. A transition reaction flux Jlm that connects species l and m can be readily calculated from the species concentrations and the rate constants, e.g., flux J13 connecting RD and RDE (see Figure 1) is The sign of Jlm defines the flux direction. For each node i of the reaction scheme, we can compute the influx  , the sum of all transition fluxes that enter the node, and the efflux  , the sum of all outbound fluxes. In the stationary state, both fluxes become equal  = Ji. The state flux Ji is, thus, the stationary flux through the node i. To compensate for the dependence of all reaction fluxes on the system size, we normalized all flux values by the total concentration of the GTPase, i.e., ji = Ji/R0. The reaction scheme with n transition fluxes jlm can be represented by the flux vector  in the n-dimensional space. The Euclidean distance between two flux vectors 1 and 2 as defined by can be used, for example, as a measure of difference between two states of a reaction scheme. If 2 is taken as a reference flux vector, division of d ( 1, 2) by the Euclidean norm of 2 will give a relative displacement of 1 from 2 in a nondimensional form. We used the normalized Euclidean distance to measure the deviation of the flux vector of the reduced model from that of the complete model (see Results). Figure 6 demonstrates that in the parameter region characterized by efficient GTPase cycling, the difference between the complete and reduced models is less than 5%.
+###end p 47
+###begin title 48
+Characteristic times.
+###end title 48
+###begin p 49
+###xml 18 19 18 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">l</italic>
+###xml 24 25 22 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 74 75 72 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 75 77 73 75 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lm</sub>
+###xml 143 144 141 142 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">l</italic>
+###xml 148 150 146 148 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m,</italic>
+###xml 179 180 177 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 180 182 178 180 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lm</sub>
+###xml 229 230 227 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 230 232 228 230 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lm</sub>
+###xml 232 233 230 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 235 236 233 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 239 249 237 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A, E, D, T</italic>
+###xml 283 285 281 283 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b056">56</xref>
+###xml 325 326 323 324 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 326 328 324 326 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sub>
+###xml 334 335 332 333 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 335 337 333 335 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sub>
+###xml 337 338 335 336 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 344 345 342 343 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 345 347 343 345 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">31</sub>
+###xml 352 353 350 351 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 353 355 351 353 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">31</sub>
+###xml 446 462 444 460 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cycling period T</italic>
+###xml 462 463 460 461 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 803 805 801 803 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i,</italic>
+###xml 818 831 816 829 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">recovery time</italic>
+###xml 839 840 837 838 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</italic>
+###xml 840 841 838 839 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 846 847 844 845 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 847 848 845 846 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+For each reaction l --> m it is possible to define a mean transition time tlm =  that a molecule spends on average in the transition from node l to m, where  is the reaction rate klm for the first-order reactions and is equal to klmX (X = A, E, D, T) for the second-order reactions [56], e.g., for the chosen earlier example t13 = 1/(k13E) and t31 = 1/k31. Adding up the transition times along any closed loop in the reaction scheme, we obtain a cycling period TC that is required on average to complete the full cycle over the chosen loop. In a stationary state, molecules of each species are continuously synthesized and consumed while their concentrations remain constant. To characterize the time that is necessary for the system in a stationary state to turn over half of the molecules in the node i, we define a recovery time: where Ci and Ji are the stationary concentration and the state flux, respectively. This introduced recovery time is directly comparable with the half-life time measured in the FRAP experiments.
+###end p 49
+###begin title 50
+Performance characteristics.
+###end title 50
+###begin p 51
+###xml 138 140 138 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT</italic>
+###xml 141 142 141 142 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 142 143 142 143 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 212 214 210 212 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT</sub>
+###xml 212 214 210 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>RT</sub></italic>
+###xml 518 525 516 523 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s2">Results</xref>
+To quantitatively describe the efficiency of the GTPase cycling control in a stationary state, we computed the fractional GTPase activity RT/R0 (in the text it is "activity" for brevity) and the recovery time tauRT of the GTPase. Since efficient control is expected to optimize both the activity and the turnover rate, we introduced a single nondimensional performance index: where  is a reference recovery time taken to be equal to the recovery time calculated for the spontaneous cycling of the GTPase in vitro (see Results).
+###end p 51
+###begin title 52
+Derivation of the analytical estimates for the GTPase activity and recovery time.
+###end title 52
+###begin p 53
+###xml 213 221 213 221 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g007">Figure 7</xref>
+###xml 299 300 299 300 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 300 301 300 301 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 363 364 355 356 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 364 365 356 357 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 425 426 411 412 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 426 427 412 413 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+Reduction of the GEF-GAP control module to the subset of significant fluxes results in a dramatic simplification of the model and allows us to estimate the GTPase cycling characteristics analytically. As shown in Figure 7, the entire system of reaction fluxes is reduced to three main fluxes: where J1 is the flux through the GEF arm (1 --> 3 --> 4 --> 5 --> 2), J2 is the flux through the GAP arm (2 --> 6 --> 8 --> 1), and J3 describes spontaneous transition of RT into RD. From the balance of fluxes in a stationary state, it follows that the stationary flux through RT is given by:
+###end p 53
+###begin p 54
+Rearranging the terms, we find the ratio of the active and inactive forms of the GTPase in a stationary state:
+###end p 54
+###begin p 55
+Now, from the definition given above, it immediately follows that the recovery time of the GTPase can be expressed as:
+###end p 55
+###begin p 56
+###xml 31 32 31 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 32 33 32 33 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 35 36 35 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 36 37 36 37 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+Thus, in the parameter domain (E0, A0), where the reduction of the flux system is valid, the recovery time is a sole function of the free concentration of the GAP.
+###end p 56
+###begin p 57
+###xml 43 51 43 51 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g007">Figure 7</xref>
+Using the reduced reaction scheme shown in Figure 7A, we also can estimate the activity of the GTPase. Inspection of the simulation results shows that in the parameter domain of interest, the prevalent forms of the GTPase are RT, RD, RDE, and RTE, while the others are practically negligible. In this case, the activity can be defined as: where RDE and RTE can be expressed through the stationary concentrations of RT and RD, using the relationships between the reaction fluxes and species concentrations. For example, since we can express the stationary concentration of the RTE intermediate complex as:
+###end p 57
+###begin p 58
+###xml 18 21 18 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RDE</italic>
+###xml 24 25 24 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 25 27 25 27 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sub>
+###xml 28 29 28 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 29 31 29 31 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">34</sub>
+###xml 31 33 31 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RD</italic>
+###xml 36 37 36 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+In a similar way, RDE = k13/k34RD . E. Assembling all terms and using the expression for the ratio of RT and RD, we find an estimate for the GTPase activity:
+###end p 58
+###begin p 59
+###xml 83 90 83 90 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s2">Results</xref>
+Introducing the notations: we finally obtain the activity in the form presented in Results:
+###end p 59
+###begin p 60
+###xml 0 8 0 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g008">Figure 8</xref>
+###xml 62 64 60 62 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT</sub>
+###xml 62 64 60 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>RT</sub></italic>
+###xml 69 73 67 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RT/R</italic>
+###xml 73 74 71 72 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+Figure 8 shows that the derived analytical expressions for tauRT and RT/R0 correspond well with the numerically simulated values in a broad domain of parameter values.
+###end p 60
+###begin p 61
+###xml 138 146 138 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g007">Figure 7</xref>
+###xml 251 252 251 252 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</sub>
+###xml 250 252 250 252 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>M</sub></italic>
+###xml 255 256 255 256 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 257 258 257 258 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 256 258 256 258 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2<italic>M</italic></sub>
+###xml 260 261 260 261 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</sub>
+###xml 259 261 259 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k<sub>M</sub></italic>
+###xml 261 262 261 262 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 351 352 351 352 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 352 353 352 353 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sub>
+###xml 356 357 356 357 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 357 359 357 359 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">12</sub>
+###xml 359 361 359 361 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RD</italic>
+###xml 364 365 364 365 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 393 394 393 394 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 394 395 394 395 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 398 399 398 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 399 401 399 401 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">13</sub>
+###xml 401 403 401 403 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">RD</italic>
+###xml 406 407 406 407 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 407 408 407 408 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+###xml 476 477 476 477 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 477 478 477 478 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+###xml 482 483 482 483 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 488 489 488 489 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 489 490 489 490 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 494 495 494 495 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 495 496 495 496 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sub>
+Similar estimates can be derived for the M-GAP system where scaffold-effector S forms a stable complex E* with the GEF E. As follows from Figure 7B, in a stationary state, the concentration of M is in a simple relationship with that of the RT: where KM = k2M/kM2 is the binding constant of RT to M. The introduction of M results in an additional flux J4 = k12RD . M that acts in parallel with J1 = k13RD . E*. Since in a stationary state essentially all E* is converted to M, E* << M and J1 << J4. From the balance of fluxes,
+###end p 61
+###begin p 62
+###xml 11 12 11 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 12 13 12 13 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 33 34 33 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 34 35 34 35 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sub>
+###xml 65 66 65 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+Neglecting J1 in comparison with J4 and using the expression for M, we find that
+###end p 62
+###begin p 63
+This estimate can be used to find the recovery time of the GTPase which is identical to the recovery time in the GEF-GAP module. This result emphasizes that the recovery time is defined by the activity of the GAP alone and, thus, is not affected by the introduction of the scaffold-effector S.
+###end p 63
+###begin p 64
+Along the same lines, the activity of the GTPase in the M-GAP module can be expressed as:
+###end p 64
+###begin p 65
+###xml 37 38 37 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 38 39 38 39 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+###xml 42 43 42 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 46 54 46 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#603;,</italic>
+###xml 61 68 55 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#603;</italic>
+###xml 196 197 184 185 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 197 198 185 186 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+From the balance of GEF complexes  = E* + M + epsilon, where epsilon stands for the negligible concentrations of all the other species (e.g., RDE*, RTE*, RE*), we express RT as a function of  and E* as follows:
+###end p 65
+###begin p 66
+After replacing RT, RD, and M with the corresponding expressions, we obtain the sought-after estimate for the activity of the GTPase in the M-GAP module: whose form is analogous to that for the GEF-GAP system.
+###end p 66
+###begin title 67
+Computational implementation.
+###end title 67
+###begin p 68
+###xml 132 134 132 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b057">57</xref>
+All numeric simulations and analysis were performed with Matlab (MathWorks, ), which was equipped with the Systems Biology Toolbox [57].
+###end p 68
+###begin title 69
+Supporting Information
+###end title 69
+###begin title 70
+Accession Numbers
+###end title 70
+###begin p 71
+National Center for Biotechnology Information () Entrez Protein accession numbers are: cdc42 (AAB40051), cdc42p (NP_013330), CNK1 (AAH12797), COP I (NP_009194), COP II (NP_057535), GAP Bem3 (NP_015210), GEF cdc24p (NP_009359), cdc42p (NP_01333), intersectin-l (NP_003015), Rab5 (AAH09823), Rabaptin-5 (CAA62580), Rac (CAB53579), Rac2 (AAB20524), Ras GTPase (NP_476699), Rho (AAH01360), Sec4p[GTPase]-exocyst[effector]-Sec2p[GEF] (NP_014127), Sos (NP_476597), WASP (AAA62663), and Ypt7p[GTPase]-Vps/HOPS[effector]-Vps39p[GEF] (CAA48244, BAA11758).
+###end p 71
+###begin title 72
+Abbreviations
+###end title 72
+###begin p 73
+GTPase activating protein
+###end p 73
+###begin p 74
+guanine nucleotide dissociation inhibitor
+###end p 74
+###begin p 75
+guanine nucleotide exchange factor
+###end p 75
+###begin p 76
+GDP-bound GTPase
+###end p 76
+###begin p 77
+GTP-bound GTPase
+###end p 77
+###begin title 78
+References
+###end title 78
+###begin article-title 79
+The Ras superfamily at a glance
+###end article-title 79
+###begin article-title 80
+Rho GTPases: Biochemistry and biology
+###end article-title 80
+###begin article-title 81
+Rho and Rac take center stage
+###end article-title 81
+###begin article-title 82
+Rabs and their effectors: Achieving specificity in membrane traffic
+###end article-title 82
+###begin article-title 83
+Rho GTPases and their effector proteins
+###end article-title 83
+###begin article-title 84
+Scar1 and the related Wiskott-Aldrich syndrome protein, WASP, regulate the actin cytoskeleton through the Arp2/3 complex
+###end article-title 84
+###begin article-title 85
+Association of CNK1 with Rho guanine nucleotide exchange factors controls signaling specificity downstream of Rho
+###end article-title 85
+###begin article-title 86
+The interaction between N-WASP and the Arp2/3 complex links Cdc42-dependent signals to actin assembly
+###end article-title 86
+###begin article-title 87
+Cooperation between mDia1 and ROCK in Rho-induced actin reorganization
+###end article-title 87
+###begin article-title 88
+Rac-MEKK3-MKK3 scaffolding for p38 MAPK activation during hyperosmotic shock
+###end article-title 88
+###begin article-title 89
+Imaging activation of two Ras isoforms simultaneously in a single cell
+###end article-title 89
+###begin article-title 90
+Activation of endogenous Cdc42 visualized in living cells
+###end article-title 90
+###begin article-title 91
+Robust cell polarity is a dynamic state established by coupling transport and GTPase signaling
+###end article-title 91
+###begin article-title 92
+Membrane recruitment of effector proteins by Arf and Rab GTPases
+###end article-title 92
+###begin article-title 93
+COP and clathrin-coated vesicle budding: Different pathways, common approaches
+###end article-title 93
+###begin article-title 94
+Membrane curvature and the control of GTP hydrolysis in Arf1 during COPI vesicle formation
+###end article-title 94
+###begin article-title 95
+GTPase activity of Rab5 acts as a timer for endocytic membrane fusion
+###end article-title 95
+###begin article-title 96
+Modulation of Rab5 and Rab7 recruitment to phagosomes by phosphatidylinositol 3-kinase
+###end article-title 96
+###begin article-title 97
+Continuous translocation of Rac2 and the NADPH oxidase component p67(phox) during phagocytosis
+###end article-title 97
+###begin article-title 98
+Characterization of the interactions between the small GTPase Cdc42 and its GTPase-activating proteins and putative effectors: Comparison of kinetic properties of Cdc42 binding to the Cdc42-interactive domains
+###end article-title 98
+###begin article-title 99
+The role of Mg2+ cofactor in the guanine nucleotide exchange and GTP hydrolysis reactions of Rho family GTP-binding proteins
+###end article-title 99
+###begin article-title 100
+Dbl family guanine nucleotide exchange factors
+###end article-title 100
+###begin article-title 101
+GDIs: Central regulatory molecules in Rho GTPase activation
+###end article-title 101
+###begin article-title 102
+Regulation of phospholipase C-beta1 by Gq and m1 muscarinic cholinergic receptor: Steady-state balance of receptor-mediated activation and GTPase-activating protein-promoted deactivation
+###end article-title 102
+###begin article-title 103
+Rapid GTP binding and hydrolysis by G(q) promoted by receptor and GTPase-activating proteins
+###end article-title 103
+###begin article-title 104
+###xml 39 44 <span type="species:ncbi:4932">yeast</span>
+A quantitative characterization of the yeast heterotrimeric G protein cycle
+###end article-title 104
+###begin article-title 105
+A Monte Carlo study of the dynamics of G-protein activation
+###end article-title 105
+###begin article-title 106
+A spatial focusing model for G protein signals: Regulator of G protein signaling (RGS) protein-mediated kinetic scaffolding
+###end article-title 106
+###begin article-title 107
+Regulators of G protein signaling and transient activation of signaling: Experimental and computational analysis reveals negative and positive feedback controls on G protein activity
+###end article-title 107
+###begin article-title 108
+Computational modeling reveals how interplay between components of a GTPase-cycle module regulates signal transduction
+###end article-title 108
+###begin article-title 109
+Rho GTPases in cell biology
+###end article-title 109
+###begin article-title 110
+RAS and RHO GTPases in G1-phase cell-cycle regulation
+###end article-title 110
+###begin article-title 111
+Roles of Rho-family GTPases in cell polarisation and directional migration
+###end article-title 111
+###begin article-title 112
+RHO-GTPases and cancer
+###end article-title 112
+###begin article-title 113
+RhoGDI: Multiple functions in the regulation of Rho family GTPase activities
+###end article-title 113
+###begin article-title 114
+Targeting of Rab GTPases to cellular membranes
+###end article-title 114
+###begin article-title 115
+Endocytic protein intersectin-l regulates actin assembly via Cdc42 and N-WASP
+###end article-title 115
+###begin article-title 116
+Functional synergy between Rab5 effector Rabaptin-5 and exchange factor Rabex-5 when physically associated in a complex
+###end article-title 116
+###begin article-title 117
+Structure and ligand recognition of the PB1 domain: A novel protein module binding to the PC motif
+###end article-title 117
+###begin article-title 118
+Assembly of scaffold-mediated complexes containing Cdc42p, the exchange factor Cdc24p, and the effector Cla4p required for cell cycle-regulated phosphorylation of Cdc24p
+###end article-title 118
+###begin article-title 119
+A method to measure the interaction of Rac/Cdc42 with their binding partners using fluorescence resonance energy transfer between mutants of green fluorescent protein
+###end article-title 119
+###begin article-title 120
+An electrostatic steering mechanism of Cdc42 recognition by Wiskott-Aldrich syndrome proteins
+###end article-title 120
+###begin article-title 121
+RhoGDIs revisited: Novel roles in Rho regulation
+###end article-title 121
+###begin article-title 122
+###xml 106 130 106 130 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Saccharomyces cerevisiae</named-content>
+###xml 106 130 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Association of the Rho family small GTP-binding proteins with Rho GDP dissociation inhibitor (Rho GDI) in Saccharomyces cerevisiae
+###end article-title 122
+###begin article-title 123
+The rab exchange factor Sec2p reversibly associates with the exocyst
+###end article-title 123
+###begin article-title 124
+A Ypt/Rab effector complex containing the Sec1 homolog Vps33p is required for homotypic vacuole fusion
+###end article-title 124
+###begin article-title 125
+New component of the vacuolar class C-Vps complex couples nucleotide exchange on the Ypt7 GTPase to SNARE-dependent docking and fusion
+###end article-title 125
+###begin article-title 126
+Structural evidence for feedback activation by Ras-GTP of the Ras-specific nucleotide exchange factor SOS
+###end article-title 126
+###begin article-title 127
+Regulation of protein activities by phosphoinositide phosphates
+###end article-title 127
+###begin article-title 128
+The regulation of membrane to cytosol partitioning of signalling proteins by phosphoinositides and their soluble headgroups
+###end article-title 128
+###begin article-title 129
+Assembly of cell regulatory systems through protein interaction domains
+###end article-title 129
+###begin article-title 130
+Cell signaling by receptor tyrosine kinases
+###end article-title 130
+###begin article-title 131
+Spontaneous cell polarization through actomyosin-based delivery of the Cdc42 GTPase
+###end article-title 131
+###begin article-title 132
+A system of counteracting feedback loops regulates Cdc42p activity during spontaneous cell polarization
+###end article-title 132
+###begin article-title 133
+Physiological concentrations of purines and pyrimidines
+###end article-title 133
+###begin article-title 134
+Systems Biology Toolbox for MATLAB: A computational platform for research in Systems Biology
+###end article-title 134
+###begin article-title 135
+A built-in arginine finger triggers the self-stimulatory GTPase-activating activity of rho family GTPases
+###end article-title 135
+###begin article-title 136
+###xml 84 108 84 108 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Saccharomyces cerevisiae</named-content>
+###xml 84 108 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Interactions among proteins involved in bud-site selection and bud-site assembly in Saccharomyces cerevisiae
+###end article-title 136
+###begin article-title 137
+###xml 31 55 31 55 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Saccharomyces cerevisiae</named-content>
+###xml 31 55 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Biochemical comparisons of the Saccharomyces cerevisiae Bem2 and Bem3 proteins: Delineation of a limit Cdc42 GTPase-activating protein domain
+###end article-title 137
+###begin title 138
+Figures and Tables
+###end title 138
+###begin title 139
+Reaction Scheme of the Small GTPase Cycle
+###end title 139
+###begin p 140
+###xml 359 366 353 360 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020172-t003">Table 3</xref>
+The three forms of the GTPase (RD, RT, and nucleotide-free R) (middle layer) form complexes with a GEF (E) (bottom layer) and a GAP (A) (top layer). Solid arrows indicate the main reaction fluxes. All reactions except GTP hydrolyses (2 --> 1, 6 --> 8, 5 --> 3) are reversible. Numbering of the species is consistent with the reaction rate constants listed in Table 3. Free GTP (T), GDP (D), GEF, and GAP are not shown for simplicity.
+###end p 140
+###begin title 141
+GTPase Cycling in the GEF-Only System
+###end title 141
+###begin p 142
+###xml 150 151 150 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 151 152 151 152 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 163 164 163 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 164 165 164 165 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 260 261 260 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 261 262 261 262 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 317 318 315 316 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 318 319 316 317 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 381 382 379 380 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 489 490 487 488 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 636 637 634 635 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+The values of the GTPase activity (A), recovery time (B), and performance index (C) are shown as functions of the total concentrations of the GTPase (R0) and GEF (E0). The model predicts that in the physiologically relevant range of the GTPase concentrations (R0 </= 10 mM) all three characteristics do not depend on R0. Roman numerals on the contour plot of the performance index P denote three regions with distinct GTPase cycling regimes: (I) effectively control-free, (II) processive (P > 0.1, highlighted in light grey), and (III) futile cycling within the complex with the GEF. Numbers on the contour lines indicate the levels of P.
+###end p 142
+###begin title 143
+Concentrations of GEF and GAP Define the Efficiency of the GTPase Cycling
+###end title 143
+###begin p 144
+###xml 343 344 331 332 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 344 345 332 333 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 360 361 348 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 361 362 349 350 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 571 572 558 559 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 572 573 559 560 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+The profiles of the GTPase activity (A), recovery time (B), and performance index (C) are plotted as contour lines. While activity remains largely a function of the GEF concentration, the recovery time is determined mostly by the GAP concentration. Performance maximum with the activity 85% and recovery time approximately3 min is attained at E0 = 0.78 mM and A0 = 0.66 muM. Further increase in the turnover rate can be achieved at the expense of activity. Numbers on the contour lines indicate the levels of the respective characteristics. Total GTPase concentration is R0 = 1 mM.
+###end p 144
+###begin title 145
+The GTPase Activity and the Overall Cycling Performance Are Improved by the Introduction of a GEF-Activating GTPase Effector S
+###end title 145
+###begin p 146
+###xml 234 242 234 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g003">Figure 3</xref>
+The profiles of the GTPase activity (A), recovery time (B), and performance index (C) are plotted as contour lines. Note the increase in the area of the optimal control and its shift toward lower GEF concentrations in comparison with Figure 3C.
+###end p 146
+###begin title 147
+###xml 18 23 <span type="species:ncbi:4932">Yeast</span>
+Simulation of the Yeast cdc42p Cycling In Vitro
+###end title 147
+###begin p 148
+###xml 39 40 39 40 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sup>
+###xml 144 146 144 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b059">59</xref>
+###xml 167 168 167 168 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</bold>
+###xml 173 174 173 174 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</bold>
+(A) Kinetics of GDP dissociation from [3H]GDP-bound cdc42p after mixing with GTP. Comparison of the model simulations and experimental results [59] is shown as groups a and b for the reactions with and without GEF cdc24p, respectively. Concentrations of cdc42p, cdc24p, and GTP were 90 muM, 28 muM, and 100muM.
+###end p 148
+###begin p 149
+###xml 105 107 105 107 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020172-b060">60</xref>
+###xml 217 219 213 215 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 89 94 <span type="species:ncbi:4932">yeast</span>
+(B) Simulation of GAP-stimulated GTP hydrolysis by cdc42p. Experimental data are for the yeast GAP Bem3 [60]. GTP hydrolysis was essayed by measuring phosphate (Pi) release over 5 min. Initial concentration of [gamma-32P]GTP-bound cdc42p was 0.1 muM. Simulation results are shown by solid lines.
+###end p 149
+###begin title 150
+Comparison of the Complete and Reduced Models for the GEF-GAP Cycling Control Module
+###end title 150
+###begin p 151
+###xml 108 115 108 115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 306 307 306 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 317 325 317 325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020172-g003">Figure 3</xref>
+The Euclidean distance between the flux vectors of complete and reduced models was computed as described in Methods and normalized by the magnitude of the flux vector for the complete model. The profile of the normalized distance is shown by thick solid contour lines. The profile of the performance index P (same as Figure 3C) is shown by a thin line for comparison. Note that in the parameter region where the GTPase cycles with a high activity and turnover rate, the difference between the complete and reduced models is 5% or less.
+###end p 151
+###begin title 152
+Flux Diagrams for the Reduced Models of GEF-GAP (A) and M-GAP (B) Modules
+###end title 152
+###begin p 153
+###xml 61 62 61 62 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">*</sup>
+###xml 78 79 78 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 79 80 79 80 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 169 170 169 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 170 171 170 171 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 176 177 176 177 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 177 178 177 178 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 237 238 237 238 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 238 239 238 239 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">4</sub>
+Activation of RD by the GEF or by the GEF-effector complex (E*) is denoted as J1. Inactivation of RT by the GAP and its spontaneous hydrolysis are represented by fluxes J2 and J3, correspondingly. Activation of RD by M is represented by J4 in (B).
+###end p 153
+###begin title 154
+Comparison of the Numerically Computed and Analytically Estimated Cycling Characteristics
+###end title 154
+###begin p 155
+The activity (upper row) and the recovery time (bottom row) profiles of GTPase are plotted versus the total concentrations of GEF and GAP. Results shown in (A) and (C) were numerically simulated using the complete model, while those shown in (B) and (D) were calculated based on the analytical estimates derived from the reduced model. Note the good match between the simulated and analytically estimated results in a broad domain of parameter values.
+###end p 155
+###begin p 156
+Performance of the M-GEF Control Module with the Scaffold-Effector Depends on the Total GTPase Concentration
+###end p 156
+###begin p 157
+Model Equations
+###end p 157
+###begin p 158
+Reaction Rate Constants Used in the Model Simulations
+###end p 158
+###begin p 159
+currency Current address: Centre for Integrative Systems Biology, School of Biological Sciences, University of Edinburgh, United Kingdom
+###end p 159
+###begin p 160
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing interests.</bold>
+Competing interests. The authors have declared that no competing interests exist.
+###end p 160
+###begin p 161
+A previous version of this article appeared as an Early Online Release on October 9, 2006 (doi:).
+###end p 161
+###begin p 162
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Author contributions.</bold>
+Author contributions. ABG and AVP conceived, designed, and performed the experiments; analyzed the data; and wrote the paper.
+###end p 162
+###begin p 163
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding.</bold>
+Funding. This work was supported by the Agency for Science, Technology, and Research of Singapore.
+###end p 163
+

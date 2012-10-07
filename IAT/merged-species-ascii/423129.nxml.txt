@@ -1,0 +1,1368 @@
+###begin article-title 0
+###xml 31 41 31 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+Topology and Robustness in the Drosophila Segment Polarity Network
+###end article-title 0
+###begin article-title 1
+A Calculus of Purpose
+###end article-title 1
+###begin article-title 2
+Computation Approach Shows Robustness of the Striped Pattern of Fruitfly Embryos
+###end article-title 2
+###begin p 3
+###xml 69 92 69 92 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Drosophila melanogaster</named-content>
+###xml 317 339 317 339 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von2">von Dassow et al. 2000</xref>
+###xml 69 92 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+A complex hierarchy of genetic interactions converts a single-celled Drosophila melanogaster egg into a multicellular embryo with 14 segments. Previously, von Dassow et al. reported that a mathematical model of the genetic interactions that defined the polarity of segments (the segment polarity network) was robust (von Dassow et al. 2000). As quantitative information about the system was unavailable, parameters were sampled randomly. A surprisingly large fraction of these parameter sets allowed the model to maintain and elaborate on the segment polarity pattern. This robustness is due to the positive feedback of gene products on their own expression, which induces individual cells in a model segment to adopt different stable expression states (bistability) corresponding to different cell types in the segment polarity pattern. A positive feedback loop will only yield multiple stable states when the parameters that describe it satisfy a particular inequality. By testing which random parameter sets satisfy these inequalities, I show that bistability is necessary to form the segment polarity pattern and serves as a strong predictor of which parameter sets will succeed in forming the pattern. Although the original model was robust to parameter variation, it could not reproduce the observed effects of cell division on the pattern of gene expression. I present a modified version that incorporates recent experimental evidence and does successfully mimic the consequences of cell division. The behavior of this modified model can also be understood in terms of bistability in positive feedback of gene expression. I discuss how this topological property of networks provides robust pattern formation and how large changes in parameters can change the specific pattern produced by a network.
+###end p 3
+###begin p 4
+The striped segmentation pattern of the Drosophila embryo is remarkably insensitive to variation (robust). Ingolia uses computational methods to show that this robustness results from specific positive feedback loops
+###end p 4
+###begin title 5
+Introduction
+###end title 5
+###begin p 6
+###xml 52 75 52 75 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Drosophila melanogaster</named-content>
+###xml 841 849 841 849 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g001">Figure 1</xref>
+###xml 52 75 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+The network responsible for segment polarity in the Drosophila melanogaster embryo has been extensively studied. The segment polarity pattern emerges from a sequence of developmental events that each refine the pattern produced by the previous event. During the early cell cycles of the embryo, cell division is suppressed and maternal morphogens induce a transcriptional cascade of genes (the gap and pair-rule genes). These in turn create a prepattern of local expression of the segment polarity genes, genes that encode a collection of signaling molecules and transcription factors whose expression specifies the location and polarity of parasegment boundaries in the embryo. After cellularization, interactions amongst the segment polarity genes maintain narrow boundaries between parasegments as the embryo grows through cell division (Figure 1A shows how the structure of the parasegment is related to that of the morphologically defined segment). Diffusible signals from the boundaries also influence cell fates across the parasegment.
+###end p 6
+###begin p 7
+###xml 244 263 244 263 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-DiNardo1">DiNardo et al. 1994</xref>
+###xml 265 277 265 277 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Gilbert1">Gilbert 1997</xref>
+###xml 279 302 279 302 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Hatini1">Hatini and DiNardo 2001</xref>
+###xml 304 315 304 315 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Sanson1">Sanson 2001</xref>
+###xml 455 477 455 477 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Albert1">Albert and Othmer 2003</xref>
+###xml 626 648 626 648 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von2">von Dassow et al. 2000</xref>
+###xml 650 675 650 675 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von1">von Dassow and Odell 2002</xref>
+Many of the qualitative interactions between the components of the segment polarity network are known, but there is little quantitative information about the abundance of the components or the parameters that govern the reactions amongst them (DiNardo et al. 1994; Gilbert 1997; Hatini and DiNardo 2001; Sanson 2001). The existing, qualitative knowledge has been used to develop a variety of mathematical models. Some have employed Boolean idealizations (Albert and Othmer 2003), while others, including von Dassow et al., have used systems of ordinary differential equations to simulate concentrations of proteins and mRNAs (von Dassow et al. 2000; von Dassow and Odell 2002). The model requires 50 quantitative parameters such as rate constants and affinities. The equations and parameters, together with the initial conditions, specify how the protein and mRNA concentrations change over time. Von Dassow et al. tested pattern formation by picking thousands of randomly chosen parameter sets and following the evolution of the pattern from a fixed set of initial conditions. Given the large number of variables, they found that a remarkable fraction (0.5%) of parameter sets converted the prepattern into the correct, stable segment polarity pattern and concluded that the network was surprisingly robust.
+###end p 7
+###begin p 8
+###xml 314 328 314 328 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wingless (wg),</italic>
+###xml 357 372 357 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">engrained (en),</italic>
+###xml 594 596 594 596 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 601 603 601 603 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 642 665 642 665 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Hatini1">Hatini and DiNardo 2001</xref>
+###xml 667 678 667 678 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Sanson1">Sanson 2001</xref>
+###xml 698 700 698 700 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 741 755 741 755 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hedgehog (hh),</italic>
+###xml 768 776 768 776 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g001">Figure 1</xref>
+###xml 798 800 798 800 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hh</italic>
+###xml 903 905 903 905 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 941 943 941 943 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hh</italic>
+###xml 998 1000 998 1000 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1005 1007 1005 1007 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1066 1074 1066 1074 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g001">Figure 1</xref>
+###xml 1078 1096 1078 1096 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Tabata1">Tabata et al. 1992</xref>
+I asked what general features of the model yield this robustness. As defined by von Dassow et al., the task of forming the segment polarity pattern is simple. Embryos in the model begin with a prepattern composed of a repeating unit of three stripes that encompasses four rows of cells. The first stripe expresses wingless (wg), the second stripe expresses engrained (en), and the third stripe, which is two cells wide, expresses neither. The prepattern is produced by the transient expression of gap and pair-rule genes, but maintaining and elaborating this pattern depends on the activity of wg and en and of genes that interact with them (Hatini and DiNardo 2001; Sanson 2001). For example, the en-expressing stripe must start to express hedgehog (hh), as shown in Figure 1A There is no initial hh expression, but the target pattern as defined by von Dassow et al. requires it to be expressed in the en stripe. Because EN protein induces hh expression, simply maintaining the initial pattern of wg and en expression suffices to produce the desired final pattern (Figure 1B) (Tabata et al. 1992).
+###end p 8
+###begin p 9
+###xml 28 30 28 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 35 37 35 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 309 331 309 331 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Novick1">Novick and Weiner 1957</xref>
+###xml 333 356 333 356 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Glass1">Glass and Kauffman 1973</xref>
+###xml 358 369 358 369 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Keller1">Keller 1994</xref>
+###xml 371 388 371 388 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Hasty1">Hasty et al. 2000</xref>
+###xml 390 413 390 413 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Thomas1">Thomas and Kaufman 2001</xref>
+###xml 690 692 690 692 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 717 719 717 719 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 721 729 721 729 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g002">Figure 2</xref>
+###xml 733 758 733 758 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von1">von Dassow and Odell 2002</xref>
+Thus, stable maintenance of wg and en expression levels within each individual cell will produce the segment polarity pattern. Systems in which genes induce their own expression can display multiple stable expression states, a phenomenon known as bistability, though they only do so under certain conditions (Novick and Weiner 1957; Glass and Kauffman 1973; Keller 1994; Hasty et al. 2000; Thomas and Kaufman 2001). To produce mathematical models that succeeded in converting the prepattern into the final pattern, von Dassow et al. added two interactions to their initial model of the segment polarity network. As they later noted, these created two positive feedback loops, one including en and the other including wg (Figure 2A) (von Dassow and Odell 2002). I asked whether parameter sets that can generate the segment polarity pattern are the ones that produce bistability.
+###end p 9
+###begin p 10
+###xml 419 421 419 421 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 426 428 426 428 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1397 1405 1397 1405 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g003">Figure 3</xref>
+To address this question, I asked two questions: could modeling the behavior of individual cells reproduce the overall behavior observed by von Dassow et al., and could I produce simple rules that predicted how the individual cells would behave. When I simulated the behavior of individual cells using the von Dassow et al. model, I found that individual cells in their model can adopt three different stable states of wg and en expression. The overall pattern, and its robustness, can be simply explained as a consequence of single cells maintaining one of these expression stable states, which correspond to the three stripes of gene expression. I also devised tests that determine whether a given parameter set allows positive feedback to stably produce the desired pattern of gene expression in these cells. These allowed us to show that parameter sets that do not produce bistability almost never yield the correct pattern, whereas those that do are much more likely to produce the right segment polarity pattern. I also investigated the role of the prepattern and found that more biologically reasonable initial conditions can dramatically reduce the fraction of parameter sets that obey the bistability rules but fail to form the segment polarity pattern. Finally, I noted that the interactions of these loops do not maintain the observed segment polarity pattern after cell proliferation (Figure 3A). I modified the von Dassow scheme to incorporate recent experimental evidence and produced a model that both forms the segment polarity pattern and maintains it during cell proliferation with many random parameter sets.
+###end p 10
+###begin title 11
+Results
+###end title 11
+###begin p 12
+###xml 216 218 216 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 223 225 223 225 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 505 507 505 507 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 565 567 565 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 627 629 627 629 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 634 636 634 636 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+I began by asking if the von Dassow et al. model could be decomposed into the properties of individual cells. The simplest hypothesis is that parameters that allow individual cells to maintain their initial state of wg and en expression will maintain the overall pattern. At the level of the cell, the parameters must allow all three types of cells to evolve from the initial conditions to the final state, and the final state must be stable. The isolated cell rules are: (1) cells that initially express wg must continue to do so, (2) cells that initially express en must continue to do so, and (3) cells that express neither wg nor en must not turn on either gene.
+###end p 12
+###begin p 13
+###xml 38 40 38 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 99 101 99 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 285 307 285 307 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von2">von Dassow et al. 2000</xref>
+###xml 714 716 714 716 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 763 765 763 765 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 805 807 805 807 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 839 841 839 841 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 911 913 911 913 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1083 1085 1083 1085 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+I began by studying the properties of wg-expressing cells, as WG protein is modeled as controlling en expression, but not vice versa (data not shown). I used the equations of von Dassow et al. to model the dynamic behavior of an individual cell, starting from the standard prepattern (von Dassow et al. 2000). I tested the isolated cell rules by simulating an individual cell in the context of signals that it would receive from its neighbors in the actual segment polarity pattern, computed assuming constant expression levels of segment polarity genes in those cells. Each parameter set that produces the overall pattern gives two behaviors that depend on the initial state of the cell; cells that are initially wg-expressing remain so, whereas cells that lack wg expression never acquire it. Thus, the wg-expressing stripe could retain wg expression while other cells in the field would not begin expressing wg. The precise expression levels in these two states were generally unaffected by the signals from their neighbors; in particular, HH signaling generally had no effect on wg expression in nearby cells (data not shown).
+###end p 13
+###begin p 14
+###xml 68 70 68 70 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 87 89 87 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 172 174 172 174 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 283 291 283 291 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g001">Figure 1</xref>
+###xml 334 336 334 336 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 400 402 400 402 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 583 585 583 585 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 625 627 625 627 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 663 665 663 665 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 784 786 784 786 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 818 820 818 820 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 977 979 977 979 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1080 1082 1080 1082 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1242 1250 1242 1250 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g001">Figure 1</xref>
+In the segment polarity pattern, cells on the posterior side of the wg stripe maintain en expression while cells on the anterior side of the stripe do not begin expressing en despite experiencing the same level of WG signaling as their neighbors on the other side of the stripe (see Figure 1A). This asymmetry requires bistability in en expression, at least in the context of a neighboring stripe of wg expression. I found that such bistability existed in working parameter sets, as long as extracellular WG exceeded a threshold concentration. Above this threshold, cells expressing en continue to do so, but cells that lack en expression do not start to express en. This threshold was always less than the amount of extracellular WG signal received from a neighboring stripe of high wg expression, which presents two wg-expressing cells. In a very small fraction of parameter sets, additional WG signal above the threshold could switch cells from not expressing to expressing en. However, when this switch was present in working models, it required WG signal from at least three wg-expressing neighbors. Such a switch is not seen in life, however, nor is it seen in most working parameter sets. Behaviors of isolated cells are summarized in Figure 1C.
+###end p 14
+###begin p 15
+###xml 415 422 415 422 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0020123-t001">Table 1</xref>
+To determine how well the isolated cell rules captured the requirements for patterning, I generated random parameter sets and tested them against the single-cell behavior rules, as well as determining whether they formed the segment polarity pattern, to see how well these correlated. Around half of randomly generated parameter sets that conform to the rules actually achieve the desired segment polarity pattern (Table 1), and parameter sets that do not satisfy these rules cannot generate the desired final pattern (with a single exception in 10,000 trials). Since the rules require cells to reach the states they exhibit in the final segment polarity pattern, it is not surprising that they are necessary. However, the strong agreement between predictions based on individual cell behavior and the observed performance of the whole system argues that the model functions because individual cells adopt one of three stable expression states to form the segment polarity pattern rather than because of the complex, collective behaviors of groups of cells.
+###end p 15
+###begin p 16
+###xml 422 424 422 424 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 429 432 429 432 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en,</italic>
+###xml 773 784 773 784 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="sd001">Protocol S1</xref>
+###xml 952 954 952 954 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 963 965 963 965 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1052 1054 1052 1054 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1096 1103 1096 1101 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG&#8594;wg</sub>
+###xml 1197 1199 1195 1197 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1335 1343 1333 1341 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g004">Figure 4</xref>
+Asking whether mathematical expressions can predict the behavior of single cells and the parasegment as a whole is a more stringent test of the idea that the bistability of positive feedback loops explains these stable expression states. Whether a positive feedback loop shows bistability depends on the quantitative values of its parameters. Thus, if I can predict which sets of parameters produce bistable expression of wg and en, I can ask whether bistability in the two feedback loops is both necessary and sufficient to maintain the segment polarity pattern. The parameter sets must meet certain conditions: positive feedback must be sufficient to maintain the high-expression state, while basal or external activation must not overwhelm the low-expression state (see Protocol S1 for details). These conditions can be expressed analytically, and I devised tests to determine whether a parameter set would yield the desired bistability in both the en and the wg positive feedback loops. For instance, the amount of WG present in a cell in the high-wg-expression steady state was compared to KWG-->wg, a parameter indicating the amount of intracellular WG needed for half-maximal activation of wg expression. I selected subnetworks within a single cell that could be largely isolated from other parts of the model (for example, see Figure 4A). I solved for approximate steady-state concentrations of components in subnetworks and compared these levels of signaling molecules to those needed to induce or repress target genes. Our derived constraints were the following.
+###end p 16
+###begin p 17
+###xml 13 15 13 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 77 84 77 82 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG&#8594;wg</sub>
+###xml 135 138 133 136 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg.</italic>
+###xml 178 180 176 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 245 247 243 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 315 317 313 315 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 357 359 355 357 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 482 484 480 482 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 527 529 525 527 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 652 660 650 658 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g004">Figure 4</xref>
+###xml 773 780 771 776 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG&#8594;wg</sub>
+###xml 782 790 778 786 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g004">Figure 4</xref>
+(1) For high wg expression, the net level of intracellular WG must be above KWG-->wg, the amount needed for half-maximal activation of wg. To maintain the pattern, expression of wg must be bistable, such that cells beginning with high levels of wg expression maintain this "on" state while those with low levels of wg expression remain "off." Expression of wg is regulated principally by intracellular WG protein. To achieve bistability, the level of WG protein in a cell with high wg expression must be sufficient to activate wg expression. After being produced, WG protein is lost from the intracellular compartment by transport and decay processes (Figure 4A). The production and loss rates balance at a steady state, whose intercellular WG concentration I compared to KWG-->wg (Figure 4B).
+###end p 17
+###begin p 18
+###xml 56 58 56 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 128 135 128 133 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG&#8594;wg</sub>
+###xml 203 205 201 203 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 300 302 298 300 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 396 398 394 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 412 419 410 415 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG&#8594;wg</sub>
+###xml 455 457 451 453 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 599 607 595 603 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g004">Figure 4</xref>
+###xml 658 666 654 662 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g004">Figure 4</xref>
+(2) Transport of WG from a neighbor with high levels of wg expression cannot raise the concentration of intracellular WG above KWG-->wg. Similarly, levels of WG protein that accumulate in cells with low wg expression by transport processes and basal transcription must not be high enough to activate wg expression in these cells. In particular, the steady-state concentration in a cell producing wg must exceed KWG-->wg, but the concentrations in its non-wg-expressing neighbors must be below this value. Parameter sets achieving the segment polarity pattern satisfy these inequalities, as shown in Figure 4B, while randomly-generated parameter sets do not (Figure 4C).
+###end p 18
+###begin p 19
+###xml 60 62 60 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 96 99 96 99 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EWG</italic>
+###xml 102 104 100 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 96 104 96 102 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>EWG</italic>&#8594;<italic>en</italic></sub>
+###xml 181 183 179 181 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 254 256 252 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 327 330 325 328 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EWG</italic>
+###xml 333 335 329 331 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 327 335 325 331 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>EWG</italic>&#8594;<italic>en</italic></sub>
+###xml 408 410 404 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 467 469 463 465 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 528 530 524 526 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 554 557 550 553 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EWG</italic>
+###xml 560 562 554 556 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 554 562 550 556 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>EWG</italic>&#8594;<italic>en</italic></sub>
+###xml 614 622 608 616 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g004">Figure 4</xref>
+(3) Extracellular WG from two neighbors with high levels of wg expression must be greater than KEWG-->en, the amount of extracellular WG signal needed for half-maximal induction of en expression. Extracellular WG signaling must be sufficient to activate en in the absence of Cubitus Interruptus (CI) repression. The parameter KEWG-->en indicates the amount of extracellular WG signal needed for half-maximal en activation. The WG signal produced by cells in the high-wg-expression steady state must be strong enough to activate en and thus greater than KEWG-->en. Working parameter sets satisfied this constraint (Figure 4D), while random parameter sets typically did not (data not shown).
+###end p 19
+###begin p 20
+###xml 120 122 91 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 88 122 88 93 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CN&#9508;<italic>en</italic></sub>
+###xml 179 181 150 152 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 241 243 212 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 308 310 279 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 341 343 312 314 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 556 558 498 500 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 524 558 495 500 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CN&#9508;<italic>en</italic></sub>
+###xml 615 617 557 559 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 631 639 573 581 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g004">Figure 4</xref>
+###xml 1166 1168 1108 1110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1196 1198 1138 1140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 1217 1219 1159 1161 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 1247 1249 1189 1191 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+(4) The steady-state level of the CI amino-terminal fragment (CN) must be greater than KCNupper and lower left quadrantsen, the amount of CN needed for half-maximal repression of en expression. Repressive CI must also be sufficient to block en expression in cells that are near the WG stripe, but which lack en expression. In the absence of en expression, levels of CN are governed by transcriptional regulation of Patched (PTC). The equations in the model give a single steady-state level of CN. This must be greater than KCNupper and lower left quadrantsen, the amount of CN needed for half-maximal repression of en. As shown in Figure 4E, this inequality holds for all parameter sets that form the segment polarity pattern. The interpretation of this constraint is more complicated because interactions of CI and PTC can cause persistent limit-cycle oscillations of CN about its steady-state level according to both simulations and analysis. However, this does not seem to affect our results, probably because the average level of CN across the oscillations is typically close to the steady-state level. Mutual inhibition provides two stable states, one in which en is expressed and represses ci, and one in which ci is expressed and maintains en repression.
+###end p 20
+###begin p 21
+###xml 184 186 184 186 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 191 193 191 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 223 230 223 230 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0020123-t001">Table 1</xref>
+Through such comparisons, I found that of the 0.61% of parameter sets that produced the segment polarity pattern, more than 90% were predicted to produce bistable behavior in both the wg and en positive feedback loops (see Table 1). From another perspective, the fraction of parameter sets that maintain segment polarity is enriched more than 10-fold amongst those obeying the bistability rules: 0.61% of all parameter sets form the desired pattern, but 6.8% of the parameter sets that obey the bistability rules do so. Most likely, the small fraction (0.05%) of parameter sets that form the pattern but do not obey our bistability criteria fail to do so because of approximations used in these tests. In all 12 cases, they violate only a single rule, whereas the median parameter set that does not form the segment polarity pattern violates three of the four constraints.
+###end p 21
+###begin p 22
+###xml 143 150 143 150 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0020123-t001">Table 1</xref>
+###xml 312 314 312 314 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 319 321 319 321 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 375 378 375 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(hh</italic>
+###xml 380 384 380 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc,</italic>
+###xml 388 391 388 391 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci)</italic>
+While 8.2% of all random parameter sets are consistent with the above restrictions, only 0.56% actually form the segment polarity pattern (see Table 1) whereas 7.6% do not. These parameter sets should maintain the segment polarity pattern, but cannot form it from the prepattern. Though the prepattern does have en and wg stripes, it lacks any expression of three regulators (hh, ptc, or ci) that are expressed in the final segment polarity pattern. Because the initial conditions are substantially different from the stable segment polarity pattern, there are initially large, rapid changes in the concentrations of the components that can drive the collection of cells towards a different final pattern. These early dynamics are complicated, and I could not determine simple rules that predicted which of the parameter sets that satisfied our bistability criteria would generate the segment polarity pattern starting from the initial conditions used by von Dassow et al.
+###end p 22
+###begin p 23
+###xml 709 711 709 711 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 807 809 807 809 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 814 817 814 817 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+###xml 844 846 844 846 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 858 882 858 882 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Motzny1">Motzny and Holmgren 1995</xref>
+###xml 1013 1015 1013 1015 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 1020 1023 1020 1023 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+###xml 1500 1507 1500 1507 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0020123-t001">Table 1</xref>
+###xml 1745 1747 1745 1747 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 1752 1755 1752 1755 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+###xml 1924 1926 1924 1926 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 1931 1934 1931 1934 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+The predictive value of the bistability rules is in marked contrast to the performance of the isolated cell rules, for which half the parameter sets that satisfied the rules produced the correct segment polarity pattern. I believe that the methods differ because the isolated cell rules address the dynamics by using simulations in which early expression dynamics actually occurred, at least in individual cells, rather than the steady-state comparisons of parameters used in the bistability rules. To test this possibility, I asked if I could improve the predictive value of the bistability rules by choosing different initial conditions. I focused on initial levels of CI, PTC, and CN outside the stripe of en expression. Increasing the initial concentrations of CI and PTC is biologically reasonable, as ci and ptc are both expressed before en induction (Motzny and Holmgren 1995). These two regulators constituted one of the isolated subnetworks used above. I solved for the steady-state expression levels of ci and ptc in each parameter set and used this in the initial condition for dynamic simulations with this parameter set. This change brought the prepattern in the model into better agreement with experimental results. The new initial conditions yielded a 6-fold increase in the number of parameter sets achieving the segment polarity pattern. This meant that 41% of the parameter sets meeting the bistability parameter rules actually formed the pattern from the modified prepattern (see Table 1), supporting the idea that many parameter sets obeying the bistability rules are able to form the segment polarity pattern but fail to do so from the initial pattern used by von Dassow et al. This suggests that the expression pattern of ci and ptc established by the pair-rule genes is biologically significant and plays a role in the robust formation of the final segment polarity pattern. This early expression of ci and ptc generates a prepattern that is more similar to the desired stable state.
+###end p 23
+###begin p 24
+###xml 282 284 282 284 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 346 348 346 348 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 369 371 369 371 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 449 457 449 457 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g001">Figure 1</xref>
+###xml 463 471 463 471 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g003">Figure 3</xref>
+###xml 475 498 475 498 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Hatini1">Hatini and DiNardo 2001</xref>
+###xml 599 601 599 601 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 711 713 711 713 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 738 740 738 740 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 808 810 808 810 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 852 854 852 854 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 939 941 939 941 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 971 973 971 973 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1035 1037 1035 1037 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1063 1065 1063 1065 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+Maintaining the narrow parasegment boundary after cell division is an important role of the segment polarity network. Even at the level of the isolated cell rules, there is a discrepancy between the behavior of the model and experimental results. Experimentally, the maintenance of wg expression depends on HH signal from a neighboring stripe of en expression, but the wg "on" state is unconditionally stable in the von Dassow et al. model (compare Figure 1C and Figure 3B) (Hatini and DiNardo 2001). This difficulty manifested itself when I incorporated cell division into the model. The stripe of wg expression should remain one cell wide as the segment widens by cell division. The daughters of cells in the wg stripe further from the en stripe will not be exposed to HH signaling and will therefore lose wg expression, leaving only one cell in the wg "on" state after each division. In the von Dassow et al. model, the independence of wg expression from HH, and thus en expression, allows both daughters of a cell in the stripe of wg expression to retain the wg "on" state. Thus, the stripe grows wider over repeated rounds of cell division rather than maintaining a narrow border at the segment boundary. Indeed, I found no parameter sets which maintained the physiological segment polarity pattern after cell division.
+###end p 24
+###begin p 25
+###xml 113 115 113 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 158 166 158 166 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g002">Figure 2</xref>
+###xml 271 293 271 293 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Methot1">Methot and Basler 2001</xref>
+###xml 311 313 311 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 379 381 379 381 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 488 490 488 490 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 573 575 573 575 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 588 607 588 607 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sloppy-paired (slp)</italic>
+###xml 671 673 671 673 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 713 715 713 715 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 758 761 758 761 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 766 768 766 768 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 775 778 775 778 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 818 820 818 820 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hh</italic>
+###xml 833 859 833 859 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Alexandre1">Alexandre and Vincent 2003</xref>
+###xml 958 961 958 961 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+###xml 1071 1079 1071 1079 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g002">Figure 2</xref>
+###xml 1244 1246 1244 1246 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1347 1369 1347 1369 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Muller1">Muller and Basler 2000</xref>
+I wanted to modify the model so that it succeeded at this patterning task as well. Principally, I needed to make wg expression dependent on HH signaling (see Figure 2B). All effects of HH signaling are believed to be mediated by CI in its activating or repressive forms (Methot and Basler 2001). These regulate wg in the von Dassow et al. model, but CI plays another role in the en positive feedback loop. Constraints imposed by this second role may limit its effectiveness in regulating wg in response to HH signaling. Recent evidence suggests that, while EN does repress ci expression, sloppy-paired (slp) is the second factor involved in a mutual inhibition loop with en. I therefore removed the repression of en by CN and introduced mutual inhibition of slp and en, with slp mediating the positive effect of EN on hh expression (Alexandre and Vincent 2003). As all other signal transduction systems had been removed in the original model, I also removed ptc and allowed HH to directly inhibit the conversion of CI into CN. The interactions in this model are shown in Figure 2B. The specific equations were similar to those used by von Dassow et al., but some details were modified; for example, the exact form of the effect of CI and CN on wg expression was changed to account for the fact that they compete for binding to the same DNA sites (Muller and Basler 2000). I also simplified the transport processes for the intercellular signaling molecules WG and HH, which I showed play only a minor role in the original model.
+###end p 25
+###begin p 26
+###xml 328 353 328 353 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von1">von Dassow and Odell 2002</xref>
+###xml 417 419 417 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 424 426 424 426 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 583 585 583 585 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 624 626 624 626 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 693 695 693 695 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 779 781 779 781 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 834 837 834 837 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 912 915 912 915 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 973 976 973 976 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 1061 1065 1061 1065 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp.</italic>
+###xml 1168 1176 1168 1176 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g005">Figure 5</xref>
+###xml 1386 1393 1386 1393 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0020123-t002">Table 2</xref>
+This modified model can robustly form the segment polarity pattern. Taking the same approach of testing random parameter sets, I found that 9.6% could generate the segment polarity pattern. This is an 8-fold higher fraction of successful parameter sets than that seen for the von Dassow et al. model or any subsequent variants (von Dassow and Odell 2002). In order to test whether this was a result of bistability in wg and en expression, I developed bistability rules for the modified model. These rules require the following: (1) the amount of intercellular WG in a cell with high wg expression must be enough to activate wg expression; (2) the amount of intracellular WG in a cell with low wg expression, but receiving strong HH signaling, must not be high enough to activate wg expression; (3) the amount of EN in a cell with low slp expression and high WG signaling from neighbors must be enough to repress slp expression; and (4) the amount of EN in a cell with high slp expression, but high WG signaling from neighbors, must not be sufficient to repress slp. Nearly all working parameter sets obeyed these rules, as I found for the von Dassow et al. model (see Figure 5A). They were even better predictors of working parameter sets than the parameter rules in the original model; nearly half of random parameter sets that are consistent with these rules form the proper pattern (Table 2).
+###end p 26
+###begin p 27
+###xml 107 109 107 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 188 190 188 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 233 235 233 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 341 343 341 343 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 375 378 375 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 480 482 480 482 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 487 489 487 489 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 542 544 542 544 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 587 590 587 590 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 700 702 700 702 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+Rules 1 and 2 are exactly analogous to bistability rules for the original model that ensure bistability in wg expression. The only change is the inclusion of HH signaling, which regulates wg expression in the modified model. Because ci is responsible for transducing the HH signal, I needed to find a different mutual inhibition partner for en; recent experiments implicated slp in this process. Rules 3 and 4 are similar to the bistability rules that ensure mutual repression of en and ci expression in the original model. They require high en expression to be strong enough to repress slp and vice versa. This ensures that either of the two states of the mutual inhibition switch is stable, and so en expression is bistable.
+###end p 27
+###begin p 28
+###xml 327 334 327 334 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0020123-t002">Table 2</xref>
+###xml 375 377 375 377 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 382 384 382 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 581 583 581 583 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 588 590 588 590 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1006 1013 1006 1013 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0020123-t002">Table 2</xref>
+###xml 1247 1249 1247 1249 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1254 1256 1254 1256 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1463 1465 1463 1465 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1544 1546 1544 1546 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1559 1567 1559 1567 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g005">Figure 5</xref>
+###xml 1627 1629 1627 1629 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1708 1710 1708 1710 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1908 1910 1908 1910 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1915 1917 1915 1917 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1981 1983 1981 1983 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1987 1989 1987 1989 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+In addition to maintaining the initial segment polarity pattern, the modified model is also capable of producing the proper pattern after cell division. Fully 1.7% of random parameter sets yielded the desired narrow stripes of gene expression after division, showing that this feature of the modified model is also robust (see Table 2). I investigated whether bistability of wg and en expression also explained which parameter sets could produce the proper pattern after cell proliferation. Achieving this pattern requires two steps: as cells proliferate, half of the daughters of wg- or en-expressing cells must turn off these genes, and the resulting pattern must be stable over time. The criteria for the stability of the pattern after proliferation are quite similar to those for the original pattern. In fact, nearly all parameter sets that form the original pattern can also maintain the eight-cell-wide segment pattern with one-cell-wide stripes if this pattern is used as an initial condition (see Table 2). Thus, parameter sets that fail to generate this pattern after cell proliferation must have difficulty reaching the proper pattern rather than maintaining it once produced. The more important constraint, as discussed above, is that wg and en expression must fade as cells move away from the mutual reinforcement at the boundary. I devised two additional rules based on this mutual dependence: (5) the amount of intracellular WG in a cell with high wg expression, but receiving no HH signaling, must not be sufficient to maintain wg expression (Figure 5B); and (6) the amount of SLP in a cell with initially high en expression that stops receiving strong WG signaling must be enough to repress en expression. Only one row of cells on either side of the parasegment border will be receiving WG or HH signals across the boundary. Rules 5 and 6 ensure that this signaling is necessary to maintain en and wg expression, so daughter cells born away from the boundary lose en or wg expression. This dependence is the mechanism by which the modified model maintains narrow stripes of segment polarity gene expression after cell division.
+###end p 28
+###begin p 29
+These rules are reasonable predictors for proper behavior during cell proliferation. However, there are a substantial fraction of parameter sets that work despite breaking one or both rules, as well as many which obey them yet cannot produce the proper pattern after one round of cell division. Some of these difficulties probably result from the dynamic nature of the underlying process. As discussed above, bistability rules such as these can determine when a particular expression state is stable, but it is much harder to determine which stable state will be reached for a given initial condition. Thus, it is possible to predict when a parameter set will be able to maintain the final postproliferation pattern, but it is much harder to determine when it will reach this pattern from the expression state immediately following proliferation. This does not explain why there are parameter sets that do not obey rules 5 and 6 but nonetheless give narrow stripes of gene expression after cell division. Those parameter sets expose limits in the approximations used to develop the cell bistability rules. There may be small but important interactions between different feedback loops within a single cell, or perhaps some aspect of intercellular signaling is more complicated than the simple binary model employed in the bistability rules.
+###end p 29
+###begin title 30
+Discussion
+###end title 30
+###begin p 31
+###xml 362 383 362 383 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Heemskerk1">Heemskerk et al. 1991</xref>
+###xml 538 561 538 561 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Thomas1">Thomas and Kaufman 2001</xref>
+###xml 1140 1142 1140 1142 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1181 1183 1181 1183 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1213 1215 1213 1215 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1257 1259 1257 1259 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1332 1334 1332 1334 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1373 1375 1373 1375 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1486 1488 1486 1488 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1608 1610 1608 1610 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1681 1683 1681 1683 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1772 1774 1772 1774 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+I have shown that individual cells in the segment polarity model can adopt three distinct expression states, influenced by signals from their neighbors. I have also presented evidence that positive feedback in the model produces these states. The importance of autoregulation in establishing distinct expression states has been recognized in this system before (Heemskerk et al. 1991). In general, positive feedback can produce discrete stable expression states which are insensitive to small changes in parameters or initial conditions (Thomas and Kaufman 2001). This explains the robustness of the segment polarity patterns in the models. The ways in which intercellular signals impinge on autoregulatory loops will determine which expression patterns are possible. In a field of cells with bistable expression states, the overall pattern is just a specification of a particular expression state for each cell in the field. When signals produced by cells in the pattern are consistent with the states of neighbors receiving them, then this pattern will be a stable steady state. In the segment polarity pattern, there is a stripe of high en expression posterior to the stripe of wg expression, but one with low en expression anterior to it. The stripe of wg expression produces a signal that is strong enough to maintain the high en expression state, but does not induce en expression in cells that do not initially express it. Thus, the states of the cells neighboring the stripe of wg expression are consistent with the signals it produces. Our modifications to the model changed the effect of HH on the wg autoregulatory loop. This destabilized the pattern of wide stripes of wg expression resulting from cell proliferation, retaining the desired pattern with narrow wg expression as a stable pattern. Because the wide-stripe pattern was no longer stable, the model did not become trapped in this state following cell division. Many parameter sets instead progressed to the narrow-stripe pattern.
+###end p 31
+###begin p 32
+###xml 763 765 763 765 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 794 819 794 819 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Bagowski1">Bagowski and Ferrell 2001</xref>
+###xml 821 839 821 839 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Bhalla1">Bhalla et al. 2002</xref>
+###xml 841 856 841 856 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Lee1">Lee et al. 2003</xref>
+The approach I have taken can be generally applied to models of complicated genetic or biochemical networks. I isolated small subnetworks, chosen to be maximally insulated from the rest of the system, and studied their behavior in isolation. This let us understand the principles that allow the entire network to function. I verified this understanding by creating tests for the behavior of the subnetworks and showing that these were powerful predictive tools for the performance of the entire network. This sort of decomposition is also useful in combination with quantitative phenomenological descriptions of subnetwork behaviors. Recent experimental studies provide such descriptions for a number of biological systems, including vertebrate homologues of the wg signal transduction system (Bagowski and Ferrell 2001; Bhalla et al. 2002; Lee et al. 2003). These could replace subnetworks in a larger model, tying the model more closely to biological evidence and showing how the subnetwork affects the larger system in which it functions.
+###end p 32
+###begin p 33
+The robustness of the segment polarity network is a result of the fact that the desired pattern is a stable steady state. In a system of ordinary differential equations, such as the models described here, such states correspond to stable fixed points. These are generic features of such systems; small changes in parameters or initial conditions will not change them qualitatively. This can be seen in the bistability rules I developed. They are inequality constraints, so they carve out a volume of parameter space in which parameter sets can maintain the segment polarity pattern. In our analysis, I focused on robustness against changing parameters, which correspond to genetic alterations that change quantitative values of reaction parameters. In the real world, stochastic and environmental perturbations in the system may play at least as large a role.
+###end p 33
+###begin p 34
+###xml 469 492 469 492 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Thomas1">Thomas and Kaufman 2001</xref>
+###xml 1512 1528 1512 1528 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Guet1">Guet et al. 2002</xref>
+One important question is the extent to which the behavior of a network is determined by its topology, as opposed to quantitative details. The network topology is just the set of interactions in the network, along with their signs. This information is accessible to standard, qualitative biological experiments. Topology limits the possible behaviors of a regulatory network. Positive feedback, which is a topological property, is necessary for multiple stable states (Thomas and Kaufman 2001). Without such autoregulatory loops, all cells would eventually return to the same state after inducing signals are removed. Thus, positive feedback is particularly important in development and differentiation, when many different cell fates are permanently specified. However, quantitative details still have a large influence on network behavior. I held network topology constant while testing random parameter sets, which corresponds to changing quantitative details. Most random parameter sets did not form the segment polarity pattern because they did not display the proper stable states, despite having a topology that was capable of forming the segment polarity pattern. Quantitative details select a particular behavior from the repertoire of behaviors that are accessible from a given network topology. This same phenomenon has been shown experimentally in synthetic genetic networks, where a single topology can give rise to different behaviors when transcription factors and their binding sites are varied (Guet et al. 2002).
+###end p 34
+###begin p 35
+These examples show how changes in the quantitative details of a regulatory network can result in qualitatively different behaviors. This could explain how pattern formation can be evolvable; mutations which cause large shifts in a critical parameter could cause a network to form a different pattern corresponding to a new stable state. The altered pattern would still correspond to a stable fixed point, so it would also be robust against various kinds of perturbations. This offers a mechanism that could produce new patterns without nonfunctional intermediates and without events such as the creation of a new protein-protein interaction.
+###end p 35
+###begin title 36
+Materials and Methods
+###end title 36
+###begin title 37
+
+###end title 37
+###begin p 38
+###xml 67 91 67 91 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von2">von Dassow et al. (2000)</xref>
+###xml 175 182 175 182 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0020123-t003">Table 3</xref>
+###xml 274 293 274 293 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-Galassi1">Galassi et al. 2002</xref>
+The model employed a system of differential equations described by von Dassow et al. (2000). The correspondence between variables and parameters in our model and theirs is in Table 3. Simulations and numerical approximations were performed using the GNU Scientific Library (Galassi et al. 2002).
+###end p 38
+###begin title 39
+Isolated cell rule simulations
+###end title 39
+###begin p 40
+Isolated cell rules were tested by simulations in which the dynamics of an individual cell were modeled using the same equations that govern each cell in the segment for the full segment polarity network.
+###end p 40
+###begin p 41
+###xml 188 190 188 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 225 226 225 226 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 224 226 224 226 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>i</sub></italic>
+###xml 249 251 249 251 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 326 327 326 327 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 325 327 325 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>i</sub></italic>
+###xml 366 367 366 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 381 382 381 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 382 383 382 383 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 384 385 384 385 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 382 385 382 385 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>i</italic>,<italic>j</italic></sub>
+Since WG protein diffused between cells as well as moving into and out of a given cell, it was important to account for the diffusion of WG even in isolated cell simulations. The level of wg mRNA in a cell is represented by wi. Once translated from wg mRNA, WG protein diffuses between the intracellular pool, represented by Ii, and extracellular pools on each face j of the cell, Ei,j. Extracellular WG can exchange between faces of the same cell and between opposing faces of adjacent cells.
+###end p 41
+###begin p 42
+
+###end p 42
+###begin p 43
+
+###end p 43
+###begin p 44
+
+###end p 44
+###begin p 45
+###xml 16 19 16 19 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">IWG</sub>
+###xml 15 19 15 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H<sub>IWG</sub></italic>
+###xml 25 28 25 28 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EWG</sub>
+###xml 24 28 24 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H<sub>EWG</sub></italic>
+###xml 140 146 140 146 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">out,WG</sub>
+###xml 139 146 139 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>out,WG</sub></italic>
+###xml 149 158 149 158 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">across,WG</sub>
+###xml 148 158 148 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>across,WG</sub></italic>
+###xml 161 170 161 170 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">around,WG</sub>
+###xml 160 170 160 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>around,WG</sub></italic>
+###xml 177 182 177 182 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in,WG</sub>
+###xml 176 182 176 182 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>in,WG</sub></italic>
+###xml 415 416 415 416 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 414 416 414 416 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>i</sub></italic>
+###xml 422 425 422 425 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i,j</sub>
+###xml 421 425 421 425 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E<sub>i,j</sub></italic>
+###xml 448 449 448 449 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 447 450 447 450 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>i</sub>s</italic>
+###xml 598 600 598 600 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 668 670 668 670 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 667 670 667 670 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>on</sub></italic>
+###xml 689 692 689 692 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 688 692 688 692 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>off</sub></italic>
+###xml 866 867 866 867 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 871 876 871 876 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in,WG</sub>
+###xml 870 876 870 876 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>in,WG</sub></italic>
+###xml 898 901 898 901 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i,j</sub>
+###xml 897 901 897 901 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E<sub>i,j</sub></italic>
+###xml 902 903 902 903 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 912 914 912 914 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kt</sup>
+###xml 911 914 911 914 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e<sup>kt</sup></italic>
+###xml 919 922 919 922 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i,j</italic>
+###xml 919 922 919 922 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>i,j</italic></sub>
+The parameters HIWG and HEWG are the half-lives of WG in the intracellular and extracellular pools, respectively. The diffusion parameters Kout,WG, Kacross,WG, Karound,WG, and Kin,WG are the rate constants for the first order of exchange of WG between the intracellular and extracellular pools and between different cell faces. These are linear equations, so it is possible to solve for the steady-state levels of Ii and Ei,j as a function of the wis, which control WG production, by inverting a matrix of transport and decay rates. In the segment polarity pattern, particularly, there is just one wg-expressing cell in the periodic pattern of four cells. So, I take won for one cell and woff for the other three in the periodic unit. All WG protein is initially intracellular, but it moves to extracellular faces by a roughly first-order process with time constant k = Kin,WG+. Therefore, I used Ei,j(t) = (1 -ekt) . Ẽi,j as the amount of WG protein on neighboring cells for the isolated cell simulations.
+###end p 45
+###begin p 46
+###xml 25 27 25 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 221 225 221 225 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on,0</sub>
+###xml 220 225 220 225 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>on,0</sub></italic>
+###xml 235 240 235 240 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off,0</sub>
+###xml 234 240 234 240 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>off,0</sub></italic>
+###xml 300 303 300 303 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i,j</sub>
+###xml 300 303 300 303 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i,j</sub></italic>
+###xml 305 307 305 307 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 304 307 304 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>on</sub></italic>
+###xml 309 312 309 312 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 308 312 308 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>off</sub></italic>
+###xml 364 366 364 366 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 416 417 416 417 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 515 517 515 517 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 577 578 577 578 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 604 605 604 605 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 638 639 638 639 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 639 643 639 643 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on,i</italic>
+###xml 639 645 639 645 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on,i</italic>+1</sub>
+###xml 650 651 650 651 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 651 656 651 656 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off,i</italic>
+###xml 651 658 651 658 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off,i</italic>+1</sub>
+###xml 790 791 790 791 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 803 805 803 805 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 802 805 802 805 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>on</sub></italic>
+###xml 811 814 811 814 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 810 814 810 814 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>off</sub></italic>
+###xml 833 835 833 835 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 832 835 832 835 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>on</sub></italic>
+###xml 927 930 927 930 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 926 930 926 930 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>off</sub></italic>
+To verify bistability of wg expression, I simulated a single cell with no HH signaling from its neighbors. I calculated the amount of WG protein expected to be present on neighbors by an iterative process. Starting with won,0 = 1 and woff,0 = 0, I computed the steady-state extracellular WG protein Ẽi,j(won,woff) presented by the neighbors of the cell expressing wg and used these in simulating a cell with initial w = 1. Similarly, I computed the amount of WG protein on neighbors of a cell next to the stripe of wg expression and used this in simulating a cell with initial w = 0. The final values of w in those two cells were used as won,i+1 and woff,i+1 to compute the levels of extracellular WG protein for the next iteration. This process quickly converged, and I took the resulting w values as won and woff. I verified that won was above 0.1, the expression level threshold used in scoring pattern formation, and that woff was below 0.1.
+###end p 46
+###begin p 47
+###xml 72 74 72 74 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 71 74 71 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>on</sub></italic>
+###xml 80 83 80 83 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 79 83 79 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>off</sub></italic>
+###xml 124 126 124 126 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 154 156 154 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 266 268 266 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 380 382 380 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 404 406 404 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 462 464 462 464 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 491 493 491 493 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+I then used the same levels of extracellular WG protein, computed from won and woff, to simulate a cell next to a stripe of wg expression. I used initial en mRNA and protein levels of 1 or 0 and ensured that, at the end of the simulation period, the former cell had en expression levels over the threshold but the latter did not. Finally, I verified that a cell with high initial wg mRNA but low initial en mRNA, receiving signals as if it were in the stripe of wg expression, still had low en expression at the end of the simulation.
+###end p 47
+###begin title 48
+Bistability parameter rules
+###end title 48
+###begin p 49
+###xml 261 262 259 260 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+These equations make repeated use of a particular equation form representing saturable and cooperative action of a protein, for instance as a transcriptional activator. In general, the amount of activation, Phi, as a function of the concentration of activator, x, is
+###end p 49
+###begin p 50
+
+###end p 50
+###begin p 51
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 356 357 354 355 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 379 380 377 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 505 506 501 502 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 594 596 589 591 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 635 638 630 633 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EWG</italic>
+###xml 641 643 634 636 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 635 643 630 636 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>EWG</italic>&#8594;<italic>en</italic></sub>
+###xml 737 740 729 732 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EWG</italic>
+###xml 743 745 733 735 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 737 745 729 735 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>EWG</italic>&#8594;<italic>en</italic></sub>
+Here, K indicates the concentration of activator needed for half-maximal activation; it is essentially an affinity of the activator for its target. The parameter nu controls the degree of cooperativity in activator function, with large values of nu giving stronger cooperativity. The function produces sigmoidal curves which asymptotically approach 1 when x is large relative to K. In the model, there is a different Phi for each instance of transcriptional regulation controlled by an affinity parameter K and a cooperativity parameter nu for that interaction. For instance, the activation of en by extracellular WG is controlled by KEWG-->en, which indicates the amount of extracellular WG needed for half-maximal activation, and by nuEWG-->en, which determines how cooperative the activation is.
+###end p 51
+###begin title 52
+###xml 0 2 0 2 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 7 10 7 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+ci and ptc subnetwork
+###end title 52
+###begin p 53
+###xml 214 217 214 217 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+###xml 222 224 222 224 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 254 256 254 256 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 291 294 291 294 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+###xml 299 301 299 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 312 313 312 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 318 319 318 319 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 405 406 405 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 409 412 409 412 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">act</sub>
+###xml 408 412 408 412 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C<sub>act</sub></italic>
+###xml 419 422 419 422 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rep</sub>
+###xml 418 422 418 422 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C<sub>rep</sub></italic>
+I designed parameter rules for bistability by analyzing different subnetworks in the model and solving for steady states consistent with bistability from positive feedback. I solved for the stationary state of the ptc and ci subnetwork in the absence of en expression. The concentrations of ptc and ci mRNAs are p and c, and the concentrations of PTC protein, activating CI protein, and repressive CN are P, Cact, and Crep. The equations governing this system, entirely contained within a single cell, are
+###end p 53
+###begin p 54
+
+###end p 54
+###begin p 55
+
+###end p 55
+###begin p 56
+
+###end p 56
+###begin p 57
+
+###end p 57
+###begin p 58
+
+###end p 58
+###begin p 59
+###xml 105 107 103 105 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</sub>
+###xml 104 107 102 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H<sub>ci</sub></italic>
+###xml 113 116 111 114 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</sub>
+###xml 112 116 110 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H<sub>ptc</sub></italic>
+###xml 139 141 137 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 146 149 144 147 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+###xml 187 190 185 188 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Ptc</sub>
+###xml 186 190 184 188 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H<sub>Ptc</sub></italic>
+###xml 193 195 191 193 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Ci</sub>
+###xml 192 195 190 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H<sub>Ci</sub></italic>
+###xml 202 204 200 202 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CN</sub>
+###xml 201 204 199 202 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H<sub>CN</sub></italic>
+###xml 298 300 296 298 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 343 344 341 342 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 355 356 353 354 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</italic>
+###xml 356 357 354 355 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 516 517 514 515 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 522 523 520 521 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 678 681 676 679 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rep</italic>
+###xml 678 681 676 679 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>rep</italic></sub>
+###xml 732 734 701 703 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 700 734 698 703 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CN&#9508;<italic>en</italic></sub>
+###xml 785 787 754 756 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+The affinity and cooperativity parameters for each Phi have been suppressed for clarity. The parameters Hci and Hptc are the half-lives of ci and ptc mRNAs, and similarly the parameters HPtc, HCi, and HCN are the half-lives for the protein species. The level of Bicoid, a constitutive activator of ci expression, is indicated by the parameter B. Finally, C0 is an affinity parameter for the cleavage of CI by PTC. To find the stationary state, I solve for the simultaneous zero of all five equations. Two variables, c and P, can be trivially eliminated. The remaining three equations in three variables always yielded a unique stationary state. The level of CN at this state, C̃rep, was compared to KCNupper and lower left quadrantsen, the amount needed for half-maximal repression of en expression (parameter rule 4).
+###end p 59
+###begin p 60
+###xml 69 71 69 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+The levels of CI and CN were also used to compute their influence on wg expression. The strength of this activation was indicated by beta, a single term encompassing activation by CI and repression by CN.
+###end p 60
+###begin p 61
+
+###end p 61
+###begin p 62
+The only parameters in this expression are the affinity and cooperativity parameters for each Phi.
+###end p 62
+###begin title 63
+###xml 21 23 21 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+WG and its effect on en
+###end title 63
+###begin p 64
+###xml 10 12 10 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 25 26 25 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 36 37 36 37 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 35 37 35 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>i</sub></italic>
+###xml 107 109 104 106 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 130 131 127 128 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 129 131 126 128 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>i</sub></italic>
+Levels of wg mRNA in the ith cell, wi, are governed by beta, which indicates the influence of CI and CN on wg expression, and by Ii, the amount of intracellular WG in the cell.
+###end p 64
+###begin p 65
+
+###end p 65
+###begin p 66
+###xml 72 74 70 72 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</sub>
+###xml 71 74 69 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H<sub>wg</sub></italic>
+###xml 93 95 91 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 125 127 119 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CI</italic>
+###xml 130 132 122 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 125 132 119 124 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>CI</italic>&#8594;<italic>wg</italic></sub>
+###xml 142 144 130 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG</italic>
+###xml 147 149 133 135 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 142 149 130 135 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>WG</italic>&#8594;<italic>wg</italic></sub>
+###xml 220 222 206 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 241 242 227 228 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 240 242 226 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>i</sub></italic>
+###xml 243 244 229 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 244 246 230 232 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG</italic>
+###xml 249 251 233 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 244 251 230 235 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>WG</italic>&#8594;<italic>wg</italic></sub>
+###xml 263 264 245 246 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 262 264 244 246 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>i</sub></italic>
+###xml 284 286 266 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 395 397 377 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+In addition to affinity and cooperativity parameters for each Phi, and Hwg, the half-life of wg mRNA, there are scalars alphaCI-->wg and alphaWG-->wg, which determine the relative strengths of CI/CN and WG influences on wg expression. When Ii>KWG-->wg, then Phi(Ii) will be large and wg expression high. I computed steady-state intracellular and extracellular WG protein levels as a function of wg expression as described above for the isolated cell rules.
+###end p 66
+###begin p 67
+###xml 55 57 55 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 105 107 105 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 183 185 183 185 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 212 213 212 213 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 213 214 213 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 213 216 213 216 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>w</italic>=1</sub>
+###xml 218 219 218 219 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 217 219 217 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>i</sub></italic>
+###xml 221 222 221 222 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 220 222 220 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>i</sub></italic>
+###xml 253 255 253 255 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w&#771;</italic>
+###xml 255 257 255 257 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 255 257 255 257 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 259 260 259 260 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 258 260 258 260 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>i</sub></italic>
+###xml 262 263 262 263 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 261 263 261 263 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>i</sub></italic>
+###xml 264 265 264 265 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 265 266 265 266 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 265 268 265 268 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>w</italic>=1</sub>
+###xml 304 305 304 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 305 307 305 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 305 307 305 307 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 309 310 309 310 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 308 310 308 310 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I<sub>i</sub></italic>
+###xml 312 313 312 313 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 311 313 311 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>i</sub></italic>
+###xml 314 316 314 316 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w&#771;</italic>
+###xml 316 318 316 318 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 316 318 316 318 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>on</sub></italic>
+###xml 320 321 320 321 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 321 323 321 323 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG</italic>
+###xml 326 328 324 326 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 321 328 321 326 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>WG</italic>&#8594;<italic>wg</italic></sub>
+###xml 399 401 397 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 625 627 623 625 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 688 690 686 688 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w&#771;</italic>
+###xml 690 692 688 690 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 690 692 688 690 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 757 759 755 757 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 793 795 791 793 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 797 798 795 796 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 798 801 796 799 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nbr</sub>
+###xml 798 801 796 799 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>nbr</sub></italic>
+###xml 802 803 800 801 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I</italic>
+###xml 803 804 801 802 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 803 806 801 804 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>i</italic>+1</sub>
+###xml 808 809 806 807 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 807 809 805 807 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w<sub>i</sub></italic>
+###xml 810 812 808 810 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w&#771;</italic>
+###xml 812 814 810 812 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 812 814 810 812 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 815 816 813 814 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 816 817 814 815 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 816 819 814 817 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>i</italic>+1</sub>
+###xml 834 836 832 834 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w&#771;</italic>
+###xml 836 839 834 837 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 836 839 834 837 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>off</sub></italic>
+###xml 840 841 838 839 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 841 842 839 840 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 841 844 839 842 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>i</italic>+1</sub>
+###xml 845 846 843 844 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I</italic>
+###xml 846 847 844 845 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 846 849 844 847 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>i</italic>+1</sub>
+###xml 850 851 848 849 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 851 854 849 852 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nbr</italic>
+###xml 851 854 849 852 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>nbr</italic></sub>
+###xml 860 861 858 859 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 861 864 859 862 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 861 864 859 862 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 865 866 863 864 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I</italic>
+###xml 866 867 864 865 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 866 869 864 867 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>i</italic>+1</sub>
+###xml 870 871 868 869 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 871 872 869 870 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 871 874 869 872 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>i</italic>+1</sub>
+###xml 875 877 873 875 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w&#771;</italic>
+###xml 877 880 875 878 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 877 880 875 878 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 904 905 902 903 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 905 908 903 906 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nbr</italic>
+###xml 905 908 903 906 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>nbr</italic></sub>
+###xml 909 910 907 908 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 910 913 908 911 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 910 913 908 911 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 914 915 912 913 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 915 917 913 915 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG</italic>
+###xml 920 922 916 918 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 915 922 913 918 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>WG</italic>&#8594;<italic>wg</italic></sub>
+###xml 984 986 980 982 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1043 1045 1039 1041 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1087 1089 1083 1085 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1174 1175 1170 1171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#7868;</italic>
+###xml 1175 1177 1171 1173 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 1178 1179 1174 1175 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 1175 1179 1171 1175 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic>,<italic>j</italic></sub>
+###xml 1184 1185 1180 1181 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#7868;</italic>
+###xml 1185 1188 1181 1184 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 1189 1190 1185 1186 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 1185 1190 1181 1186 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic>,<italic>j</italic></sub>
+###xml 1213 1214 1209 1210 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 1214 1216 1210 1212 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 1214 1216 1210 1212 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 1221 1222 1217 1218 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 1222 1225 1218 1221 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 1222 1225 1218 1221 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 1334 1336 1330 1332 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1352 1353 1344 1345 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#7868;</italic>
+###xml 1354 1355 1346 1347 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1355 1358 1347 1350 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EWG</italic>
+###xml 1361 1363 1351 1353 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1355 1363 1347 1353 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>EWG</italic>&#8594;<italic>en</italic></sub>
+Bistability requires that intracellular WG levels in a wg-expressing cell remain high enough to maintain wg expression. I computed successive approximations to steady-state levels of wg mRNA and protein. I found Iw=1=Ii(wi=1) by setting  and then found w̃on=wi(Ii=Iw=1) by setting . I then required that Ion=Ii(wi=w̃on)>KWG-->wg, meaning that the level of intracellular WG is sufficient to maintain wg expression (parameter rule 1). I found no cases in which this much faster test gave different results than actually solving the self-consistent equations for . Bistability also requires that a cell not initially expressing wg must not be activated by WG from a neighboring cell. I used w̃on to compute the amount of intracellular WG in a cell next to the wg stripe but not itself expressing wg, Inbr=Ii+1(wi=w̃on,wi+1=0), and found w̃off=wi+1(Ii+1=Inbr) and Ioff=Ii+1(wi+1=w̃off). I then verified that Inbr+Ioff<KWG-->wg, meaning that the sum of intracellular WG transported into a wg "off" neighbor and the intracellular WG produced by the wg "off" neighbor is not enough to activate wg expression (parameter rule 2). Finally, I find levels of extracellular WG signaling Ẽon,j and Ẽoff,j in the same manner as Ion and Ioff, respectively. These are used to ensure that the level of extracellular WG signal received by a cell in the en stripe is SigmaẼ>KEWG-->en (parameter rule 3).
+###end p 67
+###begin title 68
+Modified initial conditions
+###end title 68
+###begin p 69
+###xml 161 163 161 163 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c&#771;</italic>
+###xml 165 167 165 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C&#771;</italic>
+###xml 167 170 167 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rep</italic>
+###xml 167 170 167 170 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>rep</italic></sub>
+###xml 172 174 172 174 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C&#771;</italic>
+###xml 174 177 174 177 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">act</italic>
+###xml 174 177 174 177 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>act</italic></sub>
+###xml 179 181 179 181 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p&#771;</italic>
+###xml 187 189 187 189 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P&#771;</italic>
+###xml 251 253 251 253 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 302 304 302 304 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 309 311 309 311 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 393 395 393 395 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+The modified initial conditions were generated by solving for the steady state of the CI and PTC subnetwork as described above. This yielded steady-state values c̃, C̃rep, C̃act, p̃, and P̃, which were used for the initial conditions in the stripe of wg expression and in the stripe expressing neither wg nor en. Initial conditions for components of the CI and PTC subnetwork in the stripe of en expression were kept at 0.
+###end p 69
+###begin p 70
+###xml 126 127 126 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 127 128 127 128 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 127 128 127 128 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>i</italic></sub>
+###xml 133 134 133 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#7868;</italic>
+###xml 134 135 134 135 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 136 137 136 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 134 137 134 137 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>i</italic>,<italic>j</italic></sub>
+###xml 240 242 240 242 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 280 282 280 282 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+The modified initial conditions also used steady-state levels of intracellular and extracellular WG protein. The steady-state Ii and Ẽi,j values were computed as described above under the assumption of a single column of cells with maximal wg expression and three columns with no wg expression. This latter change had a very modest impact on the fraction of parameter sets which formed the segment polarity pattern, and I did not pursue it further.
+###end p 70
+###begin title 71
+Modified model
+###end title 71
+###begin p 72
+###xml 141 142 139 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 187 188 183 184 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</sub>
+###xml 186 188 182 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x<sub>r</sub></italic>
+###xml 190 191 186 187 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</sub>
+###xml 189 191 185 187 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x<sub>a</sub></italic>
+The equations governing the modified model were similar in form to those in the original model. In addition to using the functional form Phi(x), I employed a related functional form Psi(xr,xa) that represents the effects of an activator and a repressor that compete with equal affinity for a common binding site.
+###end p 72
+###begin p 73
+
+###end p 73
+###begin p 74
+###xml 7 8 7 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 101 102 100 101 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 100 102 99 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a<sub>0</sub></italic>
+###xml 288 290 287 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 383 385 382 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 429 430 428 429 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</sub>
+###xml 428 430 427 429 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x<sub>r</sub></italic>
+Again, K is essentially an affinity parameter and nu controls the cooperativity of the process. The a0 term indicates the basal expression level, seen when neither activator nor repressor is acting. This functional form is used to express the effect of repressive CN and activating CI on wg expression. I also used it to represent the effect of intracellular WG activator with basal wg transcription, setting the repressor term xr=0.
+###end p 74
+###begin p 75
+###xml 64 66 64 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 100 101 100 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 106 107 106 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 123 126 123 126 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 161 162 161 162 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</italic>
+###xml 167 168 167 168 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 482 483 482 483 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#274;</italic>
+###xml 483 486 483 486 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Nbr</italic>
+###xml 483 486 483 486 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>Nbr</italic></sub>
+###xml 490 492 490 492 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H&#772;</italic>
+###xml 492 495 492 495 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Nbr</italic>
+###xml 492 495 492 495 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>Nbr</italic></sub>
+In addition to the dynamic variables described above, levels of en mRNA and EN protein are given by n and N, and levels of slp mRNA and SLP protein are given by s and S, respectively. The affinity, cooperativity, and basal transcription parameters are suppressed throughout for clarity. As nearly all dynamic variables are in the same cell, subscripts that index concentrations within a given cell are also omitted. In the two equations that involve intercellular signaling, a term ENbr or H̄Nbr indicates the sum of extracellular WG or HH on neighboring cells, respectively; this is equivalent to the average without a normalization for the number of cells.
+###end p 75
+###begin p 76
+
+###end p 76
+###begin p 77
+
+###end p 77
+###begin p 78
+
+###end p 78
+###begin p 79
+
+###end p 79
+###begin p 80
+
+###end p 80
+###begin p 81
+
+###end p 81
+###begin p 82
+
+###end p 82
+###begin p 83
+
+###end p 83
+###begin p 84
+
+###end p 84
+###begin p 85
+
+###end p 85
+###begin p 86
+
+###end p 86
+###begin p 87
+
+###end p 87
+###begin p 88
+###xml 24 25 24 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 26 27 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 47 49 47 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 62 63 62 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 64 65 64 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I</italic>
+###xml 85 87 85 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 104 105 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s</italic>
+###xml 106 107 106 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 157 159 157 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 164 166 164 166 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+Initial conditions were n=N=1 in the stripe of en expression, w=I=1 in the stripe of wg expression, and s=S=1 in the two-cell-wide stripe expressing neither en nor wg. As in the original model, cell proliferation was accomplished by doubling the grid size and copying the dynamic variables from each cell into two adjacent cells in the new grid.
+###end p 88
+###begin title 89
+Bistability parameter rules
+###end title 89
+###begin p 90
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 21 23 21 23 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 21 23 21 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>on</sub></italic>
+###xml 28 29 28 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 29 32 29 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 29 32 29 32 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 120 122 120 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 135 136 135 136 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 182 184 182 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H&#772;</italic>
+###xml 184 187 184 187 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Nbr</italic>
+###xml 184 187 184 187 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>Nbr</italic></sub>
+###xml 228 230 228 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C&#771;</italic>
+###xml 230 233 230 233 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">act</italic>
+###xml 230 233 230 233 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>act</italic></sub>
+###xml 238 240 238 240 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C&#771;</italic>
+###xml 240 243 240 243 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rep</italic>
+###xml 240 243 240 243 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>rep</italic></sub>
+###xml 363 365 363 365 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 528 529 528 529 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 529 531 529 531 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 529 531 529 531 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 536 537 536 537 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 537 540 537 540 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 537 540 537 540 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 545 547 545 547 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG</italic>
+###xml 550 552 548 550 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 545 552 545 550 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>WG</italic>&#8594;<italic>wg</italic></sub>
+Steady-state levels Ion and Ioff were computed similarly to the way described for the original model. I assumed maximal ci expression, c=1, and maximal HH signal from two neighbors, H̄Nbr=2, in computing the steady-state levels C̃act and C̃rep. As there was no intercellular transport of WG in the modified model, I needed to worry only about basal and activated wg expression in a single cell and did not need to consider intercellular transport. To check parameter rules 1 and 2, I simply compared the two steady-state levels Ion and Ioff to KWG-->wg.
+###end p 90
+###begin p 91
+###xml 11 12 11 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#7868;</italic>
+###xml 12 13 12 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 12 15 12 15 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>w</italic>=1</sub>
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 28 30 28 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H&#772;</italic>
+###xml 30 33 30 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Nbr</italic>
+###xml 30 35 30 35 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>Nbr</italic>=2</sub>
+###xml 67 69 67 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 95 96 95 96 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#209;</italic>
+###xml 96 97 96 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 96 99 96 99 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>S</italic>=0</sub>
+###xml 106 107 106 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#274;</italic>
+###xml 107 110 107 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Nbr</italic>
+###xml 107 110 107 110 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>Nbr</italic></sub>
+###xml 112 113 112 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#7868;</italic>
+###xml 113 114 113 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 113 116 113 116 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>w</italic>=1</sub>
+###xml 174 175 174 175 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 182 185 182 185 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 227 228 227 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#241;</italic>
+###xml 229 230 229 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#209;</italic>
+###xml 235 236 233 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#274;</italic>
+###xml 236 239 234 237 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Nbr</italic>
+###xml 236 239 234 237 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>Nbr</italic></sub>
+###xml 248 249 244 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 276 278 272 274 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S&#771;</italic>
+###xml 278 281 274 277 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 278 281 274 277 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 314 316 310 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">s&#771;</italic>
+###xml 317 319 313 315 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S&#771;</italic>
+###xml 348 350 342 344 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S&#771;</italic>
+###xml 350 353 344 347 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 350 353 344 347 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 358 359 352 353 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#7868;</italic>
+###xml 359 360 353 354 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w</italic>
+###xml 359 362 353 356 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>w</italic>=1</sub>
+###xml 371 372 365 366 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#209;</italic>
+###xml 372 374 366 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 372 374 366 368 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 382 384 376 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 419 420 413 414 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#209;</italic>
+###xml 421 422 415 416 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 422 424 416 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EN</italic>
+###xml 454 457 419 422 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 422 457 416 422 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>EN</italic>&#9508;<italic>slp</italic></sub>
+###xml 526 529 491 494 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+I computed Ẽw=1 for c=1 and H̄Nbr=2 to account for WG signaling in en expression. I then found NS=0 using ENbr=2Ẽw=1 to represent maximal WG signaling from two neighbors and S=0, no slp expression, in the steady-state equation n=N=Phi(ENbr).(1-Phi(S)). I used this to compute S̃off using the steady-state equation s̃=S̃=(1-Phi(N)). Finally, I used S̃off and Ẽw=1 to find Non in the en steady-state equation. I compared N>KENupper and lower left quadrantsslp to ensure that steady-state levels of EN were sufficient to repress slp expression.
+###end p 91
+###begin p 92
+###xml 19 20 19 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#209;</italic>
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</italic>
+###xml 20 23 20 23 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>S</italic>=1</sub>
+###xml 47 49 47 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 81 83 81 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S&#771;</italic>
+###xml 83 85 83 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 83 85 83 85 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 109 112 109 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 127 129 127 129 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S&#771;</italic>
+###xml 129 131 129 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 129 131 129 131 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 154 155 154 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#209;</italic>
+###xml 155 158 155 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 155 158 155 158 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 180 181 180 181 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#209;</italic>
+###xml 181 184 181 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 181 184 181 184 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 185 186 185 186 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 186 188 186 188 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EN</italic>
+###xml 218 221 189 192 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 186 221 186 192 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>EN</italic>&#9508;<italic>slp</italic></sub>
+###xml 261 263 232 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 306 309 277 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+Similarly, I found NS=1 using the steady-state en equation and used this to find S̃on using the steady-state slp equation. The S̃on was then used to find Noff, and I required that Noff<KENupper and lower left quadrantsslp. This ensured that repressed levels of en expression were not sufficient to repress slp expression.
+###end p 92
+###begin p 93
+###xml 13 15 13 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 72 73 72 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 73 75 73 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 73 75 73 75 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 113 115 113 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C&#771;</italic>
+###xml 115 118 115 118 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">act</italic>
+###xml 115 118 115 118 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>act</italic></sub>
+###xml 123 125 123 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C&#771;</italic>
+###xml 125 128 125 128 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rep</italic>
+###xml 125 128 125 128 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>rep</italic></sub>
+###xml 135 136 135 136 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 143 145 143 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H&#772;</italic>
+###xml 145 148 145 148 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Nbr</italic>
+###xml 145 148 145 148 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>Nbr</italic></sub>
+###xml 201 202 201 202 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 202 204 202 204 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 202 204 202 204 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 217 219 217 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C&#771;</italic>
+###xml 219 222 219 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">act</italic>
+###xml 219 222 219 222 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>act</italic></sub>
+###xml 227 229 227 229 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C&#771;</italic>
+###xml 229 232 229 232 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rep</italic>
+###xml 229 232 229 232 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>rep</italic></sub>
+###xml 241 243 241 243 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w&#771;</italic>
+###xml 243 244 243 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</italic>
+###xml 243 246 243 246 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>H</italic>=0</sub>
+###xml 251 252 251 252 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 252 253 252 253 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</italic>
+###xml 252 255 252 255 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>H</italic>=0</sub>
+###xml 278 280 278 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 304 306 304 306 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">w&#771;</italic>
+###xml 306 308 306 308 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 311 314 309 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 306 314 306 312 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic>&#8594;<italic>off</italic></sub>
+###xml 319 320 317 318 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 320 322 318 320 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 325 328 321 324 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 320 328 318 324 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic>&#8594;<italic>off</italic></sub>
+###xml 352 354 348 350 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 373 374 369 370 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</italic>
+###xml 388 390 384 386 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C&#771;</italic>
+###xml 390 393 386 389 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">act</italic>
+###xml 390 393 386 389 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>act</italic></sub>
+###xml 398 400 394 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C&#771;</italic>
+###xml 400 403 396 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rep</italic>
+###xml 400 403 396 399 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>rep</italic></sub>
+###xml 409 410 405 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 410 411 406 407 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</italic>
+###xml 410 413 406 409 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>H</italic>=0</sub>
+###xml 440 441 436 437 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 441 443 437 439 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 446 449 440 443 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 441 449 437 443 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic>&#8594;<italic>off</italic></sub>
+###xml 450 451 444 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 451 453 445 447 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG</italic>
+###xml 456 458 448 450 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 451 458 445 450 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>WG</italic>&#8594;<italic>wg</italic></sub>
+###xml 478 480 470 472 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+To test that wg expression was dependent on HH signaling, I first found Ion as described before. I also computed C̃act and C̃rep using c=1 but H̄Nbr=0, representing a loss of HH signaling. I then used Ion and the new C̃act and C̃rep to find w̃H=0 and IH=0 with the steady state wg equation. I then found w̃on-->off and Ion-->off using the steady state wg equation, the new H=0 values for C̃act and C̃rep, and IH=0. Finally, I verified that Ion-->off<KWG-->wg, which ensure that wg autoactivation is not sufficient to maintain its expression after HH signaling is removed.
+###end p 93
+###begin p 94
+###xml 17 19 17 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 77 78 77 78 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#209;</italic>
+###xml 78 80 78 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 78 80 78 80 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic></sub>
+###xml 85 87 85 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S&#771;</italic>
+###xml 87 90 87 90 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 87 90 87 90 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 119 120 119 120 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#7868;</italic>
+###xml 120 123 120 123 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 120 123 120 123 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 157 158 157 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#296;</italic>
+###xml 158 161 158 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 158 161 158 161 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 171 172 171 172 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#274;</italic>
+###xml 172 175 172 175 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Nbr</italic>
+###xml 176 179 176 179 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 172 179 172 179 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>Nbr</italic>,<italic>off</italic></sub>
+###xml 181 182 181 182 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#7868;</italic>
+###xml 182 185 182 185 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 182 185 182 185 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic></sub>
+###xml 233 234 233 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#209;</italic>
+###xml 234 236 234 236 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 239 242 237 240 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 234 242 234 240 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>on</italic>&#8594;<italic>off</italic></sub>
+###xml 265 267 263 265 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 311 313 309 311 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S&#771;</italic>
+###xml 313 316 311 314 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 319 321 315 317 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 313 321 311 317 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic>&#8594;<italic>on</italic></sub>
+###xml 344 347 340 343 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 401 403 397 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S&#771;</italic>
+###xml 403 406 399 402 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</italic>
+###xml 409 411 403 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</italic>
+###xml 403 411 399 405 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>off</italic>&#8594;<italic>on</italic></sub>
+###xml 412 413 406 407 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 413 416 407 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SLP</italic>
+###xml 446 448 411 413 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 413 448 407 413 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><italic>SLP</italic>&#9508;<italic>en</italic></sub>
+###xml 489 492 454 457 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 514 516 479 481 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+To check whether en expression was dependent on WG signaling, I started with Non and S̃off as described above. I found Ẽoff in the same way in which I found Ioff and used ENbr,off=6Ẽoff. I used this new level of WG signaling to find Non-->off with the steady state en equation, and then used this value to find S̃off-->on with the steady-state slp equation. To verify parameter rule 6, I checked that S̃off-->on>KSLPupper and lower left quadrantsen, ensuring that the unrepressed level of slp expression can block en expression.
+###end p 94
+###begin title 95
+Supporting Information
+###end title 95
+###begin title 96
+###xml 15 17 15 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+Bistability in wg Expression
+###end title 96
+###begin p 97
+Additional background and explanation of bistability in gene expression.
+###end p 97
+###begin p 98
+(109 KB PDF).
+###end p 98
+###begin p 99
+Click here for additional data file.
+###end p 99
+###begin title 100
+Accession Numbers
+###end title 100
+###begin p 101
+###xml 75 77 75 77 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 93 95 93 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 111 113 111 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hh</italic>
+###xml 129 132 129 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+###xml 148 151 148 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp</italic>
+###xml 187 189 187 189 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+The FlyBase () accession numbers for the genes discussed in this paper are ci (FBgn0004859), en (FBgn0000577), hh (FBgn0004644), ptc (FBgn0003892), slp (FBgn0003430 and FBgn0004567), and wg (FBgn0004009).
+###end p 101
+###begin p 102
+I thank Andrew Murray for advice and helpful discussions. I also appreciate critical comments on the manuscript from Daniel Fisher, Steve Altschuler, Lani Wu, Scott Schuyler, and all the members of the Murray laboratory as well as the anonymous reviewers. This work was supported by a predoctoral fellowship from the Howard Hughes Medical Institute. It was conducted in the laboratory of Andrew Murray, who is supported by the National Institutes Health.
+###end p 102
+###begin title 103
+References
+###end title 103
+###begin article-title 104
+###xml 109 132 109 132 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Drosophila melanogaster</named-content>
+###xml 109 132 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+The topology of the regulatory interactions predicts the expression pattern of the segment polarity genes in Drosophila melanogaster
+###end article-title 104
+###begin article-title 105
+###xml 75 85 75 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+Requirements for transcriptional repression and activation by Engrailed in Drosophila embryos
+###end article-title 105
+###begin article-title 106
+Bistability in the JNK Cascade
+###end article-title 106
+###begin article-title 107
+MAP kinase phosphatase as a locus of flexibility in a mitogen-activated protein kinase signaling network
+###end article-title 107
+###begin article-title 108
+###xml 39 49 39 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+The making of a maggot: Patterning the Drosophila embryonic epidermis
+###end article-title 108
+###begin article-title 109
+###xml 42 44 42 44 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nd</sup>
+GNU scientific library reference manual, 2nd ed
+###end article-title 109
+###begin article-title 110
+###xml 24 26 24 26 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">th</sup>
+Developmental biology, 5th ed
+###end article-title 110
+###begin article-title 111
+The logical analysis of continuous, non-linear biochemical control networks
+###end article-title 111
+###begin article-title 112
+Combinatorial synthesis of genetic networks
+###end article-title 112
+###begin article-title 113
+Noise-based switches and amplifiers for gene expression
+###end article-title 113
+###begin article-title 114
+###xml 41 51 41 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+Divide and conquer: Pattern formation in Drosophila embryonic epidermis
+###end article-title 114
+###begin article-title 115
+###xml 18 27 18 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">engrailed</italic>
+Multiple modes of engrailed regulation in the progression towards cell fate determination
+###end article-title 115
+###begin article-title 116
+Specifying epigenetic states with autoregulatory transcription factors
+###end article-title 116
+###begin article-title 117
+The roles of APC and axin derived from experimental and theoretical analysis of the Wnt pathway
+###end article-title 117
+###begin article-title 118
+An absolute requirement for Cubitus interruptus in Hedgehog signaling
+###end article-title 118
+###begin article-title 119
+###xml 4 14 4 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+###xml 63 71 63 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wingless</italic>
+###xml 76 84 76 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hedgehog</italic>
+The Drosophila cubitus interruptus protein and its role in the wingless and hedgehog signal transduction pathways
+###end article-title 119
+###begin article-title 120
+The repressor and activator forms of Cubitus interruptus control Hedgehog target genes through common generic gli-binding sites
+###end article-title 120
+###begin article-title 121
+Enzyme induction as an all-or-none phenomenon
+###end article-title 121
+###begin article-title 122
+Generating patterns from fields of cells
+###end article-title 122
+###begin article-title 123
+###xml 4 23 4 23 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Drosophila hedgehog</named-content>
+###xml 105 114 105 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">engrailed</italic>
+The Drosophila hedgehog gene is expressed specifically in posterior compartment cells and is a target of engrailed regulation
+###end article-title 123
+###begin article-title 124
+Multistationarity, the basis of cell differentiation and memory: I. Structural conditions of multistationarity and other nontrivial behavior
+###end article-title 124
+###begin article-title 125
+###xml 30 40 30 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+Design and constraints of the Drosophila segment polarity module: Robust spatial patterning emerges from intertwined cell state switches
+###end article-title 125
+###begin article-title 126
+The segment polarity network is a robust developmental module
+###end article-title 126
+###begin title 127
+Abbreviations
+###end title 127
+###begin p 128
+Cubitus Interruptus
+###end p 128
+###begin p 129
+Cubitus Interruptus amino-terminal fragment
+###end p 129
+###begin p 130
+Engrailed
+###end p 130
+###begin p 131
+Hedgehog
+###end p 131
+###begin p 132
+Patched
+###end p 132
+###begin p 133
+Sloppy-Paired
+###end p 133
+###begin p 134
+wingless.
+###end p 134
+###begin title 135
+Figures and Tables
+###end title 135
+###begin title 136
+The Segment Polarity Pattern and the Behavior of Different Cells
+###end title 136
+###begin p 137
+###xml 82 84 82 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 89 91 89 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+(A) Parasegments in the segment polarity pattern. The prepattern, with stripes of wg and en expression, and the final segment polarity pattern are shown. The parasegment is the basic developmental unit in the segment polarity pattern, but segment boundaries within the adult insect are offset from the parasegment boundary.
+###end p 137
+###begin p 138
+###xml 94 96 94 96 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 122 128 122 128 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg, en</italic>
+###xml 171 173 171 173 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 195 197 195 197 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hh</italic>
+###xml 228 230 228 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 235 237 235 237 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+(B) A simple set of rules sufficient to achieve segment polarity patterning. Cells expressing wg must continue to express wg, en-expressing cells must continue to express en and begin expressing hh, and cells expressing neither wg nor en cannot begin expressing either.
+###end p 138
+###begin p 139
+###xml 138 140 138 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 165 167 165 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+(C) The behavior of isolated cells for parameter sets that form the segment polarity pattern. These are like the simple rules in (B), but en expression depends on a wg-expressing neighbor.
+###end p 139
+###begin title 140
+The Regulatory Networks in the Segment Polarity Models
+###end title 140
+###begin p 141
+###xml 39 63 39 63 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von2">von Dassow et al. (2000)</xref>
+###xml 290 292 290 292 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 329 331 329 331 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 354 356 354 356 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 396 398 396 398 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 403 406 403 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci,</italic>
+###xml 598 622 598 622 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von2">von Dassow et al. (2000)</xref>
+(A) The regulatory network used in the von Dassow et al. (2000) model. Dashed lines indicate interactions added by the original authors in order to achieve proper patterning, while solid lines indicate interactions based on experimental observations. The positive feedback system including wg is in blue, while the one involving en is green and red. The en feedback involves mutual inhibition of en and ci, so one side of the mutual inhibition scheme is drawn in green while the other is drawn in red. When the green species are active, they will repress the red ones, and vice versa. Adapted from von Dassow et al. (2000).
+###end p 141
+###begin p 142
+###xml 113 115 113 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 155 159 155 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slp,</italic>
+###xml 173 175 173 175 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 204 206 204 206 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+(B) The regulatory network of the model developed here. The positive feedback systems are colored as in (A). The en feedback involves mutual inhibition of slp, however, and ci does not play a role in the en feedback system.
+###end p 142
+###begin title 143
+The Segment Polarity Pattern After Cell Proliferation
+###end title 143
+###begin p 144
+###xml 214 216 214 216 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 221 223 221 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 373 375 373 375 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 380 382 380 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+(A) Parasegments in the segment polarity pattern during cell proliferation. During cell proliferation, each cell duplicates into two cells that initially have identical gene expression. This yields wide stripes of wg and en expression at parasegment boundaries immediately after cell proliferation. Subsequently, differences in intercellular signaling cause the stripes of wg and en narrow.
+###end p 144
+###begin p 145
+###xml 128 136 128 136 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g001">Figure 1</xref>
+###xml 143 145 143 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 175 177 175 177 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hh</italic>
+(B) A simple set of rules sufficient to maintain narrow boundaries after cell proliferation. These are like the simple rules in Figure 1C, but wg expression also depends on a hh-expressing neighbor.
+###end p 145
+###begin title 146
+Inequalities Necessary for Bistability Are Satisfied by Working Parameter Sets
+###end title 146
+###begin p 147
+###xml 31 33 31 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 105 107 105 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 187 189 187 189 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG</sub>
+###xml 194 196 194 196 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG</sub>
+###xml 204 206 204 206 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG</sub>
+###xml 183 207 183 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Endo<sub>WG</sub>, Exo<sub>WG</sub>, LMxfer<sub>WG</sub>,</italic>
+###xml 217 219 217 219 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG</sub>
+###xml 212 219 212 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Mxfer<sub>WG</sub></italic>
+###xml 242 245 242 245 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EWG</sub>
+###xml 241 245 241 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H<sub>EWG</sub></italic>
+###xml 251 254 251 254 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">IWG</sub>
+###xml 250 254 250 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H<sub>IWG</sub></italic>
+(A) Subnetwork responsible for wg expression bistability. Levels of intercellular WG in a cell with full wg expression and in an adjacent cell can be computed from the transfer rates EndoWG, ExoWG, LMxferWG, and MxferWG; and the decay rates HEWG and HIWG, using the linearity of WG transport processes.
+###end p 147
+###begin p 148
+###xml 55 57 55 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 118 125 118 123 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG&#8594;wg</sub>
+###xml 186 188 184 186 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+(B and C) Intercellular WG levels in a cell expressing wg (green) and in an adjacent cell (red) were plotted against KWG-->wg, the threshold level of intercellular WG protein needed for wg autoactivation. In (B), parameter sets that maintain the segment polarity pattern were used, while in (C) random parameter sets were used.
+###end p 148
+###begin p 149
+###xml 78 80 78 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 160 162 158 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 154 162 154 160 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">EWG&#8594;<italic>en</italic></sub>
+###xml 230 232 228 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+(D) Levels of extracellular WG signalling to a cell adjacent to two with full wg expression were computed as described above. These were plotted against KEWG-->en, the threshold level of extracellular WG signal needed to activate en expression.
+###end p 149
+###begin p 150
+###xml 48 50 48 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 111 113 82 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 79 113 79 84 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CN&#9508;<italic>en</italic></sub>
+###xml 153 155 124 126 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+(E) Steady-state levels of CN in the absence of en expression plotted against KCNupper and lower left quadrantsen, the threshold level needed to repress en expression.
+###end p 150
+###begin title 151
+Inequalities Necessary for Bistability in the Modified Segment Polarity Model
+###end title 151
+###begin p 152
+###xml 53 55 53 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 90 92 90 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 121 128 121 126 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG&#8594;wg</sub>
+###xml 198 206 196 204 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pbio-0020123-g004">Figure 4</xref>
+(A) Intercellular WG levels in a cell that expresses wg (green) and that does not express wg (red) were plotted against KWG-->wgfor each parameter set that forms the segment polarity pattern, as in Figure 4B. In both cases, cells are receiving maximal HH signal from two neighbors.
+###end p 152
+###begin p 153
+###xml 57 59 57 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 138 145 138 143 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">WG&#8594;wg</sub>
+###xml 247 249 245 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+(B) Intercellular WG levels in a cell that is expressing wg but is no longer receiving HH signal from any neighbors were plotted against KWG-->wg. Parameter sets that can produce the proper pattern after proliferation, including narrow stripes of wg expression, are shown in green while those that fail to do so are shown in red.
+###end p 153
+###begin title 154
+Pattern Formation and Predictive Rules in the von Dassow et al. Model
+###end title 154
+###begin p 155
+###xml 138 162 138 162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von2">von Dassow et al. (2000)</xref>
+###xml 398 400 398 400 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 448 450 448 450 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 474 476 474 476 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 565 567 565 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 622 624 622 624 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 649 651 649 651 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 875 876 875 876 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 999 1001 999 1001 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ci</italic>
+###xml 1007 1010 1007 1010 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ptc</italic>
+###xml 1138 1140 1138 1140 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+Random parameter sets were generated and tested for segment polarity patterning using the stripe threshold scoring scheme as described in von Dassow et al. (2000). Isolated cell rules: Isolated cell behavior was tested for 10,000 parameter sets. The dynamics of expression in a single cell was simulated using different prepatterns found in the segment polarity network. First, low or high initial wg expression was used to test the stability of a wg-expressing state and a wg-repressed state. Second, the level of extracellular WG signal to a cell adjacent to two wg-expressing cells was used to test the stability of an en-expressing state and an en-repressed state. A cell complying with both of these tests was accepted as obeying isolated cell rules. Bistability rules: Parameter sets were tested for agreement with four parameter rules that should predict bistability (n = 25,000). Pattern formation was also assessed from a modified initial condition. The steady-state levels of CI, CN, PTC, ci, and ptc were computed for a particular parameter set, and these were used as initial levels for these components outside the stripe of en expression
+###end p 155
+###begin p 156
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</sup>
+###xml 0 1 0 1 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sup>a</sup></bold>
+aThe predictive value of one of our rules is the fraction of its predictions that are correct. The positive predictive value is the fraction of parameter sets that satisfy our rules which actually form the segment polarity pattern. Similarly, the negative predictive value is the fraction of parameter sets that do not satisfy the rules which do not form the segment polarity pattern
+###end p 156
+###begin title 157
+Pattern Formation and Predictive Rules in the Modified Model
+###end title 157
+###begin p 158
+###xml 23 24 23 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 170 194 170 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von2">von Dassow et al. (2000)</xref>
+###xml 833 835 833 835 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 840 842 840 842 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1205 1207 1205 1207 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">en</italic>
+###xml 1211 1213 1211 1213 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wg</italic>
+###xml 1303 1310 1303 1310 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pbio-0020123-t001">Table 1</xref>
+Random parameter sets (n = 100,000) were generated and tested for segment polarity patterning in the new model, using the stripe threshold scoring scheme as described in von Dassow et al. (2000). Frequency: The fraction of random parameter sets that display the indicated behavior. Parameter sets that display proper four-cell patterning are subdivided based on whether they properly form narrow expression stripes after cell proliferation. Four-cell Bistability: Parameter sets were tested for agreement with four parameter rules that should predict bistability necessary for patterning the four-cell-wide segment. Eight-cell Maintenance: Parameter sets were tested for their ability to maintain the postproliferation expression pattern. The initial conditions were an eight-cell-wide segment with adjacent one-cell-wide stripes of wg and en expression. Gene expression dynamics were simulated, and the final expression pattern was tested with the stripe scoring scheme as modified to test patterning after cell proliferation. Postproliferation Bistability: Parameter sets were tested for agreement with two parameter rules that should predict when removal of WG or HH signaling abolishes bistability in en or wg expression, respectively. Positive predictive value and negative predictive value: As in Table 1. The four-cell bistability rules were tested for their prediction of four-cell patterning. The eight-cell maintenance and postproliferation bistability tests were checked for their prediction of postproliferation patterning amongst cells that formed the proper four-cell pattern. Predictive values are reported as fractions
+###end p 158
+###begin title 159
+###xml 27 51 27 51 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pbio-0020123-von2">von Dassow et al. (2000)</xref>
+Variables in This Work and von Dassow et al. (2000)
+###end title 159
+###begin p 160
+###xml 0 22 0 22 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Conflicts of interest.</bold>
+Conflicts of interest. The author has declared that no conflicts of interest exist.
+###end p 160
+###begin p 161
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Author contributions.</bold>
+Author contributions. NTI conceived and designed the experiments, performed the experiments, analyzed the data, contributed reagents/materials/analysis tools, and wrote the paper.
+###end p 161
+###begin p 162
+Academic Editor: Arthur Lander, University of California at Irvine
+###end p 162
+

@@ -1,0 +1,797 @@
+###begin article-title 0
+###xml 94 110 94 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 94 110 <span type="species:ncbi:562">Escherichia coli</span>
+DISTILLER: a data integration framework to reveal condition dependency of complex regulons in Escherichia coli
+###end article-title 0
+###begin p 1
+This is an open access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin p 2
+###xml 174 190 <span type="species:ncbi:562">Escherichia coli</span>
+DISTILLER, a data integration framework for the inference of transcriptional module networks, is presented and used to investigate the condition dependency and modularity in Escherichia coli networks.
+###end p 2
+###begin p 3
+###xml 252 268 252 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 252 268 <span type="species:ncbi:562">Escherichia coli</span>
+We present DISTILLER, a data integration framework for the inference of transcriptional module networks. Experimental validation of predicted targets for the well-studied fumarate nitrate reductase regulator showed the effectiveness of our approach in Escherichia coli. In addition, the condition dependency and modularity of the inferred transcriptional network was studied. Surprisingly, the level of regulatory complexity seemed lower than that which would be expected from RegulonDB, indicating that complex regulatory programs tend to decrease the degree of modularity.
+###end p 3
+###begin title 4
+Background
+###end title 4
+###begin p 5
+###xml 31 48 31 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 106 107 106 107 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 192 193 192 193 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 295 296 295 296 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 297 298 297 298 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 502 503 502 503 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 730 731 730 731 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 732 733 732 733 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 952 953 952 953 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 954 955 954 955 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 31 47 <span type="species:ncbi:562">Escherichia coli</span>
+The transcriptional network of Escherichia coli is among the best characterized transcriptional networks [1]. Based on our current knowledge of this network it is clear that complex regulons [2] are prevalent: more than 50% of the genes are regulated by more than one transcriptional regulator [2,3]. However, most of these complex regulons were inferred by curating experimental evidence for a regulator-target interaction from independent studies, each of which focuses on an individual interaction [3]. Evidence from these independent studies is obtained from measurements in different environmental conditions. Current network representations do not take into account this condition dependency of the regulatory interactions [4,5]. As a consequence, it is not clear from these static networks whether regulators controlling the same gene are indeed needed together in the same conditions or act independently of each other in different conditions [6,7].
+###end p 5
+###begin p 6
+###xml 151 152 151 152 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 153 155 153 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 426 428 426 428 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 429 431 429 431 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 617 619 617 619 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 620 622 620 622 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 722 724 722 724 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 725 727 725 727 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 1047 1049 1047 1049 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 1131 1133 1131 1133 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 1184 1189 1184 1189 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1192 1194 1192 1194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 1260 1268 1260 1268 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo </italic>
+###xml 1339 1341 1339 1341 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 1392 1394 1392 1394 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+Bicluster strategies are well suited to map both the condition dependency and the modularity of the transcriptional network from microarray compendia [8-11], but do not give any information on the transcriptional program of the modules. Methods have been developed to infer transcriptional interactions from microarrays only, by assuming that the transcription profile of the regulator is related to that of its target genes [12-14]. Integrative approaches can avoid this assumption by exploiting data sources that are complementary to microarrays. These methods have been successfully used to infer simple regulons [15-17] or to directly infer complex regulons, that is, the set of genes regulated by several regulators [18-20]. Most of the previously mentioned integrative approaches use the level to which the target genes of a particular regulator share a similar expression pattern as a feature for inferring regulator-target interactions, but do not include an explicit condition selection strategy as is the case with bicluster strategies [11]. A few exceptions exist, including the graph-based data integration tool SAMBA [20] and the sequential approach described by Bonneau et al. [21]. The latter approach searches simultaneously for biclusters and de novo motifs in the promoter region of the bicluster genes by using cMonkey [22], and subsequently applies a regression strategy [21], to associate a regulatory program with the inferred biclusters.
+###end p 6
+###begin p 7
+To study the yet unknown relation between modularity, combinatorial regulation and condition dependency of bacterial networks, we developed the data integration framework 'DISTILLER' (Data Integration System To Identify Links in Expression Regulation). DISTILLER simultaneously identifies condition-dependent modularity and complex regulatory programs by integrating expression data and interaction data.
+###end p 7
+###begin title 8
+Results
+###end title 8
+###begin p 9
+DISTILLER is a data integration framework that searches for condition-dependent transcriptional modules by combining expression data with information on the direct interaction between a regulator and its corresponding target genes. The framework builds upon advanced itemset mining approaches that are efficient and intuitive to use and, therefore, well suited for solving combinatorially complex problems like the one proposed here. The drawback of the itemset mining approaches compared to more commonly used graph-based or probabilistic methods is that by being exhaustive, they enumerate all possible ('valid') solutions in a deterministic way without explicitly assessing their statistical significance. Hence, predicted interactions are not statistically prioritized, making it harder to interpret the reliability of the results. For the purpose of this study we developed a method that combines the advantages associated with the efficiency of an itemset mining search strategy with those related to statistical scoring measures. DISTILLER allows an efficient simultaneous search for genes that are co-expressed, the conditions in which the genes are co-expressed and the regulators that are responsible for the observed co-expression. In other words, it simultaneously identifies biclusters and their complex regulatory programs. Obtained modules are prioritized by assigning a score based on their statistical significance and overlap with previously identified modules (Materials and methods).
+###end p 9
+###begin p 10
+###xml 157 165 157 165 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 157 164 <span type="species:ncbi:562">E. coli</span>
+In this study, we applied DISTILLER to simultaneously analyze two complementary data sources: a novel cross-platform expression compendium consisting of 870 E. coli microarrays and a regulatory motif compendium consisting of both predicted and experimentally verified motif instances (see Materials and methods).
+###end p 10
+###begin title 11
+Inferring regulator-target interactions by exploiting the network's modularity
+###end title 11
+###begin p 12
+###xml 621 622 621 622 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 683 685 683 685 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+By integrating motif data and a large scale expression compendium, DISTILLER detects condition-dependent regulatory modules. From each module, regulator-target interactions that are functionally active under the experimental conditions included in the module can be extracted by linking each gene in the module with the regulator(s) corresponding to the shared motif instance(s). The 150 statistically most significant modules recovered by DISTILLER represent a total of 732 interactions. Of these, 454 interactions correspond to 62% of 736 interactions for 67 regulators with known binding sites described in RegulonDB [3] (see Additional data file 1 and our supplementary website [23] for a detailed description of the modules). Most modules are enriched for functions in which the regulator was known to be involved. For 37 of the 67 regulators at least part of their regulon could be confirmed. For the remaining 30 regulators no interaction was found; most likely either the number of genes in the corresponding modules falls below the gene content threshold, or the conditions needed to trigger these interactions are not present in our compendium, for example, MelR, triggered by melibiose.
+###end p 12
+###begin p 13
+In addition to identifying 454 previously described interactions, we predict 278 novel interactions that have not yet been documented in RegulonDB (Additional data file 2). For many well studied regulators, the known part of their regulon could be considerably extended. As for most of the newly predicted interactions, no additional confirmation existed in the literature, and we assigned them a level of confidence based on the gene composition of the module from which the target was retrieved. If the module contained many previously confirmed targets, tightly co-expressed with the novel target, we attached larger confidence to its prediction(s).
+###end p 13
+###begin p 14
+###xml 268 276 268 276 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 425 434 425 434 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ung, ompW</italic>
+###xml 436 441 436 441 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ydfZ </italic>
+###xml 445 449 445 449 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ynfK</italic>
+###xml 513 515 513 515 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 691 695 691 695 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ydhY</italic>
+###xml 697 701 697 701 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yfgG</italic>
+###xml 703 708 703 708 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hscC </italic>
+###xml 712 716 712 716 <italic xmlns:xlink="http://www.w3.org/1999/xlink">treF</italic>
+###xml 759 763 759 763 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yjhB</italic>
+###xml 765 769 765 769 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ydjX</italic>
+###xml 771 775 771 775 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yjtD</italic>
+###xml 777 781 777 781 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ydaT</italic>
+###xml 783 787 783 787 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yehD</italic>
+###xml 789 794 789 794 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yhjA </italic>
+###xml 798 802 798 802 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ftnB</italic>
+###xml 832 839 832 839 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo</italic>
+###xml 906 911 906 911 <italic xmlns:xlink="http://www.w3.org/1999/xlink">yhjA </italic>
+###xml 915 919 915 919 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ydhY</italic>
+###xml 987 989 987 989 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 990 992 990 992 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 268 275 <span type="species:ncbi:562">E. coli</span>
+To demonstrate the reliability of our approach, we used chromatin immunoprecipitation followed by quantitative PCR (ChIP-qPCR) to validate predicted interactions for the fumarate and nitrate reductase regulator (FNR), one of the most extensively studied regulators in E. coli (see Materials and methods). DISTILLER recovered 48 of the 57 FNR targets described in RegulonDB, and predicted 25 novel FNR targets, four of which (ung, ompW, ydfZ and ynfK) were confirmed by a recent ChIP on chip (ChIP-chip) analysis [24]. We tested 11 additional targets that were selected based on their difference in prediction confidence. These 11 predictions, consisting of four high confidence predictions (ydhY, yfgG, hscC and treF) and seven medium confidence predictions (yjhB, ydjX, yjtD, ydaT, yehD, yhjA and ftnB), were all shown to bind FNR in vivo. In the course of this study, two of these validated FNR targets, yhjA and ydhY, have also been confirmed by two independent experimental studies [25,26].
+###end p 14
+###begin title 15
+Conditional dependency of the regulatory network
+###end title 15
+###begin p 16
+###xml 465 466 465 466 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 616 617 616 617 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+Our method not only extends the existing network by predicting regulator-target interactions but also extracts information on the condition dependency of these interactions. Arrays were grouped into conditional categories depending on the major cue that was changed in the experiments (Additional data file 3). For instance, the category 'aerobic-anaerobic' groups all arrays in which the effect of changing the oxygen level on gene expression was measured. Figure 1 shows to what extent the conditions of the modules of a particular regulator are enriched for a specific category. (For a full description of Figure 1, see Additional data file 3.) Enrichment of a conditional category implies that the target genes of a particular regulator are mainly co-expressed in conditions belonging to the enriched category; this indirectly gives information on the conditions where a particular regulator is active. Most regulators were found to be active in conditions that are in agreement with their annotation, illustrating the effectiveness of our condition selection (bicluster) strategy.
+###end p 16
+###begin p 17
+###xml 264 265 264 265 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+Condition dependency of the regulatory modules. Columns are conditional categories, and rows are regulators for which modules were detected by DISTILLER. Each entry indicates to what extent the conditions of the modules of a particular regulator are enriched (log P-value) for a specific category. Dark blue entries correspond to the most significant enrichments.
+###end p 17
+###begin p 18
+###xml 405 408 405 408 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2+ </sup>
+Environmental conditions that trigger major changes in the energy status of a cell seem to have the most pronounced effect on transcriptional regulation: changes in oxygen concentration, diauxic shift, pH and carbon source trigger a whole range of transcriptional regulators that mediate the transition to a novel metabolic state. Other conditions seem to trigger very specific pathways. Changes in the Fe2+ concentration or application of DNA damage, for instance, induce the Fur and LexA pathways, respectively.
+###end p 18
+###begin p 19
+###xml 458 460 458 460 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 1095 1097 1095 1097 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+The role of global regulators such as ArcA, Fis, FNR, Lrp, cAMP-receptor protein (CRP) or integration host factor (IHF) that tune the overall cellular response towards the simultaneous interplay of energy, carbon source and amino acid availability is clearly visible. The more conditional categories a regulator is involved in, the more global its role. For instance, CRP and the nucleoid associated proteins Fis and IHF are the most pleiotropic regulators [27], but FruR, Fur, and LexA also seem to have a considerable impact on gene expression in a variety of conditions. In contrast to the global regulators, more specific regulators are important for fine-tuning the response. For instance, modules of GlpR, involved in the regulation of glycerol catabolism, are mainly expressed in the conditional category 'carbon source', but only upon addition of glycerol to the medium. Also, there are subtle differences between the paralogs Mlc and NagC: Mlc is mainly active during diauxic shift (conditional category 'diauxic shift'), while NagC modules are also linked to 'amino acids' conditions [28].
+###end p 19
+###begin p 20
+###xml 80 82 80 82 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 155 157 155 157 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 431 433 431 433 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 565 567 565 567 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+OmpR, a known major regulator of membrane remodeling during growth on biofilms [29], and RscB, another known regulator of growth during biofilm formation [30], are indeed overrepresented in 'biofilm' conditions but may also play a role in alterations of the carbon source (both OmpR and RscB) or in oxygen changes, that is, 'aerobic-anaerobic' (only RscB). Although CpxR has recently been described as a biofilm related regulator [31], it does not seem to be overrepresented in the biofilm related conditions present in our compendium, but mainly during pH shifts [32].
+###end p 20
+###begin title 21
+Regulation of modules by multiple transcription factors
+###end title 21
+###begin p 22
+###xml 1068 1069 1068 1069 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+DISTILLER also identifies the level of combinatorial regulation of the target genes within each module. With combinatorial control we refer here to the fact that a set of genes is regulated by at least two different regulators, irrespective of whether these regulators effectively undergo complex interactions or act independently of each other. According to RegulonDB, 42 transcription units (operons) are regulated by one regulator, 66 by two regulators and 70 by three or more regulators (with a maximum in-degree of eight regulators for a single transcription unit). Our inferred modules do not seem to exhibit the same amount of regulatory complexity: in our data set, only 25 modules out of 150 were found to be regulated by at least two regulators and the maximum level of multiple regulation at the module level was restricted to three regulators. Out of 25 modules regulated by at least two regulators, 24 modules involve at least one global regulator such as CRP, FNR or ArcA, confirming the role of global regulators as hubs in the 'co-regulatory network' [6]. To test whether this low number of modules that are regulated by multiple regulators is not due only to the fact that the number of complex regulons annotated in RegulonDB is lower than the number of simple regulons, we calculated the number of complex regulons containing at least four genes (four operons) in RegulonDB: 283 interactions belong to complex regulons of at least two regulators. Only 83 of these 283 interactions (29%) were actually found co-expressed in our modules. In contrast, of the total of 663 interactions in RegulonDB that belong to simple regulons of at least four genes, 398 interactions (60%) were present in our transcriptional modules. Thus, the fraction of genes that share a single transcription factor and are co-expressed is significantly larger than the fraction of genes that share at least two transcription factors and are co-expressed.
+###end p 22
+###begin p 23
+###xml 237 238 237 238 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 683 685 683 685 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 686 688 686 688 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 700 705 700 705 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sodA </italic>
+###xml 1084 1085 1084 1085 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+However, this low level of control by more regulators at the module level does not exclude that the expression of individual genes is often influenced by more than one regulator. We identified 85 'connector genes' in our modules (Figure 2). These are individual genes that are shared by distinct modules, each of which is controlled by different regulators. Modules sharing the same connector gene often show little overlap in their conditions, suggesting that one regulator may, in many cases, be sufficient to alter the expression of a connector gene upon a specific environmental cue. One example of such a connector gene is the SodA gene product, manganese superoxide dismutase [33-35]. The gene sodA is present in a module regulated by MarA and SoxS and in a module regulated by Fur, coupling its expression to multiple antibiotic resistance (MarA), superoxide (SoxS) resistance and the intracellular iron pool (Fur). For other genes, the expression behavior may be highly specific and is therefore never shared with enough other genes to meet our gene content threshold (Figure 2). Those genes cannot be found in transcriptional modules.
+###end p 23
+###begin p 24
+###xml 104 107 104 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cdd</italic>
+###xml 109 113 109 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">nupG</italic>
+###xml 115 119 115 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink">udp </italic>
+###xml 123 128 123 128 <italic xmlns:xlink="http://www.w3.org/1999/xlink">deoC </italic>
+###xml 568 572 568 572 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SodA</italic>
+Types of combinatorial regulation. Type 1 shows combinatorial regulation at the module level. The genes cdd, nupG, udp and deoC have two motifs in common (corresponding to the regulators CytR and CRP) and are co-expressed in condition set 1. This kind of control often seems to occur as a combination of a global regulator and a more specific one. Type 2 shows combinatorial regulation at the level of a connector gene. All genes of module 1 share two motifs, MarA and SoxS, and are co-expressed in a subset of conditions. For module 2 all genes are regulated by Fur. SodA, a connector gene, is shared by both modules and is thus regulated by the regulators of module 1 and module 2, but under a different set of conditions (as shown by the heatmap image), indicating that the corresponding regulators of both modules act independently of each other. Both types of interactions mentioned above can be identified by DISTILLER. Cases where condition-specific complex interactions between regulators result in such highly gene-specific expression patterns that genes are no longer found co-expressed in modules (type 3) cannot be detected by DISTILLER.
+###end p 24
+###begin title 25
+Comparison with other methods
+###end title 25
+###begin p 26
+###xml 266 271 266 271 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 274 276 274 276 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 446 451 446 451 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 454 456 454 456 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 503 511 503 511 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 580 582 580 582 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 747 749 747 749 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 763 765 763 765 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 1055 1056 1055 1056 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 503 510 <span type="species:ncbi:562">E. coli</span>
+We compared our results with those of two recently published network reconstruction methods in order to assess the reliability of our predictions and the complementarity between the approaches. We selected the context of likelihood relatedness (CLR) method by Faith et al. [14], which relies only on microarray data to infer interactions between regulators and target genes and the semi-supervised regulatory network discoverer (SEREND) by Ernst et al. [17]. Both methods have initially been applied to E. coli data and their software was available. Moreover, the goal of SEREND [17] best resembles our aim: the optimal use of complementary available data sources to extend the known regulatory network in a reliable way. For comparison with CLR [14] and SEREND [17], we only compared the interactions inferred for those 67 regulators for which a binding site was described in RegulonDB. Note that CLR and SEREND can, in theory, also predict interactions for regulators without known binding sites. The results of the comparisons are summarized in Figure 3.
+###end p 26
+###begin p 27
+Venn Diagram showing the number of overlapping interactions between the networks of RegulonDB, CLR, SEREND and DISTILLER. CLR, SEREND and DISTILLER were applied to our data sets. As the overlap between SEREND and RegulonDB is algorithmically defined to be 100%, we show only the predictions of SEREND that were not reported in RegulonDB and do not explicitly visualize the overlap with RegulonDB for SEREND.
+###end p 27
+###begin p 28
+###xml 6 11 6 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 14 16 14 16 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 79 87 79 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 110 112 110 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 642 643 642 643 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 825 826 825 826 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 79 86 <span type="species:ncbi:562">E. coli</span>
+Faith et al. [14] developed CLR to infer regulator-target interactions from an E. coli Affymetrix compendium [14]. Their method is an extension of the 'relevance networks approach' where an interaction between a regulator and a target gene is predicted if the mutual information between the expression profiles of the target and the regulator exceeds a certain threshold. CLR was applied to our expression compendium to evaluate the results obtained by CLR and DISTILLER (see Materials and methods). The threshold z-score, a parameter of CLR, was chosen so as to maximize the overlap between the CLR inferred network and the known RegulonDB [3] network (Additional data file 4). The interactions reported by CLR and DISTILLER show a low overlap: only 40 known and 9 novel interactions were identified by both methods (Figure 3). Only 56 of all the interactions recovered by CLR were reported in RegulonDB. Additional comparisons of CLR and DISTILLER for different choices of the CLR z-score threshold were performed (Additional data file 4). In general, changing the z-score thresholds does not influence the conclusions mentioned above. The observed low overlap between DISTILLER and CLR reflects the fundamental differences in the underlying assumptions and working principles of both methods: while DISTILLER focuses on data integration, condition dependency, modularity and regulation by combined sets of transcription factors, CLR was designed to deal with gene-specific expression profiles.
+###end p 28
+###begin p 29
+###xml 53 55 53 55 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 212 214 212 214 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 417 422 417 422 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 425 427 425 427 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 1058 1063 1058 1063 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1066 1068 1066 1068 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+In contrast to CLR and similar to DISTILLER, SEREND [17] does not rely on the assumption that a transcription factor has an expression profile that is directly related to the profile of its target genes. SEREND [17] applies an iterative classification scheme that exploits existing knowledge on regulator-target interactions in a semi-supervised way in order to predict novel interactions for these regulators. Ernst et al. [17] train a model using expression and regulatory motif data for confirmed regulator-target interactions. Subsequently, novel interactions can be inferred using their model on expression and regulatory motif data. Unknown interactions are classified using a co-expression score and a motif score. A prediction between a regulator and a target gene will be ranked as highly reliable if the predicted target gene contains a motif instance similar to the motif instances in the known target genes of that regulator and if the target gene is co-expressed with the previously described targets of that regulator. Using their model, Ernst et al. [17] could thus extend the known regulatory network.
+###end p 29
+###begin p 30
+###xml 615 616 615 616 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+By applying SEREND to our microarray and regulatory motif compendia, 1,049 novel interactions were obtained. These interactions were compared with the interactions identified by DISTILLER and CLR. Note that as SEREND uses the information of RegulonDB as training information, it will always recover interactions reported in RegulonDB as the highest scoring ones. The overlap between SEREND and RegulonDB is thus algorithmically enforced to be 100%. An explicit comparison between SEREND and RegulonDB is, therefore, not shown and we include only the 1,049 novel predictions made by SEREND in our comparison (Figure 3). Of these 1,049 novel interactions, DISTILLER and SEREND inferred 142 identical ones. In comparison, the observed overlap between CLR and SEREND was much lower and contained only 48 identical novel predictions. In total, the three methods have only seven interactions in common.
+###end p 30
+###begin p 31
+In general, the overlap between all three methods is thus rather low. DISTILLER agrees most with SEREND and the lowest overlap between the results was observed in the comparison between DISTILLER and CLR. This is to be expected as both DISTILLER and SEREND are integrative approaches designed to make less but more reliable predictions while CLR makes use of completely different underlying assumptions.
+###end p 31
+###begin p 32
+###xml 793 795 793 795 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 796 798 796 798 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 799 801 799 801 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 824 826 824 826 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 916 917 916 917 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 922 923 922 923 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 1328 1330 1328 1330 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+Although the previous comparison indicates that DISTILLER and SEREND resemble each other the most while CLR behaves quite differently, we can not judge the reliability of the novel interactions. As RegulonDB is used as input for SEREND and DISTILLER, we cannot fairly compare the ratio of novel/known interactions (or the precision versus recall). For this reason we also performed a benchmark using ChIP-chip data as a gold standard because they are the only currently available benchmark resource that is independent from RegulonDB. We therefore compared the interactions inferred by each of the methods with the interactions that were identified for five regulators (FNR, CRP, Fis, IHF, and heat-stable nucleoid-structuring protein (H-NS)) in a series of independent ChIP-chip experiments [24,36,37]. In general, SEREND [17] scored better than DISTILLER in terms of recall but at the expense of precision (Tables 1 and 2). For CLR both the recall and precision are, in general, lower than those observed for the other two methods. To compare the obtained recall and precision in detail, we adapted the score thresholds of both SEREND and CLR to work with the same precision-recall trade-off as DISTILLER for each individual regulator. From these results it appears that DISTILLER performs at least as equally well as SEREND [17] or CLR for most regulators when taking into account the precision-recall trade-off. In other words, for the same number of predictions that were confirmed in ChIP-chip experiments, DISTILLER outputs less false-positive predictions than SEREND or CLR. A detailed description of the analysis can be found in Additional data file 5. By aiming at a high precision, DISTILLER is an interesting method to support wet lab research.
+###end p 32
+###begin p 33
+Comparison of interactions confirmed in RegulonDB and identified by ChIP-chip experiments, CLR, SEREND and DISTILLER for five global regulators
+###end p 33
+###begin p 34
+For each method, the identified interactions that were known as compared to RegulonDB were selected. For all known interactions, we indicate whether (ChIP-chip) or not (Not ChIP-chip) the interactions were found in a corresponding ChIP-chip experiment. The recall (TP/TP + FN) and precision (TP/TP + FP) were calculated using the ChIP-chip data as a gold standard. Interactions identified by either CLR, SEREND or DISTILLER and confirmed by a ChIP-chip experiment were considered to be true positives (TP); interactions confirmed by a ChIP-chip experiment but not identified by either CLR, SEREND or DISTILLER were considered false negatives (FN); interactions identified by either CLR, SEREND or DISTILLER but not confirmed in a ChIP-chip experiment were considered false positives (FP). Note that since all interactions of RegulonDB are recovered by SEREND by definition (algorithmic consequence of using RegulonDB as a training set), a comparison with SEREND was not possible here.
+###end p 34
+###begin p 35
+Comparison of novel interactions identified by ChIP-chip experiments, CLR, SEREND and DISTILLER for five global regulators
+###end p 35
+###begin p 36
+For each method, the identified interactions that were novel as compared to RegulonDB were selected. For all novel interactions, we indicate whether (ChIP-chip) or not (Not ChIP-chip) the interactions were found in a corresponding ChIP-chip experiment. The recall (TP/TP + FN) and precision (TP/TP + FP) were calculated using the ChIP-chip data as a gold standard. Interactions identified by either CLR, SEREND or DISTILLER and confirmed by a ChIP-chip experiment were considered to be true positives (TP); interactions confirmed by a ChIP-chip experiment but not identified by either CLR, SEREND or DISTILLER were considered false negatives (FN); interactions identified by either CLR, SEREND or DISTILLER but not confirmed in a ChIP-chip experiment were considered false positives (FP).
+###end p 36
+###begin title 37
+Discussion
+###end title 37
+###begin p 38
+Data integration frameworks like DISTILLER can enhance gene annotation by exploiting publicly available data in combination with curated information. The main difference of our approach compared to most previously developed algorithms is its ability to explicitly derive both the conditions under which the interactions take place and the combination of regulators that are responsible for the observed expression. This more detailed level of annotation will become increasingly important with the inclusion of a growing number of experiments and conditions in available expression compendia. DISTILLER is a generic method and can thus be applied to any organism, including eukaryotes. Both for computational reasons and interpretability, it is advisable, however, to either apply filtering (such as using expression data sets related to one tissue or one process only) or use more stringent parameter settings and/or more different constraints (such as the combined use of motif and ChIP-chip data) for these more complex organisms.
+###end p 38
+###begin p 39
+###xml 66 74 66 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 292 300 292 300 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 532 540 532 540 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 593 595 593 595 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 66 73 <span type="species:ncbi:562">E. coli</span>
+###xml 292 299 <span type="species:ncbi:562">E. coli</span>
+###xml 532 539 <span type="species:ncbi:562">E. coli</span>
+In this work we applied DISTILLER to the bacterial model organism E. coli to study the condition dependency and combinatorial nature of its network. By applying DISTILLER to the binding site information and microarray compendium, we confirmed 62% of the known transcriptional interactions in E. coli and extended the regulons of 29 regulators with 278 putative novel targets. To demonstrate the effectiveness of our approach, we chose to validate predicted interactions for FNR. Because FNR is one of the best studied regulators in E. coli and genome-wide ChIP-chip experiments are available [24], finding new targets for this regulator is particularly challenging. In spite of this fact, we selected 11 predictions that have not been reported in previous studies and experimentally demonstrated a physical interaction with FNR for all of them using a ChIP-qPCR analysis.
+###end p 39
+###begin p 40
+###xml 299 307 299 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 547 549 547 549 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 1257 1258 1257 1258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 299 306 <span type="species:ncbi:562">E. coli</span>
+Considering the condition dependency of transcriptional regulation opens a novel perspective on the transcriptional network. Although our results are preliminary and based only on a fraction of well characterized regulators, they reveal a first glimpse of real condition-dependent modularity in the E. coli transcriptional network. It seems that modularity in co-expression exists at the level of a single regulator, but that combinatorial regulatory programs seem to decrease the level of modularity and contribute to the network's evolvability [38]: the fraction of genes sharing a single transcription factor for which significant co-expression was detected was significantly larger than the fraction of genes sharing at least two transcription factors for which the co-expression constraint is satisfied. Combinatorial regulation inserts connections between different modules (through so-called connector genes) or generates novel gene specific expression behavior that is not shared with other genes. The apparently large tolerance of prokaryotes for disruption of modularity may at least partially be explained by the existence of polycistronic transcription: a minimal degree of modularity in expression is always guaranteed by the operon structure [6].
+###end p 40
+###begin title 41
+Conclusions
+###end title 41
+###begin p 42
+###xml 495 502 495 502 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 495 502 <span type="species:ncbi:562">E. coli</span>
+In this study we have applied the data integration framework DISTILLER to a combination of publicly available microarray data and regulatory motif data. This allowed us to considerably extend the transcriptional network with novel interactions for regulators described in RegulonDB. The reliability of the predictions was assessed by experimental validation of novel FNR target genes. Our study also gives a first glimpse at the modularity and condition dependency of the interaction network in E. coli.
+###end p 42
+###begin title 43
+Materials and methods
+###end title 43
+###begin title 44
+Expression data
+###end title 44
+###begin p 45
+###xml 278 280 278 280 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 308 310 308 310 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 331 333 331 333 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+Our cross-platform compendium contains a collection of 870 publicly available microarrays, representing a plethora of diverse experimental conditions (data available upon request). The data were collected from the three major microarray databases: Stanford Microarray Database [39], Gene Expression Omnibus [40], and ArrayExpress [41]. Additionally, we added four microarray experiments described in the literature that were available as supplementary information. The microarray compendium and the required normalization procedures to allow for cross-experiment and cross-platform comparability are described in Additional data file 6. All experimental platforms contributed equally to our modules irrespective of the platform from which they originated, indicating that cross-platform biases were sufficiently removed by the appropriate preprocessing. Before applying DISTILLER, normalized data were converted to ranks (Additional data file 6).
+###end p 45
+###begin title 46
+Regulatory motif data
+###end title 46
+###begin p 47
+###xml 283 284 283 284 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 342 359 342 359 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 889 890 889 890 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 977 982 977 982 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 985 987 985 987 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 994 995 994 995 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 1192 1193 1192 1193 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 342 362 <span type="species:ncbi:83333">Escherichia coli K12</span>
+The input interaction data were based on both experimentally verified and predicted regulatory binding sites. To predict novel binding site instances, motif weight matrices corresponding to the binding sites of 67 regulators were downloaded from the RegulonDB website (version 5.6) [3]. Upstream regions on the direct strand of all annotated Escherichia coli K12 [Genbank:] genes were screened with these motif matrices in order to find novel motif instances. These upstream regions include the intergenic region between the gene of interest and its upstream gene and the first 50 nucleotides of the genes' coding region. If an upstream region was smaller than 150 nucleotides, it was extended with the region overlapping the coding region of the previous gene until a maximum of 150 nucleotides was reached. The average length of the intergenic region was 253 bp. For motif screening and P-value calculations of the identified motif instances, we used the method of Hertzberg et al. [42]. The P-values were used to construct the 'motif matrix', a binary matrix that assigns a motif instance to a gene whenever the gene's upstream sequence contains at least one instance of the motif, with a P-value below a threshold of 0.001.
+###end p 47
+###begin p 48
+###xml 69 70 69 70 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 304 305 304 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+Known binding sites in the motif matrix were derived from RegulonDB [3]. Whenever a motif instance in the promoter region of a gene was experimentally confirmed according to RegulonDB, its corresponding regulator-target interaction was set to '1' in the motif matrix, irrespective of its motif screening P-value. The 34 motif instances present in the upstream sequences of non-coding RNAs (tRNA or miscellaneous RNA) were omitted. The resulting motif matrix was used as input for DISTILLER and contains a total of 736 experimentally verified and 830 predicted motif instances.
+###end p 48
+###begin p 49
+Note that since only the first operon gene will contain the motif in its promoter region, the interactions presented in this motif matrix will not involve downstream operon genes. These additional operon genes are recovered in the seed module extension step (see below).
+###end p 49
+###begin title 50
+Data integration
+###end title 50
+###begin p 51
+###xml 110 112 110 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 265 267 265 267 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+###xml 301 303 301 303 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 468 470 468 470 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 1402 1404 1402 1404 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+###xml 1426 1428 1426 1428 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+The core of our framework is a data integration strategy that relies on itemset mining. In our previous work [19] we already showed that approaches based on itemset mining are as equally suitable for reconstructing networks as the more frequently used graph-based [43] or probabilistic methodologies [12]. Although both our previous and our current approach are based on item set mining, the setup of DISTILLER is completely different from that used in ReMoDiscovery [19]. In contrast to ReMoDiscovery, DISTILLER not only searches for sets of highly co-expressed genes that share controlling regulators, but also selects the experimental conditions for which the selected genes are co-expressed. By including this 'bicluster strategy' genes are no longer required to be co-expressed over all conditions. This allows the algorithm to be applied to heterogeneous expression compendia in order to assess the condition dependency of the interaction network. Extending itemset mining approaches to biclustering is a non-trivial task since commonly used distance measures for assessing co-expression such as correlation no longer meet the basic subset relation constraints of an itemset mining framework. We therefore designed a novel distance measure (see below). Since the condition selection increases the combinatorial nature of the problem, DISTILLER relies on the closed itemset mining strategy CHARM [44] instead of Apriori [45]. This change in itemset mining algorithm not only made the search for modules more efficient, but also drastically reduced the number of user-defined parameters, thereby enhancing the interpretability of the results.
+###end p 51
+###begin p 52
+One of the main advantages of itemset mining approaches in comparison to 'optimization-based' methods is that they investigate all potentially interesting solutions (in this case, modules) and, thus, are not subject to problems associated with local optima. However, this also implies that the output of virtually all itemset mining algorithms is a long list of possibly interesting results without rigorous statistical significance scores. In order to make interpretation of such lists feasible, we introduced in this work an intelligent filtering step that is based on a statistically inspired interest score. The result is a concise list of statistically significant and biologically interesting modules. Although in this study we applied our method only to an expression compendium and motif data, other data sources related to transcriptional interactions, such as additional microarrays or ChIP-chip, can be integrated as well with our approach.
+###end p 52
+###begin p 53
+The DISTILLER software is available upon request. A more detailed explanation of DISTILLER and its running parameters is given in Additional data file 7.
+###end p 53
+###begin p 54
+Our methodology consists of three steps (Figure S1 in Additional data file 7): step 1, the identification of seed modules; step 2, the reduction of the set of all seed modules to a manageable set of non-redundant and statistically significant seed modules; step 3, the extension of the thus obtained seed modules with additional genes.
+###end p 54
+###begin title 55
+Identification of seed modules
+###end title 55
+###begin p 56
+###xml 616 618 616 618 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+###xml 665 667 665 667 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 833 835 833 835 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+Valid seed modules are seed modules that contain a minimal number of genes (that is, a gene content threshold) that are co-expressed in a sufficiently large number of conditions and share motif instances for the same regulator(s). A naive exhaustive search for valid seed modules would require checking all possible combinations of genes, motif instances, and experimental conditions. This is unfeasible for data sets of any reasonable size. In addition, allowing modules to be co-expressed in only a subset of the conditions significantly increases the computational requirements. Relying on the Apriori algorithm [45], such as described in our previous approach [19], would no longer be computationally tractable. To find valid modules more efficiently, we developed an approach based on the itemset mining algorithm called CHARM [44] that drastically restricts the search space without running the risk of skipping valid modules. CHARM can be used to efficiently limit the number of combinations to be tested if different itemsets (or gene sets) are related to each other by a valid 'subset' relation, meaning an itemset can satisfy all constraints only if all of its subsets do. A consequence is that we can search for modules by starting with very small gene sets (containing just one gene), gradually expanding them, and stopping (or pruning) the search once a gene set is reached for which one of the module properties is violated. This pruning step results in a massive speed-up, making the method applicable to large data sets.
+###end p 56
+###begin p 57
+Implementing this subset relation for the integration of the motif data is straightforward as the motif matrix is a binary matrix: a target gene has a motif instance for a regulator if the corresponding gene-regulator entry in the motif matrix is equal to one. However, a more involved strategy, including a clever definition of 'sufficient co-expression', is needed to allow the use of a similar subset relation for condition selection in the expression matrix. To this end we used the concept of the bandwidth, which is defined as the difference between the largest and smallest expression levels in the gene set (Additional data file 7). Using a fixed bandwidth threshold for the condition selection would be suboptimal because randomly selected genes may also appear co-expressed in certain conditions. This could be thought of as a multiple testing effect: if there are many conditions, it is likely that some conditions will have a small bandwidth (that is, in which the genes appear co-expressed) for these random genes. To compensate for this effect, we introduce the notion of a bandwidth sequence, that is, the set of bandwidths for all conditions sorted in increasing order. This bandwidth sequence is compared with a threshold bandwidth sequence obtained by randomization: genes are said to be co-expressed in a set of conditions if their bandwidth sequence is completely within the threshold bandwidth sequence. The threshold bandwidth sequence is defined such that we are more restrictive in selecting the condition with the smallest bandwidth (as if applying a multiple testing correction), slightly less restrictive for the second smallest bandwidth (as if applying a step-down correction), and so on.
+###end p 57
+###begin title 58
+Selection of interesting non-redundant modules
+###end title 58
+###begin p 59
+Despite the massive reduction in the number of modules achieved by using the CHARM algorithm, the output may still be too large to explore. As no explicit score is assigned to the modules, it is not clear which modules are 'most interesting' to analyze. Also, the output might contain partially redundant modules: noise in the data may cause modules to appear as a number of separate, partially overlapping modules - for instance, differing from each other in a few conditions only. We further prioritized this unranked list of modules by iteratively assigning an interest score to each of the modules. The interest score takes into account the significance of the individual modules but, at the same time, penalizes overlap with modules that have already been reported. Thus, interesting modules are selected one by one depending on their statistical significance and the extent to which they contribute to the covering of the complete solution space and, thus, do not overlap with modules that had already been selected.
+###end p 59
+###begin title 60
+Seed module extension
+###end title 60
+###begin p 61
+###xml 737 738 737 738 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+In a subsequent extension step we recruit additional candidate module genes that did not pass the stringent seed discovery step but should be considered part of the module (for example, downstream operon genes that do not contain a motif instance in their promoter regions but are subject to its regulatory influence). The relaxed criteria for adding additional genes to the module are the following: the gene's expression profile should have a correlation with the module's mean expression profile of at least 0.9 of the module correlation (defined as the lowest correlation value between a seed gene's expression profile and the average expression profile for the modules conditions); and the genes should have a motif instance with a P-value below the threshold 0.05. Both requirements have to be fulfilled unless a gene is part of an operon for which the first gene is present in the seed module. In this case only the first criterion has to be satisfied.
+###end p 61
+###begin title 62
+Running parameters
+###end title 62
+###begin p 63
+We choose our parameter settings (gene content threshold, condition content threshold, motif content threshold) such that the seed module consists of at least four genes (that is, four independent transcription units or non-operon genes) that share at least one motif and 50 conditions. We chose these thresholds as they were the best trade-off between sensitivity (coverage of known interactions in RegulonDB) and novelty (number of new predictions amongst the total number of predictions). For a more detailed description of the parameters and an analysis of the parameter sensitivity, see Additional data file 7. For more detailed biological analysis we selected the first 150 modules from our prioritization list. Modules further down in the list were mostly redundant with previously selected modules.
+###end p 63
+###begin title 64
+Benchmarking with RegulonDB and novel interactions
+###end title 64
+###begin p 65
+###xml 422 423 422 423 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+For genes that are organized into operons, usually only the promoter region of the first operon gene contains a motif instance. Because in RegulonDB the direct interaction between a regulator and a target gene is derived from the presence of an experimentally verified motif instance, only the interaction between a regulator and the first operon gene is reported. RegulonDB contains information on 736 such interactions [3]. Therefore, when comparing the interactions inferred by DISTILLER with the direct interactions in RegulonDB, we only consider those genes inferred by DISTILLER that have the motif instance in their promoter region. All direct interactions inferred by DISTILLER that are not direct interactions according to RegulonDB are considered novel. Some of these interactions might have been reported in the recent literature, but are not yet covered by RegulonDB.
+###end p 65
+###begin title 66
+Experimental validation
+###end title 66
+###begin p 67
+###xml 64 72 64 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo </italic>
+###xml 89 91 89 91 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B46">46</xref>
+###xml 483 485 483 485 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+Predicted regulatory interactions were experimentally validated in vivo using ChIP-qPCR [46]. In total, 11 predicted targets for FNR were selected for experimental validation. As we wanted to test both reliable and less reliable predictions of DISTILLER, we choose the predicted target genes accordingly. In addition, positive controls were necessary: we chose two genes that are known FNR targets and that were identified both in our modules as well as in a recent ChIP-chip study [24].
+###end p 67
+###begin p 68
+###xml 312 317 312 317 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 320 322 320 322 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+The conditions that were chosen for the experimental validation were among the conditions selected by DISTILLER (conditions testing differences between aerobic and anaerobic conditions). From all the variants on aerobic-anaerobic shifts, we picked those conditions that were similar to the ones used by Grainger et al. [24] as our two positive controls also tested positive under these conditions in their original experiment (Additional data file 8).
+###end p 68
+###begin title 69
+Static versus condition-dependent combinatorial regulation
+###end title 69
+###begin p 70
+To compare the level of static combinatorial regulation present in RegulonDB with the level of combinatorial regulation obtained by additionally taking into account expression data, we applied DISTILLER to one data set only, that is, an interaction matrix containing the known motif-gene interactions from RegulonDB. From this analysis, which does not take into account expression constraints, we counted the number of genes found in modules that were regulated by at least two regulators (a gene was counted more than once if it appeared in multiple modules). This number was compared with a similar figure obtained from the co-expression-constrained modules (see Results). The same procedure was followed for the analysis of non-combinatorial modules. The default gene content threshold was used for all analyses mentioned above (see 'Running parameters' above).
+###end p 70
+###begin title 71
+Conditional dependency of the network
+###end title 71
+###begin p 72
+###xml 394 396 394 396 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B47">47</xref>
+###xml 417 418 417 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 662 663 662 663 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+All arrays were grouped into 15 conditional categories assigned by manual curation. For each module, the enrichment of its conditions for each of the functional categories was calculated by means of the hypergeometric distribution. Subsequently, for each regulator we selected the corresponding modules, and their enrichments for the conditional categories were combined using Fisher's method [47]. This results in a P-value for each combination of a regulator and conditional category. Strong enrichment of one module for a particular category or enrichment of multiple modules belonging to one regulator for the same conditional category can yield significant P-values.
+###end p 72
+###begin title 73
+Comparison with other methods
+###end title 73
+###begin p 74
+###xml 61 69 61 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 100 105 100 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 108 110 108 110 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 122 127 122 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 130 132 130 132 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 193 195 193 195 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 375 377 375 377 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 61 68 <span type="species:ncbi:562">E. coli</span>
+We compared our results on regulator-target interactions for E. coli with those identified by Ernst et al. [17] and Faith et al. [14] by using both methods on our data sources. Although SAMBA [20] could theoretically be used in a setup similar to the one used in this paper, we did not include it in our current work as we already exhaustively tested it in a previous study [19].
+###end p 74
+###begin p 75
+###xml 477 479 477 479 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B48">48</xref>
+###xml 489 494 489 494 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 497 499 497 499 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+For comparison of the DISTILLER interactions with the interactions inferred by CLR and SEREND on the one hand and the interactions of RegulonDB on the other, only interactions between a regulator and the first operon gene were taken into account. For comparison with CLR and SEREND, we only compared the interactions inferred for those 67 regulators for which a binding site is described in RegulonDB. For composite regulators consisting of more subunits - for example, FlhDC [48] - Faith et al. [14] report in their initial study the results for each subunit of such composite regulators separately (all interactions for subunit 1 (FlhC) and for subunit 2 (FlhD)), while in our analysis we treated the composite regulators as single entities. Therefore, we corrected the counts reported by their software for these kinds of regulators to make results comparable. Prior to applying CLR, genes and conditions for which too many missing values were present in the expression data had to be deleted from the data set since CLR cannot handle missing values. An alternative comparison with the results obtained by applying CLR to our microarray compendium data set with different thresholds for their z scores was performed (Additional data file 4).
+###end p 75
+###begin p 76
+###xml 772 773 772 773 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+SEREND needs three data sources as input: a list of known regulator-target interactions, regulatory motif data and expression data. The list of known regulator-target interactions was derived from RegulonDB: if a motif instance in the promoter region of a gene was experimentally confirmed, this regulator-gene combination was added to the list of known interactions. This list corresponds to the list of known motif interactions that was also used as input for DISTILLER. Similar to what the authors of SEREND did in the original work, we added the remaining genes of the operons (operon genes are assumed to be regulated by the same regulator as the first gene of the operon) to this list for SEREND. The regulatory motif data used by DISTILLER were transformed to -log(P-value), as suggested by the authors of SEREND (personal communication). In addition, the score of the first gene of the operon was copied to the remaining genes of the operon.
+###end p 76
+###begin p 77
+###xml 8 10 8 10 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 417 422 417 422 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 425 427 425 427 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+SEREND [17] assigns a prioritization score for all the predictions per regulator (the highest scoring prediction is the best), but does not describe a statistical way to select the number of reliable interactions per regulator. For the comparison with DISTILLER, we chose an arbitrary threshold to end up with a defined number of predictions per regulator. We used the threshold defined in the original work of Ernst et al. [17]; that is, for each transcription factor we selected the same number of best-scoring predicted targets as there were targets already described for that regulator.
+###end p 77
+###begin title 78
+Abbreviations
+###end title 78
+###begin p 79
+ChIP: chromatin immunoprecipitation; ChIP-chip: chromatin immunoprecipitation on chip; CLR: context of likelihood relatedness; CRP: cAMP-receptor protein; FNR: fumarate and nitrate reductase regulator; H-NS: heat-stable nucleoid-structuring protein; IHF: integration host factor; qPCR: quantitative PCR; SEREND: Semi-supervised Regulatory Network Discoverer.
+###end p 79
+###begin title 80
+Authors' contributions
+###end title 80
+###begin p 81
+KL, TD, KE and KM designed the study, performed the analyses and wrote the paper. KL collected and KE normalized the microarrays. TDB developed the data integration framework. BDM and JC gave useful comments and critically read the manuscript. SDK, IT, GS, ADW and JV performed the ChIP followed by qPCR of the novel FNR targets. All authors read and approved the final manuscript.
+###end p 81
+###begin title 82
+Additional data files
+###end title 82
+###begin p 83
+###xml 231 232 231 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 475 476 475 476 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 517 518 517 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 602 603 602 603 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 676 677 676 677 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">4</xref>
+###xml 786 787 786 787 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">5</xref>
+###xml 921 922 921 922 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">6</xref>
+###xml 1016 1017 1016 1017 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">7</xref>
+###xml 1123 1124 1123 1124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+The following additional data are available with the online version of this paper: a table that provides information on the gene, condition and motif content of all 150 modules that were inferred by DISTILLER (Additional data file 1); a description of how the benchmarking with RegulonDB was performed and that also provides information on the number of interactions from RegulonDB and the number of novel interactions that were identified by DISTILLER (Additional data file 2); a more detailed description of Figure 1, that is, the condition dependency of the regulatory modules (Additional data file 3); a more detailed comparison of DISTILLER and CLR (Additional data file 4); a comparison of CLR, SEREND and DISTILLER with five available ChIP-chip experiments (Additional data file 5); a description of the content of the microarray compendium and the normalization of the microarrays in detail (Additional data file 6); an explanation of the DISTILLER algorithm and its parameter settings (Additional data file 7); extra information on how the predicted FNR targets were experimentally validated (Additional data file 8).
+###end p 83
+###begin title 84
+Supplementary Material
+###end title 84
+###begin title 85
+Additional data file 1
+###end title 85
+###begin p 86
+Gene, condition and motif content of all 150 modules that were inferred by DISTILLER.
+###end p 86
+###begin p 87
+Click here for file
+###end p 87
+###begin title 88
+Additional data file 2
+###end title 88
+###begin p 89
+Description of how the benchmarking with RegulonDB was performed and information on the number of interactions from RegulonDB and the number of novel interactions that were identified by DISTILLER.
+###end p 89
+###begin p 90
+Click here for file
+###end p 90
+###begin title 91
+Additional data file 3
+###end title 91
+###begin p 92
+###xml 38 39 38 39 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+A more detailed description of Figure 1.
+###end p 92
+###begin p 93
+Click here for file
+###end p 93
+###begin title 94
+Additional data file 4
+###end title 94
+###begin p 95
+Detailed comparison of DISTILLER and CLR.
+###end p 95
+###begin p 96
+Click here for file
+###end p 96
+###begin title 97
+Additional data file 5
+###end title 97
+###begin p 98
+Comparison of CLR, SEREND and DISTILLER with five available ChIP-chip experiments.
+###end p 98
+###begin p 99
+Click here for file
+###end p 99
+###begin title 100
+Additional data file 6
+###end title 100
+###begin p 101
+The microarray compendium and the normalization of the microarrays in detail.
+###end p 101
+###begin p 102
+Click here for file
+###end p 102
+###begin title 103
+Additional data file 7
+###end title 103
+###begin p 104
+The DISTILLER algorithm and its parameter settings.
+###end p 104
+###begin p 105
+Click here for file
+###end p 105
+###begin title 106
+Additional data file 8
+###end title 106
+###begin p 107
+How the predicted FNR targets were experimentally validated.
+###end p 107
+###begin p 108
+Click here for file
+###end p 108
+###begin title 109
+Acknowledgements
+###end title 109
+###begin p 110
+We thank Pieter Monsieurs and Sarath Chandra Janga for many useful discussions and Dr Grainger and Dr Overton for providing us with the FNR tagged strain JCB1011. TD and SDK are research assistants of the FWO-Vlaanderen. This work is supported by: 1) Research Council KUL: GOA AMBioRICS, GOA/08/011, CoE EF/05/007 SymBioSys; 2) IWT: SBO-BioFrame; TAD-BioScope-IT; 3) Belgian Federal Science Policy Office: IUAP P6/25 (BioMaGNet); 4) EU-RTD: FP6-NoE Biopattern; 5) FWO IOK-B9725-G.0329.09; 6) ZKB8933/CREA/08/023/BOF.
+###end p 110
+###begin article-title 111
+###xml 62 69 62 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 62 69 <span type="species:ncbi:562">E. coli</span>
+Modular analysis of the transcriptional regulatory network of E. coli.
+###end article-title 111
+###begin article-title 112
+###xml 22 38 22 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 22 38 <span type="species:ncbi:562">Escherichia coli</span>
+Regulatory network of Escherichia coli: consistency between literature knowledge and microarray profiles.
+###end article-title 112
+###begin article-title 113
+###xml 25 42 25 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 25 46 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+RegulonDB (version 5.0): Escherichia coli K-12 transcriptional regulatory network, operon organization, and growth conditions.
+###end article-title 113
+###begin article-title 114
+###xml 60 76 60 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 60 76 <span type="species:ncbi:562">Escherichia coli</span>
+Network motifs in the transcriptional regulation network of Escherichia coli.
+###end article-title 114
+###begin article-title 115
+Genomic analysis of regulatory network dynamics reveals large topological changes.
+###end article-title 115
+###begin article-title 116
+###xml 148 155 148 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 148 155 <span type="species:ncbi:562">E. coli</span>
+Interplay between network structures, regulatory modes and sensing mechanisms of transcription factors in the transcriptional regulatory network of E. coli.
+###end article-title 116
+###begin article-title 117
+###xml 99 104 <span type="species:ncbi:4932">yeast</span>
+Comprehensive analysis of combinatorial regulation using the transcriptional regulatory network of yeast.
+###end article-title 117
+###begin article-title 118
+Biclustering of expression data.
+###end article-title 118
+###begin article-title 119
+###xml 38 43 <span type="species:ncbi:4932">yeast</span>
+Revealing modular organization in the yeast transcriptional network.
+###end article-title 119
+###begin article-title 120
+Extracting conserved gene expression motifs from gene expression data.
+###end article-title 120
+###begin article-title 121
+Inferring transcriptional networks by mining omics data.
+###end article-title 121
+###begin article-title 122
+Module networks: identifying regulatory modules and their condition-specific regulators from gene expression data.
+###end article-title 122
+###begin article-title 123
+Validating module network learning algorithms using simulated data.
+###end article-title 123
+###begin article-title 124
+###xml 38 55 38 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 38 54 <span type="species:ncbi:562">Escherichia coli</span>
+Large-scale mapping and validation of Escherichia coli transcriptional regulation from a compendium of expression profiles.
+###end article-title 124
+###begin article-title 125
+Defining transcriptional networks through integrative modeling of mRNA expression and transcription factor binding data.
+###end article-title 125
+###begin article-title 126
+Clustering of genes into regulons using integrated modeling-COGRIM.
+###end article-title 126
+###begin article-title 127
+###xml 82 98 82 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 82 98 <span type="species:ncbi:562">Escherichia coli</span>
+A semi-supervised method for predicting transcription factor-gene interactions in Escherichia coli.
+###end article-title 127
+###begin article-title 128
+Computational discovery of gene modules and regulatory networks.
+###end article-title 128
+###begin article-title 129
+Inferring transcriptional modules from ChIP-chip, motif and microarray data.
+###end article-title 129
+###begin article-title 130
+###xml 45 50 <span type="species:ncbi:4932">yeast</span>
+Revealing modularity and organization in the yeast molecular network by integrated analysis of highly heterogeneous genomewide data.
+###end article-title 130
+###begin article-title 131
+The Inferelator: an algorithm for learning parsimonious regulatory networks from systems-biology data sets de novo.
+###end article-title 131
+###begin article-title 132
+Integrated biclustering of heterogeneous genome-wide data sets for the inference of global regulatory networks.
+###end article-title 132
+###begin article-title 133
+DISTILLER: Supplementary Website
+###end article-title 133
+###begin article-title 134
+###xml 37 53 37 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 37 53 <span type="species:ncbi:562">Escherichia coli</span>
+Transcription factor distribution in Escherichia coli: studies with FNR protein.
+###end article-title 134
+###begin article-title 135
+###xml 4 21 4 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 4 20 <span type="species:ncbi:562">Escherichia coli</span>
+The Escherichia coli yhjA gene, encoding a predicted cytochrome c peroxidase, is regulated by FNR and OxyR.
+###end article-title 135
+###begin article-title 136
+###xml 24 41 24 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 24 45 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+Characterization of the Escherichia coli K-12 ydhYVWXUT operon: regulation by FNR, NarL and NarP.
+###end article-title 136
+###begin article-title 137
+###xml 85 101 85 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 85 101 <span type="species:ncbi:562">Escherichia coli</span>
+Interplay of global regulators and cell physiology in the general stress response of Escherichia coli.
+###end article-title 137
+###begin article-title 138
+###xml 63 67 63 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">nagE</italic>
+###xml 126 142 126 142 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 126 142 <span type="species:ncbi:562">Escherichia coli</span>
+DNA binding sites for the Mlc and NagC proteins: regulation of nagE, encoding the N-acetylglucosamine-specific transporter in Escherichia coli.
+###end article-title 138
+###begin article-title 139
+###xml 78 95 78 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 117 122 117 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink">csgD </italic>
+###xml 78 94 <span type="species:ncbi:562">Escherichia coli</span>
+Complex regulatory network controls initial adhesion and biofilm formation in Escherichia coli via regulation of the csgD gene.
+###end article-title 139
+###begin article-title 140
+The role of the Rcs phosphorelay in Enterobacteriaceae.
+###end article-title 140
+###begin article-title 141
+###xml 18 34 18 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 18 34 <span type="species:ncbi:562">Escherichia coli</span>
+The Cpx system of Escherichia coli, a strategic signaling pathway for confronting adverse conditions and for settling biofilm communities?
+###end article-title 141
+###begin article-title 142
+###xml 110 127 110 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 150 158 150 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 110 131 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+###xml 150 165 <span type="species:ncbi:83334">E. coli O157:H7</span>
+EfeUOB (YcdNOB) is a tripartite, acid-induced and CpxAR-regulated, low-pH Fe2+ transporter that is cryptic in Escherichia coli K-12 but functional in E. coli O157:H7.
+###end article-title 142
+###begin article-title 143
+###xml 30 47 30 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 30 46 <span type="species:ncbi:562">Escherichia coli</span>
+Iron and oxygen regulation of Escherichia coli MnSOD expression: competition between the global regulators Fur and ArcA for binding to DNA.
+###end article-title 143
+###begin article-title 144
+###xml 26 43 26 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 26 42 <span type="species:ncbi:562">Escherichia coli</span>
+Genetic definition of the Escherichia coli zwf "soxbox," the DNA binding site for SoxS-mediated induction of glucose 6-phosphate dehydrogenase in response to superoxide.
+###end article-title 144
+###begin article-title 145
+###xml 87 104 87 104 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 87 103 <span type="species:ncbi:562">Escherichia coli</span>
+Purification and regulatory properties of MarA protein, a transcriptional activator of Escherichia coli multiple antibiotic and superoxide resistance promoters.
+###end article-title 145
+###begin article-title 146
+###xml 31 48 31 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 99 107 99 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 31 47 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 99 106 <span type="species:ncbi:562">E. coli</span>
+Studies of the distribution of Escherichia coli cAMP-receptor protein and RNA polymerase along the E. coli chromosome.
+###end article-title 146
+###begin article-title 147
+###xml 76 93 76 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 76 92 <span type="species:ncbi:562">Escherichia coli</span>
+Association of nucleoid proteins with coding and non-coding segments of the Escherichia coli genome.
+###end article-title 147
+###begin article-title 148
+From molecular to modular cell biology.
+###end article-title 148
+###begin article-title 149
+The Stanford Microarray Database: implementation of new analysis tools and open source release of software.
+###end article-title 149
+###begin article-title 150
+NCBI GEO: mining tens of millions of expression profiles - database and tools update.
+###end article-title 150
+###begin article-title 151
+ArrayExpress - a public database of microarray experiments and gene expression profiles.
+###end article-title 151
+###begin article-title 152
+Finding motifs in promoter regions.
+###end article-title 152
+###begin article-title 153
+Discovering statistically significant biclusters in gene expression data.
+###end article-title 153
+###begin article-title 154
+CHARM: An efficient algorithm for closed itemset mining.
+###end article-title 154
+###begin article-title 155
+Mining association rules between sets of items in large databases.
+###end article-title 155
+###begin article-title 156
+###xml 19 39 19 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella enterica </italic>
+###xml 19 58 <span type="species:ncbi:90371">Salmonella enterica serovar Typhimurium</span>
+Delineation of the Salmonella enterica serovar Typhimurium HilA regulon through genome-wide location and transcript analysis.
+###end article-title 156
+###begin article-title 157
+###xml 58 75 58 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 58 74 <span type="species:ncbi:562">Escherichia coli</span>
+The FlhD/FlhC complex, a transcriptional activator of the Escherichia coli flagellar class II operons.
+###end article-title 157
+###begin article-title 158
+###xml 36 52 36 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 36 52 <span type="species:ncbi:562">Escherichia coli</span>
+Alternative respiratory pathways of Escherichia coli: energetics and transcriptional regulation in response to electron acceptors.
+###end article-title 158
+###begin article-title 159
+###xml 133 149 133 149 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 133 149 <span type="species:ncbi:562">Escherichia coli</span>
+Interplay between CRP-cAMP and PII-Ntr systems forms novel regulatory network between carbon metabolism and nitrogen assimilation in Escherichia coli.
+###end article-title 159
+###begin article-title 160
+###xml 41 57 41 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 41 57 <span type="species:ncbi:562">Escherichia coli</span>
+Global iron-dependent gene regulation in Escherichia coli. A new mechanism for iron homeostasis.
+###end article-title 160
+###begin article-title 161
+###xml 33 50 33 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 33 49 <span type="species:ncbi:562">Escherichia coli</span>
+Transcriptional activation of an Escherichia coli copper efflux regulon by the chromosomal MerR homologue, cueR.
+###end article-title 161
+###begin article-title 162
+The role of high affinity non-specific DNA binding by Lrp in transcriptional regulation and DNA organization.
+###end article-title 162
+###begin article-title 163
+The role of LRP and H-NS in transcription regulation: involvement of synergism, allostery and macromolecular crowding.
+###end article-title 163
+###begin article-title 164
+###xml 36 56 36 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli K12</italic>
+###xml 36 56 <span type="species:ncbi:83333">Escherichia coli K12</span>
+Global gene expression profiling in Escherichia coli K12. The effects of leucine-responsive regulatory protein.
+###end article-title 164
+###begin article-title 165
+Purified lexA protein is a repressor of the recA and lexA genes.
+###end article-title 165
+###begin article-title 166
+Mechanism of action of the lexA gene product.
+###end article-title 166
+###begin article-title 167
+The pleiotropic two-component regulatory system PhoP-PhoQ.
+###end article-title 167
+###begin article-title 168
+###xml 35 52 35 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 56 78 56 78 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella typhimurium</italic>
+###xml 35 51 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 56 78 <span type="species:ncbi:90371">Salmonella typhimurium</span>
+Comparison of the PhoPQ regulon in Escherichia coli and Salmonella typhimurium.
+###end article-title 168
+###begin article-title 169
+Envelope stress responses and Gram-negative bacterial pathogenesis.
+###end article-title 169
+###begin article-title 170
+Redox-dependent transcriptional regulation.
+###end article-title 170
+###begin article-title 171
+###xml 16 33 16 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 16 32 <span type="species:ncbi:562">Escherichia coli</span>
+Products of the Escherichia coli acid fitness island attenuate metabolite stress at extremely low pH and mediate a cell density-dependent acid resistance.
+###end article-title 171
+###begin article-title 172
+Normalization for cDNA microarray data: a robust composite method addressing single and multiple slide systematic variation.
+###end article-title 172
+###begin article-title 173
+Summaries of Affymetrix GeneChip probe level data.
+###end article-title 173
+###begin article-title 174
+Discovering transcriptional modules from motif, chip-chip and microarray data.
+###end article-title 174
+###begin article-title 175
+###xml 32 49 32 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 32 53 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+The complete genome sequence of Escherichia coli K-12.
+###end article-title 175
+###begin article-title 176
+###xml 118 135 118 135 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 118 138 <span type="species:ncbi:83333">Escherichia coli K12</span>
+A reassessment of the FNR regulon and transcriptomic analysis of the effects of nitrate, nitrite, NarXL, and NarQP as Escherichia coli K12 adapts from aerobic to anaerobic growth.
+###end article-title 176
+###begin article-title 177
+###xml 29 46 29 46 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 29 45 <span type="species:ncbi:562">Escherichia coli</span>
+The pdhR-aceEF-lpd operon of Escherichia coli expresses the pyruvate dehydrogenase complex.
+###end article-title 177
+###begin article-title 178
+###xml 51 68 51 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 51 67 <span type="species:ncbi:562">Escherichia coli</span>
+Regulation of transcription at the ndh promoter of Escherichia coli by FNR and novel factors.
+###end article-title 178
+###begin article-title 179
+Assumption-free analysis of quantitative real-time polymerase chain reaction (PCR) data.
+###end article-title 179
+

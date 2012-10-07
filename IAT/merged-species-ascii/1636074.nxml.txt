@@ -1,0 +1,1505 @@
+###begin article-title 0
+Coloring the Mu transpososome
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+Tangle analysis has been applied successfully to study proteins which bind two segments of DNA and can knot and link circular DNA. We show how tangle analysis can be extended to model any stable protein-DNA complex.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 491 497 491 497 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al </italic>
+We discuss a computational method for finding the topological conformation of DNA bound within a protein complex. We use an elementary invariant from knot theory called colorability to encode and search for possible DNA conformations. We apply this method to analyze the experimental results of Pathania, Jayaram, and Harshey (Cell 2002). We show that the only topological DNA conformation bound by Mu transposase which is biologically likely is the five crossing solution found by Pathania et al (although other possibilities are discussed).
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+###xml 101 107 101 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al </italic>
+Our algorithm can be used to analyze the results of the experimental technique described in Pathania et al in order to determine the topological conformation of DNA bound within a stable protein-DNA complex.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 64 65 64 65 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 66 67 66 67 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 73 89 73 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n-string tangle </italic>
+###xml 101 103 101 103 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 233 234 233 234 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 263 265 263 265 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 302 303 302 303 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 375 377 375 377 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 411 413 411 413 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+Tangles have many applications in modeling protein-DNA binding [1-5]. An n-string tangle consists of n strings properly embedded in a 3-dimensional (3D) ball. Some examples of 2-string tangles and a 3-string tangle are shown in Fig. 1. A protein complex bound to n segments of DNA can be modeled by an n-string tangle. The protein complex is modeled by the 3D ball while the n DNA segments can be thought of as n strings properly embedded in a protein ball (note each string represents one segment of double-stranded DNA). This is an extremely simple model of protein-DNA binding. A 3D ball does not accurately represent the shape of a protein complex, and DNA sometimes winds around a protein complex as opposed to being embedded within the protein complex. However, much information can be gained from this simple model.
+###end p 9
+###begin p 10
+A.) Some 2-string tangles. B.) a 3-string tangle.
+###end p 10
+###begin p 11
+###xml 590 591 590 591 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+When modeling protein-DNA reactions, it is helpful to know how to draw the DNA segments bound by the protein. For example, does the DNA molecule cross itself within the protein complex or does it bend sharply? Tangle analysis can be used to determine the topological shape of the DNA segments bound by a protein complex. Tangle analysis does not determine the exact geometry and hence cannot determine the sharpness of DNA bending, but it can determine the overall topology. This can be used to infer which DNA sequences are likely to be close to each other within the protein-DNA complex [5] as well as other information useful for modeling protein-DNA reactions.
+###end p 11
+###begin p 12
+###xml 88 89 88 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+The focus of this paper is two-fold: (1) we describe a computational method for solving n-string tangle equations for small crossing solutions; (2) we apply this method to analyze the topology of the DNA bound in the Mu transpososome.
+###end p 12
+###begin p 13
+###xml 75 76 75 76 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+Although our current C++ program is specific for analyzing the results of [5], we would be happy to make any necessary modifications for solving any other system of tangle equations for small crossing solutions, especially those modeling experimental data. The source code is also available upon request.
+###end p 13
+###begin p 14
+###xml 55 73 55 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink">DNA transposition </italic>
+###xml 277 278 277 278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 279 280 279 280 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 288 305 288 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Mu transpososome </italic>
+###xml 546 566 546 566 <italic xmlns:xlink="http://www.w3.org/1999/xlink">difference topology </italic>
+###xml 567 568 567 568 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 569 570 569 570 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 571 573 571 573 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 618 619 618 619 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 734 736 734 736 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1B</xref>
+The Mu transpososome is involved in DNA transposition. DNA transposition is the process by which a piece of DNA can change its location within a genome. The Mu transposition pathway involves the formation of a series of protein-DNA complexes (for more biology background, see [5,6]). The Mu transpososome refers to the Mu transposase protein complex (Mu) and the three DNA segments bound by this protein complex. Since three DNA segments are bound by Mu, the Mu transpososome can be modeled by a 3-string tangle. An experimental technique called difference topology [7,5,10] combined with tangle analysis was used in [5] to determine that some of the Mu-DNA complexes can be modeled by the five crossing 3-string tangle shown in Fig. 1B. There are an infinite number of tangles that mathematically satisfy these experimental results (Darcy IK, Luecke J, Vazquez M: A tangle analysis of the Mu transpososome protein complex which binds three DNA segments, manuscript in preparation). These other conformations are very complicated and hence biologically unlikely to model the Mu transpososome, but they leave open the possibility that there are other biologically relevant models.
+###end p 14
+###begin p 15
+###xml 197 198 197 198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 392 393 392 393 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 420 422 420 422 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1B</xref>
+###xml 461 488 461 488 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Discussion and Conclusions </bold>
+We describe a computational algorithm we have implemented which solves for biologically relevant topological conformations of DNA bound within the Mu transpososome using experimental results from [5]. For the purposes of this paper, we will consider a solution to be biologically relevant if it has a 2-dimensional projection with at most eight crossings. Observe that the solution found in [5] has five crossings (Fig. 1B). Although we briefly describe in the Discussion and Conclusions section why we believe the Mu transpososome contains at most eight crossings, our main reason for choosing to limit solutions up to eight crossings is computational time. Currently our C++ algorithm takes two days on a Linux computer with AMD Opteron Processor (2.2 GHz cpu) to find solutions up through eight crossings. The speed of the algorithm can be significantly improved by, for example, parallelizing the algorithm and running it on a cluster. Hence the algorithm can be improved to find solutions with around ten crossings. But as the number of tangles grows exponentially with crossing number, it is unlikely that this method can be used to find solutions with more than fifteen crossings due to computation time.
+###end p 15
+###begin p 16
+###xml 36 37 36 37 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 129 156 129 156 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Discussion and Conclusions </bold>
+###xml 466 467 466 467 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+The experimental technique used in [5] can be applied to any protein complex which stably binds two or more segments of DNA (see Discussion and Conclusions for limitations) in order to determine the topological conformation of the DNA bound by the protein complex. The results of such experiments can be analyzed using a modification of the software we developed for analyzing the Mu experiments. In other words, this software can be modified to solve any system of n-string tangle equations for solutions containing up to around ten crossings, including those modeling difference topology experiments applied to a protein complex that stably binds any number of segments of DNA.
+###end p 16
+###begin title 17
+An example of a tangle equation
+###end title 17
+###begin p 18
+###xml 87 88 87 88 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 103 104 103 104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 236 238 236 238 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2A</xref>
+###xml 289 290 289 290 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 332 334 332 334 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 383 385 383 385 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 439 441 439 441 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 517 519 517 519 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2A</xref>
+###xml 540 542 540 542 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2B</xref>
+###xml 574 576 574 576 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2C</xref>
+###xml 612 614 612 614 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2D</xref>
+###xml 664 666 664 666 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2A</xref>
+###xml 684 686 684 686 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2E</xref>
+A description of the tangle equations modeling the difference topology experiments in [5] is given in [5] without the use of mathematical notation. Since we use mathematical notation, we start with an example of a tangle equation. Fig. 2A is a tangle equation with one unknown, the tangle T. A solution to this equation is a tangle T such that the conformation of the strands inside T combined with the conformation of the strands outside T must equal the four crossing link on the right-side of the equation in Fig. 2A. The tangle in Fig. 2B is a solution as shown in Fig. 2C. The three crossing tangle in Fig. 2D is not a solution to the tangle equation in Fig. 2A as shown in Fig. 2E.
+###end p 18
+###begin p 19
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A.) </bold>
+###xml 37 41 37 41 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B.) </bold>
+###xml 83 87 83 87 <bold xmlns:xlink="http://www.w3.org/1999/xlink">C.) </bold>
+###xml 184 186 184 186 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 262 266 262 266 <bold xmlns:xlink="http://www.w3.org/1999/xlink">D.) </bold>
+###xml 330 334 330 334 <bold xmlns:xlink="http://www.w3.org/1999/xlink">E.) </bold>
+A.) An example of a tangle equation. B.) A solution to the tangle equation in (A). C.) The tangle equation from (A) where the tangle in (B) has been substituted for the tangle unknown T showing that the tangle in (B) is a solution to the tangle equation in (A). D.) A tangle which is not a solution to the tangle equation in (A). E.) When we plug the tangle in (D) into the equation in (A), we see that the three crossing tangle cannot result in a four crossing link for this equation. Hence this three crossing tangle is not a solution to the tangle equation in (A).
+###end p 19
+###begin title 20
+Cre recombinase
+###end title 20
+###begin p 21
+###xml 70 71 70 71 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 353 354 353 354 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 463 465 463 465 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3A</xref>
+###xml 614 616 614 616 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3B</xref>
+Cre recombinase was used to obtain the system of tangle equations in [5] and hence we give some background information on Cre. Cre is a site-specific recombinase that will bind to 34 base pair DNA sequences called loxP. When Cre binds two copies of this sequence, it breaks both sequences and switches the ends before rejoining the DNA as shown in Fig. 3. If Cre acts on a circular DNA molecule containing Cre binding sites which are directly repeated as in Fig. 3A, then the resulting product is a two component link. If the circular DNA molecule contains inversely repeated Cre binding sites as illustrated Fig. 3B, then the product is a one component knot.
+###end p 21
+###begin p 22
+Cre recombination. A.) If the Cre binding sites are directly repeated, then Cre recombination results in a link. B.) If the Cre binding sites are inversely repeated, then Cre recombination can knot circular DNA.
+###end p 22
+###begin title 23
+Difference topology and tangle modeling
+###end title 23
+###begin p 24
+###xml 99 100 99 100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 312 313 312 313 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+###xml 521 523 521 523 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1B</xref>
+###xml 551 552 551 552 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 1102 1103 1102 1103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+We will now describe some of the difference topology experiments as well as the tangle model from [5]. The idea behind the experimental technique of difference topology is to use a protein such as Cre recombinase to trap crossings bound by the protein under study (in this case, Mu). This is illustrated in Fig. 4 where Mu is represented by the cyan colored ball. To show how a difference topology experiment works, we will assume the DNA conformation bound by Mu corresponds to the five crossing 3-string tangle in Fig. 1B based upon the results of [5]. In this technique, circular DNA is first incubated with the proteins involved in Mu transposition. The Mu complex binds DNA, possibly trapping DNA crossings within the protein complex. A second protein whose mechanism is well understood is added to the reaction (in this case, Cre, represented by smaller pink ball). This second protein, Cre, cuts the DNA and changes the circular DNA topology before resealing the breaks, resulting in knotted or linked DNA. The crossings bound by the first protein, Mu, will affect the product topology. In Fig. 4, four of the five crossings bound by Mu are trapped by the action of Cre, resulting in a four crossing link. Hence, one can gain information about the DNA conformation trapped by the first protein, Mu, by determining the knot/link type of the DNA knots/links produced by the second protein, Cre.
+###end p 24
+###begin p 25
+Difference topology experiment. Mu represented by the cyan colored ball is shown bound to five DNA crossings. Cre is represented by the smaller pink ball. Before Cre recombination, the DNA is circular and unknotted. Cre recombination changes the DNA configuration outside of the Mu transpososome. Since four of the five crossings bound by Mu are trapped by Cre recombination, the DNA product configuration equals a four crossing link.
+###end p 25
+###begin p 26
+###xml 319 320 319 320 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 489 490 489 490 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 539 540 539 540 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+Note that in the substrate configuration, three loops emanate from the Mu transpososome. The two binding sites for Cre can be placed in two of the three loops. By choosing on which pair of loops to place the Cre binding sites, the location of Cre action can be controlled. Six different substrates were constructed in [5] by varying the relative positions (choice of loop pairs) of the Cre sites as well as their relative orientations (direct versus inverted repeats). Models proposed in [5] of these six reactions are illustrated in Fig. 5. The cyan colored ball represents the DNA bound by Mu transposase while the pink colored ball represents the DNA bound by Cre.
+###end p 26
+###begin p 27
+Tangle model from [5]. Mu is shown binding five DNA crossings (cyan ball). Cre recombination (pink balls) results in knotted and linked products. The topology of the knotted/linked products is dependent upon the location of the Cre binding sites and the DNA topology within the Mu transpososome.
+###end p 27
+###begin p 28
+###xml 21 22 21 22 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+###xml 172 174 172 174 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 196 197 196 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 362 363 362 363 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 541 543 541 543 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3A</xref>
+###xml 648 650 648 650 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3B</xref>
+###xml 682 683 682 683 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+Observe that in Fig. 4 (bottom) the yellow and brown arrow heads in the Cre complex point in opposite directions. Based on the crystal structure of Cre complexed with DNA [11], it was assumed in [5] that the two Cre binding sites must be in anti-parallel orientation with respect to each other within the Cre-DNA complex. Note that for the configuration in Fig. 3, an even number of crossings between Cre binding sites are needed to achieve an anti-parallel orientation between the Cre binding when the Cre sites are directly repeated (Fig. 3A) while an odd number of crossings are necessary when the Cre binding sites are inversely repeated (Fig. 3B). In the Mu/Cre models in Fig. 5, sometimes an extra crossing not bound by either protein is needed for correct DNA orientation within the Cre protein complex, depending on the orientation of the Cre binding sites on the two loops. When comparing products where the Cre sites are placed on the same pair of loops but in different orientations, it was assumed that the extra crossing occurred with the higher crossing product. When this extra crossing exists, it is placed within the green annulus in our figures. Hence crossings within the green annulus, if any, represent crossings not trapped by either protein complex.
+###end p 28
+###begin p 29
+###xml 101 103 101 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1B</xref>
+###xml 187 188 187 188 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 273 274 273 274 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 292 294 292 294 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 1102 1109 1102 1109 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Methods</bold>
+If we do not assume that the shape of DNA bound by Mu is the five crossing 3-string tangle from Fig. 1B, we can instead enclose the protein-bound DNA conformation into an unknown tangle, T. The system of tangle equations corresponding to these experiments is shown in Fig. 6 where the tangle T represents the unknown DNA conformation bound by Mu. When the Cre sites are directly repeated, the products are four crossing links regardless of the location of the Cre binding sites. The chirality of the four crossing links was only determined in one of the three cases where the Cre binding sites are directly repeated. But as there is only one four crossing link up to mirror image, the crossings of the two unidentified four crossing link products are either all left-handed or all right-handed. When the Cre sites are inversely repeated, the products are three crossing knots in two cases and a five crossing knot in the third case. Since there is only one three crossing knot up to mirror image, the crossings of the unidentified three crossing knot are either all left-handed or all right-handed. In Methods, we will prove mathematically that the five crossing knot must also contain all left-handed or all right-handed crossings, but for now we will make no assumptions regarding this knot other than that it contains five crossings as experimentally determined.
+###end p 29
+###begin p 30
+###xml 95 97 95 97 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+System of tangle equations corresponding to difference topology experiments in [5]. The tangle T (cyan ball) represents the unknown DNA conformation bound by Mu. In two of the experiments, the knot/link product was fully identified and hence we know that the crossings are all right-handed as shown in the bottom two tangle equations. In the remaining four experiments, only the crossing number of the knot/link was determined. There is only one three crossing knot and only one four crossing link up to mirror image. Hence, we know that for the three and four crossing products, the crossings are either all left-handed or all right-handed.
+###end p 30
+###begin title 31
+Mathematical model
+###end title 31
+###begin p 32
+###xml 0 122 0 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Determining the topological conformation of DNA bound by Mu is equivalent to solving the system of tangle equations in Fig</italic>
+###xml 124 125 124 125 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 125 150 125 150 <italic xmlns:xlink="http://www.w3.org/1999/xlink"> for the 3-string tangle </italic>
+###xml 150 151 150 151 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 153 263 153 263 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A solution is a topological approximation, given as a 2-dimensional projection of a 3-dimensional conformation</italic>
+Determining the topological conformation of DNA bound by Mu is equivalent to solving the system of tangle equations in Fig. 6 for the 3-string tangle T. A solution is a topological approximation, given as a 2-dimensional projection of a 3-dimensional conformation.
+###end p 32
+###begin p 33
+###xml 92 93 92 93 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+An example of a 3-dimensional reconstruction using 2-dimensional tangle models is given in [3].
+###end p 33
+###begin p 34
+###xml 26 28 26 28 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1B</xref>
+###xml 48 54 48 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al </italic>
+###xml 55 56 55 56 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 145 146 145 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 232 238 232 238 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al </italic>
+###xml 239 240 239 240 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 329 335 329 335 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al </italic>
+###xml 336 337 336 337 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 500 502 500 502 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1B</xref>
+###xml 538 540 538 540 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7A</xref>
+In order to find the Fig. 1B solution, Pathania et al [5] assumed the protein-bound DNA is a 3-branched supercoiled structure like those in Fig. 7. Furthermore, since the substrate was negatively supercoiled unknotted DNA, Pathania et al [5] assumed that the crossings within each of the three branches is right-handed. Pathania et al [5] used the number of crossings in the knotted and linked DNA products to determine the number of crossings in each of the three branches in order to find the Fig. 1B solution which is repeated in Fig. 7A for convenience. Next, we illustrate their method for finding the number of crossings in each branch.
+###end p 34
+###begin p 35
+Three-branched supercoiled solutions to the tangle equations in Fig. 6.
+###end p 35
+###begin p 36
+###xml 82 83 82 83 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 119 120 119 120 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 246 247 246 247 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 386 388 386 388 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 446 448 446 448 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 522 524 522 524 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 526 528 526 528 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 580 581 580 581 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 594 596 594 596 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 724 725 724 725 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 761 763 761 763 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 765 767 765 767 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 872 873 870 871 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 899 901 897 899 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 903 905 901 903 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 958 960 954 956 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 962 964 958 960 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 969 971 965 967 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 972 975 968 971 <italic xmlns:xlink="http://www.w3.org/1999/xlink"> z </italic>
+###xml 984 986 978 980 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 988 990 982 984 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 1009 1011 1001 1003 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 1016 1018 1008 1010 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 1023 1025 1015 1017 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 1035 1037 1027 1029 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7A</xref>
+###xml 1040 1042 1032 1034 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 1047 1049 1039 1041 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 1054 1056 1046 1048 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 1067 1069 1059 1061 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7B</xref>
+###xml 1072 1074 1064 1066 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 1080 1082 1072 1074 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 1087 1089 1079 1081 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 1100 1102 1092 1094 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7C</xref>
+###xml 1105 1107 1097 1099 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 1112 1114 1104 1106 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 1120 1122 1112 1114 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 1133 1135 1125 1127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7D</xref>
+There exist four 3-branched supercoiled solutions to the tangle equations in Fig. 6. These solutions are shown in Fig. 7. They were obtained by solving a system of linear equations. For example, looking at the bottom left tangle equation in Fig. 6 in which the product is a right-handed three crossing knot, we observe that if the solution is a 3-branched supercoiled conformation with x crossings in one branch containing a Cre binding site and y crossings in the other branch containing the other Cre binding site, then x + y = 3 (compare to bottom left tangle equation in Fig. 5). If we let z be the number of crossings in the third branch, then the top left equation involving an unidentified four crossing link in Fig. 6 corresponds to the linear equation y + z = +/- 4, while the equation involving the unidentified three crossing knot (middle left equation in Fig. 6) results in the equation x + z = +/- 3. If we solve the system of linear equations, x + y = 3, y + z = +/- 4, x + z = +/- 3, we obtain x = 1, y = 2, z = 2 (Fig. 7A), x = 2, y = 1, z = -5 (Fig. 7B), x = -2, y = 5, z = -1 (Fig. 7C), x = 5, y = -2, z = -2 (Fig. 7D).
+###end p 36
+###begin p 37
+###xml 221 223 221 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 225 227 225 227 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 311 313 309 311 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 315 317 313 315 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+Note that we are actually solving four different systems of linear equations (where each system has a unique 3-branched supercoiled solution) depending on whether the top left four crossing link is right- or left-handed (y + z = +/- 4) and whether the unidentified three crossing knot is right- or left-handed (x + z = +/- 3).
+###end p 37
+###begin p 38
+###xml 28 30 28 30 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7B</xref>
+###xml 32 34 32 34 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7C</xref>
+###xml 36 38 36 38 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7D</xref>
+###xml 88 90 88 90 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7A</xref>
+###xml 120 122 120 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7B</xref>
+###xml 124 126 124 126 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7C</xref>
+###xml 128 130 128 130 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7D</xref>
+###xml 334 336 334 336 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7A</xref>
+###xml 347 348 347 348 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 455 457 455 457 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7B</xref>
+###xml 459 461 459 461 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7C</xref>
+###xml 505 506 505 506 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+The solutions shown in Fig. 7B, 7C, 7D contain more crossings than the solution in Fig. 7A. Also, the solutions in Fig. 7B, 7C, 7D contain left-handed crossings. As the substrate DNA was negatively supercoiled, one would expect a 3-branched supercoiled structure to contain right-handed twists, not left-handed twists. Hence the Fig. 7A solution [5] is biologically more likely than the other 3-branched supercoiled solutions (Also, the solutions in Fig. 7B, 7C, do not satisfy additional experiments in [5] not described here).
+###end p 38
+###begin p 39
+###xml 22 23 22 23 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 361 363 361 363 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 400 402 400 402 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 574 581 574 581 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Results</bold>
+The solutions in Fig. 7 are the only solutions if one considers only 3-branched supercoiled DNA conformations, but the question remains whether there are any other biologically relevant solutions if we do not assume a 3-branched supercoiled structure. In the next section, we describe colorability, the tangle invariant which we use to search for solutions for T where the only restriction placed on T is that it has eight or fewer crossings. However, a thorough understanding of this invariant is not necessary to understand the main idea behind the algorithm discussed in Results.
+###end p 39
+###begin title 40
+The coloring invariants
+###end title 40
+###begin p 41
+###xml 2 9 2 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">diagram</italic>
+###xml 11 12 11 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 13 14 13 14 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 43 45 43 45 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 64 66 64 66 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 72 73 72 73 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 439 440 439 440 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+A diagram, D(T) of a knot, link, or tangle T is a projection of T into ℝ2, the 2-dimensional plane, where only double points are allowed at a crossing (two points are superimposed when strands cross), and gaps are used to indicate which part of the knot crosses under. Two diagrams correspond to the same 3D knot/link/tangle if one diagram can be converted to the other diagram via a sequence of Reidemeister moves-RI, RII, and RIII (Fig. 8).
+###end p 41
+###begin p 42
+Reidemeister moves.
+###end p 42
+###begin p 43
+###xml 3 14 3 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m-coloring </italic>
+###xml 27 28 27 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 29 30 29 30 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 46 48 46 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C </italic>
+###xml 51 61 51 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arcs of D </italic>
+###xml 62 63 62 63 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 73 75 68 70 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 73 75 68 70 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 97 99 92 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 97 99 92 94 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 132 138 127 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">colors</italic>
+###xml 184 186 179 181 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 188 190 183 185 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 193 195 188 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 219 221 214 216 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 262 264 257 259 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 268 270 263 265 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 316 317 311 312 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9</xref>
+###xml 333 341 328 336 <italic xmlns:xlink="http://www.w3.org/1999/xlink">trivial </italic>
+###xml 462 464 457 459 <bold xmlns:xlink="http://www.w3.org/1999/xlink">K </bold>
+###xml 478 491 473 486 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in-colorable </italic>
+###xml 521 522 516 517 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 535 536 530 531 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 537 538 532 533 <bold xmlns:xlink="http://www.w3.org/1999/xlink">K</bold>
+###xml 611 613 606 608 <bold xmlns:xlink="http://www.w3.org/1999/xlink">K </bold>
+###xml 616 618 611 613 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 663 665 658 660 <bold xmlns:xlink="http://www.w3.org/1999/xlink">K </bold>
+###xml 669 670 664 665 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 682 684 677 679 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 741 743 736 738 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 816 818 811 813 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 819 821 814 816 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+An m-coloring of a diagram D(T) is a function C : {arcs of D (T)} mapsto m where the elements of m = {0,1, ..., m-1} will be called colors, and such that at each crossing the relation y + z - 2x = 0 mod to holds, where x is the color assigned to the overarc and y and z are the colors of the two underarcs. See Fig. 9. A coloring is trivial if the coloring function is the constant map, i.e., all the arcs are assigned the same value or "color". A knot or link, K is said to be in-colorable if there exists a non-trivial m-coloring of D(K). This is a knot/link invariant in that if one diagram of the knot/link K is m colorable then all diagrams corresponding to K are m-colorable [12]. For an elementary introduction to coloring knots see [13]. We will more thoroughly define how coloring relates to tangles below [14,15].
+###end p 43
+###begin p 44
+###xml 48 49 48 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 49 50 49 50 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 52 53 52 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 53 54 53 54 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 56 57 56 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 57 58 57 58 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3</sub>
+###xml 253 254 253 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 254 255 254 255 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 257 258 257 258 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 258 259 258 259 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 266 267 266 267 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 267 268 267 268 <sub xmlns:xlink="http://www.w3.org/1999/xlink">8</sub>
+A.) Coloring a knot. The three arcs are labeled x1, x2, x3. A coloring of this knot diagram must satisfy the three equations corresponding to the three crossings. B.) A 3-coloring of this knot. C.) Coloring a 2-string tangle. The eight arcs are labeled x1, x2, ..., x8. The six crossings result in six equations.
+###end p 44
+###begin p 45
+###xml 2 18 2 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">coloring matrix </italic>
+###xml 49 50 49 50 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 67 68 67 68 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 68 69 68 69 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 68 69 68 69 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T</bold></sub>
+###xml 267 269 267 269 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9C</xref>
+###xml 394 395 394 395 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 395 396 395 396 <sub xmlns:xlink="http://www.w3.org/1999/xlink">5</sub>
+###xml 398 399 398 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 399 400 399 400 <sub xmlns:xlink="http://www.w3.org/1999/xlink">6</sub>
+###xml 402 403 402 403 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 403 404 403 404 <sub xmlns:xlink="http://www.w3.org/1999/xlink">7</sub>
+###xml 406 407 406 407 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 407 408 407 408 <sub xmlns:xlink="http://www.w3.org/1999/xlink">8</sub>
+###xml 410 411 410 411 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 411 412 411 412 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 414 415 414 415 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 415 416 415 416 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 418 419 418 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 419 420 419 420 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3</sub>
+###xml 422 423 422 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 423 425 423 425 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+A coloring matrix of a knot/link/tangle diagram, T, is any matrix, MT, which is row equivalent to a coefficient matrix corresponding to the coloring equations. For example, the 6 x 8 matrix in Eqn. (1) is a coloring matrix corresponding to the tangle diagram in Fig. 9C. Each row corresponds to one of the six crossings in the tangle diagram while each column represents one of the eight arcs, x5, x6, x7, x8, x1, x2, x3, x4 in the tangle diagram.
+###end p 45
+###begin p 46
+
+###end p 46
+###begin p 47
+###xml 83 96 83 96 <italic xmlns:xlink="http://www.w3.org/1999/xlink">endpoint arcs</italic>
+###xml 132 145 132 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink">interior arcs</italic>
+###xml 221 222 221 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 222 223 222 223 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 225 226 225 226 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 226 227 226 227 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 229 230 229 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 230 231 230 231 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3</sub>
+###xml 233 234 233 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 234 235 234 235 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+###xml 281 282 281 282 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 282 284 282 284 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 282 284 282 284 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T </bold></sub>
+###xml 391 395 391 395 <italic xmlns:xlink="http://www.w3.org/1999/xlink">row </italic>
+###xml 395 397 395 397 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 402 406 399 403 <italic xmlns:xlink="http://www.w3.org/1999/xlink">row </italic>
+###xml 406 407 403 404 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 460 464 457 461 <italic xmlns:xlink="http://www.w3.org/1999/xlink">row </italic>
+###xml 464 466 461 463 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 470 474 465 469 <italic xmlns:xlink="http://www.w3.org/1999/xlink">row </italic>
+###xml 474 476 469 471 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 478 480 473 475 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t </italic>
+###xml 482 486 477 481 <italic xmlns:xlink="http://www.w3.org/1999/xlink">row </italic>
+###xml 486 487 481 482 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 489 491 484 486 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 501 502 488 489 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 504 506 491 493 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t </italic>
+###xml 538 542 524 528 <italic xmlns:xlink="http://www.w3.org/1999/xlink">row </italic>
+###xml 542 544 528 530 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 550 554 533 537 <italic xmlns:xlink="http://www.w3.org/1999/xlink">row </italic>
+###xml 554 555 537 538 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 582 584 565 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 582 584 565 567 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+We will call the arcs which have one endpoint on the boundary of the tangle 3-ball endpoint arcs. The remaining arcs will be called interior arcs. Notice that we place the four columns corresponding to the endpoint arcs, x1, x2, x3, x4, as the four rightmost columns of the matrix MT . We can solve this system of equations by performing the following row operations: (1) exchange two rows (row i <--> row j); (2) add a multiple of one row to a different row (row i --> row i + t . row j, i not equal j, t in ); (3) multiply a row by -1 (row i <--> -row i). Since we are working in m where to is an arbitrary integer, scaling a row is not allowed.
+###end p 47
+###begin p 48
+###xml 235 236 235 236 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 236 239 236 239 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ih </italic>
+###xml 236 239 236 239 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ih </italic></sub>
+###xml 243 244 243 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 244 247 244 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jk </italic>
+###xml 244 247 244 247 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>jk </italic></sub>
+###xml 274 276 274 276 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 277 278 277 278 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 285 287 285 287 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h </italic>
+###xml 288 290 288 290 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 374 376 374 376 <italic xmlns:xlink="http://www.w3.org/1999/xlink">EF</italic>
+###xml 377 378 377 378 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 378 379 378 379 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 378 379 378 379 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T</bold></sub>
+The first non-zero term in a row is called a leading entry. A matrix is in echelon form if (1) rows consisting of only zero's occur below rows containing at least one non-zero term; (2) each entry below a leading entry is zero; (3) If aih and ajk are leading entries and if i <j, then h <k (i.e., the leading entries move to the right as the rows descend). An echelon form, EF(MT) of the matrix in Eqn. (1) is
+###end p 48
+###begin p 49
+
+###end p 49
+###begin p 50
+###xml 49 51 49 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SF</italic>
+###xml 52 53 52 53 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 126 127 126 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 127 130 127 130 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij </italic>
+###xml 127 130 127 130 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij </italic></sub>
+###xml 156 157 156 157 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 176 177 174 175 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 177 180 175 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink">rj </italic>
+###xml 177 180 175 178 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>rj </italic></sub>
+###xml 184 185 180 181 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a</italic>
+###xml 185 188 181 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij </italic>
+###xml 185 188 181 184 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij </italic></sub>
+###xml 198 200 192 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r </italic>
+###xml 201 202 195 196 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+We define the standard echelon form of a matrix, SF(M), to be the echelon form in which each leading entry is positive and if aij is a leading entry of the ith row, then 0 </= arj </= aij -1, 1 </= r <i. The standard echelon form of a matrix is unique. Note that the matrix in Eqn. (2) is not in standard echelon form, but the lower right hand corner 2 x 4 submatrix is in standard echelon form (see also Eqn. (3)).
+###end p 50
+###begin p 51
+###xml 4 5 4 5 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 5 6 5 6 <bold xmlns:xlink="http://www.w3.org/1999/xlink">l</bold>
+###xml 5 6 5 6 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>l</bold></sub>
+###xml 7 8 7 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 60 61 60 61 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 61 63 61 63 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 61 63 61 63 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T </bold></sub>
+###xml 122 123 122 123 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 123 124 123 124 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 126 127 126 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 127 128 127 128 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 130 131 130 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 131 132 131 132 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3</sub>
+###xml 134 135 134 135 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 135 137 135 137 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 184 185 184 185 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 185 186 185 186 <bold xmlns:xlink="http://www.w3.org/1999/xlink">l</bold>
+###xml 185 186 185 186 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>l</bold></sub>
+###xml 187 188 187 188 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 290 292 290 292 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 447 448 447 448 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 448 449 448 449 <bold xmlns:xlink="http://www.w3.org/1999/xlink">l</bold>
+###xml 448 449 448 449 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>l</bold></sub>
+###xml 450 451 450 451 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 575 576 575 576 <bold xmlns:xlink="http://www.w3.org/1999/xlink">d</bold>
+###xml 576 577 576 577 <bold xmlns:xlink="http://www.w3.org/1999/xlink">u</bold>
+###xml 576 577 576 577 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>u</bold></sub>
+###xml 578 579 578 579 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+Let Ml(T) be the lower right hand corner 2 x 4 submatrix of MT in standard echelon form. If the endpoints arcs' unknowns, x1, x2, x3, x4 correspond to the four rightmost columns, then Ml(T) is a tangle invariant. It is a tangle invariant in that if you take two diagrams of the same tangle T and place the endpoint arcs in the same order in the last columns of their respective coloring matrices, then no matter how the interior arcs are labeled, Ml(T) will be the same for both diagrams. In addition, the absolute value of the determinant of the upper left 4 x 4 submatrix, du(T) = 3, is also an invariant.
+###end p 51
+###begin p 52
+
+###end p 52
+###begin p 53
+###xml 41 43 41 43 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 186 187 186 187 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 187 188 187 188 <bold xmlns:xlink="http://www.w3.org/1999/xlink">l</bold>
+###xml 187 188 187 188 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>l</bold></sub>
+###xml 189 190 189 190 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 280 282 280 282 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 311 312 311 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 334 336 334 336 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 339 341 339 341 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 343 344 343 344 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 362 363 362 363 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 363 365 363 365 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 363 365 363 365 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T </bold></sub>
+###xml 379 381 379 381 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 458 459 458 459 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 459 460 459 460 <bold xmlns:xlink="http://www.w3.org/1999/xlink">l</bold>
+###xml 459 460 459 460 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>l</bold></sub>
+###xml 461 462 461 462 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 495 497 495 497 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 500 502 500 502 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 515 516 515 516 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 516 518 516 518 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 516 518 516 518 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T </bold></sub>
+###xml 552 553 552 553 <bold xmlns:xlink="http://www.w3.org/1999/xlink">d</bold>
+###xml 553 554 553 554 <bold xmlns:xlink="http://www.w3.org/1999/xlink">u</bold>
+###xml 553 554 553 554 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>u</bold></sub>
+###xml 555 556 555 556 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 618 620 618 620 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 622 623 622 623 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 628 630 628 630 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 632 633 632 633 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 648 649 648 649 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 649 651 649 651 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 649 651 649 651 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T </bold></sub>
+###xml 658 659 658 659 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 659 660 659 660 <bold xmlns:xlink="http://www.w3.org/1999/xlink">l</bold>
+###xml 659 660 659 660 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>l</bold></sub>
+###xml 661 662 661 662 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 668 669 668 669 <bold xmlns:xlink="http://www.w3.org/1999/xlink">d</bold>
+###xml 669 670 669 670 <bold xmlns:xlink="http://www.w3.org/1999/xlink">u</bold>
+###xml 669 670 669 670 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>u</bold></sub>
+###xml 671 672 671 672 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 692 694 692 694 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 695 697 695 697 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 868 869 868 869 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 869 870 869 870 <bold xmlns:xlink="http://www.w3.org/1999/xlink">l</bold>
+###xml 869 870 869 870 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>l</bold></sub>
+###xml 871 872 871 872 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+In the above example, the tangle diagram T is a 2-string tangle with six crossings. Hence its coloring matrix is a 6 x (6 + 2) = 6 x 8 matrix, and we were interested in the 2 x 4 matrix Ml(T) as well as the determinant of the upper left 4 x 4 matrix. In the general case, suppose T is a diagram of an arbitrary n-string tangle with a k x (k + n) coloring matrix MT (listing the 2n endpoint arcs in the right-most columns of the matrix in a fixed order). Let Ml(T) be the lower right-hand corner n x 2n submatrix of MT in standard echelon form, and let du(T) be the absolute value of the determinant of the upper left (k - n) x (k - n) submatrix of MT . Both Ml(T) and du(T) are invariants of T [15]. Note that columns corresponding to the endpoint arcs must be the right-most columns of the coloring matrix, and these columns must be in a fixed order when calculating Ml(T). We will always order the endpoint arcs in a clockwise manner starting with a northwest endpoint arc.
+###end p 53
+###begin p 54
+###xml 22 23 22 23 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 23 24 23 24 <bold xmlns:xlink="http://www.w3.org/1999/xlink">l</bold>
+###xml 23 24 23 24 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>l</bold></sub>
+###xml 25 26 25 26 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 34 36 34 36 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 42 43 42 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 74 76 74 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 397 398 397 398 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 398 399 398 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 398 399 398 399 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 416 417 416 417 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 417 418 417 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 417 418 417 418 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic></sub>
+###xml 444 445 444 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 445 447 445 447 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 445 447 445 447 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 449 450 449 450 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 450 452 450 452 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 450 452 450 452 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+###xml 469 470 469 470 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 490 492 490 492 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 514 516 514 516 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 519 521 519 521 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 523 524 523 524 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 624 626 624 626 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 636 638 636 638 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 640 641 640 641 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+In order to calculate Ml(T) where T is an n-string tangle, we must label 2n endpoint arcs with distinct variables. If a string consists of just one arc (i.e., a string does not pass under any other string including itself so that it projects to just one arc; hence both endpoints of this arc lie on the boundary of the 3D ball), we can doubly label the arc, labeling one half of this endpoint arc xi, the other half xj, and adding the equation xi - xj = 0. Normally an n-string tangle with k crossings will have a k x (k + n) coloring matrix. But if any arcs are doubly labeled, then the coloring matrix will have more than k rows and (k + n) columns.
+###end p 54
+###begin title 55
+Results
+###end title 55
+###begin p 56
+###xml 106 107 106 107 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 142 149 142 149 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Methods</bold>
+###xml 262 263 262 263 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+We describe a computational algorithm we have implemented to solve the system of tangle equations in Fig. 6. The full description is given in Methods. The majority of the algorithms were written so that this program can easily be modified to solve any system of n-string tangle equations up to around 8-10 crossings, including those modeling difference topology experiments applied to a protein complex that stably binds any number of segments of DNA.
+###end p 56
+###begin p 57
+###xml 197 198 197 198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 287 290 287 290 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10A</xref>
+###xml 305 308 305 308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10B</xref>
+###xml 377 378 377 378 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 478 479 478 479 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 479 481 479 481 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 496 497 496 497 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 497 499 497 499 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 535 536 535 536 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 588 597 588 597 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Methods, </bold>
+###xml 678 679 678 679 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+We first determine how the strings enter and exit the tangle. The parity of a tangle refers to the order in which the strings enter and exit the 3D ball. A solution to the tangle equations in Fig. 6 can have one of two possible parities: the strings enter and exit the tangle as in Fig. 10A or as in Fig. 10B. This is easily determined by noting which of the equations in Fig. 6 involve a knot (one component) versus a two component link. For example, the string entering in at x1 cannot exit at x2 since the top left equation in Fig. 6 involves the one component unknot. As discussed in Methods, we also use 2-string tangle analysis to simplify the system of equations in Fig. 6.
+###end p 57
+###begin p 58
+Possible parities.
+###end p 58
+###begin p 59
+###xml 90 92 90 92 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 93 95 93 95 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 114 121 114 121 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Methods</bold>
+###xml 391 392 391 392 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 412 413 412 413 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 572 574 572 574 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+A number of techniques have been used to encode knot diagrams for computational purposes [16,17]. As described in Methods, we use coloring matrices to encode tangle diagrams. We generate matrices which could correspond to tangle diagrams up through eight crossings. We check each matrix to determine if it has the correct coloring invariants to be a solution to the tangle equations in Fig. 6. As shown in table 1, this eliminates the majority of the generated matrices. Not all generated matrices correspond to a tangle. We use an algorithm similar to that described in [18] to remove all matrices which do not correspond to a tangle.
+###end p 59
+###begin p 60
+Results.
+###end p 60
+###begin p 61
+Number of matrices with the correct coloring invariants (Col columns), corresponding to a drawable tangle (Draw columns), and which are potentially non-equivalent (Non-equiv columns). The first column refers to the number of crossings in the tangle diagram. The second column gives the number of matrices generated which could correspond to a tangle with a fixed crossing number. The results in the next three columns assume the parity in Fig. 10A while the results in the last three columns assume the parity in Fig. 10B. The columns labeled "Col" state the number of generated matrices which have the correct coloring invariants to satisfy the equations in Fig. 6. However, not all generated matrices correspond to a tangle. The columns labeled "Draw" give the number of matrices which correspond to a drawable tangle with the correct coloring invariants. The number of these matrices which may correspond to non-equivalent tangles is given in the columns labeled "Non-equiv?". Note, however, that the algorithm does not identify all equivalent tangles.
+###end p 61
+###begin p 62
+###xml 611 612 611 612 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+###xml 631 638 631 638 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Methods</bold>
+###xml 757 758 757 758 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 868 869 868 869 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 905 908 905 908 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10A</xref>
+###xml 949 952 949 952 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10B</xref>
+Recall that a tangle can be represented by a number of different diagrams related by Reidemeister moves. Unfortunately, there is no algorithm guaranteed to determine whether two tangle diagrams are equivalent. In fact, in order to simplify a diagram, it may be necessary to first increase the number of crossings in the diagram. Thus this software does not determine all tangle equivalences, but does reduce the output sufficiently to handle the remaining possibly equivalent tangles by hand. While generating matrices, we omit matrices where the corresponding diagram can be simplified by RI or RII moves (Fig.8). As discussed in Methods, we also perform some other simplifications which involve a combination of RI, RII, and RIII moves. As shown in table 1, this leaves us with 13 matrices that could correspond to tangles satisfying the system of equations in Fig. 6: ten with the parity shown in Fig. 10A and three with the parity shown in Fig. 10B.
+###end p 62
+###begin p 63
+###xml 109 112 109 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10A</xref>
+###xml 177 178 177 178 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 186 188 186 188 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7A</xref>
+###xml 219 222 219 222 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10B</xref>
+###xml 298 303 298 303 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7B, C</xref>
+###xml 374 375 374 375 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+We checked the remaining thirteen tangles corresponding to these matrices by hand. The ten tangles with Fig. 10A parity are all equivalent to the five crossing tangle found in [5] (Fig. 7A). The three tangles with Fig. 10B parity are all equivalent to one of the two eight crossing tangles in Fig. 7B, C. Recall that the two eight crossing solutions were not considered in [5] since the unknotted DNA substrate was negatively supercoiled and hence trapping left-handed crossings is biologically unlikely.
+###end p 63
+###begin title 64
+Discussion
+###end title 64
+###begin p 65
+###xml 78 79 78 79 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 91 97 91 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al </italic>
+###xml 98 99 98 99 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 178 179 178 179 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 225 227 225 227 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1B</xref>
+###xml 236 238 236 238 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7A</xref>
+We have developed software to analyze the difference topology experiments in [5]. Pathania et al [5] needed to assume the basic shape of a 3-branched supercoiled structure (Fig. 7) in order to find the solution shown in Fig. 1B (= Fig. 7A). With our software, no assumptions regarding the DNA conformation bound by the protein complex are needed except for an upper bound on the number of crossings. This algorithm can also be modified to analyze any difference topology experiment regardless of the number of DNA segments bound by the protein complex (although there is a bound on the topological complexity of the protein-bound DNA as discussed below).
+###end p 65
+###begin p 66
+###xml 331 332 331 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 467 469 467 469 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+A tangle solution is a topological approximation given as a 2-dimensional projection of a 3-dimensional structure. It does not determine sharpness of DNA bending, but it does give an important starting point from which other modeling techniques may be applied. Limited information regarding the Mu-DNA conformation existed before [5]. Since then a partial structure based on scanning transmission electron microscopy (STEM) at cryo-temperatures has become available [19], but this involves only a portion of the protein complex and a change in the DNA sequences bound by Mu. Information regarding protein-bound DNA conformations can sometimes be obtained via crystallography, STEM, or FRET (fluorescence resonance energy transfer), but all these techniques are quite difficult and currently can only be applied to small protein-DNA complexes.
+###end p 66
+###begin p 67
+###xml 41 42 41 42 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 51 52 51 52 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 54 55 54 55 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 396 397 396 397 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 765 767 765 767 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+Recall that in the Mu tangle model from [5] (Figs. 5, 6), it is assumed that at most one crossing is trapped outside of the protein complexes (modeled within the green annulus). Since Mu and Cre bind to specific DNA sequences, the length of the DNA between the Mu binding sites and Cre binding sites can be controlled. The shortest length needed for the reaction to take place was determined in [5] in order to prevent trapping extraneous crossings. The difference topology experimental technique can also be applied to proteins that bind to arbitrary DNA sequences rather than specific DNA sequences, but the results would not be expected to be as clean (both in terms of experimental results as well as determining the appropriate tangle model). It was shown in [20] that if the length of DNA between binding sites is not properly controlled, then the number of protein-bound DNA crossings may be overestimated. But even if we are left with a topological approximation, it is still a significant improvement over having little or no information on how to draw the DNA in a protein-DNA complex.
+###end p 67
+###begin p 68
+###xml 511 512 511 512 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 513 514 513 514 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+We are not mathematically limited to equations resulting from Cre recombination. Any protein which can change DNA topology could potentially be used in a set of difference topology experiments to obtain a different system of tangle equations. For example topoisomerases change the topology of circular DNA by changing DNA crossings. It may be possible to obtain a more 3-dimensional model by averaging 2-dimensional projections of tangle solutions from two or more systems of tangle equations or tangle models [3,4]. Cre, however, may be the easiest to work with due to its sequence specificity and its simple mechanism.
+###end p 68
+###begin title 69
+###xml 38 39 38 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+The software and its applicability to n-string tangle equations
+###end title 69
+###begin p 70
+This software consists of 4 steps:
+###end p 70
+###begin p 71
+###xml 105 123 105 123 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Tangle generation </bold>
+###xml 126 133 126 133 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Methods</bold>
+1. Matrices which could correspond to coloring matrices of tangle diagrams are generated (see subsection Tangle generation in Methods)
+###end p 71
+###begin p 72
+###xml 66 99 66 99 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Checking the coloring invariants </bold>
+###xml 102 109 102 109 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Methods</bold>
+###xml 270 301 270 301 <bold xmlns:xlink="http://www.w3.org/1999/xlink">2-string tangle simplification </bold>
+###xml 304 311 304 311 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Methods</bold>
+2. The coloring invariants of each matrix are checked (subsection Checking the coloring invariants in Methods). Implementing this part of the software requires that we first mathematically simplify the system of tangle equations via 2-string tangle analysis (subsection 2-string tangle simplification in Methods).
+###end p 72
+###begin p 73
+###xml 192 214 192 214 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Non-drawable matrices </bold>
+###xml 217 224 217 224 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Methods</bold>
+3. Not all the matrices generated in step 1 will correspond to a tangle diagram. Hence each generated matrix is checked to determine if it actually corresponds to a tangle diagram (subsection Non-drawable matrices in Methods).
+###end p 73
+###begin p 74
+###xml 129 147 129 147 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Equivalence moves </bold>
+###xml 150 157 150 157 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Methods</bold>
+4. Different matrices can correspond to the same tangle. Thus we remove some (but not all) of the redundant matrices (subsection Equivalence moves in Methods)
+###end p 74
+###begin p 75
+###xml 104 105 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+No modifications are needed for Steps 1 and 3 in order to apply this algorithm to a different system of n-string tangle equations. For step 2, additional invariants may be needed in addition to or in replacement of the coloring invariants. Additional subroutines may also be needed for step 4.
+###end p 75
+###begin p 76
+###xml 249 250 249 250 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 568 570 568 570 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 571 573 571 573 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 785 787 785 787 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 1132 1133 1132 1133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+Although coloring is not that powerful of a knot invariant, it is a powerful tangle invariant. As our results show, it is the only invariant we need to check to determine if a tangle up through eight crossings is a solution to the equations in Fig. 6. However, there is no guarantee that this invariant will be sufficient for a different system of tangle equations. Hence we may need to check additional invariants. Fortunately, there are a number of other invariants as well as software available for calculating these other invariants which can be used when needed [17,21]. In particular we plan to add the homflypt polynomial knot invariant as an alternative option to the coloring invariant. The homflypt polynomial has been used in other algorithms requiring computational speed [22]. Knots with nine or fewer crossings are uniquely identified by their homflypt polynomial. Hence if the knotted products of the difference topology experiments contain fewer than ten crossings, then checking the homflypt polynomial is sufficient (i.e., the homflypt polynomial will completely determine if a tangle is a solution to a system of n-string tangle equations if the equations only involve knots with less than ten crossings). Even if we need to use different invariant(s), this does not affect any other part of the algorithm. In particular, we can still use coloring matrices to encode tangle diagrams.
+###end p 76
+###begin p 77
+###xml 140 141 140 141 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+Our software left us with only 13 different coloring matrices which could correspond to tangle solutions to the system of equations in Fig. 6. We could have added additional methods to determine if two tangle diagrams are equivalent to further reduce this output, but it was quicker to check these 13 matrices by hand. For a different system of equations, additional methods to determine tangle equivalence may be needed to reduce the output to a handful of matrices. We will add additional subroutines to decrease the number of redundant tangles as needed.
+###end p 77
+###begin p 78
+###xml 162 164 162 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 949 951 949 951 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+The modifications that may be needed are straightforward. In fact they have been used by others for a computationally much more complex problem, knot tabulation [16]. The techniques we use are very similar to those used to tabulate knots up through 16 crossings. The main difference between knot tabulation and our algorithm is that in tabulating knots, every knot diagram must be fully identified and all redundancies eliminated. In our algorithm, we discard diagrams that do not satisfy our equations, and hence only need to analyze a very small fraction of diagrams compared to the number of diagrams analyzed in knot tabulation. Also, since we focus on only a few systems of equations at a time, we can analyze by hand some redundancies among our tangle solutions. Hence we don't need to check nearly as many invariants or computationally determine as many tangle equivalences as in knot tabulation where millions of knots have been identified [23]. Thus our algorithm is computationally much simpler than that required for knot tabulation.
+###end p 78
+###begin p 79
+###xml 594 595 594 595 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 1082 1084 1082 1084 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 1128 1129 1128 1129 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 1130 1132 1130 1132 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+Unfortunately, we cannot give a mathematical estimate regarding the number of solutions or the number of redundancies for an arbitrary system of tangle equations. In most cases, any modifications needed to reduce the number of repeated solutions will take at most a few days to implement. However, if the system of tangle equations is under-determined so that it has many small crossing solutions, then determining redundancies computationally will become much more important. An example of an under-determined system would be one modeling a partial set of difference topology experiments. In [5], Cre binding sites, in both inverted and direct orientations, were placed on each pair of the three loops emanating from the Mu transpososome. Hence six different substrates were constructed. If a protein binds, for example, four segments of DNA, then four loops will emanate from the protein-DNA complex. If Cre binding sites are placed on each pair of these four loops in both inverted and direct orientation, twelve substrates would be needed. In general if a protein-complex binds n segments of DNA, one would need to contract n(n - 1) different substrates if Cre binding sites are placed on each pair of loops in both orientations. An under-determined system would result if Cre binding sites are not placed on each pair of loops. We will eventually be able to solve under-determined systems for small crossing solutions as this problem is still much simpler than knot tabulation, but we expect this will take longer to implement.
+###end p 79
+###begin title 80
+Other mathematical methods
+###end title 80
+###begin p 81
+###xml 53 54 53 54 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 55 57 55 57 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 58 60 58 60 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 84 86 84 86 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 87 89 87 89 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 280 281 280 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 310 312 310 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 362 364 362 364 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 462 464 462 464 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 506 507 506 507 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 538 540 538 540 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 605 606 605 606 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 661 663 661 663 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 934 935 934 935 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 959 960 959 960 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+There are many mathematical techniques (for example [1,24-36]) as well as software [37,38] for solving 2-string tangle equations. Hence many (but not all) biologically relevant 2-string tangle equations can be completely solved. Similar mathematics does not yet exist for solving n-string tangle equations for n > 2. Some work has been done on 3-string tangles [39] and solving 3-string tangles equations involving the class of 3-string tangles called 3-braids [40]. There is also some work on classifying n-string tangles (for example, [41]). Also techniques in 3-manifold theory can be applied to solve n-string tangle equations for small crossing solutions [42], (Darcy IK, Luecke J, Vazquez M: A tangle analysis of the Mu transpososome protein complex which binds three DNA segments, manuscript in preparation). However, at the moment, there are no mathematical methods for solving the system of 3-string tangle equations in Fig. 6 or for most systems of n-string tangle equations.
+###end p 81
+###begin title 82
+Computational limitations
+###end title 82
+###begin p 83
+###xml 644 646 644 646 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 682 684 682 684 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+Currently this C++ algorithm takes about two days on a Linux computer with AMD Opteron Processor (2.2 GHz cpu) to find solutions through eight crossings. However, the efficiency of the algorithm can be significantly improved by parallelizing it and running it on a cluster. Hence it should be possible to find solutions up to about ten crossings. As the number of tangles grows exponentially with crossing number, this algorithm can not be used to find high crossing solutions. Knots have only been tabulated up through sixteen crossings. Although our algorithm is computationally much simpler than knot tabulation, there are more tangles with k crossings than there are knots with k crossings. Hence we do not expect to be able to get much past ten crossings with a reasonable computation time.
+###end p 83
+###begin p 84
+Despite this computational limitation, we believe this algorithm is applicable to a wide array of protein-DNA complexes. The length of DNA bound by the protein limits the bound DNA's topological complexity. For example, the three DNA segments bound within the Mu transpososome are 50, 175 and 190 base pairs. However, we do not know of a theoretical tipper bound on the topological complexity of protein-bound DNA.
+###end p 84
+###begin p 85
+We believe eight crossings is a reasonable limit for the Mu transpososome. In addition to limits imposed by the lengths of the three protein-bound DNA sequences, the existence of a five crossing solution implies that a much more complicated solution with eight or more crossing is less likely. However, we have no proof that this is the case.
+###end p 85
+###begin title 86
+Conclusion
+###end title 86
+###begin p 87
+###xml 91 92 91 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+The computational algorithm described in this paper can be modified to solve any system of n-string tangle equations for small crossing tangle solutions. A long-term goal is to create software accessible to those without a background in knot theory. Eventually this software will be able to draw the tangle solutions. Some additional work is needed to handle under-determined systems of tangle equations as discussed above. But in the meantime if the system is not under-determined, we can readily modify this algorithm to solve any specified system of tangle equations up to around ten crossings; hence an experimentalist need not wait for the final version of this software before performing difference topology experiments.
+###end p 87
+###begin title 88
+Methods
+###end title 88
+###begin title 89
+Tangle generation
+###end title 89
+###begin p 90
+###xml 123 124 123 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 213 216 213 216 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F11">11A</xref>
+###xml 231 234 231 234 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F11">11B</xref>
+###xml 703 704 703 704 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 704 706 704 706 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 737 738 737 738 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 738 740 738 740 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 738 740 738 740 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 825 826 825 826 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 826 827 826 827 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 828 830 828 830 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 826 830 826 830 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>+<italic>i </italic></sub>
+###xml 861 862 861 862 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 862 864 862 864 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 862 864 862 864 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+We use the coloring matrix of a tangle diagram to encode its shape. Recall that a solution to the tangle equations in Fig. 6 can have one of two possible parities: the strings enter and exit the tangle as in Fig. 11A or as in Fig. 11B. For tangle generation, we will not place the columns corresponding to the endpoint arcs in the rightmost columns. This simplifies the matrix generation as well as determining if a matrix corresponds to a drawable tangle or if two matrices correspond to the same tangle. In order to calculate the coloring invariants, we will later move the columns corresponding to the endpoint arcs to the rightmost columns. The red string which begins with the endpoint arc labeled x1 and ends with the endpoint arc xi will be called string 1. The green string which begins with the endpoint arc labeled xi+i and ends with the endpoint arc xj will be called string 2 while the remaining blue string will be called string 3.
+###end p 90
+###begin p 91
+Possible parities. Note that the endpoint arcs are neither labeled consecutively nor in a clockwise fashion for tangle generation.
+###end p 91
+###begin p 92
+###xml 69 70 69 70 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 70 72 70 72 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 112 115 112 115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F12">12A</xref>
+###xml 193 194 193 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 194 195 194 195 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 197 198 197 198 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 198 199 198 199 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 201 202 201 202 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 202 203 202 203 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3</sub>
+###xml 205 206 205 206 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 206 207 206 207 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+###xml 332 333 332 333 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 333 334 333 334 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+###xml 402 403 402 403 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 403 404 403 404 <sub xmlns:xlink="http://www.w3.org/1999/xlink">5</sub>
+###xml 406 407 406 407 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 407 408 407 408 <sub xmlns:xlink="http://www.w3.org/1999/xlink">6</sub>
+###xml 410 411 410 411 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 411 412 411 412 <sub xmlns:xlink="http://www.w3.org/1999/xlink">7</sub>
+###xml 414 415 414 415 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 415 416 415 416 <sub xmlns:xlink="http://www.w3.org/1999/xlink">8</sub>
+###xml 454 455 454 455 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 455 456 455 456 <sub xmlns:xlink="http://www.w3.org/1999/xlink">9</sub>
+###xml 458 459 458 459 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 459 461 459 461 <sub xmlns:xlink="http://www.w3.org/1999/xlink">10</sub>
+###xml 621 624 621 624 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F12">12A</xref>
+We first consecutively label the arcs of red string 1 beginning with x1 as illustrated with the example in Fig. 12A. The red string is broken into four arcs with the arcs consecutively labeled x1, x2, x3, x4. We then label the arcs of the green second string starting from the first endpoint arc clockwise from the red endpoint arc x4. String 2 is broken into four arcs which are consecutively labeled x5, x6, x7, x8. We then label the arcs of string 3, x9, x10, starting from the first endpoint arc clockwise from the last labeled arc of string 2. Recall that the arcs correspond to columns in the coloring matrix (Fig. 12A). Hence for tangle generation, we have chosen a particular ordering of the columns by ordering the arcs.
+###end p 92
+###begin p 93
+A.) Example: labeling arcs. The arcs correspond to columns in the coloring matrix. The rows of the coloring matrix are not determined until the crossings are labeled, but are included in the above figure for illustrative purposes. The matrix is partitioned into blocks in order to emphasize the correlation between the placement of 1's and the number of arcs in each string. Observe 1's only occur in the diagonal blocks in the pattern shown. B.) Example: labeling crossings.
+###end p 93
+###begin p 94
+###xml 286 289 286 289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F12">12B</xref>
+###xml 328 330 328 330 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 359 360 359 360 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 360 362 360 362 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 360 362 360 362 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 366 367 366 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 367 368 367 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 369 370 369 370 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 367 370 367 370 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>+<italic>i</italic></sub>
+###xml 402 404 402 404 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 433 434 433 434 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 434 435 434 435 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 434 438 434 438 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic>+1 </sub>
+###xml 442 443 442 443 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 443 444 443 444 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 443 447 443 447 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic>+2 </sub>
+###xml 483 485 483 485 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 514 515 514 515 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 515 516 515 516 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 515 519 515 519 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic>+2 </sub>
+###xml 523 524 523 524 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 524 525 524 525 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 524 527 524 527 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic>+3</sub>
+###xml 592 595 592 595 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F12">12B</xref>
+Recall that the coloring equations (which correspond to rows in the coloring matrix) are determined by the crossings in the tangle diagram. Hence we determine the ordering of the rows by labeling the crossings. Beginning with string 1, we consecutively number the under-crossings (Fig. 12B). Hence for string 1, crossing number i occurs between string 1 arcs xi and xi+i. For string 2, crossing number j occurs between string 2 arcs xj+1 and xj+2 while for string 3, crossing number k occurs between string 3 arcs xk+2 and xk+3. This determines the placement of the two 1's in each row (Fig. 12B). To generate matrices that could correspond to a coloring matrix, we can now place one -2 in each row in all possible combinations.
+###end p 94
+###begin p 95
+###xml 153 174 153 174 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Non-drawable matrices</bold>
+###xml 257 274 257 274 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Equivalence moves</bold>
+Not all matrices that could correspond to a 3-string tangle are generated (see below). Not all generated matrices correspond to a tangle (see section on Non-drawable matrices). Many different matrices correspond to the same tangle (see below and section on Equivalence moves).
+###end p 95
+###begin title 96
+Matrices not generated
+###end title 96
+###begin p 97
+###xml 274 275 274 275 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 275 277 275 277 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 275 277 275 277 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 279 280 279 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 280 281 280 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 280 284 280 284 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>+1 </sub>
+###xml 332 333 332 333 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+The algorithm under discussion does not generate all matrices which could correspond to a tangle. A tangle diagram can contain an extraneous crossing manifested by the looping of a string over itself. If the loop does not pass under any string, this results in the equation xi - xi+1 = 0. This is more general than an RI move (Fig. 8) as there could be strings passing under this loop. In any case this tangle diagram can be simplified, and hence we do not need to generate the matrix corresponding to this diagram. Since all matrices generated have two "l"s and one "-2" in each row, none of the matrices generated will correspond to a tangle containing such an extraneous crossing.
+###end p 97
+###begin p 98
+###xml 144 145 144 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 145 147 145 147 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 145 147 145 147 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 151 152 151 152 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 152 153 152 153 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 152 156 152 156 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>+1 </sub>
+###xml 193 194 193 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 194 196 194 196 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 194 196 194 196 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 198 199 198 199 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 199 200 199 200 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 199 203 199 203 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>+1 </sub>
+###xml 282 283 282 283 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+Another case that is not generated is the presence of a string not crossing under any arcs, and hence consisting of just one arc doubly labeled xi and xi+1 . This case results in the equation, xi - xi+1 = 0. We could easily generate this, but the system of tangle equations in Fig. 6 rules out such tangles as possible solutions.
+###end p 98
+###begin p 99
+###xml 257 259 257 259 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F13">13</xref>
+###xml 321 324 321 324 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F13">13B</xref>
+###xml 410 413 410 413 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F13">13A</xref>
+###xml 682 685 682 685 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F13">13C</xref>
+###xml 773 776 773 776 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F13">13C</xref>
+The algorithm also does not generate matrices that correspond to tangles containing crossings which can be removed by an RII move. These matrices contain -2's in the same column in two consecutive rows where the rows correspond to the same string. See Fig. 13. By not generating matrices containing the submatrix in Fig. 13B, we do not generate any tangle diagrams which can be simplified by an RII move (Fig. 13A). This also eliminates other tangles whose coloring matrix also contains this submatrix. This includes tangle diagrams containing a generalization of an RII move where strings are allowed to pass under the strings which would otherwise correspond to an RII move (Fig. 13C, left-side) as well as tangles containing diagrams like that on the right-side of Fig. 13C. All of these tangle diagrams can be simplified. This is one advantage of using coloring matrices to generate tangles: we easily remove a number of matrices that correspond to tangle diagrams where the number of crossings can be reduced.
+###end p 99
+###begin p 100
+A.) An RII move. B.) Matrix corresponding to RII move. C.) Tangles which would also contain the submatrix in Fig. 13B.
+###end p 100
+###begin p 101
+The next part of this software checks the coloring invariant as this removes the majority of the matrices from consideration. However, for readability, we will discuss the drawability algorithm first.
+###end p 101
+###begin title 102
+Non-drawable matrices
+###end title 102
+###begin p 103
+###xml 110 112 110 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 568 569 568 569 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 569 570 569 570 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 572 573 572 573 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 573 574 573 574 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 576 577 576 577 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 577 578 577 578 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 580 581 580 581 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 581 582 581 582 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+###xml 625 626 625 626 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 626 627 626 627 <sub xmlns:xlink="http://www.w3.org/1999/xlink">5</sub>
+###xml 629 630 629 630 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 630 632 630 632 <sub xmlns:xlink="http://www.w3.org/1999/xlink">6 </sub>
+###xml 670 671 670 671 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 671 673 671 673 <sub xmlns:xlink="http://www.w3.org/1999/xlink">7 </sub>
+###xml 677 678 677 678 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 678 679 678 679 <sub xmlns:xlink="http://www.w3.org/1999/xlink">8</sub>
+###xml 926 927 926 927 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 927 929 927 929 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 933 934 933 934 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 934 935 934 935 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 1003 1004 1003 1004 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1004 1005 1004 1005 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 1007 1008 1007 1008 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1008 1009 1008 1009 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 1083 1084 1083 1084 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1084 1086 1084 1086 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 1107 1108 1107 1108 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1108 1110 1108 1110 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 1114 1115 1114 1115 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1115 1116 1115 1116 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 1158 1159 1158 1159 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1159 1161 1159 1161 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 1178 1179 1178 1179 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1179 1181 1179 1181 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 1185 1186 1185 1186 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1186 1188 1186 1188 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 1194 1197 1194 1197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F14">14A</xref>
+###xml 1278 1279 1278 1279 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1279 1281 1279 1281 <sub xmlns:xlink="http://www.w3.org/1999/xlink">5 </sub>
+###xml 1302 1303 1302 1303 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1303 1305 1303 1305 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 1309 1310 1309 1310 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1310 1312 1310 1312 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 </sub>
+###xml 1318 1321 1318 1321 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F14">14B</xref>
+Not all generated matrices correspond to a tangle. We use an algorithm almost identical to that described in [18] to completely determine if a matrix corresponds to a drawable tangle. This algorithm determines if all arcs can be drawn or if an arc becomes trapped in a region and cannot be completed. We illustrate with an example. If the matrix in Eqn. (4) corresponds to a coloring matrix of a tangle, then since it has five rows, the tangle must have five crossings. Also, based upon the pattern of 1's in this matrix, the first string should consist of four arcs, x1, x2, x2, x4, while the second string consists of arcs x5, x6 and the third string consists of arcs x7 and x8. A matrix corresponds to a tangle diagram if we can embed all of the arcs. In this case we say that the matrix is drawable. In order to determine if there exists a tangle diagram associated to the matrix in Eqn. (4), we begin by drawing the arcs x1 and x2. Recall the first row represents the first crossing with underarcs x1, x2. Since a -2 appears in the first row and the fourth column, we know that x4 crosses over between x1 and x2. Hence we also draw a portion of the arc x4 between the arcs x1 and x2 (Fig. 14A). Similarly since a -2 appears in the second row and fifth column, we know that x5 crosses over between x2 and x3 (Fig. 14B).
+###end p 103
+###begin p 104
+The matrix in Eqn. (4) does not correspond to a 3-string tangle.
+###end p 104
+###begin p 105
+
+###end p 105
+###begin p 106
+###xml 25 26 25 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 26 27 26 27 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3</sub>
+###xml 42 43 42 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 43 45 43 45 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 66 67 66 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 67 69 67 69 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 </sub>
+###xml 73 74 73 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 74 76 74 76 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 136 137 136 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 137 139 137 139 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 191 192 191 192 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 192 194 192 194 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 242 243 242 243 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 243 245 243 245 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 263 264 263 264 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 264 266 264 266 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 </sub>
+###xml 304 305 304 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 305 307 305 307 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 </sub>
+###xml 313 316 313 316 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F14">14C</xref>
+###xml 352 353 352 353 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 353 355 353 355 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 </sub>
+###xml 365 366 365 366 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 366 368 366 368 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 449 450 449 450 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 450 452 450 452 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 </sub>
+###xml 464 465 464 465 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 465 467 465 467 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 496 499 496 499 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F14">14C</xref>
+###xml 545 548 545 548 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F14">14C</xref>
+###xml 602 603 602 603 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 603 604 603 604 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+In order to complete arc x3, we note that x1 crosses over between x3 and x4 (-2 appears in the third row and first column and hence the x1 is the overcrossing for this third crossing). Since x1 has already been drawn, we determine if the arc x1 is reachable from x3 by searching the region accessible to x3 (Fig. 14C, middle). In this case we see that x3 can reach x1 from both above and below and hence both cases are checked. Thus we draw the arc x3 approaching x1 from above in one case (Fig. 14C, top) and from below in the other case (Fig. 14C, bottom). We also draw the beginning part of the arc x4.
+###end p 106
+###begin p 107
+###xml 21 22 21 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 22 24 22 24 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 68 69 68 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 69 71 69 71 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 75 76 75 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 76 77 76 77 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 148 149 148 149 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 149 151 149 151 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 178 179 178 179 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 179 181 179 181 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 249 250 249 250 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 250 252 250 252 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 321 322 321 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 322 324 322 324 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 330 333 330 333 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F14">14D</xref>
+###xml 401 402 401 402 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 402 404 402 404 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 483 484 483 484 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 484 486 484 486 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 492 495 492 495 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F14">14D</xref>
+A portion of the arc x4 has been draw before (crossing over between x1 and x2), so we must determine if we can connect the previously drawn part of x4 with the beginning part of x4 that we just added. We determine if the previously drawn portion of x4 is within the region accessible to the newly drawn beginning part of x4 (Fig. 14D, left). Note that exactly one side of the previously drawn part of x4 is accessible. Hence there is exactly one way of connecting these two parts of x4 (Fig. 14D, right).
+###end p 107
+###begin p 108
+###xml 91 92 91 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 92 94 92 94 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 237 238 237 238 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 238 240 238 240 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 246 249 246 249 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F14">14E</xref>
+###xml 300 301 300 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 301 303 301 303 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 307 308 307 308 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 308 309 308 309 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 319 320 319 320 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 320 322 320 322 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+According to the matrix in Eqn. (4), the first string consists of exactly four arcs. Hence x4 must also connect to the boundary of the tangle ball. Therefore we check if the boundary of the tangle ball is accessible to the first part of x4 (Fig. 14E). It is not. After passing over between the arcs, x1 and x2, the arc x4 arc is trapped in the shaded region and cannot connect to the boundary of the 3-ball without introducing an extra crossing. Thus the matrix in Eqn. (4) does not correspond to a drawable tangle.
+###end p 108
+###begin p 109
+###xml 155 157 155 157 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 224 226 224 226 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 355 357 355 357 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F14">14</xref>
+This is all done computationally. Currently no tangle diagrams are literally drawn. For a full description of the algorithm applied to link diagrams, see [18]. The main difference between our algorithm and the algorithm in [18] is that since we are interested in tangles, we must consider the boundary of the tangle 3-ball as shown in the example in Fig. 14.
+###end p 109
+###begin title 110
+2-string tangle simplification
+###end title 110
+###begin p 111
+###xml 196 197 196 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 259 261 259 261 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 269 270 269 270 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 410 412 410 412 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 427 429 427 429 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F15">15</xref>
+###xml 454 455 454 455 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 510 512 510 512 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 605 607 605 607 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F15">15</xref>
+Coloring is a weak knot invariant, but a strong tangle invariant. Hence, in order to use this invariant for solving tangle equations, we must first simplify the system of tangle equations in Fig. 6 by applying 2-string tangle analysis. Recall that the tangle T in Fig. 6 contains three strings. Observe that one of the strings in the green annulus loops back, connecting two of the three strings in the tangle T (see also Fig. 15 and the example in Fig. 5). Hence if we combine the three strings in the tangle T with the strings in the green annulus, we obtain a 2-string tangle. Thus the tangles in Fig. 15 are 2-string tangles. Endpoints of the two strings are marked by dots (note two strings have four endpoints).
+###end p 111
+###begin p 112
+2-string tangle analysis will be used to determine these 2-string tangles from Fig. 6. The ends of the two strings are marked by dots.
+###end p 112
+###begin p 113
+###xml 46 48 46 48 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F15">15</xref>
+###xml 84 85 84 85 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 254 256 254 256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 323 324 323 324 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 325 327 325 327 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+We can solve for the 2-string tangles in Fig. 15 using the tangle equations in Fig. 6. This step requires some mathematical background in tangle analysis, although there is software (available at KnotPlot.com) for solving some 2-string tangle equations [38]. For information on how to solve 2-string tangle equations, see [1,33]. For additional 2-string tangle analysis applied to the Mu transpososome, see (Darcy IK, Luecke J, Vazquez M: A tangle analysis of the Mu transpososome protein complex which binds three DNA segments, manuscript in preparation).
+###end p 113
+###begin p 114
+###xml 25 27 25 27 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 50 51 50 51 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 74 76 74 76 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 128 130 128 130 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F16">16</xref>
+We can use a theorem in [29] and tangle calculus [1] (or tangle software [38]) to solve for one of these 2-string tangles (Fig. 16, where the crossings are either all right-handed or all left-handed).
+###end p 114
+###begin p 115
+Solving for a 2-string tangle.
+###end p 115
+###begin p 116
+###xml 15 17 15 17 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 40 41 40 41 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 64 66 64 66 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 128 130 128 130 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F17">17</xref>
+Similarly, by [36] and tangle calculus [1] (or tangle software [38]), we can solve for two more of these 2-string tangles (Fig. 17, where the crossings are either all right-handed or all left-handed).
+###end p 116
+###begin p 117
+Solving for two more 2-string tangles.
+###end p 117
+###begin p 118
+###xml 55 57 55 57 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F15">15</xref>
+###xml 95 97 95 97 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F15">15</xref>
+###xml 212 213 212 213 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 284 286 284 286 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F18">18</xref>
+###xml 311 312 311 312 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 368 370 368 370 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F18">18</xref>
+###xml 568 569 568 569 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+This determines the remaining 2-string tangles in Fig. 15 since the last three tangles in Fig. 15 can be obtained from the first three by adding a crossing. In fact solving the system of tangle equations in Fig. 6 is equivalent to solving the system of three tangle equations in Fig. 18 for the 3-string tangle T. Observe, also, that the first 2-string tangle in Fig. 18 contains four right-handed or four left-handed crossings. Hence in order to obtain a five crossing knotted product, the extra crossing in the green annulus in the top right tangle equation in Fig. 6 must be of the same handedness as these four crossings. Thus the crossings in the five crossing knotted product must be either all right- or all left-handed.
+###end p 118
+###begin p 119
+Tangle equations (crossings are either all right-handed or all left-handed). This system of tangle equations is equivalent to the system of tangle equation in Fig. 6 in that both systems have the same solution set.
+###end p 119
+###begin title 120
+Checking the coloring invariants
+###end title 120
+###begin p 121
+###xml 88 89 88 89 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 146 148 146 148 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F18">18</xref>
+###xml 191 192 191 192 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 192 193 192 193 <bold xmlns:xlink="http://www.w3.org/1999/xlink">l</bold>
+###xml 192 193 192 193 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>l</bold></sub>
+###xml 194 195 194 195 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 198 199 198 199 <bold xmlns:xlink="http://www.w3.org/1999/xlink">d</bold>
+###xml 199 200 199 200 <bold xmlns:xlink="http://www.w3.org/1999/xlink">u</bold>
+###xml 199 200 199 200 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>u</bold></sub>
+###xml 201 202 201 202 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 427 428 427 428 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 428 429 428 429 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 431 432 431 432 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 432 434 432 434 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 440 441 440 441 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 441 443 441 443 <sub xmlns:xlink="http://www.w3.org/1999/xlink">6 </sub>
+###xml 460 462 460 462 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F19">19</xref>
+We first check if a generated matrix could be the coloring matrix of a 3-string tangle, T, which satisfies the system of tangle equations in Fig. 18. In order to use the coloring invariants, Ml(T), du(T), of this 3-string tangle, we must first move the six columns corresponding to the endpoint arcs so that they become the six rightmost columns of the coloring matrix. For convenience, we will re-label these endpoint arcs as x1, x2 ,..., x6 as shown in Fig. 19.
+###end p 121
+###begin p 122
+Re-labeled endpoint arcs. When the coloring invariants are determined, the columns corresponding to these endpoint arcs will be listed consecutively in the order shown and in the rightmost columns of the coloring matrix.
+###end p 122
+###begin p 123
+###xml 24 26 24 26 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 31 33 31 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 48 49 48 49 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 49 51 49 51 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 49 51 49 51 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T </bold></sub>
+###xml 58 60 58 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 63 65 63 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 91 92 91 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 92 94 92 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 97 98 97 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 92 102 92 102 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>p </italic>&#215; (<italic>k</italic>-3) </sub>
+###xml 107 109 107 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 112 114 112 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 167 169 167 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k-</italic>
+###xml 175 176 175 176 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 187 188 187 188 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 189 190 189 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 197 198 197 198 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 188 201 188 201 <sub xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>k</italic>-3) &#215; (<italic>k</italic>-3)</sub>
+###xml 216 217 216 217 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 217 223 217 223 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 &#215; 6 </sub>
+###xml 258 259 258 259 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 274 275 274 275 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 276 277 276 277 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 275 284 275 284 <sub xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>k</italic>-3) &#215; 6</sub>
+###xml 286 288 286 288 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SF</italic>
+###xml 290 291 290 291 <sub xmlns:xlink="http://www.w3.org/1999/xlink">T</sub>
+###xml 289 291 289 291 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M<sub>T</sub></bold>
+Given a 3-string tangle T with k crossings, let MT be its k x (k + 3) coloring matrix. Let Op x (k-3) be a p x (k - 3) matrix with all zero entries. Suppose for some (k-3) x (k-3) matrix A(k-3) x (k-3), 3 x 6 matrix M3 x 6 in standard echelon form and some (k-3) x 6 matrix B(k-3) x 6, SF(MT) is as in Eqn. (5):
+###end p 123
+###begin p 124
+
+###end p 124
+###begin p 125
+###xml 3 5 3 5 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 61 63 61 63 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F18">18</xref>
+###xml 100 101 100 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 101 103 101 103 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 107 108 107 108 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 108 110 108 110 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 113 115 113 115 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 160 161 160 161 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 161 164 161 164 <bold xmlns:xlink="http://www.w3.org/1999/xlink">12 </bold>
+###xml 161 164 161 164 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>12 </bold></sub>
+###xml 178 181 178 181 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F20">20A</xref>
+###xml 210 211 210 211 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 211 214 211 214 <bold xmlns:xlink="http://www.w3.org/1999/xlink">12 </bold>
+###xml 211 214 211 214 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>12 </bold></sub>
+###xml 232 235 232 235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F20">20B</xref>
+If T is a solution to the system of tangle equations in Fig. 18, then connecting the endpoint arcs, x1 and x2 of T results in the four crossing 2-string tangle T12 shown in Fig. 20A. The coloring invariants of T12 are shown in Fig. 20B.
+###end p 125
+###begin p 126
+###xml 24 25 24 25 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 25 27 25 27 <bold xmlns:xlink="http://www.w3.org/1999/xlink">12</bold>
+###xml 25 27 25 27 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>12</bold></sub>
+###xml 88 89 88 89 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 119 120 119 120 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 120 122 120 122 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 126 127 126 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 127 128 127 128 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 195 196 195 196 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 196 198 196 198 <bold xmlns:xlink="http://www.w3.org/1999/xlink">12</bold>
+###xml 196 198 196 198 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>12</bold></sub>
+A.) The 2-string tangle T12. This 2-string tangle is obtained from the 3-string tangle, T, by connecting endpoint arcs x1 and x2. B.) The coloring invariants corresponding to the 2-string tangle T12.
+###end p 126
+###begin p 127
+###xml 25 26 25 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 26 28 26 28 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 32 33 32 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 33 35 33 35 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 38 40 38 40 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 70 71 70 71 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 71 74 71 74 <bold xmlns:xlink="http://www.w3.org/1999/xlink">12 </bold>
+###xml 71 74 71 74 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>12 </bold></sub>
+###xml 105 106 105 106 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 106 108 106 108 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 110 111 110 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 111 112 111 112 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 112 114 112 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink">= </italic>
+###xml 130 131 130 131 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 131 133 131 133 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 131 133 131 133 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T </bold></sub>
+Connecting endpoint arcs x1 and x2 of T to obtain the 2-string tangle T12 results in adding the equation x1 - x2= 0 to the matrix MT to obtain the matrix  (Eqn. 6).
+###end p 127
+###begin p 128
+
+###end p 128
+###begin p 129
+###xml 3 5 3 5 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 50 53 50 53 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F20">20A</xref>
+###xml 66 68 66 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 76 78 76 78 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 118 119 118 119 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 119 121 119 121 <bold xmlns:xlink="http://www.w3.org/1999/xlink">12</bold>
+###xml 119 121 119 121 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>12</bold></sub>
+###xml 129 130 129 130 <bold xmlns:xlink="http://www.w3.org/1999/xlink">d</bold>
+###xml 130 131 130 131 <bold xmlns:xlink="http://www.w3.org/1999/xlink">u</bold>
+###xml 130 131 130 131 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>u</bold></sub>
+###xml 132 133 132 133 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 133 135 133 135 <bold xmlns:xlink="http://www.w3.org/1999/xlink">12</bold>
+###xml 133 135 133 135 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>12</bold></sub>
+###xml 171 173 171 173 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 185 187 185 187 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 214 216 214 216 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 224 226 224 226 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 238 240 238 240 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SF</italic>
+###xml 335 337 335 337 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 345 347 345 347 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 391 392 391 392 <italic xmlns:xlink="http://www.w3.org/1999/xlink">I</italic>
+###xml 393 394 393 394 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 401 402 401 402 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 392 405 392 405 <sub xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>k</italic>-1) &#215; (<italic>k</italic>-1)</sub>
+###xml 467 468 467 468 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 469 470 469 470 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 477 478 477 478 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 468 482 468 482 <sub xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>k</italic>-3) &#215; (<italic>k</italic>-3) </sub>
+###xml 490 492 490 492 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 500 502 500 502 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 524 525 524 525 <italic xmlns:xlink="http://www.w3.org/1999/xlink">I</italic>
+###xml 526 527 526 527 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 534 535 534 535 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 525 538 525 538 <sub xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>k</italic>-3) &#215; (<italic>k</italic>-3)</sub>
+###xml 605 607 605 607 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SF</italic>
+###xml 622 623 622 623 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 623 624 623 624 <bold xmlns:xlink="http://www.w3.org/1999/xlink">l</bold>
+###xml 623 624 623 624 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>l</bold></sub>
+###xml 625 626 625 626 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 626 628 626 628 <bold xmlns:xlink="http://www.w3.org/1999/xlink">12</bold>
+###xml 626 628 626 628 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>12</bold></sub>
+###xml 639 641 639 641 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 686 689 686 689 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F20">20A</xref>
+###xml 691 693 691 693 <italic xmlns:xlink="http://www.w3.org/1999/xlink">SF</italic>
+If T is a solution to the tangle equation in Fig. 20A, then this (k + 1) x (k + 3) matrix, , is a coloring matrix for T12. Since du(T12) = 1, we know that the upper left (k + 1 - 2) x (k + 3 - 4) submatrix of the (k + 1) x (k + 3) matrix SF() has determinant equal to 1. Since this matrix is in standard echelon form, this upper left (k - 1) x (k - 1) submatrix must be the identity matrix, I(k-1) x (k-1), which has 1's along the diagonal and zero's elsewhere. Thus A(k-3) x (k-3) is the (k - 3) x (k - 3) identity matrix, I(k-3) x (k-3). We also know that the lower right-hand corner 2 x 4 submatrix of SF() is equal to Ml(T12). Thus if T is a solution to the tangle equation in Fig. 20A, SF() is as in Eqn. 7 where * represents an arbitrary integer.
+###end p 129
+###begin p 130
+
+###end p 130
+###begin p 131
+###xml 71 72 71 72 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 125 128 125 128 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F20">20A</xref>
+###xml 230 232 230 232 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 306 308 306 308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 409 411 409 411 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F18">18</xref>
+Hence, in order to determine if a matrix could correspond to a tangle, T, which is a solution to the tangle equation in Fig. 20A, we check if  is row equivalent to one of the two matrices in Eqn. (7). This is not a guarantee that T is a solution as different tangles can have the same coloring invariants [15], but our computational results show that it is sufficient for solving the tangle equations in Fig. 18.
+###end p 131
+###begin p 132
+###xml 26 28 26 28 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 79 82 79 82 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F21">21A</xref>
+###xml 104 105 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 105 107 105 107 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 </sub>
+###xml 109 110 109 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 110 112 110 112 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4 </sub>
+###xml 130 131 130 131 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 131 133 131 133 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 131 133 131 133 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T </bold></sub>
+###xml 195 196 195 196 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 196 199 196 199 <bold xmlns:xlink="http://www.w3.org/1999/xlink">34 </bold>
+###xml 196 199 196 199 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>34 </bold></sub>
+###xml 215 218 215 218 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F21">21B</xref>
+###xml 245 247 245 247 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 298 301 298 301 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F21">21C</xref>
+###xml 326 327 326 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 327 329 327 329 <sub xmlns:xlink="http://www.w3.org/1999/xlink">5 </sub>
+###xml 331 332 331 332 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 332 334 332 334 <sub xmlns:xlink="http://www.w3.org/1999/xlink">6 </sub>
+###xml 352 353 352 353 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 353 355 353 355 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 353 355 353 355 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T </bold></sub>
+###xml 420 421 420 421 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 421 424 421 424 <bold xmlns:xlink="http://www.w3.org/1999/xlink">56 </bold>
+###xml 421 424 421 424 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>56 </bold></sub>
+###xml 441 444 441 444 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F21">21D</xref>
+Similarly to determine if T could be a solution to the tangle equation in Fig. 21A, we add the equation x3 - x4 = 0 to the matrix MT and check if this matrix satisfies the coloring invariants of T34 as shown in Fig 21B. Finally, we determine if T could be a solution to the tangle equation in Fig. 21C, by adding the equation x5 - x6 = 0 to the matrix MT and checking if this matrix satisfies the coloring invariants of T56 as shown in Fig. 21D.
+###end p 132
+###begin p 133
+###xml 24 25 24 25 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 25 27 25 27 <bold xmlns:xlink="http://www.w3.org/1999/xlink">34</bold>
+###xml 25 27 25 27 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>34</bold></sub>
+###xml 88 89 88 89 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 119 120 119 120 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 120 122 120 122 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 </sub>
+###xml 126 127 126 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 127 128 127 128 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+###xml 195 196 195 196 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 196 198 196 198 <bold xmlns:xlink="http://www.w3.org/1999/xlink">34</bold>
+###xml 196 198 196 198 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>34</bold></sub>
+###xml 224 225 224 225 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 225 227 225 227 <bold xmlns:xlink="http://www.w3.org/1999/xlink">56</bold>
+###xml 225 227 225 227 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>56</bold></sub>
+###xml 288 289 288 289 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 319 320 319 320 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 320 322 320 322 <sub xmlns:xlink="http://www.w3.org/1999/xlink">5 </sub>
+###xml 326 327 326 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 327 328 327 328 <sub xmlns:xlink="http://www.w3.org/1999/xlink">6</sub>
+###xml 395 396 395 396 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 396 398 396 398 <bold xmlns:xlink="http://www.w3.org/1999/xlink">56</bold>
+###xml 396 398 396 398 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>56</bold></sub>
+A.) The 2-string tangle T34. This 2-string tangle is obtained from the 3-string tangle, T, by connecting endpoint arcs x3 and x4. B.) The coloring invariants corresponding to the 2-string tangle T34. C.) The 2-string tangle T56. This 2-string tangle is obtained from the 3-string tangle, T, by connecting endpoint arcs x5 and x6. D.) The coloring invariants corresponding to the 2-string tangle T56.
+###end p 133
+###begin p 134
+###xml 66 67 66 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 67 73 67 73 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 &#215; 6 </sub>
+###xml 76 77 76 77 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 77 79 77 79 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 77 79 77 79 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T </bold></sub>
+###xml 114 116 114 116 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 156 158 156 158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F18">18</xref>
+###xml 173 174 173 174 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 174 179 174 179 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 &#215; 6</sub>
+###xml 202 203 202 203 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 203 205 203 205 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 203 205 203 205 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 207 208 207 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 208 213 208 213 <sub xmlns:xlink="http://www.w3.org/1999/xlink">(i+1)</sub>
+###xml 223 225 223 225 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 311 312 311 312 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 312 313 312 313 <bold xmlns:xlink="http://www.w3.org/1999/xlink">i</bold>
+###xml 314 317 314 317 <bold xmlns:xlink="http://www.w3.org/1999/xlink">i+1</bold>
+###xml 312 318 312 318 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>i</bold>(<bold>i+1</bold>)</sub>
+###xml 323 325 323 325 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T </bold>
+###xml 364 366 364 366 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F18">18</xref>
+###xml 392 393 392 393 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 411 413 411 413 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 421 423 421 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 441 442 441 442 <bold xmlns:xlink="http://www.w3.org/1999/xlink">M</bold>
+###xml 442 443 442 443 <bold xmlns:xlink="http://www.w3.org/1999/xlink">T</bold>
+###xml 442 443 442 443 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>T</bold></sub>
+###xml 454 455 454 455 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 455 461 455 461 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3 &#215; 6 </sub>
+Alternatively, we can determine what the entries of the submatrix M3 x 6 of MT (Eqn. (5)) need to be in order for T to satisfy the tangle equations in Fig. 18. To determine M3 x 6, we add the equations xi - x(i+1) for each i = 1, 3, 5, and determine the constraints needed to satisfy the coloring invariants of Ti(i+1). If T satisfies the tangle equations in Fig. 18, then the determinant of A, the upper left (k - 3) x (k - 3) submatrix of MT, is 1 and M3 x 6 is as in Eqn. (8).
+###end p 134
+###begin p 135
+
+###end p 135
+###begin p 136
+###xml 17 18 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 26 28 26 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r </italic>
+###xml 39 41 39 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s </italic>
+###xml 56 58 56 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t </italic>
+for some integer x, where r = 3 or -5, s = 2 or -4, and t = 2. As a check, both methods were implemented.
+###end p 136
+###begin title 137
+Equivalence moves
+###end title 137
+###begin p 138
+###xml 281 298 281 298 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Tangle generation</bold>
+Recall that a tangle can be represented by a number of different diagrams related by Reidemeister moves. While generating matrices, we omit matrices where the corresponding diagram can be simplified by RI or RII moves and other matrix related moves (as described in the subsection Tangle generation). We also added two additional equivalence relations.
+###end p 138
+###begin p 139
+###xml 56 58 56 58 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F22">22</xref>
+We removed tangles containing the diagram shown in Fig. 22 by removing matrices containing the submatrices in Eqn. (9).
+###end p 139
+###begin p 140
+A diagram corresponding to Eqn. 9.
+###end p 140
+###begin p 141
+
+###end p 141
+###begin p 142
+This also eliminates other tangle diagrams whose matrices contain these submatrices, but all such tangles can be simplified.
+###end p 142
+###begin p 143
+###xml 69 70 69 70 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+###xml 443 445 443 445 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F18">18</xref>
+###xml 469 470 469 470 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+A tangle diagram containing the left-hand side of an RIII move (Fig. 8) will be equivalent to the tangle diagram obtained after the RIII move has been performed. Hence we choose one of these tangle diagrams and discard the other. After the above equivalence moves, we are left with thirteen possible tangles which can be checked by hand to determine if they correspond to equivalent or non-equivalent solutions to the tangle equations in Fig. 18 (or equivalently, Fig. 6).
+###end p 143
+###begin title 144
+Authors' contributions
+###end title 144
+###begin p 145
+###xml 141 218 141 218 <bold xmlns:xlink="http://www.w3.org/1999/xlink">The coloring invariants, Tangle generation, Checking the coloring invariants </bold>
+###xml 330 343 330 343 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Non-drawable </bold>
+CM and JN contributed to the mathematical analysis for applying the coloring invariant. JN also drafted significant portions of the sections The coloring invariants, Tangle generation, Checking the coloring invariants . AP, JS, and TT developed the software implementing the coloring invariant calculations. RM contributed to the Non-drawable section and is responsible for the subroutine which determines if a matrix corresponds to a drawable tangle. He was assisted by ND and JS. JC, ND, SM, and JS developed equivalence moves which were implemented by ND, RM, and JS. ID conceived of and oversaw this project, drafted much of the manuscript, and contributed to the mathematical and software development. All authors read and approved the final manuscript.
+###end p 145
+###begin title 146
+Acknowledgements
+###end title 146
+###begin p 147
+This work was supported by a grant from the Joint DMS/NIGMS Initiative to Support Research in the Area of Mathematical Biology to ID and S. D. Levene. (NIH GM 67242) and by an Interdisciplinary Research Grant from The University of Iowa's Obermann Center for Advanced Studies to ID, S. D. Levene, and R. G. Scharein. We also thank John Luecke who ran a VIGRE REU at UT Austin which supported JC, ND, SM, and JS. ND and JS were also supported through the U.I. Undergraduate Scholar Assistant (USA) Program.
+###end p 147
+###begin p 148
+###xml 135 137 135 137 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1A</xref>
+###xml 139 140 139 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+###xml 142 143 142 143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+We also thank Abhijeet Bhutra for his contributions to the software discussed in this paper, Rob Scharein and KnotPlot.com for figures 1A, 7, 8, and Yosune Camio and Melanie DeVries for comments on an earlier version of this manuscript.
+###end p 148
+###begin article-title 149
+A calculus for rational tangles: applications to DNA recombination
+###end article-title 149
+###begin article-title 150
+###xml 29 41 <span type="species:ncbi:10710">phage lambda</span>
+The topological mechanism of phage lambda integrase
+###end article-title 150
+###begin article-title 151
+Tangle analysis of Xer recombination reveals only three solutions, all consistent with a single three-dimensional topological pathway
+###end article-title 151
+###begin article-title 152
+DNA Topology and Geometry in Flp and Cre Recombination
+###end article-title 152
+###begin article-title 153
+Path of DNA within the Mu transpososome. Transposase interactions bridging two Mu ends and the enhancer trap five DNA supercoils
+###end article-title 153
+###begin article-title 154
+###xml 17 25 <span type="species:ncbi:10677">phage Mu</span>
+Transposition of phage Mu DNA
+###end article-title 154
+###begin article-title 155
+Geometry of site-alignment during Int family recombination
+###end article-title 155
+###begin article-title 156
+Topological selectivity of a hybrid site-specific recombination system with elements from Tn3 res/resolvase and bacteriophage PL loxP/Cre
+###end article-title 156
+###begin article-title 157
+A unique right end-enhancer complex precedes synapsis of Mu ends: the enhancer is sequestered within the transpososome throughout transposition
+###end article-title 157
+###begin article-title 158
+The Mu transposase interwraps distant DNA sites within a functional transpososome in the absence of DNA supercoiling
+###end article-title 158
+###begin article-title 159
+Structure of Cre Recombinase complexed with DNA in a site-specific recombination synapse
+###end article-title 159
+###begin article-title 160
+Metacyclic Invariants of Knots and Links
+###end article-title 160
+###begin article-title 161
+3-Coloring and other Invariants of Knots
+###end article-title 161
+###begin article-title 162
+Colorability and n-String Tangles
+###end article-title 162
+###begin article-title 163
+Classification of Knot Projections
+###end article-title 163
+###begin article-title 164
+Computational algorithms and the complexity of link polynomials
+###end article-title 164
+###begin article-title 165
+A tabulation of oriented links
+###end article-title 165
+###begin article-title 166
+3D reconstruction of the Mu transposase and the Type 1 transpososome: a structural framework for Mu DNA transposition
+###end article-title 166
+###begin article-title 167
+Determinants of product topology in a hybrid Cre-Tn3 resolvase site-specific recombination system
+###end article-title 167
+###begin article-title 168
+The Mathematica Package KnotTheory
+###end article-title 168
+###begin article-title 169
+Simulations of action of DNA topoisomerases to investigate boundaries and shapes of spaces of knots
+###end article-title 169
+###begin article-title 170
+The first 1,701,936 knots
+###end article-title 170
+###begin article-title 171
+Dehn surgery on knots
+###end article-title 171
+###begin article-title 172
+Analysis of the mechanism of DNA recombination using tangles
+###end article-title 172
+###begin article-title 173
+Tangle equations
+###end article-title 173
+###begin article-title 174
+Tangle equations. II
+###end article-title 174
+###begin article-title 175
+Solving tangle equations arising in a DNA recombination model
+###end article-title 175
+###begin article-title 176
+Dehn surgeries on strongly invertible knots which yield lens spaces
+###end article-title 176
+###begin article-title 177
+Biological distances on DNA knots and links: applications to XER recombination
+###end article-title 177
+###begin article-title 178
+Classifying and applying rational knots and rational tangles
+###end article-title 178
+###begin article-title 179
+Tangle analysis of Gin site-specific recombination
+###end article-title 179
+###begin article-title 180
+Solving unoriented tangle equations involving 4-plats
+###end article-title 180
+###begin article-title 181
+Solving oriented tangle equations involving 4-plats
+###end article-title 181
+###begin article-title 182
+Tangle solutions for a family of DNA-rearranging proteins
+###end article-title 182
+###begin article-title 183
+Monopoles and lens space surgeries
+###end article-title 183
+###begin article-title 184
+TangleSolve: topological analysis of site-specific recombination
+###end article-title 184
+###begin article-title 185
+TopoICE-R: 3D visualization modeling the topology of DNA recombination
+###end article-title 185
+###begin article-title 186
+Results on the classification of rational 3-tangles
+###end article-title 186
+###begin article-title 187
+On the classification of rational 3-tangles
+###end article-title 187
+###begin article-title 188
+###xml 0 1 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+N-string tangles
+###end article-title 188
+###begin article-title 189
+Detecting unknotted graphs in 3-space
+###end article-title 189
+

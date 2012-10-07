@@ -1,0 +1,1004 @@
+###begin article-title 0
+Annotating novel genes by integrating synthetic lethals and genomic information
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+###xml 73 78 <span type="species:ncbi:4932">yeast</span>
+Large scale screening for synthetic lethality serves as a common tool in yeast genetics to systematically search for genes that play a role in specific biological processes. Often the amounts of data resulting from a single large scale screen far exceed the capacities of experimental characterization of every identified target. Thus, there is need for computational tools that select promising candidate genes in order to reduce the number of follow-up experiments to a manageable size.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 40 45 40 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 49 53 49 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1</italic>
+###xml 816 821 816 821 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1 </italic>
+We analyze synthetic lethality data for arp1 and jnm1, two spindle migration genes, in order to identify novel members in this process. To this end, we use an unsupervised statistical method that integrates additional information from biological data sources, such as gene expression, phenotypic profiling, RNA degradation and sequence similarity. Different from existing methods that require large amounts of synthetic lethal data, our method merely relies on synthetic lethality information from two single screens. Using a Multivariate Gaussian Mixture Model, we determine the best subset of features that assign the target genes to two groups. The approach identifies a small group of genes as candidates involved in spindle migration. Experimental testing confirms the majority of our candidates and we present she1 (YBL031W) as a novel gene involved in spindle migration. We applied the statistical methodology also to TOR2 signaling as another example.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+###xml 303 308 303 308 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 312 317 312 317 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+We demonstrate the general use of Multivariate Gaussian Mixture Modeling for selecting candidate genes for experimental characterization from synthetic lethality data sets. For the given example, integration of different data sources contributes to the identification of genetic interaction partners of arp1 and jnm1 that play a role in the same biological process.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 590 595 590 595 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 599 603 599 603 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1</italic>
+###xml 496 501 <span type="species:ncbi:4932">yeast</span>
+One of the major challenges in computational biology is the extraction of relevant information from the increasing amounts of data resulting from large scale experimentation. While the reliability of the results of single high-throughput assays has often been challenged, there is great promise that the confidence and precision of the outcomes can be increased through integration and combination of multiple data sources. We applied statistical modeling, based on data integration, for finding yeast genes involved in spindle migration from two synthetic lethality screens performed with arp1 and jnm1.
+###end p 9
+###begin title 10
+Synthetic lethality data
+###end title 10
+###begin p 11
+###xml 144 145 144 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 390 391 390 391 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 1029 1030 1029 1030 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 158 163 <span type="species:ncbi:4932">yeast</span>
+Synthetic lethality describes the phenomenon of observing a lethal phenotype when two otherwise viable gene deletions are combined in one cell [1]. Since the yeast collection of deletion mutants has become available, genome-scale assays to uncover interactions between non-essential genes, for example by Synthetic Genetic Array (SGA) technology, have become routine in molecular genetics [2]. By using well-known genes as query genes and crossing them into the deletion set, one can systematically search for target genes that are synthetically lethal with the query gene. As a conclusion, these targets, together with the query gene, can be placed in a common functional context in the cell. Large scale synthetic lethal screens are a powerful genetics tool for studying vital biological processes and for finding new components involved in these processes. However, as with large scale experimentation in general, not all of the targets identified by such a screen are specific to the biological process that is investigated [3]. Two functionally very distant genes can show synthetic lethality because a gene deletion does not only cause the loss of function of a particular gene, but creates a whole cellular response to the loss of the gene, possibly affecting many pathways. As a a general example for synthetic lethality between two functionally distant genes, cell death might be the result of a disruption of a gene involved in DNA repair and another one with an important function in the primary metabolism. Since both genes act in processes that are relevant for cell survival it is more likely the general viability that is hampered than the functioning of a single or several interdependent processes. Due to crosstalk and partial redundancy between different pathways many genes that are found as targets in a synthetic lethal screen function in related but not directly associated biological processes. Thus in terms of pathway space a synthetic lethality screen performed by SGA yields close and distant genetic interaction partners of a given query gene. Of primary interest, however, are genetic interactions that occur within the same biological process because they indicate a close functional relationship between query and target gene.
+###end p 11
+###begin p 12
+Several approaches addressed the problem of characterizing synthetic lethal relationships.
+###end p 12
+###begin p 13
+###xml 155 156 155 156 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 486 487 486 487 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 1023 1024 1023 1024 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 1025 1026 1025 1026 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 1478 1479 1478 1479 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+Tong et al. applied hierarchical clustering to a set of 132 synthetic lethality screens to identify groups of genes acting in the same biological process [4]. They also found that, while synthetic lethal relationships are significantly enriched within protein complexes, members of a pathway show common genetic interaction partners rather than direct connections. Kelley and Ideker examined the topology of global genetic and protein networks with regard to the interaction structure [5]. After analysis of nearly 4800 synthetic lethal interactions and physical interactions involving close to 6000 proteins, the authors concluded that for a large part of known interaction data synthetic lethality can occur either within or between pathways with only a minority occurring within the same pathway. Using the same data set as Tong et al., work by Ye et al. showed that patterns of shared synthetic lethal interactions (rather than the genetic interactions themselves) are predictive of membership in a biological process [4,6]. Based on their analysis, they derived a congruence measure for assessing this correlation. They successfully validated their approach and proposed a novel gene acting in dynein-dependent spindle positioning. Applying the congruence score method on synthetic lethality data generated for 74 query genes involved in DNA damage response, Pan et al. identified 16 functional genetic modules that regulate DNA-damage checkpoint signaling and DNA repair [7].
+###end p 13
+###begin p 14
+All of the above reports suggest that synthetic lethal interactions which occur closely within the same biological scenario are a rare event. For an experimenter, however, they represent the interesting fraction of a synthetic lethal screen, especially when multiple sets of synthetic lethal data are not available for the pathway under investigation. Thus, the above mentioned methods are of limited utility. A close genetic interaction points to a target gene that can be readily examined by appropriate follow-up assays, whereas distant relationships remain difficult to tackle experimentally.
+###end p 14
+###begin p 15
+###xml 160 165 160 165 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 169 173 169 173 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1</italic>
+###xml 835 836 835 836 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+In the approach presented here, we focused on finding the subset of hits resulting from a synthetic lethality screen that is closely related to the query genes arp1 and jnm1. In contrast to the reports discussed above, our approach does not require large amounts of synthetic lethal information. Instead, we selected a list of genes identified as targets by two single synthetic lethal screens and investigated whether integrating additional genomic information could help to distinguish close genetic relationships from distant ones. Our approach complements previous conceptually different models that rely on large protein and/or genetic networks. Since we found a novel gene involved in spindle migration, and further provided functional annotation for an uncharacterized ORF, our success is on a comparable scale as described in [6].
+###end p 15
+###begin p 16
+In addition, we applied our statistical model to the biological process of TOR2 signaling and found that the predicted candidate genes are significantly enriched in a few known genes in the TOR2 signaling cascade.
+###end p 16
+###begin title 17
+Our Approach
+###end title 17
+###begin p 18
+###xml 71 76 71 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 80 84 80 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1</italic>
+###xml 146 147 146 147 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 148 149 148 149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 392 393 392 393 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 597 602 597 602 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 606 611 606 611 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+###xml 969 970 969 970 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 973 974 973 974 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 255 260 <span type="species:ncbi:4932">yeast</span>
+We analyzed the results of two synthetic lethal screens performed with arp1 and jnm1, two genes involved in the migration of the mitotic spindle [8,9]. This process is essential for high fidelity chromosome segregation and proper cell division in budding yeast. Here, it serves as a case study because some important regulatory elements are already known and can be used for reference (Table 1). In addition, spindle migration is a highly buffered process because of its importance for the cell. Both query genes used for the screens are involved in dynein-dependent spindle positioning. We chose arp1 and jnm1 as query genes, because an SGA-screen will detect genes functioning in pathways that compensate for the loss of dynein-dependent spindle positioning and thus also play a role in spindle migration. The screens were performed in the laboratory of Yves Barral and a majority of the hits found by Tong et al. were also identified in our screens (Additional File 1; [4]). For the study presented here, interactions from high-throughput synthetic lethal screening were not confirmed by tetrad assay in order to start the analysis with the largest possible candidate pool, including weak but potentially interesting phenotypes. Also, and more importantly, an adequate set of secondary assays is available for testing the outcomes of a computational analysis in an experimental setting.
+###end p 18
+###begin p 19
+###xml 489 494 489 494 <italic xmlns:xlink="http://www.w3.org/1999/xlink">kar9 </italic>
+###xml 498 502 498 502 <italic xmlns:xlink="http://www.w3.org/1999/xlink">bim1</italic>
+###xml 676 677 676 677 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">5</xref>
+Genes in the data sets known to be related to spindle migration. For the statistical assessment (hypergeometric test) of the Gaussian Mixture Modeling results we used a reference set of all genes involved in spindle migration present in the data set analyzed. For some of the genes, their involvement in spindle migration has been published. The rest is known to be involved from the unpublished results of a previous Kar9-localization screen (Methods). Some key regulatory genes, such as kar9 and bim1, though being in the original synthetic lethality data set, are missing in the data set used for the analysis because of missing data for some observations (Additional File 5).
+###end p 19
+###begin p 20
+###xml 276 281 276 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 285 289 285 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1</italic>
+Since it is much easier to characterize genetic interactions between closely related genes in a follow-up experiment, that we pursued after statistical modeling, we concentrated our efforts on finding a subset of genetic interaction partners that have a close relationship to arp1 and jnm1, assuming that they also have a function in spindle migration.
+###end p 20
+###begin p 21
+Our method does not require a curated data set as a gold standard, as is the case in supervised learning approaches. Instead, it uses the structure found in the data for grouping in an unsupervised manner by way of a Gaussian Mixture Model. The parameters of the model are estimated by the Expectation Maximization (EM) algorithm.
+###end p 21
+###begin p 22
+###xml 194 195 194 195 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+To our knowledge, the presented method is novel because it uses mixture modeling as a framework for characterizing synthetic lethal interactions and for integrating different data types. Figure 1 shows a general outline of our approach. The following paragraphs describe how measurements of mRNA expression, phenotypic profiling, mRNA decay and sequence similarity were integrated and used for statistical modeling.
+###end p 22
+###begin p 23
+###xml 0 43 0 43 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Workflow chart of mixture modeling approach</bold>
+Workflow chart of mixture modeling approach. The figure depicts a general scheme of our mixture modeling method. First, one selects the query gene(s) from a biological process of interest. The respective synthetic lethal data set, retrieved either from a database, such as the GRID, or from own data then defines the list of target genes to consider [39]. Integration of different genomic information sources and generation of genomic features, that characterize the relationship of the query to its synthetic lethal targets, results in a multivariate data set of pairwise scores. Application of a Gaussian Mixture Model identifies a small group of target genes. Varying the posterior probability of the model refines the partitioning, such that the small group shows significant enrichment with known genes in the biological process of the query gene(s), if possible. As a last step, follow-up screens characterize the candidate genes contained in the small group in the biological context that is given (e.g. involvement in spindle migration).
+###end p 23
+###begin title 24
+Included Data Sets
+###end title 24
+###begin p 25
+When searching for target genes that are closely related to the query gene of an SGA, a protein interaction between both gene products is an obvious feature to consider. However, the protein interaction network measured on a large scale by two-hybrid or co-purification techniques only features the products of less than 10% of the genes in the data sets analyzed in this work. Hence, this incomplete information could not be included in a reasonable way in our model. Instead, we focused on data sources with good genome coverage to ensure that comprehensive information is incorporated.
+###end p 25
+###begin p 26
+###xml 99 101 99 101 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 260 262 260 262 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 360 362 360 362 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 479 481 479 481 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 698 708 698 708 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gasch.corr</italic>
+###xml 710 722 710 722 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr </italic>
+###xml 726 739 726 739 <italic xmlns:xlink="http://www.w3.org/1999/xlink">spellman.corr</italic>
+Genes involved in the same biological process are likely to show similar mRNA-expression profiles [10]. To include knowledge about gene coexpression we chose three gene expression data sets. Gasch et al. tested 15 environmental and chemical stress conditions [11]. Hughes et al. measured changes in mRNA expression in response to 300 gene deletions and drugs [12]. Spellman et al. monitored the changes in mRNA expression at 80 experimental conditions related to the cell cycle [13]. For each of these data sets, we calculated the Pearson correlation coefficient of both query genes to all corresponding target genes. In the following, we will refer to these variables according to their source as gasch.corr, hughes.corr and spellman.corr, respectively.
+###end p 26
+###begin p 27
+###xml 138 140 138 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 283 284 283 284 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 285 287 285 287 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 469 479 469 479 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pheno.corr</italic>
+###xml 80 85 <span type="species:ncbi:4932">yeast</span>
+In another microarray-based study, Brown et al. measured the sensitivity of the yeast gene deletion library to various growth conditions [14]. Strains responding to specific factors in the same or similar fashion are likely to carry deletions of genes that are functionally related [4,15]. We therefore calculated the Pearson correlation coefficients of the sensitivity profiles of all target genes to their corresponding query genes. We will refer to this variable as pheno.corr.
+###end p 27
+###begin p 28
+###xml 240 242 240 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 560 572 560 572 <italic xmlns:xlink="http://www.w3.org/1999/xlink">logRNA.ratio</italic>
+###xml 228 233 <span type="species:ncbi:4932">yeast</span>
+To include information about posttranscriptional regulation in the analysis, we considered the degradation rates of mRNA-transcripts. In a systematic approach, Wang et al. measured the mRNA decay rates of a comprehensive set of yeast ORFs [16]. The authors found similarities of transcript decay rates amongst genes encoding proteins of stochiometric complexes. To compare the rates of the different targets to the query genes we calculated the ratios of the respective decay rates and performed a log-transformation on them. We will refer to this variable as logRNA.ratio.
+###end p 28
+###begin p 29
+###xml 250 251 250 251 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 395 397 395 397 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 507 517 507 517 <italic xmlns:xlink="http://www.w3.org/1999/xlink">logseq.sim</italic>
+Proteins for similar biological or biochemical functions are likely to share common activity or structural domains. In fact, synthetic lethal interactions showed a significant enrichment among homologous gene pairs for functionally related proteins [4]. To include such information we determined the sequence similarities between the query genes and the corresponding target genes using blastp [17]. The log-transformed percentage values of sequence similarity were included in the analysis as the variable logseq.sim.
+###end p 29
+###begin p 30
+In total, we used 6 different data sources in addition to the information from synthetic lethal screens.
+###end p 30
+###begin title 31
+Results
+###end title 31
+###begin p 32
+###xml 80 85 80 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 89 94 89 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+###xml 214 219 214 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 223 228 223 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+###xml 301 305 301 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ase1</italic>
+###xml 307 312 307 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38</italic>
+###xml 314 318 314 318 <italic xmlns:xlink="http://www.w3.org/1999/xlink">uba4</italic>
+###xml 320 324 320 324 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gpd1</italic>
+###xml 326 331 326 331 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1 </italic>
+###xml 525 526 525 526 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 547 548 547 548 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 583 588 583 588 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 592 597 592 597 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+###xml 888 892 888 892 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1</italic>
+The statistical analysis performed on synthetic lethality data with query genes arp1 and jnm1 including the 6 additional data sources resulted in a small group of six genes that we propose to be closely related to arp1 and jnm1 and to have a function in the same biological process. The genes include ase1, tvp38, uba4, gpd1, she1 (YBL031W) a gene of unknown function, and the overlapping ORFs YHR127W and YHR131C, that we regard as one gene. Based on the analysis of a set of already known genes included in the data (Table 1 and Additional File 2), our group of closely related to arp1 and jnm1 is enriched for genes involved in spindle migration. Initial experimental validation of the candidates previously uncharacterized in this context confirmed an involvement for the majority of the genes in this statistically significant group. We provide functional annotation for YHR127W and she1, two genes whose exact function has been unknown.
+###end p 32
+###begin title 33
+Feature selection
+###end title 33
+###begin p 34
+###xml 71 72 71 72 <sup xmlns:xlink="http://www.w3.org/1999/xlink">6</sup>
+We computed every subset of variables derived from the six data sets (26- 1 = 63) and used the Bayesian Information Criterion (BIC, Methods) and biological considerations to evaluate the sets of features (data sets) that approximate the data best and thus result in a reasonable model.
+###end p 34
+###begin p 35
+###xml 14 25 14 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr</italic>
+###xml 27 41 27 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">spellman.corr </italic>
+###xml 45 56 45 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pheno.corr </italic>
+###xml 121 131 121 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gasch.corr</italic>
+###xml 133 146 133 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink">logRNA.ratio </italic>
+###xml 150 161 150 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink">logseq.sim </italic>
+###xml 221 232 221 232 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr</italic>
+###xml 234 248 234 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">spellman.corr </italic>
+###xml 252 263 252 263 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pheno.corr </italic>
+###xml 369 379 369 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gasch.corr</italic>
+###xml 381 394 381 394 <italic xmlns:xlink="http://www.w3.org/1999/xlink">logRNA.ratio </italic>
+###xml 398 409 398 409 <italic xmlns:xlink="http://www.w3.org/1999/xlink">logseq.sim </italic>
+The variables hughes.corr, spellman.corr and pheno.corr were part of the top-scoring subsets, whereas subsets containing gasch.corr, logRNA.ratio and logseq.sim yielded worse results (data not shown). Thus, the variables hughes.corr, spellman.corr and pheno.corr contributed to a structure that allowed good separation of the data into two groups whereas the variables gasch.corr, logRNA.ratio and logseq.sim did not provide additional information. In a two-component Gaussian Mixture Model, the two components (two groups) stood for genes either having a direct involvement in spindle migration or no direct involvement.
+###end p 35
+###begin p 36
+###xml 64 76 64 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr </italic>
+###xml 80 94 80 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink">spellman.corr </italic>
+###xml 172 173 172 173 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 383 397 383 397 <italic xmlns:xlink="http://www.w3.org/1999/xlink">spellman.corr </italic>
+###xml 453 465 453 465 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr </italic>
+The best fit for two groups resulted from a using the variables hughes.corr and spellman.corr and thus only relied on transcriptional information. As illustrated in Figure 2, there is a small group consisting of seven data points (ORFs) corresponding to six different genes, that can be discerned from a bigger group containing the rest of the data. While the values of the variable spellman.corr do not differ much between the two groups, the variable hughes.corr is indicative of separation.
+###end p 36
+###begin p 37
+###xml 0 27 0 27 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Best subset of data sources</bold>
+###xml 92 104 92 104 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr </italic>
+###xml 108 121 108 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink">spellman.corr</italic>
+Best subset of data sources. Scatterplot for the best subset of features, which consists of hughes.corr and spellman.corr. The default separation is shown with a cutoff posterior probability of 0.5. The small group is shown in red triangles and the big group in black disks.
+###end p 37
+###begin p 38
+###xml 98 109 98 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr</italic>
+###xml 242 254 242 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr </italic>
+###xml 376 388 376 388 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr </italic>
+###xml 392 406 392 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink">spellman.corr </italic>
+All members of the small group share intermediate to high values of correlation (0.3-0.65) in the hughes.corr-data set as opposed to the members of the larger group that fall in a range between -0.4 and 0.3. Although, only the information of hughes.corr seemed to be important at first sight, the more detailed statistical analysis shows that this is not the case: The use of hughes.corr and spellman.corr was clearly more suitable with respect to the BIC score.
+###end p 38
+###begin title 39
+Statistical Assessment
+###end title 39
+###begin p 40
+###xml 241 242 241 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 243 244 243 244 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 245 246 245 246 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 781 793 781 793 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr </italic>
+###xml 871 876 871 876 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 879 884 879 884 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+###xml 1073 1074 1073 1074 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 1230 1231 1230 1231 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 1236 1237 1236 1237 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">4</xref>
+###xml 1713 1714 1713 1714 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 1735 1736 1735 1736 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">5</xref>
+###xml 2183 2184 2183 2184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+Given unequal grouping, one would naturally consider the small group to comprise interesting information. Also, as already pointed out in the introduction, only a minority of the genes with synthetic lethal interactions are closely related [2,4-6]. We would therefore expect the small group to contain genes with close functional relationships. In line with these prior speculations, we found a small group of genetic interaction partners in the data that differentiate themselves from the larger remainder of the data, because they belong to a different multivariate Gaussian component. Given unequal grouping the smaller group intuitively can be considered specific as opposed to the big remainder of unspecific data points. The high positive correlation values for the variable hughes.corr showed that these target genes are transcriptionally co-regulated with either arp1 or jnm1 and further suggested direct involvement in the same biological process. Thus, they represent promising candidates for thorough experimental testing. For the grouping illustrated in Figure 2 the default cutoff for the posterior probability in the Gaussian Mixture Model was set to 0.5 to separate the small from the large group (Additional Files 3 and 4). Genes with a higher posterior probability were assigned to the small group and genes with lower values comprised the large group. Variation of this threshold shifts the quantitative proportion between both groups. To judge the enrichment of the small group with genetic interaction partners known to be involved in spindle migration, we used a reference list of seven out of the 129 genes contained in the data set that are known to be involved in spindle migration (Table 1 and Additional File 5). Employing a hypergeometric test showed the number of known genes in the smaller group from our model to be significantly higher than would be expected by chance. Furthermore, we analyzed the enrichment when changing the size of the small group. We reduced the cutoff for the posterior probability so that the small group contained 50 genes. In both cases, the small group showed a significant enrichment of known spindle migration genes (Table 2).
+###end p 40
+###begin p 41
+###xml 102 113 102 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr</italic>
+###xml 115 128 115 128 <italic xmlns:xlink="http://www.w3.org/1999/xlink">spellman.corr</italic>
+P-values for best model for spindle migration. Statistical assessment of the best subset of features {hughes.corr, spellman.corr}. The p-values based on the hypergeometric test are shown for two different group sizes. In addition the numbers of known genes and the total number of genes in the data set.
+###end p 41
+###begin p 42
+The lists of genes resulting from both small groups (of either size 6 or 50) can be considered as promising candidates for further biological experimentation. They are significantly enriched in genes known to be specific for spindle migration and thus it is likely that among the rest of the genes in these lists, which are unknown with respect to spindle migration, additional members of this biological process can be found.
+###end p 42
+###begin title 43
+Experimental Validation
+###end title 43
+###begin p 44
+###xml 79 80 79 80 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+In order to biologically validate the six candidates in the small group (Table 3) we reviewed what was known about the genes in the literature and also conducted experiments using time-lapse microscopy (Methods). Proper spindle migration requires several cellular processes such as spindle integrity, spindle elongation and localization of Kar9. Thus, the genes in the list cannot be expected to show a unique phenotype that could be detected by a single assay. Therefore, we tested for perturbations in any of these processes.
+###end p 44
+###begin p 45
+Experimental Validation. Phenotypes of the 6 members of the small group.
+###end p 45
+###begin p 46
+###xml 15 20 15 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ase1 </italic>
+###xml 24 30 24 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38 </italic>
+###xml 97 102 97 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ase1 </italic>
+###xml 352 354 352 354 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 355 357 355 357 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 474 476 474 476 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+The two genes, ase1 and tvp38 had previously been described in the context of spindle migration. ase1 had already been reported to be required for spindle integrity. In a deletion strain, the spindles fail to elongate during anaphase and Ase1 localizes to the spindle midzone, indicating that Ase1 is required for high fidelity chromosome segregation [18,19]. In another assay, asymmetric localization of Kar9 is used to identify genes with a function in spindle migration [20].
+###end p 46
+###begin p 47
+###xml 67 72 46 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38</italic>
+###xml 147 152 122 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38</italic>
+###xml 256 257 227 228 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 276 277 247 248 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">6</xref>
+###xml 279 280 250 251 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">7</xref>
+###xml 282 283 253 254 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+inverted question markFrom previous experiments, it was known that tvp38Delta cells show perturbed asymmetric Kar9 localization. Only 73.6% of the tvp38Delta cells have Kar9 localized in a strongly asymmetric manner as opposed to 83.8% in WT cells (Figure 3, Additional Files 6, 7, 8). This indicates that Tvp38 plays a role in maintaining Kar9 asymmetry. For the reasons mentioned above, we considered both genes as required components for spindle migration and used them in the reference gene list for statistical assessment. The additional genes found in the small group of six genes were analyzed by the same experimental methods.
+###end p 47
+###begin p 48
+###xml 0 78 0 78 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Experimental validation of genes predicted to be involved in spindle migration</bold>
+###xml 87 91 87 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1</italic>
+###xml 98 102 94 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">uba4</italic>
+###xml 167 171 155 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gpd1</italic>
+###xml 226 231 210 215 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38</italic>
+###xml 462 466 442 446 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1</italic>
+###xml 476 480 452 456 <italic xmlns:xlink="http://www.w3.org/1999/xlink">uba4</italic>
+###xml 604 608 572 576 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gpd1</italic>
+###xml 633 637 597 601 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1</italic>
+Experimental validation of genes predicted to be involved in spindle migration. A) The she1Delta, uba4Delta and YHR127WDelta-strains show perturbed Kar9 localization. gpd1Delta does not show a phenotypic effect. Wild type and tvp38Delta are shown as positive and negative controls, respectively. The differences in proportions of defective cells are compared to the wild type based on the binomial distribution. This results in p-values that are significant for she1Delta and uba4Delta (p-values 0.0008% and 0.28% respectively), marginally significant for YHR127WDelta (p = 7.4%) and not significant for gpd1Delta (p = 70%). B) Some she1Delta cells have broken or bent anaphase spindles suggesting compromised spindle integrity.
+###end p 48
+###begin p 49
+###xml 4 8 4 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gpd1</italic>
+###xml 49 53 45 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">uba4</italic>
+###xml 251 256 243 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38</italic>
+###xml 353 354 341 342 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 375 376 363 364 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+###xml 381 382 369 370 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S9">9</xref>
+###xml 389 393 377 381 <italic xmlns:xlink="http://www.w3.org/1999/xlink">uba4</italic>
+###xml 474 475 458 459 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 496 497 480 481 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+###xml 502 504 486 488 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S10">10</xref>
+###xml 585 587 569 571 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 602 607 586 591 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1 </italic>
+###xml 843 844 827 828 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 863 864 847 848 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+###xml 869 871 853 855 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S11">11</xref>
+###xml 873 875 857 859 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S12">12</xref>
+###xml 877 879 861 863 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S13">13</xref>
+###xml 1179 1183 1163 1167 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gpd1</italic>
+###xml 1241 1246 1225 1230 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ase1 </italic>
+###xml 1250 1256 1234 1240 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38 </italic>
+###xml 1440 1445 1424 1429 <italic xmlns:xlink="http://www.w3.org/1999/xlink">uba4 </italic>
+###xml 1449 1453 1433 1437 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1</italic>
+###xml 1621 1626 1605 1610 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1 </italic>
+###xml 1769 1773 1753 1757 <italic xmlns:xlink="http://www.w3.org/1999/xlink">uba4</italic>
+###xml 1870 1874 1850 1854 <italic xmlns:xlink="http://www.w3.org/1999/xlink">urm1</italic>
+###xml 1933 1934 1913 1914 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+The gpd1Delta mutant strain showed no phenotype. uba4Delta-strain another partially redundant urmylation enzyme is active. The strain carrying a deletion of the uncharacterized ORF YHR127W, showed a Kar9 localization phenotype similar to that seen in tvp38Delta cells, although the phenotype was less pronounced (75.8% asymmetry vs. 83.8% in WT, Figure 3 and Additional File 8 and 9). For uba4Delta a strong Kar9-localization phenotype was detected (69.7% asymmetry, Figure 3 and Additional File 8 and 10). Uba4 is the enzyme required for post-translational regulation via urmylation [21]. Deletion of she1 (YBL031W), which encodes a cytoskeletal protein the exact function of which has remained elusive, resulted in a marked decrease in Kar9 asymmetry as well as a high frequency of broken spindles in anaphase cells (61.6% asymmetry, Figure 3, Additional Files 8 and 11, 12, 13). This gene displayed a phenotype in both assays used for validation, which provides strong support for an involvement in spindle migration. These results demonstrate that most of the six genes in the small group of our statistical model have a role in spindle migration. Only for one of the genes, gpd1, no direct experimental proof was found. The function of ase1 and tvp38 in spindle migration has been known beforehand. The phenotype of YHR127W, being relatively mild, suggests a moderate effect of this gene on spindle migration. For the other two genes, uba4 and she1, strong evidence exists that they have a direct role in the proper functioning of spindle migration and chromosome segregation. Interestingly, the role of YHR127W and she1 in this context is a novel finding and clear function annotation has still been missing for both genes. Finding a kar9-localization defect for uba4Delta is consistent with the same phenotype seen after deleting its direct target in urmylation, urm1, which was assessed in a previous screen (Additional File 2). This strongly points towards an effect of protein-urmylation on spindle migration. In conclusion, three of the additionally found candidates deserve further experimental characterization in order to determine their mechanistic involvement in spindle migration more precisely.
+###end p 49
+###begin title 50
+Application to TOR2 signaling
+###end title 50
+###begin p 51
+###xml 168 172 168 172 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor1</italic>
+###xml 174 179 174 179 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+###xml 278 280 278 280 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 419 423 419 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2</italic>
+###xml 461 466 461 466 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+###xml 565 573 565 573 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2-21 </italic>
+###xml 590 592 590 592 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S14">14</xref>
+###xml 657 659 657 659 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S15">15</xref>
+###xml 1097 1099 1097 1099 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+To evaluate the general usefulness of the statistical method, we considered TOR2 signaling as another biological process. Apart from a shared function with its homolog tor1, tor2 regulates the spatial organization of cell growth, mainly through actin cytoskeleton polarization [22]. Using the same approach as described above for spindle migration we aimed to find additional genes involved in the specific function of tor2, which we term TOR2 signaling. Since tor2 is an essential gene, we analyzed data from a synthetic lethal screen performed with the ts-mutant tor2-21 (Additional File 14). We considered a set of seven input variables (Additional File 15), most of which were different from the ones used in the analysis for spindle migration. Since mRNA decay rates, sequence similarity, phenotypic profiling and the Gasch et al. gene expression data were not meaningful in the first study, they were replaced with other features. Instead of the cell cycle gene expression data from Spellman et al. we included the data from Mnaimneh et al., a larger compendium of gene expression profiles [23]. The following paragraphs describe the list of features. crude measure and the use of this feature for gene pairs lying on different chromosomes is unclear. For genomic loci on the same chromosome, though, the feature can contain important information.
+###end p 51
+###begin p 52
+###xml 110 112 110 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 341 346 341 346 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+###xml 506 511 506 511 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+###xml 559 567 559 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MW.ratio</italic>
+In a recent study Warringer et al. investigated the influence of various biological features on protein size [24]. While they found a correlation between protein size and gene expression as well as biochemical activity no effect was found for pleiotropy of genes, for instance. To assess whether we find similarities in protein size between tor2 and its genetic interaction partners we considered molecular weight as a proxy and calculated the absolute log ratios for the corresponding protein products of tor2 and its targets, resulting in the input feature MW.ratio.
+###end p 52
+###begin p 53
+###xml 127 129 127 129 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 444 449 444 449 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+###xml 493 501 493 501 <italic xmlns:xlink="http://www.w3.org/1999/xlink">CAI.diff</italic>
+Sharp et al. have shown that some codons are optimal for expression of a gene, because the respective tRNAs are most abundant [25]. They formulated the codon adaptation index (CAI), a score that assesses the relative occurrence of codons in a gene that are optimal for its expression. Since similar codon bias can point to close functional relationships between two genes, we calculated the absolute difference between the CAI index values for tor2 and its targets and named the input feature CAI.diff.
+###end p 53
+###begin p 54
+###xml 428 430 428 430 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 431 433 431 433 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 570 581 570 581 <italic xmlns:xlink="http://www.w3.org/1999/xlink">GRAVY.diff </italic>
+###xml 585 595 585 595 <italic xmlns:xlink="http://www.w3.org/1999/xlink">AROMA.diff</italic>
+###xml 656 661 656 661 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+Similarities in the relative frequency of amino acids in two proteins can suggest common molecular functions and point towards close relationships between genes encoding them. For instance, two gene products containing many hydrophobic residues are both likely membrane proteins. The GRAVY score measures the hydropathicity of a protein, while the AROMA score assesses the relative content of aromatic amino acids in a protein [26,27]. Tor2 is known to localize to membranes, thus especially the GRAVY score is an interesting feature to consider. For the input features GRAVY.diff and AROMA.diff, we calculated the absolute difference of theses scores for tor2 and its targets.
+###end p 54
+###begin p 55
+###xml 316 318 316 318 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 319 321 319 321 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 599 604 599 604 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+###xml 651 653 651 653 <italic xmlns:xlink="http://www.w3.org/1999/xlink">aa</italic>
+For the above features small scores stand for close functional similarity between the respective genes. As another sequence based input feature we assessed correlations in total amino acid content. Different studies have shown the influence of biological characteristics of proteins on their amino acid composition [28,29]. We exploit similarities of gene products in amino acid content in order to infer functional relationships between them. Hence, we calculated the Pearson correlation coefficient of the amino acid profile (i.e. how often each amino acid occurs in the protein) corresponding to tor2 and its targets. This resulted in the variable aa.
+###end p 55
+###begin p 56
+###xml 257 262 257 262 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+###xml 334 336 334 336 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 337 339 337 339 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 610 617 610 617 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes </italic>
+###xml 621 630 621 630 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mnaimneh </italic>
+###xml 673 681 673 681 <italic xmlns:xlink="http://www.w3.org/1999/xlink">CAI.diff</italic>
+###xml 683 693 683 693 <italic xmlns:xlink="http://www.w3.org/1999/xlink">GRAVY.diff</italic>
+###xml 695 705 695 705 <italic xmlns:xlink="http://www.w3.org/1999/xlink">AROMA.diff</italic>
+###xml 707 716 707 716 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MW.ratio </italic>
+###xml 720 723 720 723 <italic xmlns:xlink="http://www.w3.org/1999/xlink">aa </italic>
+###xml 749 751 749 751 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+As in the first analysis for spindle migration, we also considered gene expression data for the generation of input features. For correlations in gene expression data sets we calculated the Pearson correlation coefficient of the gene expression profiles of tor2 and its targets in the Hughes et al. and the Mnaimneh et al. data sets [12,23]. The first one was already described in the analysis of spindle migration. In the study of Mnaimneh et al. gene expression was measured for mutant strains carrying titrable promoter alleles of all essential genes. We included the corresponding features under the names hughes and mnaimneh in the analysis. The data for the features CAI.diff, GRAVY.diff, AROMA.diff, MW.ratio and aa were downloaded from SGD [30].
+###end p 56
+###begin p 57
+###xml 93 95 93 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink">aa</italic>
+###xml 97 104 97 104 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes </italic>
+###xml 108 116 108 116 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mnaimneh</italic>
+###xml 315 317 315 317 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S16">16</xref>
+###xml 494 499 494 499 <italic xmlns:xlink="http://www.w3.org/1999/xlink">avo2 </italic>
+###xml 503 508 503 508 <italic xmlns:xlink="http://www.w3.org/1999/xlink">slm1 </italic>
+###xml 571 573 571 573 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 574 576 574 576 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 579 584 579 584 <italic xmlns:xlink="http://www.w3.org/1999/xlink">bck1 </italic>
+###xml 588 593 588 593 <italic xmlns:xlink="http://www.w3.org/1999/xlink">slt2 </italic>
+###xml 702 707 702 707 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+###xml 708 710 708 710 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 1146 1148 1146 1148 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S17">17</xref>
+###xml 1159 1160 1159 1160 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 1257 1260 1257 1260 <italic xmlns:xlink="http://www.w3.org/1999/xlink">aa </italic>
+###xml 1302 1309 1302 1309 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes </italic>
+###xml 1313 1322 1313 1322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mnaimneh </italic>
+###xml 1339 1341 1339 1341 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S18">18</xref>
+###xml 1410 1415 1410 1415 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+Following the same strategy as for the first analysis, we selected the three input variables aa, hughes and mnaimneh, which resulted in clearly unequal grouping. As described for the modeling of spindle migration, we used the default cutoff posterior probability of 0.5 to identify the small group (Additional File 16). For further analysis of the members of this group we used a reference list of four genes, known to be specific to the biological process under investigation. The products of avo2 and slm1 are subunits TORC2, the multi-protein complex containing Tor2 [31,32]. bck1 and slt2 encode protein kinases acting in the MAP kinase pathway mediated by protein kinase C, which is downstream of tor2 [33]. Thus all of those 4 genes are involved in TOR2 signaling. With a default cutoff of 0.5 no significant enrichment was found for the small group. As in the first analysis for the spindle migration data, we subsequently lowered the posterior probability to 0.29 which resulted in a small group of 18 candidates out of a total of 70 genes in the data set that were enriched in genes with a direct role in TOR2 signaling (Additional File 17 and Table 4). The scatterplot shows that the identified small group is characterized by very high values of aa as well as intermediate to high values of hughes and mnaimneh (Additional File 18). Thus, the genes in the small group are positively correlated with tor2 in terms of their amino acid content and their expression profiles in the Hughes et al. and the Mnaimneh et al. studies. Thus, also for TOR2 signaling, our statistical method resulted in a list of target genes with good prospects for further experimentation.
+###end p 57
+###begin p 58
+###xml 115 117 115 117 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S17">17</xref>
+###xml 122 124 122 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S18">18</xref>
+P-values for best model for TOR2 signaling. Statistical assessment of the best subset of features (Additional File 17 and 18). The p-value based on the hypergeometric test is shown for group size 18. The table presents the numbers of known genes and the total number of genes in the data set.
+###end p 58
+###begin p 59
+This demonstrates that our approach has broader utility and can be applied to other synthetic lethality data sets. It suggests that the statistical method has a general potential of finding new genes in a biological process.
+###end p 59
+###begin title 60
+Discussion
+###end title 60
+###begin p 61
+###xml 145 150 145 150 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 154 159 154 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+###xml 465 477 465 477 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr </italic>
+###xml 481 495 481 495 <italic xmlns:xlink="http://www.w3.org/1999/xlink">spellman.corr </italic>
+###xml 875 879 875 879 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1</italic>
+###xml 881 886 881 886 <italic xmlns:xlink="http://www.w3.org/1999/xlink">uba4 </italic>
+###xml 965 970 965 970 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+We used and evaluated an unsupervised statistical method that relies on data integration for separating synthetic lethal interaction partners of arp1 and jnm1 into those that are specific to spindle migration and those representing the unspecific or more distantly related remainder of genetic interaction partners. Multivariate Gaussian Mixture Modeling was applied to divide different subsets of a heterogeneous genomic data set into two groups. The two features hughes.corr and spellman.corr derived from two gene expression data sets resulted in the best model fit. For this subset, we identified a small group of six genes that was significantly enriched in known spindle migration genes. Moreover, biological testing of the top scoring genes that had been uncharacterized in this context (two genes had been characterized already) yielded experimental confirmation for she1, uba4 and YHR127W as being involved in spindle migration. In a modeling analysis for tor2 we also identified a small group of candidate genes with significant enrichment in terms of known genes in TOR2 signaling.
+###end p 61
+###begin p 62
+###xml 313 325 313 325 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes.corr </italic>
+###xml 329 343 329 343 <italic xmlns:xlink="http://www.w3.org/1999/xlink">spellman.corr </italic>
+###xml 421 423 421 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink">aa</italic>
+###xml 425 432 425 432 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes </italic>
+###xml 436 445 436 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mnaimneh </italic>
+###xml 1220 1222 1220 1222 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 1223 1225 1223 1225 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+For both analyses it is not suprising that BIC selects a model only consisting of a subset of all inputs. BIC is designed to penalize input variables that do not contain useful information (Methods). For the example of the spindle migration analysis this means that all other inputs are uninformative when having hughes.corr and spellman.corr in the model. For the TOR2 analysis all other features are uninformative when aa, hughes and mnaimneh are present in the model. There are different reasons why features can be uninformative in the context of a two-component Gaussian Mixture model. i) The means and the covariances of the uninformative features are (approximately) the same for both groups; ii) there are high (partial) correlations between the uninformative inputs and the features which are already in the model; or iii) a distinction into two components with many parameters (due to too many features) can become inaccurate given limited sample size. We demonstrate the usefulness of this feature selection approach by presenting biologically meaningful results. The finding that models with few strong features are powerful has also been reported in other work not relying on the BIC for feature selection [34,35]. This shows that feature reduction is important in data integration approaches.
+###end p 62
+###begin p 63
+###xml 308 313 308 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 317 321 317 321 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1</italic>
+###xml 896 900 896 900 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2</italic>
+###xml 1154 1158 1154 1158 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2</italic>
+In the analysis for the spindle migration genes, correlating mRNA-expression is more informative of a close mutual relationship than is comparing their sequence similarity or their rates of mRNA-decay. Here, transcriptional information helps to identify close genetic interaction partners of the query genes arp1 and jnm1, while the other variables don't contribute to the model (worse BIC scores when included). Also for TOR2 signaling, gene expression correlations in addition to similarity in amino acid composition was important for the identification of the close genetic interaction partners. The selected group of candidate genes all share intermediate to high correlations in their gene expression profiles in the Hughes et al. and Mnaimneh et al. data sets and have very similar amino acid content. correlations give preliminary biological support for the genes to be closely related to tor2. This together with the enrichment of genes known to function in TOR2 signaling strongly suggests the selected list of genes to represent good candidates for further experimental testing, since they are likely to have a close functional relationship to tor2.
+###end p 63
+###begin p 64
+###xml 385 387 385 387 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 388 390 388 390 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+It is one of the main advantages of the model that it is flexible with respect to the input features and that it identifies the most relevant subset of inputs for the specific biological process under investigation. This stands in contrast to other data integration approaches that globally combine large information resources for predictions, such as the STRING database or bioPIXIE [36,37].
+###end p 64
+###begin p 65
+###xml 221 222 221 222 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 223 224 223 224 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 788 811 788 811 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Caenorhabditis elegans </italic>
+###xml 814 837 814 837 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila melanogaster</italic>
+###xml 617 622 <span type="species:ncbi:4932">yeast</span>
+###xml 788 810 <span type="species:ncbi:6239">Caenorhabditis elegans</span>
+###xml 814 837 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+###xml 930 935 <span type="species:ncbi:4932">yeast</span>
+Our approach is conceptually novel and different from existing approaches for synthetic lethal data analysis. Current methods rely on a substantial number of screens or global synthetic lethality data found in databases [4-7]. Thus, they are suited for pathway analysis on a global level, when the biological process of interest has been extensively studied by genetic interaction screens. The Gaussian Mixture Model proposed here is advantageous in situations with incomplete data, for weak phenotypes in a synthetic lethal screen and for characterizing synthetic lethal interactions. This is the case when studying yeast pathways that have not been explored extensively by synthetic lethality screening, so that only a handful of data sets exist. Or studies in other organisms, such as Caenorhabditis elegans or Drosophila melanogaster, where synthetic lethal screens are being carried out, but to a much smaller extent than in yeast.
+###end p 65
+###begin p 66
+###xml 316 317 316 317 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+For the example of spindle migration, our approach successfully identified novel gene functions. Since most of the candidates identified in the top 6 of our model actually play a role in spindle migration, we presume that among the top 50 genes whose respective p-value is actually smaller than for the top 6 (Table 2) many genes function directly in spindle migration.
+###end p 66
+###begin p 67
+###xml 351 355 351 355 <italic xmlns:xlink="http://www.w3.org/1999/xlink">kar9</italic>
+###xml 511 516 511 516 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 520 525 520 525 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+###xml 1283 1288 1283 1288 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1 </italic>
+###xml 1531 1536 1531 1536 <italic xmlns:xlink="http://www.w3.org/1999/xlink">uba4 </italic>
+###xml 1655 1660 1655 1660 <italic xmlns:xlink="http://www.w3.org/1999/xlink">urm1 </italic>
+Yet, there are a few limitations to our approach: Since our analysis is based on just two synthetic lethal screens, not all known spindle migration genes could be found. Essential genes and genes from the dynein-dependent spindle positioning pathway are missing in the analysis since they could not be detected by synthetic lethality, others, such as kar9, had to be excluded from the analysis due to missing data. Further, one has to keep in mind, that genes showing high similarities with the two query genes arp1 and jnm1 do not necessarily have to be related to spindle migration since both genes are involved in several processes where movement of microtubules is required, such as cell polarity, cell migration, vesicle transport, and the formation of membrane protrusions. Nevertheless, we focused on their role in spindle migration because it is the function that is experimentally described best, and because suitable assays for testing promising genes in that context were available. Indeed, experimental validation of a small group of candidate genes has supported the model-based predictions and adds initial biological evidence to the assumption that most of these genes are involved in the process that was studied. Still, we provide experimental support for the genes she1 and YHR127W to play a role in spindle migration. The fact that we obtained novel findings for the function of these two genes in spindle migration clearly demonstrates the usefulness of our approach. Moreover, we propose the urmylation enzyme uba4 as another gene involved in spindle migration, a finding that is in agreement with the previously found involvement of urm1 and strongly suggests the requirement of urmylation for this process.
+###end p 67
+###begin p 68
+###xml 82 87 82 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+Application of the same statistical methodology on synthetic lethality data for a tor2 ts-mutant using a different set of genomic features also resulted in lists of new candidate genes potentially involved in TOR2 signaling. The method is thus of general utility to find potential candidate genes from synthetic lethal screens.
+###end p 68
+###begin title 69
+Conclusion
+###end title 69
+###begin p 70
+The presented work shows that a Multivariate Gaussian Mixture Model as a framework for data-integration is suitable for the analysis and characterization of synthetic lethality data. We demonstrate an efficient way, in terms of a statistical model, to reduce the list of target genes from a screen to a set of candidates with good prospects for further experimentation in the laboratory. Since the amounts and the quality of high-throughput data will increase in the future, more and better biological features can be expected to arise. Including them in our model will increase its predictive power and accuracy.
+###end p 70
+###begin title 71
+Methods
+###end title 71
+###begin title 72
+Mixture modeling
+###end title 72
+###begin p 73
+###xml 66 71 66 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 75 80 75 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+###xml 336 338 336 338 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Z </italic>
+###xml 517 518 517 518 <bold xmlns:xlink="http://www.w3.org/1999/xlink">x</bold>
+###xml 518 519 518 519 <bold xmlns:xlink="http://www.w3.org/1999/xlink">i</bold>
+###xml 518 519 518 519 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><bold>i</bold></sub>
+###xml 522 523 521 522 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 523 525 522 524 <sup xmlns:xlink="http://www.w3.org/1999/xlink">6 </sup>
+###xml 631 707 630 706 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gasch.corr, hughes.corr, spellman.corr, pheno.corr, logRNA.ratio, logseq.sim</italic>
+###xml 729 730 728 729 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 829 831 828 829 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 831 833 829 831 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 831 833 829 831 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 860 862 854 856 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 860 862 854 856 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 865 866 859 860 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Z</italic>
+###xml 866 868 860 862 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 866 868 860 862 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 870 872 864 866 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 873 875 867 869 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 950 951 944 945 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 952 953 946 947 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Z</italic>
+###xml 953 955 947 949 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 953 955 947 949 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 957 960 951 954 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k|x</italic>
+###xml 960 961 954 955 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 960 961 954 955 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 964 966 958 960 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 1021 1022 1015 1016 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+We assume that the gene pairs exhibiting synthetic lethality with arp1 and jnm1 (synthetic lethality interactions) can be divided into two groups, one of them representing genes involved in spindle migration and the other representing genes with no direct involvement. We model this group membership with a latent (unobserved) variable Z with values in {1, 2}. The goal is to infer the latent states (the group memberships) from data. To do so, we assume the following model: the conditional distribution of the data xiin R6 (e.g. the 6-dimensional observation from the 6 genomic data sets for the spindle migration analysis, i.e. gasch.corr, hughes.corr, spellman.corr, pheno.corr, logRNA.ratio, logseq.sim, for every gene pair i) given the state of the latent variable is multivariate (6-dimensional) Gaussian with mean vector muk and covariance matrix Sigmak if Zi = k (k = 1, 2). By using Bayes' Theorem, we can infer the posterior probabilities P[Zi = k|xi] (k = 1, 2) which yield a probabilistic prediction for the ith gene-pair belonging to group 1 or 2.
+###end p 73
+###begin p 74
+The model we just described is a Gaussian Mixture Model (GMM) with 2 groups (2 states for the latent variable). Its probability density takes the form:
+###end p 74
+###begin p 75
+
+###end p 75
+###begin p 76
+###xml 6 9 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#966;</italic>
+###xml 10 12 8 10 <bold xmlns:xlink="http://www.w3.org/1999/xlink">x </bold>
+###xml 12 15 10 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">|&#956;</italic>
+###xml 15 16 12 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 15 16 12 13 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 18 23 15 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#931;</italic>
+###xml 23 24 16 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 23 24 16 17 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 118 119 111 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+where phi(x |muk, Sigmak) is the probability density of the multivariate Gaussian distribution corresponding to group k:
+###end p 76
+###begin p 77
+
+###end p 77
+###begin p 78
+The parameters can be found by the EM algorithm. The optimal set of variables of other data sources is the one resulting in a minimal Bayesian Information Criterion (BIC), which is defined as:
+###end p 78
+###begin p 79
+
+###end p 79
+###begin p 80
+###xml 9 10 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+###xml 35 37 35 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d </italic>
+###xml 69 71 69 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 121 123 121 123 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+where ln(L) is the log likelihood, d is the number of parameters and n is the sample size. We used the R-package mclust [38] for all calculations.
+###end p 80
+###begin p 81
+###xml 104 105 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 114 117 114 117 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k |</italic>
+###xml 117 118 117 118 <bold xmlns:xlink="http://www.w3.org/1999/xlink">x</bold>
+###xml 121 123 121 123 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 165 167 164 166 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 178 179 177 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 262 263 261 262 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 264 270 263 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Group </italic>
+###xml 272 275 271 274 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k|x</italic>
+###xml 275 276 274 275 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 275 276 274 275 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 280 281 279 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 282 283 281 282 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Z</italic>
+###xml 283 285 282 284 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 283 285 282 284 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 287 290 286 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k|x</italic>
+###xml 290 291 289 290 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 290 291 289 290 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 294 296 293 295 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+All samples can then be assigned to one out of the two groups by inspecting the posterior probabilities P[Group = k |x], k in {1, 2}. As mentioned above, the sample i (gene-pair i) can be assigned to one of the two groups by inspecting the posterior probability P[Group = k|xi] = P[Zi = k|xi] (k = 1, 2).
+###end p 81
+###begin p 82
+###xml 665 667 665 667 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Z </italic>
+Of course, other approaches for unsupervised assignment of a sample (gene-pair) to a group could be used as there exists a wide variety of clustering methods. We prefer to work with a model, i.e. a GMM, rather than just an algorithm. Due to the fact that we work with a model, the GMM approach easily allows: (i) to do feature selection (selection of genomic data sets) via the BIC criterion; (ii) to assign interpretable probabilities for group-membership; (iii) for additional flexibility to select the number of groups (in our case equal to 2) via the BIC criterion. Finally, the most natural assumption on the distribution of the data given the latent variable Z (see description above) is the multivariate Gaussianity.
+###end p 82
+###begin title 83
+Experimental Procedures
+###end title 83
+###begin title 84
+SGA
+###end title 84
+###begin p 85
+###xml 27 28 27 28 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 204 209 <span type="species:ncbi:4932">Yeast</span>
+Performed as described in [2]. In brief, query strains used were, arp1::kanMX his3 leu2 ura3 lys2 can1::MFA1pr-HIS3 and jnm1::kanMX his3 leu2 ura3 lys2 can1::MFA1pr-HIS3. Each strain was crossed into the Yeast Knock Out Collection (Open Biosystems), and double knock-out strains were scored for synthetic lethality. Each screen was performed once.
+###end p 85
+###begin title 86
+###xml 0 5 <span type="species:ncbi:4932">Yeast</span>
+Yeast Strains
+###end title 86
+###begin p 87
+Deletion strains were generated for each predicted ORF in the presence of a chromosomal CFP-tub1:URA marker in the URA3 locus and a chromosomal kar9-YFP:NAT marker in the endogenous kar9 locus. Integration of CFP-tub1 and C-terminal tagging with YFP was done as described in (Liakopoulos et al., 2003).
+###end p 87
+###begin title 88
+Time-Lapse Fluorescence Microscopy
+###end title 88
+###begin p 89
+Fluorescence microscopy was performed on an Olympus BX50 fluorescence microscope equipped with a piezo motor, Polychrom IV monochromator as light source, a high speed CCD camera (Imago, TillPhotonics) and TILLVision software (TILLPhotonics, Martinsried, Germany). Dual color acquisitions were performed using a Chroma CFP/YFP dual band filter.
+###end p 89
+###begin p 90
+###xml 54 56 54 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+Images were acquired as stacks of 5 focal slices, 0.4 mum between each slice. Each time-lapse series was recorded with 10 time frames and presented as 10 maximum projections with 10 s intervals over the course of 100 s. The time-lapse series were acquired in a YFP and a CFP channel and fused as RGB movies in NIH Image J.
+###end p 90
+###begin title 91
+Spindle Integrity and Elongation
+###end title 91
+###begin p 92
+###xml 98 100 98 100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 101 103 101 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+Cells with reduced spindle integrity may have difficulty with spindle elongation during anaphase [18,19]. We quantified the fraction of WT vs. Delta cells with compromised anaphase spindle integrity. Breaking and bending of the spindle was scored. The experiment was performed with two independent clones per strain, and n > 20 anaphase cells per strain. For single cell illustrations see supplement.
+###end p 92
+###begin title 93
+Kar9 Localization
+###end title 93
+###begin p 94
+Localization of spindle positioning protein Kar9 on the spindle pole body and the astral microtubules occurs only on the bud proximal side of the spindle. This asymmetric localization of Kar9 is essential for proper function of spindle migration. We scored for asymmetric Kar9 localization in all the predicted mutants. We quantified the fraction of cells with Kar9 localized in a strongly asymmetric, weakly asymmetric and symmetric manner. The experiment was performed with two independent clones per strain (n approximately 100 cells). For single cell illustrations see supplement.
+###end p 94
+###begin title 95
+###xml 0 5 <span type="species:ncbi:4932">Yeast</span>
+Yeast strains used in this study
+###end title 95
+###begin p 96
+###xml 0 46 0 46 <bold xmlns:xlink="http://www.w3.org/1999/xlink">KAR9::YFP:NAT ura3::TUB1-CFP:URA3 gpd1::kanMX </bold>
+KAR9::YFP:NAT ura3::TUB1-CFP:URA3 gpd1::kanMX ade2-101ura3-52 lys2-801 his3-Delta200 trp1-Delta63 leu2
+###end p 96
+###begin p 97
+###xml 0 46 0 46 <bold xmlns:xlink="http://www.w3.org/1999/xlink">KAR9::YFP:NAT ura3::TUB1-CFP:URA3 she1::kanMX </bold>
+KAR9::YFP:NAT ura3::TUB1-CFP:URA3 she1::kanMX ade2-101ura3-52 lys2-801 his3-Delta200 trp1-Delta63 leu2
+###end p 97
+###begin p 98
+###xml 0 47 0 47 <bold xmlns:xlink="http://www.w3.org/1999/xlink">KAR9::YFP:NAT ura3::TUB1-CFP:URA3 tvp38::kanMX </bold>
+KAR9::YFP:NAT ura3::TUB1-CFP:URA3 tvp38::kanMX ade2-101ura3-52 lys2-801 his3-Delta200 trp1-Delta63 leu2
+###end p 98
+###begin p 99
+###xml 0 49 0 49 <bold xmlns:xlink="http://www.w3.org/1999/xlink">KAR9::YFP:NAT ura3::TUB1-CFP:URA3 YHR127W::kanMX </bold>
+KAR9::YFP:NAT ura3::TUB1-CFP:URA3 YHR127W::kanMX ade2-101ura3-52 lys2-801 his3-Delta200 trp1-Delta63 leu2
+###end p 99
+###begin p 100
+###xml 0 34 0 34 <bold xmlns:xlink="http://www.w3.org/1999/xlink">KAR9::YFP:NAT ura3::TUB1-CFP:URA3 </bold>
+KAR9::YFP:NAT ura3::TUB1-CFP:URA3 ade2-101ura3-52 lys2-801 his3-Delta200 trp1-Delta63 leu2
+###end p 100
+###begin title 101
+Abbreviations
+###end title 101
+###begin p 102
+BIC - Bayesian Information Criterion
+###end p 102
+###begin p 103
+CAI - Codon adaptation index
+###end p 103
+###begin p 104
+EM algorithm - Expectation Maximization algorithm
+###end p 104
+###begin p 105
+GMM - Gaussian Mixture Model
+###end p 105
+###begin p 106
+ORF - Open reading frame SGA - Synthetic Genetic Array
+###end p 106
+###begin p 107
+ts-mutant - temperature sensitive mutant
+###end p 107
+###begin title 108
+Authors' contributions
+###end title 108
+###begin p 109
+DS, MK, CL and LM contributed equally to the work presented in this manuscript. DS, MK and LM performed the statistical analyses, CL carried out the experiments. All authors were involved in the design of the study and in discussions about the work. All authors have read and approved the manuscript.
+###end p 109
+###begin title 110
+Supplementary Material
+###end title 110
+###begin title 111
+Additional File 1
+###end title 111
+###begin p 112
+###xml 0 52 0 52 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Synthetic lethality data for spindle migration genes</bold>
+###xml 200 205 200 205 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 209 214 209 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+Synthetic lethality data for spindle migration genes. The xls-file contains the standard and systematic gene names for all synthetic lethality interactions found in a systematic screen performed with arp1 and jnm1 performed in the lab of Yves Barral.
+###end p 112
+###begin p 113
+Click here for file
+###end p 113
+###begin title 114
+Additional File 2
+###end title 114
+###begin p 115
+###xml 0 47 0 47 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Genes known to be involved in spindle migration</bold>
+Genes known to be involved in spindle migration. The xls-file contains all genes that were experimentally shown to be involved in the process of spindle migration. The list covers genes of the dynein-dependent pathway, the Kar9-dependent pathway and genes that showed defects in Kar9-localization.
+###end p 115
+###begin p 116
+Click here for file
+###end p 116
+###begin title 117
+Additional File 3
+###end title 117
+###begin p 118
+###xml 0 99 0 99 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Histogram of the posterior probabilities for the small group of the spindle migration mixture model</bold>
+###xml 241 246 241 246 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 250 254 250 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1</italic>
+Histogram of the posterior probabilities for the small group of the spindle migration mixture model. The pdf-file contains a figure showing the distribution of posterior probabilities for the small group of genetic interaction partners with arp1 and jnm1. High posteriors mean high likelihood for the respective genes of being involved in spindle migration.
+###end p 118
+###begin p 119
+Click here for file
+###end p 119
+###begin title 120
+Additional File 4
+###end title 120
+###begin p 121
+###xml 0 88 0 88 <bold xmlns:xlink="http://www.w3.org/1999/xlink">List of genes ranked according to their probability for involvement in spindle migration</bold>
+List of genes ranked according to their probability for involvement in spindle migration. The xls-file contains all genes used in the mixture modeling approach in the order of their probability of being involved in spindle migration. The genes already known to be involved are marked in cyan. The top 6 and top 50 groups are marked with a black horizontal line.
+###end p 121
+###begin p 122
+Click here for file
+###end p 122
+###begin title 123
+Additional File 5
+###end title 123
+###begin p 124
+###xml 0 59 0 59 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Data matrix used for mixture modeling for spindle migration</bold>
+###xml 139 144 139 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink">arp1 </italic>
+###xml 148 153 148 153 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jnm1 </italic>
+Data matrix used for mixture modeling for spindle migration. The xls-file contains the data set that was used for mixture modeling for the arp1 and jnm1 targets. Due to missing data in the source data sets biological variables were only calculated for genetic interactions for which complete information was available.
+###end p 124
+###begin p 125
+Click here for file
+###end p 125
+###begin title 126
+Additional File 6
+###end title 126
+###begin p 127
+###xml 0 37 0 37 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Movie of Kar9-localization in WT cell</bold>
+Movie of Kar9-localization in WT cell. Avi-file showing WT cell in metaphase. The cell is expressing CFP-Tub1 (red) and Kar9-YFP (green). 10 images were captured every 10s showing Kar9 localizing on the SPB and astral MT on bud-directed pole only (asymmetric).
+###end p 127
+###begin p 128
+Click here for file
+###end p 128
+###begin title 129
+Additional File 7
+###end title 129
+###begin p 130
+###xml 0 47 0 43 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Movie of Kar9-localization in a tvp38&#916; cell</bold>
+###xml 68 73 64 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38</italic>
+Movie of Kar9-localization in a tvp38Delta cell. Avi-file showing a tvp38Delta cell in metaphase. The cell is expressing CFP-Tub1 (red) and Kar9-YFP (green). 10 images were captured every 10s showing Kar9 localizing on the SPB and astral MT on both sides of the spindle (symmetric).
+###end p 130
+###begin p 131
+Click here for file
+###end p 131
+###begin title 132
+Additional File 8
+###end title 132
+###begin p 133
+###xml 0 35 0 35 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Quantification of Kar9-localization</bold>
+Quantification of Kar9-localization. Xls-file showing the quantified results for the experimental validation based on the Kar9-localization phenotypic screens. The results for each gene in the small group are shown for two separate clones and averaged over both clones.
+###end p 133
+###begin p 134
+Click here for file
+###end p 134
+###begin title 135
+Additional File 9
+###end title 135
+###begin p 136
+###xml 0 49 0 45 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Movie of Kar9-localization in a YHR127W&#916; cell</bold>
+###xml 140 145 132 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38</italic>
+Movie of Kar9-localization in a YHR127WDelta cell. Avi-file showing a YHR127WDelta cell in metaphase. The experiment was carried out as for tvp38Delta and revealed a similar phenotype.
+###end p 136
+###begin p 137
+Click here for file
+###end p 137
+###begin title 138
+Additional File 10
+###end title 138
+###begin p 139
+###xml 0 46 0 42 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Movie of Kar9-localization in a uba4&#916; cell</bold>
+###xml 67 71 63 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">uba4</italic>
+###xml 134 139 126 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38</italic>
+Movie of Kar9-localization in a uba4Delta cell. Avi-file showing a uba4Delta cell in metaphase. The experiment was carried out as for tvp38Delta and revealed a similar phenotype.
+###end p 139
+###begin p 140
+Click here for file
+###end p 140
+###begin title 141
+Additional File 11
+###end title 141
+###begin p 142
+###xml 0 46 0 42 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Movie of Kar9-localization in a she1&#916; cell</bold>
+###xml 67 71 63 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1</italic>
+###xml 134 139 126 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tvp38</italic>
+Movie of Kar9-localization in a she1Delta cell. Avi-file showing a she1Delta cell in metaphase. The experiment was carried out as for tvp38Delta and revealed a similar phenotype.
+###end p 142
+###begin p 143
+Click here for file
+###end p 143
+###begin title 144
+Additional File 12
+###end title 144
+###begin p 145
+###xml 0 52 0 52 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Movie of spindle integrity and elongation in WT cell</bold>
+Movie of spindle integrity and elongation in WT cell. Avi-file showing a WT cell in anaphase. The cell is expressing CFP-Tub1, which labels the elongated anaphase spindle. 10 images were captured every 10s revealing the relatively rigid structure of the spindle.
+###end p 145
+###begin p 146
+Click here for file
+###end p 146
+###begin title 147
+Additional File 13
+###end title 147
+###begin p 148
+###xml 0 56 0 56 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Movie of spindle integrity and elongation in mutant cell</bold>
+###xml 77 81 77 81 <italic xmlns:xlink="http://www.w3.org/1999/xlink">she1</italic>
+Movie of spindle integrity and elongation in mutant cell. Avi-file showing a she1Delta cell in anaphase. The cell is expressing CFP-Tub, which labels the elongated anaphase spindle. 10 images were captured every 10s showing the spindle breaking due to loss of spindle integrity in this mutant.
+###end p 148
+###begin p 149
+Click here for file
+###end p 149
+###begin title 150
+Additional File 14
+###end title 150
+###begin p 151
+###xml 0 43 0 43 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Synthetic lethality data for TOR2 signaling</bold>
+###xml 191 199 191 199 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2-21 </italic>
+Synthetic lethality data for TOR2 signaling. The xls-file contains the standard and systematic gene names for all synthetic lethality interactions found in a systematic screen performed with tor2-21 performed in the lab of Charlie Boone. The screen was performed twice and only hits identified in both rounds are in the data set.
+###end p 151
+###begin p 152
+Click here for file
+###end p 152
+###begin title 153
+Additional File 15
+###end title 153
+###begin p 154
+###xml 0 56 0 56 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Data matrix used for mixture modeling for TOR2 signaling</bold>
+###xml 136 144 136 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2-21 </italic>
+Data matrix used for mixture modeling for TOR2 signaling. The xls-file contains the data set that was used for mixture modeling for the tor2-21 targets. Due to missing data in the source data sets biological variables were only calculated for genetic interactions where complete information was available.
+###end p 154
+###begin p 155
+Click here for file
+###end p 155
+###begin title 156
+Additional File 16
+###end title 156
+###begin p 157
+###xml 0 96 0 96 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Histogram of the posterior probabilities for the small group of the TOR2 signaling mixture model</bold>
+###xml 204 209 204 209 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+Histogram of the posterior probabilities for the small group of the TOR2 signaling mixture model. The pdf-file contains a figure showing the distribution of posterior probabilities for the small group of tor2 genetic interaction partners. High posteriors mean high likelihood for the respective genes of being involved in TOR2 signaling.
+###end p 157
+###begin p 158
+Click here for file
+###end p 158
+###begin title 159
+Additional File 17
+###end title 159
+###begin p 160
+###xml 0 93 0 93 <bold xmlns:xlink="http://www.w3.org/1999/xlink">List of genes ranked according to the posterior probability for involvement in TOR2 signaling</bold>
+List of genes ranked according to the posterior probability for involvement in TOR2 signaling. The xls-file contains all genes used in the mixture modeling approach in the order of their probability of being involved in TOR2 signaling. The genes already known to be involved are marked in yellow and the literature reference is given in the file. The top 18 is marked with a black horizontal line.
+###end p 160
+###begin p 161
+Click here for file
+###end p 161
+###begin title 162
+Additional File 18
+###end title 162
+###begin p 163
+###xml 0 42 0 42 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Best subset of features for TOR2 signaling</bold>
+###xml 149 151 149 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink">aa</italic>
+###xml 153 159 153 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes</italic>
+###xml 161 169 161 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mnaimneh</italic>
+###xml 385 387 385 387 <italic xmlns:xlink="http://www.w3.org/1999/xlink">aa</italic>
+###xml 476 481 476 481 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tor2 </italic>
+###xml 482 489 482 489 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hughes </italic>
+###xml 493 501 493 501 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mnaimneh</italic>
+Best subset of features for TOR2 signaling. The pdf-file shows the scatterplot for the best subset of features for the TOR2 signaling mixture model {aa, hughes, mnaimneh} with a cutoff of 0.29. Target genes belonging to the small group are marked by red triangles, the big group is marked in black. The members of the small group all share very high values for amino acid correlation (aa) and intermediate to high values of correlation in gene expression data with respect to tor2 (hughes and mnaimneh).
+###end p 163
+###begin p 164
+Click here for file
+###end p 164
+###begin title 165
+Acknowledgements
+###end title 165
+###begin p 166
+The authors would like to thank Nicolas Page for support in doing the synthetic lethality screens for the spindle migration genes and also the Functional Genomics Center Zurich for its financial contribution to the Biomek-robot used for screening. We further thank the lab of Charlie Boone in Toronto for carrying out the synthetic lethality screens for TOR2 signaling. Markus Kalisch has been partially supported by the Swiss National Science Foundation (No. 200020-113270). Christian Leisner and Mahamadou Faty have been supported by the Roche foundation. Daniel Schoner has been supported by the Competence Center of Systems Physiology and Metabolic Diseases. All authors acknowledge the ETH Zurich for financial support.
+###end p 166
+###begin article-title 167
+Synthetic enhancement in gene interaction: a genetic tool come of age
+###end article-title 167
+###begin article-title 168
+###xml 51 56 <span type="species:ncbi:4932">yeast</span>
+Systematic genetic analysis with ordered arrays of yeast deletion mutants
+###end article-title 168
+###begin article-title 169
+Principles for the buffering of genetic variation
+###end article-title 169
+###begin article-title 170
+###xml 22 27 <span type="species:ncbi:4932">yeast</span>
+Global mapping of the yeast genetic interaction network
+###end article-title 170
+###begin article-title 171
+Systematic interpretation of genetic interactions using protein networks
+###end article-title 171
+###begin article-title 172
+###xml 73 78 <span type="species:ncbi:4932">yeast</span>
+Gene function prediction from congruent synthetic lethal interactions in yeast
+###end article-title 172
+###begin article-title 173
+###xml 31 36 <span type="species:ncbi:4932">yeast</span>
+###xml 37 61 <span type="species:ncbi:4932">saccharomyces cerevisiae</span>
+A DNA integrity network in the yeast saccharomyces cerevisiae
+###end article-title 173
+###begin article-title 174
+###xml 2 7 <span type="species:ncbi:4932">yeast</span>
+A yeast actin-related protein homologous to that in vertebrate dynactin complex is important for spindle orientation and nuclear migration
+###end article-title 174
+###begin article-title 175
+###xml 21 26 <span type="species:ncbi:4932">yeast</span>
+###xml 27 51 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+The JNM1 gene in the yeast Saccharomyces cerevisiae is required for nuclear migration and spindle orientation during the mitotic cell cycle
+###end article-title 175
+###begin article-title 176
+Exploring the metabolic and genetic control of gene expression on a genomic scale
+###end article-title 176
+###begin article-title 177
+###xml 47 52 <span type="species:ncbi:4932">yeast</span>
+Genomic expression programs in the response of yeast cells to environmental changes
+###end article-title 177
+###begin article-title 178
+Functional discovery via a compendium of expression profiles
+###end article-title 178
+###begin article-title 179
+###xml 66 71 <span type="species:ncbi:4932">yeast</span>
+###xml 72 96 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Comprehensive identification of cell cycle-regulated genes of the yeast Saccharomyces cerevisiae by microarray hybridization
+###end article-title 179
+###begin article-title 180
+###xml 36 41 <span type="species:ncbi:4932">yeast</span>
+Global analysis of gene function in yeast by quantitative phenotypic profiling
+###end article-title 180
+###begin article-title 181
+Integration of chemical-genetic and genetic interaction data links bioactive compounds to cellular target pathways
+###end article-title 181
+###begin article-title 182
+Precision and functional specificity in mRNA decay
+###end article-title 182
+###begin article-title 183
+WU-Blast2, Protein Database Query
+###end article-title 183
+###begin article-title 184
+The NoCut pathway links completion of cytokinesis to spindle midzone function to prevent chromosome breakage
+###end article-title 184
+###begin article-title 185
+The molecular function of Ase1p: evidence for a MAP-dependent midzone-specific spindle matrix
+###end article-title 185
+###begin article-title 186
+Asymmetric loading of Kar9 onto spindle poles and microtubules ensures proper spindle alignment
+###end article-title 186
+###begin article-title 187
+Attachment of the ubiquitin-related protein Urm1p to the antioxidant protein Ahp1p
+###end article-title 187
+###begin article-title 188
+###xml 63 68 <span type="species:ncbi:4932">yeast</span>
+TOR2 is required for organization of the actin cytoskeleton in yeast
+###end article-title 188
+###begin article-title 189
+Exploration of essential gene functions via titratable promoter alleles
+###end article-title 189
+###begin article-title 190
+###xml 28 33 <span type="species:ncbi:4932">yeast</span>
+Evolutionary constraints on yeast protein size
+###end article-title 190
+###begin article-title 191
+The codon adaptation index-a measure of directional synonymous codon usage bias, and its potential applications
+###end article-title 191
+###begin article-title 192
+A simple method for displaying the hydropathic character of a protein
+###end article-title 192
+###begin article-title 193
+###xml 93 109 <span type="species:ncbi:562">Escherichia coli</span>
+Hydrophobicity, expressivity and aromaticity are the major trends of amino-acid usage in 999 Escherichia coli chromosome-encoded genes
+###end article-title 193
+###begin article-title 194
+Classification of proteins into groups based on amino acid composition and other characters. I. Angular distribution
+###end article-title 194
+###begin article-title 195
+Classification of proteins into groups based on amino acid composition and other characters. II. Grouping into four types
+###end article-title 195
+###begin article-title 196
+Saccharomyces Genome Database
+###end article-title 196
+###begin article-title 197
+###xml 106 111 <span type="species:ncbi:4932">yeast</span>
+The pleckstrin homology domain proteins Slm1 and Slm2 are required for actin cytoskeleton organization in yeast and bind phosphatidylinositol-4,5-bisphosphate and TORC2
+###end article-title 197
+###begin article-title 198
+Two TOR complexes, only one of which is rapamycin sensitive, have distinct roles in cell growth control
+###end article-title 198
+###begin article-title 199
+###xml 102 126 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+The protein kinase C-mediated MAP kinase pathway involved in the maintenance of cellular integrity in Saccharomyces cerevisiae
+###end article-title 199
+###begin article-title 200
+Information assessment on predicting protein-protein interactions
+###end article-title 200
+###begin article-title 201
+Assessing the limits of genomic data integration for predicting protein networks
+###end article-title 201
+###begin article-title 202
+STRING 7-recent developments in the integration and prediction of protein interactions
+###end article-title 202
+###begin article-title 203
+Discovery of biological networks from diverse functional genomic data
+###end article-title 203
+###begin article-title 204
+BioGRID: a general repository for interaction datasets
+###end article-title 204
+###begin article-title 205
+Bim1p/Yeb1p mediates the Kar9p-dependent cortical attachment of cytoplasmic microtubules
+###end article-title 205
+###begin article-title 206
+APC-mediated proteolysis of Ase1 and the morphogenesis of the mitotic spindle
+###end article-title 206
+

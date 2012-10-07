@@ -1,0 +1,1510 @@
+###begin article-title 0
+Novel Algorithms Reveal Streptococcal Transcriptomes and Clues about Undefined Genes
+###end article-title 0
+###begin p 1
+###xml 354 374 <span type="species:ncbi:36470">group A streptococci</span>
+Bacteria-host interactions are dynamic processes, and understanding transcriptional responses that directly or indirectly regulate the expression of genes involved in initial infection stages would illuminate the molecular events that result in host colonization. We used oligonucleotide microarrays to monitor (in vitro) differential gene expression in group A streptococci during pharyngeal cell adherence, the first overt infection stage. We present neighbor clustering, a new computational method for further analyzing bacterial microarray data that combines two informative characteristics of bacterial genes that share common function or regulation: (1) similar gene expression profiles (i.e., co-expression); and (2) physical proximity of genes on the chromosome. This method identifies statistically significant clusters of co-expressed gene neighbors that potentially share common function or regulation by coupling statistically analyzed gene expression profiles with the chromosomal position of genes. We applied this method to our own data and to those of others, and we show that it identified a greater number of differentially expressed genes, facilitating the reconstruction of more multimeric proteins and complete metabolic pathways than would have been possible without its application. We assessed the biological significance of two identified genes by assaying deletion mutants for adherence in vitro and show that neighbor clustering indeed provides biologically relevant data. Neighbor clustering provides a more comprehensive view of the molecular responses of streptococci during pharyngeal cell adherence.
+###end p 1
+###begin title 2
+Author Summary
+###end title 2
+###begin title 3
+
+###end title 3
+###begin p 4
+###xml 1071 1091 <span type="species:ncbi:36470">group A streptococci</span>
+###xml 1112 1117 <span type="species:ncbi:9606">human</span>
+Microarray technology is commonly used to reveal genome-wide transcriptional changes in bacterial pathogens during interactions with the host. Clustering algorithms, which group genes with similar expression patterns, facilitate microarray data organization and are based on assumptions that co-expressed genes share common function or regulation; however, clustering solely by co-expression may not reveal all of the information contained in bacterial array data. We introduce neighbor clustering, a new tool for analyzing bacterial gene expression profiles, which distinguishes itself from other programs by incorporating details unique to the architecture of bacterial chromosomes into the analysis. Neighbor clustering combines two informative characteristics of bacterial genes that share common function or regulation-(1) similar expression profiles and (2) physical proximity on the chromosome-and extracts statistically significant clusters of gene neighbors that are potentially related by function or regulation. We present the analysis of microarray data from group A streptococci during adherence to human pharyngeal cells, the first overt infection step. We show that neighbor clustering identifies more differentially expressed genes than rigorous statistical analyses alone, and can provide functional clues about unknown genes. We extended the analysis to include a previously published streptococcal array study to demonstrate the applicability of the method.
+###end p 4
+###begin title 5
+Introduction
+###end title 5
+###begin p 6
+###xml 404 405 404 405 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b001">1</xref>
+###xml 406 407 406 407 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b002">2</xref>
+Microarray technology is now commonly used to reveal genome-wide transcriptional changes in bacterial pathogens during interactions with the host. Several factors, however, limit the power of such analyses, including inadequate statistical analysis and insufficient sample replication, both of which do not account for experimental variability, and often result in arbitrary thresholds for significance [1,2]. In addition, unknown bacterial genes can confound the interpretation of expression profiles, restricting many microarray studies to the differential expression of well-characterized genes.
+###end p 6
+###begin p 7
+###xml 322 323 322 323 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b003">3</xref>
+###xml 324 325 324 325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b004">4</xref>
+###xml 838 839 838 839 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b001">1</xref>
+###xml 840 841 840 841 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b002">2</xref>
+Several methods are available to organize gene expression profiles and to assist in extracting functional or regulatory gene information from microarray datasets. Clustering algorithms group genes by similarities in expression patterns, based on the assumption that co-expressed genes share common function or regulation [3,4]; however, clustering solely by co-expression patterns may not reveal a considerable amount of information contained in array data. These methods often: (1) produce unreliable data by missing known gene members of biological pathways; (2) fail to distinguish truly related gene clusters from coincidental groupings; and (3) identify clusters containing only unknown genes that may lack either common function or regulation, a considerable limitation for genomes containing a large percentage of undefined genes [1,2]. Because no tools exist to interpret unknown gene clusters or to assess their significance and completeness, a significant portion of bacterial expression profiles are not interpretable using current clustering methods.
+###end p 7
+###begin p 8
+###xml 471 472 471 472 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b005">5</xref>
+###xml 473 474 473 474 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b006">6</xref>
+###xml 762 763 762 763 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b003">3</xref>
+###xml 764 765 764 765 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b006">6</xref>
+We introduce neighbor clustering as a new tool for analyzing bacterial microarray data that addresses some of these limitations by incorporating the physical position of genes on the bacterial chromosome into the analysis of expression data. Information about gene function and regulation is stored intrinsically in the bacterial genome structure, as genes with common function or regulation tend to be physically proximate on the chromosome and often linked as operons [5,6]. We incorporated these positional data into a series of neighbor clustering algorithms, named GenomeCrawler, that identifies groupings of potentially related genes from array data by combining two informative characteristics of bacterial genes that share common function or regulation [3-6]: (1) similar gene expression profiles (i.e., co-expression); and (2) physical proximity of genes on the chromosome. The algorithms also recalculate the statistical significance of each gene as a member of a particular cluster, as well as the significance of each resulting grouping as a whole, to ensure accuracy of cluster assignments. This process ultimately identifies significant clusters of co-expressed gene neighbors that likely share common function or regulation.
+###end p 8
+###begin p 9
+###xml 86 110 86 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(Streptococcus pyogenes)</italic>
+###xml 187 188 187 188 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b007">7</xref>
+###xml 486 487 486 487 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b008">8</xref>
+###xml 488 490 488 490 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b010">10</xref>
+###xml 673 675 673 675 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b011">11</xref>
+###xml 676 678 676 678 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b012">12</xref>
+###xml 692 694 692 694 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b013">13</xref>
+###xml 65 85 <span type="species:ncbi:36470">group A streptococci</span>
+###xml 87 109 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+###xml 131 136 <span type="species:ncbi:9606">human</span>
+###xml 244 249 <span type="species:ncbi:9606">human</span>
+We used this approach to analyze microarray expression data from group A streptococci (Streptococcus pyogenes) during adherence to human pharyngeal cells, the first overt infection step [7]. The ability of all bacterial pathogens to infect the human host depends upon coordinated regulation of diverse gene sets that are required for survival in host environments. Although recent microarray studies have highlighted the molecular responses of streptococci in relevant host conditions [8-10], characterizing differentially expressed loci during pharyngeal cell adherence is critical for understanding the molecular basis for host colonization. Studies from our laboratory [11,12] and others [13] have demonstrated that in vitro association with pharyngeal cells results in streptococcal phage induction and the increased expression of phage-encoded virulence factors. Although the mechanisms mediating these responses are not known, the results of these studies indicate that streptococci sense and, on a transcriptional level, respond to various signals and cues in the pharyngeal cell environment.
+###end p 9
+###begin p 10
+###xml 212 217 <span type="species:ncbi:9606">human</span>
+We undertook the present study to understand and to assess more accurately the genome-wide transcriptional responses of streptococci during one of the earliest recognized stages of infection, namely adherence to human pharyngeal cells. We compared data generated before and after neighbor clustering to show that this method provides a more comprehensive view of transcription by: (1) identifying more differentially expressed genes than even traditional, rigorous statistical analyses; (2) reconstructing intact biological pathways that statistical significance analysis could not reconstruct; and (3) providing preliminary insight and clues about the function or regulation of uncharacterized genes by associating their co-expression with physically proximate, functionally defined genes.
+###end p 10
+###begin title 11
+Results/Discussion
+###end title 11
+###begin title 12
+Adherence-Mediated Differential Expression
+###end title 12
+###begin p 13
+###xml 51 62 51 62 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 94 96 94 96 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b014">14</xref>
+###xml 314 316 314 316 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b015">15</xref>
+###xml 487 489 487 489 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b016">16</xref>
+###xml 490 492 490 492 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b017">17</xref>
+###xml 534 536 534 536 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b018">18</xref>
+###xml 537 539 537 539 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b019">19</xref>
+###xml 592 594 592 594 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b016">16</xref>
+###xml 628 630 628 630 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b020">20</xref>
+###xml 654 656 654 656 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b021">21</xref>
+###xml 657 659 657 659 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b022">22</xref>
+###xml 690 692 690 692 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b019">19</xref>
+###xml 51 62 <span type="species:ncbi:1314">S. pyogenes</span>
+###xml 173 178 <span type="species:ncbi:9606">human</span>
+We developed spotted oligonucleotide arrays of the S. pyogenes SF370 (an M1 serotype) genome [14] and compared the transcriptomes of streptococci that adhere to Detroit 562 human pharyngeal cells to non-adherent ("associated") streptococci within the same experiment. Adherence assays were performed as described [15] with modifications to minimize eukaryotic cell disruption. We replicated experiments independently and used dye-swaps to incorporate biological and technical variation [16,17]. Following filtering and normalization [18,19], we analyzed data from four biological replicates [16] with robust summary statistics [20], Bayesian statistics [21,22], and permutation algorithms [19] to identify genes differentially expressed with significance during pharyngeal cell adherence.
+###end p 13
+###begin p 14
+###xml 118 119 118 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 119 120 119 120 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 209 216 209 216 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t001">Table 1</xref>
+###xml 327 335 327 335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st001">Table S1</xref>
+###xml 371 372 371 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 399 400 399 400 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 514 521 514 521 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t002">Table 2</xref>
+###xml 605 606 605 606 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+This analysis identified 79 genes (4% of the genome) exhibiting statistically significant fold changes in expression (PF value < 0.05) during adherence from 1,769 open reading frames represented on the array (Table 1). We refer to such genes as "differentially expressed." We present the entire dataset from all experiments as Table S1. Genes demonstrating upregulation (n = 45) and downregulation (n = 34) included virulence factors, prophage-encoded transcripts, metabolic genes, and transcriptional regulators (Table 2). Undefined or hypothetical genes comprised 27% of differentially expressed genes (n = 21; 11 chromosomally encoded genes, ten phage-encoded genes).
+###end p 14
+###begin p 15
+Summary of Streptococcal Genes Exhibiting Significant Changes in Expression during Adherence to Pharyngeal Cells Compared with Associated Streptococcal Control
+###end p 15
+###begin p 16
+Functional Categories of Streptococcal Genes Exhibiting Significant Changes in Expression during Adherence to Pharyngeal Cells Compared with Associated Streptococcal Control
+###end p 16
+###begin title 17
+Verification by Quantitative Real-Time PCR
+###end title 17
+###begin p 18
+###xml 40 42 40 42 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b023">23</xref>
+###xml 140 148 140 148 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st002">Table S2</xref>
+###xml 311 312 311 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 312 313 312 313 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 454 455 454 455 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 455 456 455 456 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 567 568 567 568 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 568 569 568 569 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 764 772 764 772 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st003">Table S3</xref>
+###xml 866 867 866 867 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 933 942 933 942 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-sg001">Figure S1</xref>
+We conducted TaqMan (qRT-PCR) analysis [23] of 11 differentially expressed genes to validate selected microarray hybridization results (see Table S2 for genes and primer-probe sequences). Five genes chosen for validation demonstrated statistically significant fold changes in expression by microarray analysis (PF value < 0.05; two upregulated, three downregulated). The remaining six genes (four upregulated, two downregulated) did not have significant PF values, but were statistically significant as members of particular neighbor clusters in subsequent analyses (PE < 0.05) as detailed in later sections). We averaged the data to generate a value for each gene, creating a set of 11 paired values from quantitative real-time (qRT)-PCR and microarray analyses (Table S3). Results of standard linear regression analysis demonstrated a strong positive correlation (r = 0.9) between data obtained using the different techniques (see Figure S1).
+###end p 18
+###begin title 19
+Virulence Factors
+###end title 19
+###begin p 20
+###xml 145 146 145 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b007">7</xref>
+###xml 147 149 147 149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b014">14</xref>
+###xml 150 152 150 152 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b024">24</xref>
+###xml 247 255 247 255 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t001">Tables 1</xref>
+###xml 260 261 260 261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t002">2</xref>
+###xml 294 298 294 298 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(slo</italic>
+###xml 302 310 302 310 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0167)</italic>
+###xml 333 342 333 342 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy2039)</italic>
+###xml 405 410 405 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(speH</italic>
+###xml 414 422 414 422 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy1008)</italic>
+###xml 466 475 466 475 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy0130)</italic>
+###xml 537 544 537 544 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy2039</italic>
+###xml 549 556 549 556 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0130</italic>
+Streptococci elaborate several factors implicated in infection, including surface-exposed adhesins and secreted toxigenic proteins (reviewed in [7,14,24]). The initial statistical analysis identified four differentially expressed virulence genes (Tables 1 and 2). Genes encoding streptolysin O (slo or spy0167) and the SpeB protease (spy2039) were downregulated, while genes encoding pyrogenic exotoxin H (speH or spy1008) and a putative fibronectin-binding protein (spy0130) were upregulated. We verified the differential expression of spy2039 and spy0130 by qRT-PCR.
+###end p 20
+###begin p 21
+###xml 203 204 203 204 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b007">7</xref>
+###xml 205 207 205 207 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b025">25</xref>
+###xml 287 289 287 289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b026">26</xref>
+###xml 372 374 372 374 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b027">27</xref>
+###xml 437 440 437 440 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">slo</italic>
+###xml 582 584 582 584 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b027">27</xref>
+###xml 152 157 <span type="species:ncbi:9606">human</span>
+The downregulation of virulence loci during presumably inappropriate stages of infection was not surprising. Streptolysin O is a cytotoxin that damages human tissue and increases host cell cytotoxicity [7,25]. The resulting cellular damage, particularly to polymorphonuclear leukocytes [26], decreases internalization and subsequent intracellular killing of streptococci [27]. Based on its downregulation during adherence, we infer that slo was transcribed during pre-adherence associations, perhaps, as previously reported, to protect streptococci from phagocytic killing in vivo [27]. However, once adhered, our data suggest that streptococci downregulate production of this cytotoxin, presumably to prevent further host tissue destruction that could interfere with adherence.
+###end p 21
+###begin p 22
+###xml 17 24 17 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy2039</italic>
+###xml 110 112 110 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b028">28</xref>
+###xml 113 115 113 115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b029">29</xref>
+###xml 326 328 326 328 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b030">30</xref>
+###xml 362 364 362 364 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b031">31</xref>
+###xml 470 472 470 472 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b024">24</xref>
+###xml 473 475 473 475 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b032">32</xref>
+###xml 476 478 476 478 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b033">33</xref>
+###xml 788 790 788 790 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b034">34</xref>
+###xml 791 793 791 793 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b035">35</xref>
+###xml 845 853 845 853 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0130,</italic>
+###xml 966 968 966 968 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b036">36</xref>
+###xml 1168 1172 1168 1172 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SpeB</italic>
+###xml 1253 1255 1253 1255 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b033">33</xref>
+###xml 1256 1258 1256 1258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b037">37</xref>
+###xml 1356 1360 1356 1360 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 1367 1369 1367 1369 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b038">38</xref>
+###xml 284 289 <span type="species:ncbi:9606">human</span>
+###xml 339 344 <span type="species:ncbi:10090">mouse</span>
+SpeB (encoded by spy2039) is a multifunctional cysteine protease implicated in numerous infection strategies [28,29]. Although few studies have examined gene expression patterns during adherence, SpeB production (as detected by Western blot analysis) decreases during co-culture with human peripheral blood mononuclear cells [30] and in a mouse infection model [31]. When SpeB expression is limited, several streptococcal proteins necessary for adherence remain intact [24,32,33]; thus, decreased SpeB production (as indicated here) may promote pharyngeal cell attachment. Furthermore, SpeB abolishes internalization (following adherence) of certain streptococcal strains by epithelial cells (including Detroit 562 cells), a process mediated in part by the fibronectin-binding protein F [34,35]. We observed significant upregulation of the gene spy0130, encoding a protein recently found to be associated with the production of surface-exposed pili on strain SF370 [36]. The protein shares 60% sequence similarity to protein F, suggesting that it may coordinate a similar internalization mechanism or may be involved directly in adherence (discussed later in detail). SpeB downregulation also coincides with increased expression of pyrogenic exotoxins [33,37] that reportedly increase streptococcal survival in vivo. We observed that the exotoxin-encoding speH gene [38] was upregulated. Taken together, our results agree with previous reports on SpeB production during host cell interactions, suggesting that decreased expression may promote streptococcal adherence (by preventing proteolytic degradation of key virulence factors or adhesins), enhance internalization (perhaps through a fibronectin-mediated pathway), and increase survival (through increased pyrogenic exotoxin production, discussed below).
+###end p 22
+###begin title 23
+Phage-Encoded Genes
+###end title 23
+###begin p 24
+###xml 136 138 136 138 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b039">39</xref>
+###xml 272 279 272 279 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t001">Table 1</xref>
+###xml 286 290 286 290 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 296 305 296 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy1008)</italic>
+###xml 399 401 399 401 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b039">39</xref>
+###xml 428 432 428 432 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 468 470 468 470 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b038">38</xref>
+###xml 540 541 540 541 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b008">8</xref>
+SF370 contains one inducible prophage (370.1) and three defective prophages (370.2, 370.3, and 370.4) that produce no infectious phage [39]. We identified 11 differentially expressed phage 370.2 genes, suggesting that this defective phage is not transcriptionally silent (Table 1). The speH gene (spy1008) was induced, and the remaining genes, hypothetically involved in replication and regulation [39], were downregulated. The speH gene encodes a mitogenic exotoxin [38] reportedly induced during polymorphonuclear leukocyte phagocytosis [8] but not implicated previously in adherence.
+###end p 24
+###begin title 25
+###xml 23 27 23 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+Allelic Replacement of speH
+###end title 25
+###begin p 26
+###xml 24 28 24 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 217 221 217 221 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 472 476 468 472 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 537 545 533 541 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g001">Figure 1</xref>
+###xml 710 718 706 714 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g001">Figure 1</xref>
+###xml 842 846 838 842 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 585 590 <span type="species:ncbi:9606">human</span>
+Increased expression of speH during pharyngeal cell adherence suggests that the SpeH exotoxin is either necessary for adherence, or is a component of a downstream infection process. Adherence-mediated upregulation of speH is likely not the result of phage induction, as the remaining phage 370.2 genes identified in our analysis were downregulated. To determine if SpeH plays a direct role in the adherence process, we created a deletion mutant in strain SF370 (SF370DeltaspeH), which was confirmed by PCR (unpublished data) and RT-PCR (Figure 1A) and tested in vitro for adherence to human pharyngeal cells. We observed no significant difference in adherence between the wild-type (SF370) and mutant strains (Figure 1B), indicating that SpeH is not involved directly in attachment to the pharyngeal cell. The significant upregulation of the speH gene during adherence suggests that the gene product may function instead during a subsequent stage of infection.
+###end p 26
+###begin title 27
+###xml 16 20 16 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+Confirmation of speH Deletion Mutant and Pharyngeal Cell Adherence Assay
+###end title 27
+###begin p 28
+###xml 144 153 144 149 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#916;speH</italic>
+(A) Results of RT-PCR and PCR analyses of total RNA preparations isolated from mid-log (OD = 0.4) and stationary phase (OD = 1) cultures of the DeltaspeH deletion mutant (DeltaL and DeltaS, respectively), and stationary phase cultures of the SF370 parental strain (P). RNA was reverse-transcribed as described in Methods. To assess genomic DNA contamination, control reactions containing Taq DNA polymerase instead of reverse transcriptase were included. cDNA products were separated on a 1% agarose gel and visualized by ethidium bromide staining. Lanes containing products from either the RT-PCR or PCR analysis are designated at the bottom of the panel. Lanes labeled MW contain 1 kb Plus DNA ladder (1 mug; Invitrogen).
+###end p 28
+###begin p 29
+###xml 141 145 137 141 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 164 168 156 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 343 344 335 336 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 380 382 372 374 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t-</italic>
+(B) Results of the pharyngeal cell adherence assay (detailed in Methods), comparing parental strain SF370 with the deletion mutant SF370DeltaspeH (abbreviated DeltaspeH). Adherent streptococci are reported as the percentage of total number of streptococci added as inoculum to pharyngeal cell monolayers. Statistical significance (reported as p value) was determined by Student's t-test.
+###end p 29
+###begin title 30
+Differential Expression of Genes from Diverse Functional Categories
+###end title 30
+###begin p 31
+###xml 238 246 238 246 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t001">Tables 1</xref>
+###xml 251 252 251 252 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t002">2</xref>
+###xml 325 327 325 327 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b040">40</xref>
+###xml 504 506 504 506 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b041">41</xref>
+We identified a number of genes encoding proteins involved in housekeeping processes (such as carbohydrate and coenzyme metabolism) that were differentially expressed, indicating a shift in metabolic processes due to host cell adherence (Tables 1 and 2). For example, genes encoding proteins involved in folate biosynthesis [40] were upregulated, suggesting that certain cofactors that may be necessary during adherence were unavailable. Also upregulated were genes encoding subunits of the F0F1 ATPase [41] (discussed in more detail later), which may indicate an acid stress response to maintain cytoplasmic pH or a need to generate ATP in response to increased energy requirements.
+###end p 31
+###begin p 32
+###xml 91 98 91 98 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t001">Table 1</xref>
+###xml 216 223 216 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy2042</italic>
+###xml 367 395 367 395 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">mga, csrRS, sagA, and fasBCA</italic>
+###xml 505 507 505 507 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b042">42</xref>
+###xml 508 510 508 510 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b043">43</xref>
+###xml 747 759 747 759 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy1236&#8211;1237</italic>
+We also identified the adherence-mediated upregulation of four transcriptional regulators (Table 1), suggestive of an adaptive response to host cell contact that is dynamic and complex. For example, RopB (encoded by spy2042), a member of the Rgg family of response regulators, interacts with a number of regulatory networks throughout the streptococcal genome (e.g., mga, csrRS, sagA, and fasBCA), affecting the transcription of numerous proteins, virulence factors, and two-component regulatory systems [42,43]. Although the delineation of genes influenced by RopB (or any identified transcriptional regulator) is beyond the scope of this study, our initial analysis did identify the upregulation of a two-component regulatory system, encoded by spy1236-1237. The functions of these particular loci are not yet known, and their adherence-mediated upregulation represents new targets in the study of regulators that function during host cell contact.
+###end p 32
+###begin title 33
+Neighbor Clustering
+###end title 33
+###begin p 34
+###xml 369 370 369 370 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 444 446 444 446 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b041">41</xref>
+###xml 473 475 473 475 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b040">40</xref>
+###xml 570 577 570 577 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t001">Table 1</xref>
+###xml 1136 1137 1136 1137 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b005">5</xref>
+###xml 1138 1139 1138 1139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b006">6</xref>
+Our initial analysis revealed the differential expression of a wide range of functionally diverse genes and provided insight into the adaptive response of streptococci to host cell contact. However, despite a rigorous statistical approach, this analysis, like many previous microarray studies, identified the differential expression of a large number of unknown genes (n = 21) and a number of incomplete biological pathways (e.g., F0F1 ATPase [41] and folate biosynthesis [40]) by failing to detect the differential expression of a number of known gene pathway members (Table 1). To overcome these limitations and to extract more functional information from the array dataset (including more complete biological pathways), we developed the neighbor clustering algorithms to combine the physical position of genes on the streptococcal chromosome with gene expression data. Neighbor clustering was designed to identify expanded groupings of potentially related genes from our array data by incorporating two reliable predictors of genes that share common function or regulation, namely physical proximity and similar expression profiles [5,6].
+###end p 34
+###begin p 35
+###xml 463 465 463 465 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t-</italic>
+###xml 498 499 498 499 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 508 509 508 509 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 509 510 509 510 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</sub>
+###xml 646 647 646 647 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 647 648 647 648 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</sub>
+###xml 699 706 699 706 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t003">Table 3</xref>
+###xml 880 881 880 881 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 881 882 881 882 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 941 942 941 942 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 942 943 942 943 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 1017 1018 1017 1018 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1032 1033 1032 1033 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1033 1034 1033 1034 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 1091 1092 1091 1092 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1092 1093 1092 1093 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</sub>
+###xml 1117 1118 1117 1118 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1118 1119 1118 1119 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 1217 1218 1217 1218 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1218 1219 1218 1219 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 1262 1263 1262 1263 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1263 1264 1263 1264 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 1269 1270 1269 1270 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1270 1271 1270 1271 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 1316 1317 1316 1317 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1432 1433 1432 1433 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1433 1434 1433 1434 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 1536 1537 1536 1537 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1537 1538 1537 1538 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 1601 1602 1601 1602 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1602 1603 1602 1603 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 1640 1641 1640 1641 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1641 1642 1641 1642 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 1810 1811 1810 1811 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 1830 1831 1830 1831 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1862 1863 1862 1863 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">y</italic>
+We implemented this approach by developing an algorithm with dynamic windowing (GenomeCrawler) that sequentially stepped through the microarray data and identified clusters of adjacent genes exhibiting similar fold changes in expression. Because the genome contains many possible clusters, we restricted the algorithm's search space to identify only spatially related clusters. GenomeCrawler applied a separate permutation algorithm, using the sum of each gene's t-statistics to calculate adjusted P values (PK) for each cluster, which corresponded to the probability of assembling a cluster by chance. Significance was assigned to clusters with PK < 0.05, and the resulting groupings are listed in Table 3. Because individual genes could be members of many different significant clusters, GenomeCrawler then applied a distinct permutation algorithm to calculate the probability (PC) that a gene was clustered coincidentally. Calculation of PC values relies on Bayes' Theorem, in which the probability of a gene's log2-fold change (PF value) is combined with the cluster probability itself (PK value). We stress that PC reflects the significance of a gene based on its cluster context rather than a recapitulation of PF. This ensures a strong dependency between PF and PC, preventing a gene with a relatively low log2-fold change from being scored as significant simply because it is clustered with a gene with a highly significant PF value. Finally, GenomeCrawler calculated the overall significance of differentially expressed genes (PE values) by integrating differential expression probabilities (PF) and cluster context probabilities (PC). We developed a plotting application (GenomeSpyer) that represents the chromosome as a linear molecule to visualize GenomeCrawler output, with genes displayed on the x-axis and their log2-fold change magnitudes on the y-axis. Applications and all datasets are available for download at .
+###end p 35
+###begin p 36
+###xml 47 58 47 58 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 47 58 <span type="species:ncbi:1314">S. pyogenes</span>
+Qualifying Neighbor Clusters Identified in the S. pyogenes SF370 Genome by GenomeCrawler Analysis of Adherent Versus Associated Microarray Data
+###end p 36
+###begin p 37
+###xml 119 126 119 126 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s3">Methods</xref>
+###xml 219 227 219 227 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st004">Table S4</xref>
+###xml 262 270 262 270 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st005">Table S5</xref>
+###xml 829 837 829 837 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st005">Table S5</xref>
+###xml 902 903 902 903 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 903 904 903 904 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</sub>
+###xml 1175 1182 1175 1182 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t003">Table 3</xref>
+###xml 1201 1210 1201 1210 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g002">Figures 2</xref>
+We visually inspected the resulting clusters and disqualified those that violated our neighbor cluster definition (see Methods for details). All output prior to cluster disqualifications is included for comparison (see Table S4). Of the 309 qualifying clusters (Table S5), 197 (63.8%) were composed entirely of known, functionally defined genes; however, 26 (13%) of these were incorrectly assembled, as they contained known genes that are functionally unrelated. Because we did not incorporate functional annotations of genes into the algorithms (i.e., to keep the analysis "blind"), we anticipated the possibility that some groupings could be assembled incorrectly despite the statistical framework for assigning clusters. Of the remaining 283 (91.6%) groupings, a number of differently sized clusters contained the same gene (Table S5). We report such clusters first by highest significance (lowest PK value), then by largest number of genes. Thus, if clusters containing a particular gene were of equal significance, we report the cluster with the most gene members. This method identified 47 significant clusters containing 173 differentially expressed genes (listed in Table 3 and visualized in Figures 2 and S2-S4), a considerably larger group than could have been compiled using only the initial 79 significant genes. A total of 56 of the original 79 significant genes became components of significant clusters, whereas 23 remained unclustered.
+###end p 37
+###begin title 38
+Statistically Significant Neighbor Clusters in the SF370 Genome
+###end title 38
+###begin p 39
+###xml 162 163 162 163 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 163 164 163 164 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</sub>
+###xml 202 203 202 203 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 334 335 334 335 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 433 434 433 434 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">y</italic>
+###xml 504 505 504 505 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 505 506 505 506 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 518 519 518 519 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 532 533 532 533 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 553 554 553 554 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 554 555 554 555 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 575 576 575 576 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 662 663 662 663 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 663 664 663 664 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 767 768 767 768 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 768 769 768 769 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 778 779 778 779 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 779 780 779 780 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 866 867 866 867 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 867 868 867 868 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 872 873 872 873 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 873 874 873 874 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+Neighbor clusters that adhere to the definition of neighbor clusters are plotted by GenomeSpyer. Yellow boxes denote boundaries of significant neighbor clusters (PK value < 0.05). Genes, located on the x-axis, are identified by their Spy numbers from the annotated SF370 genome (deleted gene numbers result during genome updates); log2-fold change in expression values (adherence versus associated streptococci) are indicated on the y-axis. Genes designated by green lines have statistically significant PF values (log2-fold change P values < 0.05) and PE values (expression P values < 0.05). Genes designated by blue lines do not have statistically significant PF values, but as a result of membership in a designated neighbor cluster have statistically significant PE values (PE values < 0.05). Genes designated by gray lines do not have statistically significant PF or PE values.
+###end p 39
+###begin p 40
+(A) Whole-genome view of 47 statistically significant neighbor clusters identified in the SF370 genome during adherence to pharyngeal cells.
+###end p 40
+###begin p 41
+###xml 86 101 86 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy1096&#8211;1100).</italic>
+(B) Enlarged view of representative Type I cluster encoding folate biosynthesis genes (spy1096-1100). Type I clusters contain only genes of known or defined function. See text for further descriptions of all clusters. Spy numbers are indicated above the bars corresponding to each gene.
+###end p 41
+###begin p 42
+###xml 63 76 63 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127&#8211;0130.</italic>
+(C) Enlarged view of representative Type II cluster containing spy0127-0130. Type II clusters contain a combination of both functionally defined and unknown gene members.
+###end p 42
+###begin p 43
+###xml 104 119 104 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy0961&#8211;0965).</italic>
+(D) Enlarged view of representative Type III cluster containing phage encoded genes of unknown function (spy0961-0965). Type III clusters contain only genes of unknown or undefined function.
+###end p 43
+###begin p 44
+###xml 172 173 172 173 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 323 332 323 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g002">Figures 2</xref>
+###xml 361 362 361 362 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 408 417 408 417 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g002">Figures 2</xref>
+###xml 447 448 447 448 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 495 504 495 504 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g002">Figures 2</xref>
+We subdivided all clusters into three qualitative types based on the functional annotation of gene members. We present examples of Type I and II clusters: Type I clusters (n = 25) contained only functionally defined and functionally related genes (as reported in published studies), such as biological pathways components (Figures 2B and S2); Type II clusters (n = 20) included both known and unknown genes (Figures 2C and S3). Type III clusters (n = 2) were composed entirely of unknown genes (Figures 2D and S4), and are not discussed in detail.
+###end p 44
+###begin title 45
+Type I Clusters: Intact Metabolic Pathways and Multimeric Proteins
+###end title 45
+###begin p 46
+###xml 185 241 185 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy0080&#8211;0081, spy1236&#8211;1237, spy1707&#8211;1711, spy2041&#8211;2042)</italic>
+###xml 381 382 381 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 382 383 382 383 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 817 824 817 824 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t003">Table 3</xref>
+We measured the performance of our algorithm by examining whether it identified gene groupings known to be functionally related (Type I clusters). Only four (16%) of 25 Type I clusters (spy0080-0081, spy1236-1237, spy1707-1711, spy2041-2042) could have been identified in entirety by significance analysis because all clustered genes exhibited significant differential expression (PF value < 0.05). A total of 11 (52.4%) of the remaining 21 clusters would not have been identified in their entirety without GenomeCrawler because we initially identified significant fold-changes in only a subset of genes necessary to encode particular pathways or loci; this is intuitively unreasonable if all genes are essential for functionality. GenomeCrawler expanded these clusters to contain more genes that encode intact loci (Table 3).
+###end p 46
+###begin p 47
+###xml 38 45 38 45 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t001">Table 1</xref>
+###xml 152 154 152 154 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b040">40</xref>
+###xml 156 164 156 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy1096</italic>
+###xml 165 171 165 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1100),</italic>
+###xml 250 257 250 257 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t003">Table 3</xref>
+###xml 262 270 262 270 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g002">Figure 2</xref>
+###xml 381 383 381 383 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b041">41</xref>
+###xml 385 393 385 393 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy0754</italic>
+###xml 394 400 394 400 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0761).</italic>
+###xml 456 459 456 459 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">atp</italic>
+###xml 467 474 467 474 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t001">Table 1</xref>
+###xml 602 609 602 609 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t003">Table 3</xref>
+For example, we initially identified (Table 1) the significant upregulation of three of the five known gene members of the folate biosynthetic pathway [40] (spy1096-1100), but GenomeCrawler identified a significant cluster containing all five genes (Table 3 and Figure 2B). We obtained a similar result for the eight-gene operon encoding the F0F1-type proton translocating ATPase [41] (spy0754-0761). The initial significance analysis identified only four atp genes (Table 1), but neighbor clustering identified a significant cluster containing all eight genes necessary to encode a functional ATPase (Table 3).
+###end p 47
+###begin p 48
+###xml 253 260 253 260 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t003">Table 3</xref>
+###xml 347 362 347 362 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy0025&#8211;0028),</italic>
+###xml 382 397 382 397 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy1916&#8211;1923),</italic>
+###xml 422 437 422 437 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy1743&#8211;1747),</italic>
+###xml 466 481 466 481 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy1308&#8211;1312),</italic>
+###xml 521 535 521 535 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy1058&#8211;1060)</italic>
+###xml 537 539 537 539 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b014">14</xref>
+###xml 646 651 <span type="species:ncbi:9606">human</span>
+Each of the 11 neighbor clusters that could have been only partially identified by our initial analysis alone gained gene members after application of the algorithms and became more complete sets of functionally related genes than initially identified (Table 3). These clusters encompass various metabolic processes, including purine biosynthesis (spy0025-0028), lactose metabolism (spy1916-1923), fatty acid biosynthesis (spy1743-1747), lipoteichoic acid synthesis (spy1308-1312), and sugar phosphotransferase transport (spy1058-1060) [14], suggesting that specific changes occur in the streptococcal metabolic program as the bacteria adhere to human pharyngeal cells in vitro.
+###end p 48
+###begin p 49
+###xml 280 292 280 292 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0738&#8211;0746</italic>
+###xml 403 405 403 405 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b025">25</xref>
+###xml 406 408 406 408 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b044">44</xref>
+###xml 622 629 622 629 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t003">Table 3</xref>
+###xml 763 765 763 765 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b025">25</xref>
+Notably, the remaining ten Type I clusters were composed entirely of genes that individually were not significant; however, after applying our algorithms, the combined contribution of each gene resulted in a significant cluster. For example, the nine-gene operon that spans genes spy0738-0746 encodes streptolysin S, a potent cytolytic toxin that promotes internalization and host tissue dissemination [25,44]. Though the differential expression of the individual genes was not significant following our initial statistical analysis, GenomeCrawler identified a significant downregulated cluster containing all nine genes (Table 3). Adherence-induced downregulation of streptolysin S is consistent with its previously determined role in host cell internalization [25]; however, without neighbor clustering, expression of this operon was not evident immediately.
+###end p 49
+###begin p 50
+###xml 146 148 146 148 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b017">17</xref>
+###xml 325 329 325 329 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sagA</italic>
+###xml 431 435 431 435 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sagA</italic>
+###xml 536 538 536 538 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b045">45</xref>
+###xml 625 629 625 629 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sagA</italic>
+###xml 749 750 749 750 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+Although individual gene members of Type I clusters may not be statistically significant as a result of technical variability within experiments [17], the genetic structure of certain Type I operons may provide an alternative explanation. For example, the streptolysin operon encodes an internal terminator downstream of the sagA gene (the first gene in the operon), which modulates the abundance of particular mRNA species (e.g., sagA mRNA versus the polycistronic message for all nine genes) under different environmental conditions [45]. If transcription is internally disrupted by such a terminator, the abundance of the sagA transcript may be much greater than the polycistronic message; such disproportionate transcript levels would affect log2-fold change values and impact the statistical significance of individual genes within these types of clusters. Thus, in addition to helping resolve clusters that would not be easily recognized because of experimental technical variability, the neighbor clustering method may help to resolve operons with such internal terminators and regulators.
+###end p 50
+###begin p 51
+These results demonstrate that neighbor clustering effectively reconstructed a number of complete pathways and loci from processed array data. Importantly, because functional gene data are not incorporated into its algorithms, GenomeCrawler is not biased toward identifying "expected" clusters. Curating the dataset following its application may make the algorithms less user-friendly; however, the elimination of such bias is essential for this type of analysis.
+###end p 51
+###begin title 52
+Type II Clusters
+###end title 52
+###begin p 53
+Based on the Type I cluster results, we speculated that genes contained in Type II clusters might be related by function or regulation. Type II groupings contain a combination of both known and unknown gene members and could provide preliminary clues about the function of unknown genes within a particular cluster by associating their expression with neighboring genes of known and defined function. Alternatively, co-expression of genes results from common regulation, and Type II associations may suggest shared regulatory mechanisms for clustered genes. We note, however, that despite the statistical framework with which groupings are assigned, experimental evidence is necessary to confirm functional or regulatory relatedness. We do not suggest simply assigning either based on cluster membership; rather, cluster associations may provide some preliminary functional or regulatory clues for gene members.
+###end p 53
+###begin p 54
+###xml 44 51 44 51 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t003">Table 3</xref>
+###xml 56 65 56 65 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-sg003">Figure S3</xref>
+###xml 318 331 318 331 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy0127&#8211;0130</italic>
+###xml 336 349 336 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy1701&#8211;1704)</italic>
+A total of 18 (90%) of 20 Type II clusters (Table 3 and Figure S3) may not have been identified without neighbor clustering: eight (44.4%) of 18 gained additional gene members; the remaining ten comprised genes that demonstrated significant differential expression only after applying GenomeCrawler. Only two clusters (spy0127-0130 and spy1701-1704) could have been identified without neighbor clustering; however, a number of these genes were initially annotated as hypothetical proteins, so a potential relationship between the gene members may not have been readily apparent.
+###end p 54
+###begin p 55
+###xml 16 23 16 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127</italic>
+###xml 24 28 24 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0130</italic>
+###xml 175 187 175 187 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0123&#8211;0136</italic>
+###xml 269 271 269 271 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b046">46</xref>
+###xml 310 312 310 312 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b047">47</xref>
+###xml 356 363 356 363 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 551 553 551 553 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b048">48</xref>
+###xml 554 556 554 556 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b049">49</xref>
+###xml 614 621 614 621 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127</italic>
+###xml 622 626 622 626 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0130</italic>
+###xml 828 830 828 830 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b036">36</xref>
+###xml 962 969 962 969 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 1043 1050 1043 1050 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0128</italic>
+###xml 1080 1082 1080 1082 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b050">50</xref>
+###xml 1089 1096 1089 1096 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0130</italic>
+###xml 1132 1134 1132 1134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b014">14</xref>
+###xml 1155 1163 1155 1163 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0128-</italic>
+###xml 1243 1250 1243 1250 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0130</italic>
+###xml 1297 1299 1297 1299 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b036">36</xref>
+###xml 776 796 <span type="species:ncbi:36470">group A streptococci</span>
+###xml 802 807 <span type="species:ncbi:10090">mouse</span>
+The upregulated spy0127-0130 cluster is part of a larger genomic region known as FCT (for fibronectin- and collagen-binding proteins and T antigen-encoding loci), which spans spy0123-0136 in the SF370 genome and encodes surface proteins and transcriptional regulators [46]. A search of both the PFAM database [47] () and sortase database () predicted that spy0129 encodes a sortase enzyme, which are transpeptidases that cleave protein substrates at conserved C-terminal motifs (often LPXTG) and then anchor these proteins to the bacterial cell wall [48,49]. Recently, it was reported that the four genes spanning spy0127-0130 encode, and are responsible for, the formation of surface-localized, trypsin-resistant pili that induce protective immunity against a lethal dose of group A streptococci in a mouse model of infection [36]. This same report provided the first experimental evidence supporting the sortase prediction, indicating that the gene product of spy0129 is responsible for the cell-wall sorting of the proteins encoded by both spy0128 (annotated as a Cpa homolog [50]) and spy0130 (annotated as a protein F homolog [14]). Furthermore, the spy0128-encoded protein is the structural backbone of the pili, and the gene product of spy0130 may be involved in stabilizing the structure [36]. Together with the identification of this cluster by GenomeCrawler, these results prompted us to study this cluster and the contributions of the gene products to pharyngeal cell adherence.
+###end p 55
+###begin p 56
+###xml 42 54 42 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127&#8211;0130</italic>
+###xml 319 327 319 327 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g003">Figure 3</xref>
+###xml 419 426 419 426 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127</italic>
+###xml 432 440 432 440 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st006">Table S6</xref>
+###xml 441 442 441 442 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">.</italic>
+###xml 706 714 706 714 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0135.</italic>
+We determined experimentally that cluster spy0127-0130 is an operon, verifying both related function and regulation of the gene members. Reverse transcription of SF370 RNA, with primer combinations that spanned all four genes, produced cDNA fragments of sizes that could only result from a polycistronic mRNA template (Figure 3). In silico sequence inspection identified a single putative promoter sequence upstream of spy0127 (see Table S6). Although GenomeCrawler is not an operon-identifying algorithm, these results show that it could (1) identify this commonly regulated gene cluster and (2) define the cluster boundaries, excluding other proximate genes, such as an additional sortase-encoding gene, spy0135.
+###end p 56
+###begin title 57
+###xml 17 29 17 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127&#8211;0130</italic>
+Neighbor Cluster spy0127-0130
+###end title 57
+###begin p 58
+###xml 36 48 36 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127&#8211;0130</italic>
+(A) Schematic representation of the spy0127-0130 cluster. Gene size (bp) is indicated under the gene name, and the position of primers for the reverse transcription of streptococcal mRNA are indicated by colored arrows (forward primers, F; reverse primers, R). Eight different combinations of primers were used, and the expected sizes of the eight resulting cDNAs that would be produced if genes compose an operon are indicated in the numbered, colored boxes. cDNA box colors correspond to colors of the primer pairs that would generate each fragment.
+###end p 58
+###begin p 59
+(B) A 1% agarose gel of the cDNA fragments amplified from mRNA with each primer combination. Lane numbers correspond to the numbering of the predicted cDNAs from (A). First lane of gel (MW) contains 1 kb Plus DNA ladder, and the sizes of the relevant DNA fragments in the ladder are indicated (bp).
+###end p 59
+###begin title 60
+###xml 23 30 23 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+Allelic Replacement of spy0129
+###end title 60
+###begin p 61
+###xml 13 20 13 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 64 71 60 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 116 128 112 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127&#8211;0130</italic>
+###xml 228 235 224 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 372 379 368 375 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0128</italic>
+###xml 384 391 380 387 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0130</italic>
+###xml 485 487 481 483 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b036">36</xref>
+###xml 575 583 571 579 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g004">Figure 4</xref>
+###xml 631 638 623 630 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 671 678 663 670 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 792 800 784 792 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0130,</italic>
+###xml 883 891 875 883 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g004">Figure 4</xref>
+###xml 965 972 953 960 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 1059 1067 1047 1055 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030132-g004">Figure 4</xref>
+###xml 1070 1071 1058 1059 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 1110 1111 1098 1099 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1157 1164 1145 1152 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0130</italic>
+###xml 1381 1388 1369 1376 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 1610 1617 1598 1605 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0128</italic>
+###xml 1624 1631 1612 1619 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0130</italic>
+We created a spy0129 deletion mutant in strain SF370 (SF370Deltaspy0129) to determine if genes contained within the spy0127-0130 cluster were directly involved in adherence to pharyngeal cells. We posited that a deletion in the spy0129 sortase gene may have the greatest overall effect on the production and processing of the gene products of this cluster, since both the spy0128 and spy0130 gene products do not localize to the cell-wall surface in the absence of the sortase enzyme [36]. Allelic replacement created two putative deletion mutants; however, RT-PCR analysis (Figure 4A) revealed that only one such clone (SF370Deltaspy0129.2) was a true knock-out for the spy0129 gene and useful for further study. Because the gene cluster is also an operon, expression of the downstream gene spy0130, encoding the protein F homolog/pilus protein, was also eliminated in this mutant (Figure 4A). In vitro pharyngeal cell adherence assays revealed that the SF370Deltaspy0129.2 mutant was approximately 66% less adherent than the parental control strain, SF370 (Figure 4B; p = 0.03 as determined by the Student's t-test). These results suggest that either the spy0130 gene product is involved directly in adherence, or that due to the elimination of the sortase, the pili, which may function in their entirety as adhesins, were not assembled on the surface of the mutant. Because the spy0129 gene product is not expected to be found on the streptococcal surface (i.e., it lacks a cell-wall anchoring motif), it is not likely to be involved directly in adherence. We are working to produce an in-frame deletion of spy0128 and a spy0130 single knock-out mutant to delineate the contribution of each individual clustered gene product to adherence.
+###end p 61
+###begin title 62
+###xml 16 23 16 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+Confirmation of spy0129 Deletion Mutant and Adherence Assay
+###end title 62
+###begin p 63
+###xml 47 59 47 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127&#8211;0130</italic>
+Top panel is a schematic representation of the spy0127-0130 cluster. Position of primers for RT-PCR are indicated by arrows.
+###end p 63
+###begin p 64
+(A) Results of RT-PCR analysis on mRNA from two putative deletion mutants (Delta1 and Delta2) and the parental SF370 strain (P). mRNA was isolated from mid log-phase or stationary phase cells (indicated below panel) and reverse-transcribed with two primer combinations, which are indicated at the top of the lanes as primer set A (0129F-0129R) and primer set B (0129F-0130R). cDNA products were separated on a 1% agarose gel and visualized by ethidium bromide staining. The expected sizes of resulting cDNAs from SF370 using primer set A is 365 bp and using primer set B is 1200 bp. Control reactions (C) containing mid-log phase mRNA and Taq DNA polymerase instead of reverse transcriptase are indicated. Lane 1 contains 1 kb Plus DNA ladder (1 mug; Invitrogen).
+###end p 64
+###begin p 65
+###xml 113 125 113 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129&#8211;0130</italic>
+###xml 153 160 149 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 184 191 176 183 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 366 367 358 359 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 403 405 395 397 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t-</italic>
+(B) Results of the pharyngeal cell adherence assay (detailed in Methods), comparing parental strain SF370 to the spy0129-0130 isogenic mutant, SF370Deltaspy0129.2 (abbreviated as Deltaspy0129). Adherent streptococci are reported as the percentage of total number of streptococci added as inoculum to pharyngeal cell monolayers. Statistical significance (reported as p-value) was determined by Student's t-test.
+###end p 65
+###begin p 66
+These results show that neighbor clustering is able to identify biologically relevant gene clusters. This attribute may be particularly important for datasets in which the relationship between clustered genes is not obvious, and may facilitate the organization of larger datasets into more manageable packages.
+###end p 66
+###begin title 67
+Additional Type II Cluster Example
+###end title 67
+###begin p 68
+###xml 17 30 17 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy1725&#8211;1719,</italic>
+###xml 139 165 139 165 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy1724, spy1722, spy1721,</italic>
+###xml 170 177 170 177 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy1719</italic>
+###xml 250 254 250 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nusA</italic>
+###xml 255 259 255 259 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">infB</italic>
+###xml 291 308 291 308 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bacillus subtilis</named-content>
+###xml 313 329 313 329 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 331 333 331 333 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b051">51</xref>
+###xml 352 359 352 359 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy1725</italic>
+###xml 364 371 364 371 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy1723</italic>
+###xml 423 425 423 425 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b014">14</xref>
+###xml 569 576 569 576 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy1725</italic>
+###xml 679 692 679 692 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pneumoniae</named-content>
+###xml 694 696 694 696 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b052">52</xref>
+###xml 824 831 824 831 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy1723</italic>
+###xml 897 911 897 911 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S. pneumoniae,</italic>
+###xml 976 978 976 978 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b053">53</xref>
+###xml 291 308 <span type="species:ncbi:1423">Bacillus subtilis</span>
+###xml 313 329 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 679 692 <span type="species:ncbi:1313">S. pneumoniae</span>
+###xml 897 910 <span type="species:ncbi:1313">S. pneumoniae</span>
+Another cluster, spy1725-1719, contained six genes that together (though not individually) exhibited significant downregulation. The genes spy1724, spy1722, spy1721, and spy1719 share transcriptional order and predicted function with homologs in the nusA-infB protein biosynthesis operon of Bacillus subtilis and Escherichia coli [51]. We examined the spy1725 and spy1723 gene products (annotated as hypothetical proteins [14]) for similarities with known proteins that might indicate a role for these gene products in protein biosynthesis. BlastP analysis aligned the spy1725 gene product, which has homologs in all sequenced streptococcal genomes, with the SP14.3 protein from S. pneumoniae [52] (80% sequence similarity; 67% identity). Based on structural characterization, SP14.3 is a predicted RNA-binding protein. The spy1723 gene product has similar domain structure to the YlxR protein of S. pneumoniae, an RNA-binding protein implicated in transcription termination [53]. These results indicate that both genes likely encode RNA-binding proteins, in agreement with their functionally defined cluster members. Although domain and homology searches yielded the functional predictions, their membership within a protein biosynthetic cluster provided the initial indication of common function or regulation.
+###end p 68
+###begin title 69
+Neighbor Clustering and Operons
+###end title 69
+###begin p 70
+###xml 333 335 333 335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b054">54</xref>
+###xml 336 338 336 338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b055">55</xref>
+###xml 434 435 434 435 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">,</italic>
+###xml 526 528 526 528 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b056">56</xref>
+###xml 535 547 535 547 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127&#8211;0130</italic>
+###xml 647 655 647 655 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st006">Table S6</xref>
+Although neighbor clustering is not an operon-predicting method, we wanted to identify additional putative operons among the groupings since neighbor clusters by definition share certain operon characteristics (tandemly arranged genes, separated by <300 bp, with similar expression patterns). Although operon-modeling methods exist [54,55], we inspected clusters in silico for upstream regulatory elements and identified 17 candidates, including clusters such as streptolysin S that have been previously confirmed as operons [56]; the spy0127-0130 grouping, which was confirmed as an operon in this study; and others that have yet to be verified (Table S6). Experimental confirmation of each candidate is beyond the scope of this study, but Northern blot and RT-PCR analyses could provide such information.
+###end p 70
+###begin title 71
+Analysis of Previously Published Array Data
+###end title 71
+###begin p 72
+###xml 235 237 235 237 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b057">57</xref>
+###xml 276 287 276 287 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 582 584 582 584 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b058">58</xref>
+###xml 884 892 884 892 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st007">Table S7</xref>
+###xml 1000 1001 1000 1001 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1344 1346 1344 1346 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b057">57</xref>
+###xml 1528 1529 1528 1529 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1559 1560 1559 1560 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 1558 1560 1558 1560 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P<sub>F</sub></italic>
+###xml 1569 1577 1569 1577 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st008">Table S8</xref>
+###xml 276 287 <span type="species:ncbi:1314">S. pyogenes</span>
+We applied the statistical analysis and the GenomeCrawler algorithms to data from a recently published streptococcal microarray study that is relevant for comparison to our own data (same streptococcal strain, similar array platform) [57]. In this study, the transciptomes of S. pyogenes strain SF370 and an isogenic mutant deficient for the Mga regulon were compared during exponential growth in culture broth. The Mga regulator is a growth-phase mediator of a number of surface-exposed molecules and secreted proteins involved in colonization and immune evasion during infection [58]. Although the authors of that study did not provide a statistical analysis of their data, we compared the published results for the magnitude and direction of fold-changes for each gene reported in this study with those obtained from our initial significance analysis of this dataset (presented as Table S7). A total of 256 genes reported in this study were also detected by our analysis, and the magnitude and log2-fold change were found to be in agreement for 81% of the genes. We suspect that this discrepancy results from different normalization methods used, or from different methods that were applied to analyze the ratio of signal intensities between sample and control (i.e., we analyzed the ratios of the median rather than the ratios of the mean [57]). Although the published report did not include statistical analysis of the data, we note that the statistical analysis that we performed identified four genes with significant log2-fold changes in expression (PF < 0.05; Table S8).
+###end p 72
+###begin p 73
+###xml 198 199 198 199 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</sub>
+###xml 197 199 197 199 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P<sub>K</sub></italic>
+###xml 208 216 208 216 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st009">Table S9</xref>
+###xml 441 454 441 454 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(spy2009&#8211;2010</italic>
+###xml 459 472 459 472 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy2039&#8211;2040)</italic>
+###xml 585 586 585 586 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 632 634 632 634 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b057">57</xref>
+We applied the GenomeCrawler algorithms to the statistically analyzed dataset, which identified an expanded group of genes (107 versus four) contained within 36 statistically significant clusters (PK < 0.05; Table S9). These groupings included clusters of genes that have been shown previously in streptococci to be functionally related, indicating that the algorithms were performing as expected. Two of the identified upregulated clusters (spy2009-2010 and spy2039-2040) encoding the well-studied virulence factors, C5a peptidase and SpeB, respectively, showed consistently large log2-fold changes of the genes across replicates [57]. GenomeCrawler confirmed these results by identifying both groupings as statistically significant neighbor clusters.
+###end p 73
+###begin p 74
+###xml 271 284 271 284 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0711&#8211;0712.</italic>
+###xml 435 437 435 437 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b011">11</xref>
+###xml 555 567 555 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0098&#8211;0100</italic>
+###xml 640 652 634 646 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy2159&#8211;2160</italic>
+###xml 716 728 710 722 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0741&#8211;0746</italic>
+###xml 778 780 772 774 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b014">14</xref>
+GenomeCrawler also identified a number of clusters that contained genes known to share common function or regulation; however, they were not as apparent in the dataset without its application. For example, the algorithm identified a significant neighbor cluster spanning spy0711-0712. This grouping encodes two known virulence factors, pyrogenic exotoxin SpeC and the MF2 DNase, previously shown to be commonly regulated as an operon [11]. The algorithm also identified other neighbor clusters containing genes known to be functionally related, including spy0098-0100 (encoding the beta and beta' subunits of DNA-dependent RNA polymerase), spy2159-2160 (encoding the 50S ribosomal subunit proteins L32 and L33), and spy0741-0746 (six of the nine streptolysin S-encoding genes) [14].
+###end p 74
+###begin p 75
+Although the analysis of this previously published dataset did not reveal as many intact biological pathways as were identified from the pharyngeal cell adherence data, the inclusion of more replicates in the analysis to increase statistical power could resolve such loci. However, these results provided further supporting evidence that the GenomeCrawler algorithms can identify (1) a larger group of genes than a rigorous statistical analysis alone and (2) biologically relevant groupings in other microarray datasets, even if they contain fewer replicates than presented in our study.
+###end p 75
+###begin title 76
+Concluding Remarks
+###end title 76
+###begin p 77
+Although GenomeCrawler improves bacterial array analyses, it has limitations: it cannot identify regulons comprising genes dispersed throughout the genome by virtue of its design, it does not specifically interrogate single-gene operons, and it only applies to genomes with available and accurate experimental information (expression data and gene annotations). We recognize that incorporating intergenic distance and transcription direction into the algorithms would reduce processing time. Adding available clusters of orthologous groups (COG) information into a downstream processing step could decrease errors by minimizing clustering of unrelated genes.
+###end p 77
+###begin p 78
+###xml 92 112 <span type="species:ncbi:36470">group A streptococci</span>
+###xml 133 138 <span type="species:ncbi:9606">human</span>
+Nonetheless, neighbor clustering provided a more comprehensive view of the transcriptome of group A streptococci during adherence to human pharyngeal cells, a critical step in the infection program of this organism. We found that even a rigorous statistical analysis of well-replicated microarray data produced a dataset that was somewhat limited, although certainly more informative than assigning arbitrary thresholds for significance. As described in other microarray reports, we had initially identified a number of incomplete biological pathways in which we did not detect the differential expression of a number of known pathway members. Neighbor clustering was able to extend the results by identifying more differentially expressed genes and reconstructing more intact biological pathways.
+###end p 78
+###begin p 79
+Neighbor clustering, despite the statistical framework with which it assigns groupings, would be valuable to microarray data analysis only if it produced biologically relevant data. Although biological testing of every identified gene or cluster is unrealistic, we provided evidence, through the creation and testing of isogenic deletion mutants and through the identification of clusters of known, functionally related genes from a published streptococcal array study, that the algorithms produce results that are pertinent to the biology of streptococci. This may be of particular importance for data in which the relationship between clustered genes is not obvious, and may facilitate the organization of larger datasets into more meaningful packages. It is also possible that GenomeCrawler (in its current form) could be used to interrogate intergenic portions of the genome (such as those encoding small noncoding RNAs or sRNAs), if probes representing such regions were included on the microarray, and experimental conditions were designed to promote their differential expression. Finally, because of the common architecture of bacterial chromosomes, the neighbor clustering algorithms may be applicable to microarray datasets from other prokaryotes.
+###end p 79
+###begin title 80
+Methods
+###end title 80
+###begin title 81
+Spotted oligonucleotide microarrays.
+###end title 81
+###begin p 82
+###xml 111 122 111 122 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 151 153 151 153 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b014">14</xref>
+###xml 111 122 <span type="species:ncbi:1314">S. pyogenes</span>
+Sense strand oligonucleotides (primarily 55-mers), representing the 1,769 open reading frames in the genome of S. pyogenes strain SF370 (M1 serotype) [14] were designed and produced by Illumina (). Oligonucleotides were spotted using a Biorobotics Tas II 6100 arrayer () onto Corning UltraGAPS (gamma amino propyl silane-coated) slides (Corning Life Sciences, ), and slides were post-processed and blocked according to the manufacturer's instructions. Each oligonucleotide was spotted four times in a well-spaced configuration to generate in-slide replicates.
+###end p 82
+###begin title 83
+Bacterial cultures.
+###end title 83
+###begin p 84
+###xml 22 33 22 33 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 198 201 198 201 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 555 556 549 550 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 22 33 <span type="species:ncbi:1314">S. pyogenes</span>
+###xml 265 270 <span type="species:ncbi:4932">yeast</span>
+For adherence assays, S. pyogenes strain SF370 (kindly provided by J. Ferretti, University of Oklahoma Health Sciences Center, Oklahoma City, Oklahoma, United States) was grown to late log-phase (OD600 = 0.7) in Todd Hewitt broth (BD Biosciences, ) containing 0.2% yeast extract (THY; BD Biosciences). Bacterial cells were washed in 0.1 M phosphate-buffered saline (PBS; pH 7.4), resuspended in minimal essential medium (MEM; Invitrogen, ), and incubated for 1 h at 37 degreesC. Glycerol (20% vol/vol) was added, and cultures were flash frozen in liquid N2 and stored at -80 degreesC. To minimize culture-to-culture variability, these stock cultures were used for all subsequent adherence and association experiments.
+###end p 84
+###begin title 85
+Pharyngeal cell association and adherence assay.
+###end title 85
+###begin p 86
+###xml 116 118 116 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b015">15</xref>
+###xml 251 252 245 246 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 371 372 365 366 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sup>
+###xml 37 42 <span type="species:ncbi:9606">human</span>
+Assays on streptococcal adherence to human pharyngeal cell line Detroit 562 were performed as described previously [15] with the following modifications. Streptococcal stock cultures were pre-incubated at 37 degreesC for 1 h, and 2-ml aliquots (2 x 108 CFUs) were added to confluent monolayers of Detroit 562 cells grown in wells of six-well tissue culture plates (1 x 107 cells/well). Co-cultures were incubated for 2.5 h at 37 degreesC, and the monolayers were then washed with PBS to recover associated (nonadherent) streptococci. Pharyngeal cells were treated with 0.005% trypsin-0.004% EDTA for 15 min at 37 degreesC to desorb adherent streptococci (90% recovery) without disrupting the eukaryotic monolayer. Trypsin treatment does not affect gene expression in adherent streptococci compared with associated bacterial control. The monolayers were washed with PBS to recover bacteria detached by the trypsin treatment.
+###end p 86
+###begin title 87
+RNA isolation.
+###end title 87
+###begin p 88
+###xml 89 91 89 91 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b059">59</xref>
+###xml 142 143 142 143 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 401 403 401 403 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b060">60</xref>
+Recovered streptococci were washed twice in PBS and lysed with the amidase enzyme lysin [59]. Lysin was added to the bacterial samples (2 U/108 CFUs) and incubated for 15 min at room temperature, which in preliminary experiments was determined to be optimum for complete streptococcal lysis. RNA was isolated immediately after lysis with a modified phenol-chloroform protocol as described previously [60]. RNA was digested with DNase I (Invitrogen), and RNA quality was assessed with the Nucleic Acid Bioanalyzer 2100 (Agilent Technologies, ).
+###end p 88
+###begin title 89
+Synthesis of cDNA and labeling.
+###end title 89
+###begin p 90
+DNase-treated streptococcal RNA (5 mug) was reverse-transcribed using the Atlas Glass Fluorescent Labeling kit (BD Biosciences Clontech, ). Random hexamers (Invitrogen) primed the reverse transcription reaction that incorporated a 5-(3-aminoallyl)-dUTP into the first synthesized cDNA strand. cDNAs from associated streptococci and from adherent streptococci were indirectly labeled with the N-hydroxysuccinimide activated fluorescent dyes cyanine 3 (Cy3) and cyanine 5 (Cy5), respectively, as outlined in the Atlas kit. Labeled cDNA samples were purified following Atlas kit instructions.
+###end p 90
+###begin title 91
+Microarray hybridization and image acquisition.
+###end title 91
+###begin p 92
+###xml 63 65 63 65 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b017">17</xref>
+Four biological replicate experiments incorporating dye swaps [17] were performed to account for both biological and technical variability. Labeled cDNA samples were hybridized to the arrays in SlideHyb hybridization buffer (Ambion, ) for 16 h at 55 degreesC using a GeneTAC hybridization station (Genomic Solutions, ). Slides were washed twice in 0.1 x SSC, dried, and then scanned with a Scanarray 4000 scanner (GSI Lumonics, ) at 10 mum per pixel resolution. The resulting images were processed using the GenePix Pro program (version 4.0; Axon Instruments, ).
+###end p 92
+###begin title 93
+###xml 86 87 86 87 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 85 87 85 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P<sub>F</sub></italic>
+Data filtering, normalization, statistical significance analysis, and calculation of PF values for individual genes.
+###end title 93
+###begin p 94
+###xml 268 270 268 270 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b019">19</xref>
+###xml 353 354 353 354 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 440 442 440 442 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b020">20</xref>
+###xml 476 477 476 477 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 591 593 591 593 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b020">20</xref>
+###xml 594 596 594 596 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b022">22</xref>
+###xml 618 620 618 620 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p-</italic>
+###xml 636 637 636 637 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 665 666 665 666 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 666 667 666 667 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 725 727 725 727 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b018">18</xref>
+###xml 728 730 728 730 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b019">19</xref>
+###xml 1169 1171 1169 1171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p-</italic>
+###xml 1184 1185 1184 1185 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1364 1365 1364 1365 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 1439 1441 1439 1441 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t-</italic>
+Following image analysis, low-level processing of microarray data included probe and array quality filtering to remove probes that were saturated, that displayed a low signal-to-noise ratio, and/or that produced signal in only one dye channel. Lowess standardization [19] was performed, and robust summary statistics were applied to the standardized log2-fold change data for outlier control (Huber M-estimator and unbiased MAD estimator) [20]. A Bayesian-derived regularized t-test was implemented with the Cyber-T program for control of variance artifacts associated with low sample size [20-22]. Calculation of the p-value of the log2-fold change for each gene (PF) uses the Westfall-Young stepdown permutation algorithm [18,19] for multiplicity adjustment in place of the Bonferroni correction typically implemented in Cyber-T. Although more computationally intensive, we chose Westfall-Young over the Bonferroni correction because: (1) Bonferroni assumes independence between tests and since genes can be regulated in conjunction with one another, we preferred to avoid the assumption of independence; (2) Westfall-Young, which is based on permutation, calculates p-values (from t-test statistics) based on the actual distribution of the data itself, and no assumption of independence is required; and (3) the power of coupling a permutation algorithm with a t-test is that one can take advantage of the sensitivity associated with a t-test, while using the distribution-free nature of a randomization test.
+###end p 94
+###begin p 95
+###xml 12 13 12 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 34 35 34 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 35 36 35 36 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 165 167 165 167 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b061">61</xref>
+###xml 229 230 229 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 230 231 230 231 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 315 322 315 322 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0030132-t001">Table 1</xref>
+We used the t-test statistics and PF values generated in this analysis (referred to throughout the text as initial statistical significance analysis) to rank genes [61] undergoing statistically significant changes in expression (PF < 0.05) during adherence to pharyngeal cells compared with the associated control (Table 1). Datasets resulting from each processing step are available for download at .
+###end p 95
+###begin title 96
+Real-time qRT-PCR primers, probes, and plasmid standards.
+###end title 96
+###begin p 97
+###xml 234 235 234 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 235 236 235 236 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 480 481 480 481 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 481 482 481 482 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 697 705 697 705 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st002">Table S2</xref>
+###xml 740 747 740 747 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0929</italic>
+###xml 893 900 893 900 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0929</italic>
+We performed real-time qRT-PCR analysis (TaqMan) on 11 different genes to verify the fold-change in gene expression estimated by microarray analysis. Five of these genes exhibited statistically significant fold-changes in expression (PF < 0.05) during adherence (two demonstrated increased expression, and three demonstrated decreased expression), and the remaining six selected genes were scored as statistically significant only when included in a significant neighbor cluster (PE < 0.05). The list of genes, as well as the oligonucleotide primers and fluorogenic (TaqMan) probes designed using Primer Express Software (Applied Biosystems, ) and purchased from Sigma-Genosys (), are provided in Table S2. Each of the 11 genes, as well as spy0929 (endogenous reference/control gene), was amplified in its entirety from SF370 genomic DNA by PCR and cloned into pCR-TOPO plasmids (Invitrogen). spy0929 was chosen as control due to equivalent expression between adherent and associated SF370 cultures.
+###end p 97
+###begin title 98
+Real-time qRT-PCR and TaqMan analysis.
+###end title 98
+###begin p 99
+###xml 942 950 934 942 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st002">Table S2</xref>
+We used a two-step RT-PCR procedure to reverse transcribe RNA samples from two biological replicate SF370 cultures (two adherent and two associated), which were prepared as those for microarray analysis. Using SuperScript II First Strand Synthesis System for RT-PCR (Invitrogen), DNase I-treated RNA preparations (2 mug each) were separately converted to cDNA preparations with 50 ng random hexamers (Invitrogen; 45 degreesC, 50 min, 20 mul reactions) according to manufacturer instructions. RNA samples were reverse-transcribed in separate reactions, and no pooling of samples occurred. Control reactions without reverse transcriptase were included to confirm that genomic DNA was not present. TaqMan analysis was performed (in duplicate) with an ABI Prism 7900 sequence detection system (Applied Biosystems) using Platinum Quantitative PCR SuperMix-UDG (Invitrogen) (according to manufacturer instructions) and primer-probe pairs listed in Table S2. No-template negative controls were included. Cycling conditions, optimized with plasmid standards, were as follows: 50 degreesC for 2 min and 95 degreesC for 2 min, followed by 45 cycles at 60 degreesC for 45 s.
+###end p 99
+###begin p 100
+###xml 53 54 53 54 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</sub>
+###xml 174 175 174 175 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 329 330 329 330 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</sub>
+###xml 355 363 355 363 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0929.</italic>
+###xml 453 454 453 454 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+We constructed standard curves for threshold cycle (CT) versus copy number for each gene with known concentrations of plasmid DNA standards (10-fold dilutions ranging from 108 copies to ten copies) that were subjected to the same reaction and cycling conditions and included on each reaction plate. Results were normalized with CT values for the control, spy0929. We averaged data from duplicate reactions to produce a single value for each gene and log2-transformed the fold difference in the number of cDNA molecules present in adherent streptococcal samples relative to associated streptococcal samples. This created a dataset of 11 paired values from RT-PCR and microarray analyses for each gene. We performed linear regression analysis and regressed qRT-PCR data on the microarray data.
+###end p 100
+###begin title 101
+###xml 10 22 10 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127&#8211;0130</italic>
+RT-PCR of spy0127-0130 cluster.
+###end title 101
+###begin p 102
+###xml 101 113 101 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0127&#8211;0130</italic>
+###xml 147 155 147 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st002">Table S2</xref>
+###xml 264 267 264 267 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Taq</italic>
+###xml 613 616 610 613 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Taq</italic>
+The sequences of forward (F) and reverse (R) primers for each of the four genes contained within the spy0127-0130 neighbor cluster are provided in Table S2. RT-PCR generation of amplicons was performed with the SuperScript III One-Step RT-PCR system with Platinum Taq DNA polymerase (Invitrogen) in reaction mixtures (50 mul) containing 0.2 muM of each gene-specific forward and reverse primers and 0.1 mug of DNase-treated, purified total RNA from late-log phase cultures (OD = 0.7) of strain SF370. All remaining components were added as per manufacturer specifications. We included control reactions, in which Taq DNA polymerase was substituted for the reverse transcription enzyme mixture, to confirm that genomic DNA was not present in the RNA preparations. RNA was converted to cDNA (50 degreesC for 30 min), which was then PCR amplified in the same tube (45 cycles of the following conditions: 94 degreesC for 15 s, 52 degreesC for 30 s, and 68 degreesC for 2 min). Resulting DNA fragments were separated on 1% agarose gels in TAE buffer and visualized by ethidium bromide staining.
+###end p 102
+###begin title 103
+###xml 27 31 27 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 36 43 36 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+Allelic replacement of the speH and spy0129 genes in SF370.
+###end title 103
+###begin p 104
+###xml 40 56 40 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH and spy0129</italic>
+###xml 101 103 101 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b062">62</xref>
+###xml 229 237 229 237 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st002">Table S2</xref>
+###xml 510 514 510 514 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 518 525 518 525 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 591 593 591 593 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b063">63</xref>
+###xml 620 624 620 624 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 635 642 635 642 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 681 685 681 685 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 690 697 690 697 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 753 764 753 764 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 772 774 772 774 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b062">62</xref>
+###xml 1190 1194 1185 1189 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 1209 1216 1200 1207 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 1229 1233 1220 1224 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 1238 1245 1229 1236 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 753 764 <span type="species:ncbi:1314">S. pyogenes</span>
+The strategy for allelic replacement of speH and spy0129 genes was followed as previously described [62]. Briefly, upstream and downstream DNA regions flanking both genes were separately amplified using the primer sets listed in Table S2. PCR products were treated with the appropriate restriction enzymes (New England Biolabs, ) and used according to manufacturer instructions. Fragments were gel-purified (Qiaex II Gel Extraction Kit; Qiagen, ), and the respective upstream and downstream regions for either speH or spy0129 were ligated together into the allelic replacement vector pFW15 [63], creating plasmids pFW15-speH and pFW15-spy0129. To construct deletion mutants of the speH and spy0129 genes, the vectors were separately electroporated into S. pyogenes SF370 [62], and transformants were selected on proteose peptone blood agar supplemented with erythromycin (300 mug/ml). Allelic replacement was confirmed by both PCR and RT-PCR analyses of total RNA extracted (as described above) from both mid-logarithmic (OD = 0.4) and stationary phase (OD = 1) bacterial cultures using gene-specific primers. Total RNA from strain SF370 served as control. The resulting strains, SF370DeltaspeH and SF370Deltaspy0129, lacked the speH and spy0129 genes, respectively.
+###end p 104
+###begin title 105
+Biological assay: Pharyngeal cell adherence.
+###end title 105
+###begin p 106
+###xml 43 47 39 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH</italic>
+###xml 62 69 54 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">spy0129</italic>
+###xml 170 172 162 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b015">15</xref>
+###xml 201 216 193 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">speH or spy0129</italic>
+We tested late-logarithmic phase SF370DeltaspeH and SF370Deltaspy0129 mutants in an in vitro assay for adherence to Detroit 562 pharyngeal cells as previously described [15] to determine if either the speH or spy0129 gene product was involved directly in the adherence of strain SF370 to pharyngeal cells. The parental strain SF370 served as control.
+###end p 106
+###begin title 107
+Neighbor clustering.
+###end title 107
+###begin p 108
+###xml 206 209 206 209 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">500</sup>
+We provide a general explanation of the principles of neighbor clustering followed by a more detailed explanation of the algorithms. Due to the large number of all putative clusters in the SF370 genome (~10500), we restricted our search space to clusters that are spatially related. During the assignment of neighbor clusters, we did not associate genes with functional annotations to prevent biasing the formation of clusters toward those that were "expected." The GenomeCrawler algorithm, written in the statistical language R (), steps through the expression data and identifies adjacent gene groupings that exhibit similar expression fold changes. The algorithm varies window size and applies a gap penalty for including in a cluster those genes that we did not observe experimentally to be present or genes that did not exhibit differential expression between sample and control.
+###end p 108
+###begin p 109
+###xml 96 97 96 97 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</sub>
+###xml 95 97 95 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P<sub>K</sub></italic>
+###xml 156 157 156 157 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 526 527 524 525 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b005">5</xref>
+###xml 933 941 931 939 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-st004">Table S4</xref>
+###xml 1289 1290 1287 1288 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</sub>
+###xml 1288 1290 1286 1288 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P<sub>K</sub></italic>
+###xml 1657 1667 1653 1663 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-sg002">Figures S2</xref>
+###xml 1668 1670 1664 1666 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0030132-sg004">S4</xref>
+GenomeCrawler calculates statistical significance of all putative resulting neighbor clusters (PK value), using a permutation algorithm with the sum of the t-test statistics (generated by Cyber-T) from each gene within a given cluster as the metric for comparison. We then inspected the output visually and disqualified groupings that violate the neighbor cluster definition based on established guidelines for functionally coupled gene pairs: genes occur on the same DNA strand and adjacent genes are separated by </=300 bp [5]. We further restricted qualifying clusters to contain genes with a uniform direction of differential expression (i.e., all upregulated or all downregulated). Visual inspection is necessary because we have not yet had success at incorporating these specific parameters into the algorithms. To emphasize the importance of such inspections, we included the output prior to disqualifications for comparison (Table S4). We disqualified the following groupings: 491 contained genes located on different DNA strands; 127 contained adjacent genes separated by greater than 300 bp; and 24 contained genes that did not exhibit a uniform direction of expression. Since a specified gene could be a member of many different clusters, the cluster that generated the lowest PK value </= 0.05 and met all of the defined conditions of a neighbor cluster (as detailed in the text) is the one that we reported. The GenomeSpyer algorithm, also written in R, provides a method to view the GenomeCrawler output and to visualize clusters and their respective gene members. The GenomeSpyer plots of all datasets derived from this study can be found as Figures S2-S4.
+###end p 109
+###begin title 110
+Theoretical basis for GenomeCrawler.
+###end title 110
+###begin p 111
+###xml 14 15 14 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 15 16 15 16 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 101 102 101 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 102 103 102 103 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 305 306 305 306 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 306 307 306 307 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 397 398 397 398 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 398 399 398 399 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 447 448 447 448 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 448 449 448 449 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 512 513 512 513 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 513 514 513 514 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 522 523 522 523 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 523 524 523 524 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 627 628 627 628 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 628 629 628 629 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 634 635 634 635 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 635 636 635 636 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 696 698 696 698 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g,</italic>
+###xml 778 779 778 779 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 779 780 779 780 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 854 855 854 855 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 855 856 855 856 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 862 864 862 864 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p-</italic>
+###xml 903 904 903 904 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 941 942 941 942 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 942 943 942 943 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 949 951 949 951 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p-</italic>
+###xml 1109 1111 1109 1111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b022">22</xref>
+###xml 1307 1308 1307 1308 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1308 1309 1308 1309 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</sub>
+###xml 1401 1402 1401 1402 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+Conceptually, PF reflects the physical change in gene expression between sample and control, whereas PC reflects the significance of a gene in the context of a cluster and is based on combined information about genome structure (i.e., genome position) and activity (i.e., measured changes in expression). PC reflects the cluster context and is not merely a recapitulation of the effect related by PF for an individual gene, because on its own the PF of a single gene is not sufficient to generate an informative PC (i.e., PC << 1). Validation of this point is found in the details of the algorithms implemented for calculating PF and PC. The overall statistical significance of a specified gene, g, in regard to change in expression between sample and control is referred to as PE, and this probability is calculated as the product of two probabilities: PF, the p-value associated with observing the log2-fold change for the given gene, and PC, the p-value associated with the same given gene being a member of a specified cluster of genes. We treated this new probability as the posterior in Bayes' Theorem [22] and used the respective prior, likelihood, and cluster probabilities for its calculation. Calculation of the prior and likelihood used essentially the same algorithm for determining the cluster PK value above, with the arguments of the prior and likelihood defining the respective set of t-test statistics to sum.
+###end p 111
+###begin title 112
+###xml 44 46 44 46 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p-</italic>
+GenomeCrawler algorithms and calculation of p-values.
+###end title 112
+###begin p 113
+###xml 0 1 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1 2 1 2 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 8 9 8 9 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 7 9 7 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 11 12 11 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 37 39 37 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P-</italic>
+###xml 68 69 68 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 69 70 69 70 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 124 125 124 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 125 126 125 126 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 135 136 135 136 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 136 137 136 137 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 140 141 140 141 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 139 141 139 141 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 144 145 144 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 208 218 208 218 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030132-e001">Equation 1</xref>
+PE ( , tg, K), called the expression P-value and referred to as the PE value, is equal to the product of two probabilities, PF ( ) and PC (tg | K), calculated with distinct permutation resampling algorithms (Equation 1):
+###end p 113
+###begin p 114
+###xml 0 1 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1 2 1 2 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 14 15 14 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 45 46 45 46 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 109 110 109 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 110 111 110 111 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 192 194 192 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b019">19</xref>
+###xml 222 223 222 223 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 283 284 283 284 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 309 312 309 312 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i,a</sub>
+###xml 309 313 309 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i,a</sub>,</italic>
+###xml 323 324 323 324 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 388 389 388 389 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</italic>
+###xml 461 462 461 462 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 460 462 460 462 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 495 496 495 496 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 522 523 522 523 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 556 558 556 558 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b021">21</xref>
+###xml 561 562 561 562 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 562 563 562 563 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 566 567 566 567 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 565 567 565 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 570 571 570 571 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 580 582 580 582 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p-</italic>
+###xml 697 698 697 698 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 698 699 698 699 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 702 703 702 703 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 701 703 701 703 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 706 707 706 707 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 719 720 719 720 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 811 812 811 812 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 810 812 810 812 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>i</sub></italic>
+###xml 822 823 822 823 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 940 941 940 941 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 946 947 946 947 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 946 947 946 947 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 950 951 950 951 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 955 956 954 955 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 967 968 966 967 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 972 973 971 972 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 975 976 974 975 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 1212 1213 1210 1211 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1213 1214 1211 1212 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 1220 1221 1218 1219 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1219 1221 1217 1219 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 1223 1224 1221 1222 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1282 1283 1280 1281 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1283 1284 1281 1282 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sub>
+###xml 1290 1291 1288 1289 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1289 1291 1287 1289 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 1294 1295 1292 1293 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+PF ( ) is the p-value associated with the log2-fold change in expression of a given gene (referred to as the PF value). Its calculation uses the Westfall-Young stepdown permutation algorithm [19], where  is the average log2-fold change of a specific gene and the basis set is the log2-fold change of a gene, Mi,a, in which i is an element of the genes of the observable transcriptome and a is an element of the set of microarrays. The metric for comparison is tg, a Bayesian-derived regularized t-test statistic of the log2-fold change for the given gene [21]. PC (tg | K) is the p-value that corresponds to the probability that a specific gene is a member of its assigned cluster. Calculation of PC (tg | K) also uses t, but rather than a metric for comparison, it is the basis set for resampling composed of ti in which i is an element of the genes of the annotated genome. The metric for comparison is the sum of the elements of the set K = {tj : j in J} in which J = {j: j in {genes of the specified cluster}}. Since a gene can have membership in multiple clusters, our approach uses a dynamic windowing algorithm to sequentially search the genome for spatial clusters. The cluster that generates the lowest PE ( , tg, K) for the specified gene determines the reported value of PE ( , tg , K).
+###end p 114
+###begin p 115
+###xml 15 16 15 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 16 17 16 17 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 20 21 20 21 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 19 21 19 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 24 25 24 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 53 63 53 63 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030132-e002">Equation 2</xref>
+###xml 74 75 74 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 75 76 75 76 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 79 80 79 80 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 78 80 78 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 96 97 96 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 97 98 97 98 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 100 101 100 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 105 106 105 106 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 104 106 104 106 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 131 132 131 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 132 133 132 133 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 135 136 135 136 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+Calculation of PC (tg | K) relies on Bayes' Theorem (Equation 2) in which PC (tg) is the prior, PC (K | tg) is the likelihood, and PC (K) is the probability associated with the cluster.
+###end p 115
+###begin p 116
+###xml 137 138 115 116 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 154 155 127 128 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 154 155 127 128 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>j</sub></italic>
+###xml 155 156 128 129 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8242;</sub>
+###xml 159 160 132 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 206 207 153 154 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 268 278 215 225 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030132-e002">Equation 2</xref>
+###xml 286 287 233 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 287 288 234 235 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 290 291 237 238 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 412 413 355 356 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 439 440 378 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 443 444 382 383 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 448 449 387 388 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</italic>
+###xml 460 461 394 395 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</italic>
+###xml 465 466 398 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 506 507 435 436 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 510 511 439 440 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 516 517 444 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 519 520 447 448 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 532 533 452 453 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</italic>
+###xml 544 545 459 460 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</italic>
+###xml 549 550 463 464 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 553 554 467 468 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 632 633 546 547 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 673 674 587 588 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</italic>
+###xml 711 712 625 626 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">I</italic>
+All of the right-hand side probabilities are readily calculated using the following general equation: in which Lambda subset, dbl equals K and Lambda = {tj' : j' in Gamma} in which Gamma subset, dbl equals J and represents a set of genes defined in the parenthesis of Equation 2. Since PC (K) is the measure for the statistical significance of the specified cluster in our analysis, for this probability Gamma = J. For the prior, Gamma = {j': j' = g, exists ! g in J}, whereas for the likelihood, Gamma = {j': j' in J, j' not equal g, exists ! g in J). B is the total number of iterations of permutation resampling performed, with (b) representing a resampled value of the bth iteration. The indicator function I(.) equals 1 when the condition in parentheses is satisfied, and 0 when it is not.
+###end p 116
+###begin title 117
+###xml 21 22 21 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 22 23 22 23 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 28 29 28 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 29 30 29 30 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+Relationship between PF and PC.
+###end title 117
+###begin p 118
+###xml 35 36 35 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 36 37 36 37 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 46 47 46 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 47 48 47 48 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 51 52 51 52 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 50 52 50 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 55 56 55 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 72 73 72 73 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 71 73 71 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 114 115 114 115 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 113 115 113 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 136 137 123 124 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 136 140 123 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub>, P</italic>
+###xml 140 141 127 128 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 160 161 145 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 161 162 146 147 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 165 166 150 151 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 164 166 149 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 169 170 154 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 263 264 246 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 264 265 247 248 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 293 294 276 277 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 294 295 277 278 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 298 299 281 282 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 297 299 280 282 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 302 303 285 286 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 424 425 407 408 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 425 426 408 409 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 429 430 412 413 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 428 430 411 413 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 433 434 416 417 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 460 461 430 431 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 461 462 431 432 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 464 465 434 435 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 469 470 439 440 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 468 470 438 440 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 493 494 450 451 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 494 495 451 452 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 498 499 455 456 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 497 499 454 456 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 516 517 460 461 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 517 518 461 462 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 520 521 464 465 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 541 542 485 486 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 540 542 484 486 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 563 564 494 495 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 563 564 494 495 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 566 567 497 498 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 567 568 498 499 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 594 595 512 513 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 595 596 513 514 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 621 622 526 527 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 622 623 527 528 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 626 627 531 532 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 625 627 530 532 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 650 651 542 543 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 651 652 543 544 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 654 655 546 547 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 659 660 551 552 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 658 660 550 552 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 677 678 556 557 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 680 681 559 560 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 727 728 606 607 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 728 729 607 608 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 738 739 617 618 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 739 740 618 619 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 743 744 622 623 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 742 744 621 623 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 747 748 626 627 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 795 796 674 675 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 794 796 673 675 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 892 893 771 772 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 893 894 772 773 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 978 979 855 856 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 979 980 856 857 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 989 990 866 867 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 990 991 867 868 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 994 995 871 872 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 993 995 870 872 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 998 999 875 876 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1091 1092 968 969 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1092 1093 969 970 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+###xml 1133 1134 1010 1011 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1134 1135 1011 1012 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 1138 1139 1015 1016 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1137 1139 1014 1016 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 1142 1143 1019 1020 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1152 1153 1029 1030 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1153 1154 1030 1031 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 1157 1158 1034 1035 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1156 1158 1033 1035 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 1161 1162 1038 1039 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1171 1172 1048 1049 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1172 1173 1049 1050 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C</sub>
+###xml 1176 1177 1053 1054 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</sub>
+###xml 1175 1177 1052 1054 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t<sub>g</sub></italic>
+###xml 1180 1181 1057 1058 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1296 1297 1173 1174 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 1297 1298 1174 1175 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</sub>
+We define the relationship between PF ( ) and PC (tg | K), as both use tg for their respective calculations. For tg congruent with max ti, PF ( ) --> 0 and 0 < PC (tg | K) </= 1. Therefore, the analysis ensures that even the most significant gene with respect to PF ( ) can theoretically have PC (tg | K) = 1. For example, when a gene is a member of a cluster in which the other members are insignificant on a genome scale, PC (tg | K) congruent with 1, since PC (K | tg) congruent with 1 and PC (tg) congruent with PC (K). Conversely, for tg congruent with min ti, PF ( ) congruent with 1 and PC congruent with 1, since PC (tg) congruent with 1 and PC (K | tg) congruent with P (K). Here, there is a strong dependency between PF ( ) and PC (tg | K). This prevents a gene with a relatively low tg value from being scored as significant due to a pure circumstantial association with a gene of PF ( ) --> 0. Hence, this analysis exhibits the required dynamic relationship between PF ( ) and PC (tg | K) and, more important, is consistent with the criterion that, on its own, a gene with a low PF ( ) should not generate an informative PC (tg | K) (i.e., PC (tg | K) << 1). PC (tg | K), therefore, reflects a group context derived from a cluster of genes and is not merely the recapitulation of the PF ( ) of an individual gene.
+###end p 118
+###begin title 119
+Identification of putative operons.
+###end title 119
+###begin p 120
+###xml 338 340 338 340 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b064">64</xref>
+The published SF370 genome does not contain promoter annotations, so we examined the entire genome in 100,000-bp segments (available for download at ) and used the Vector NTI advance 9.0 sequence analysis suite (Invitrogen) to identify sequences that were similar (75% similarity threshold) to consensus streptococcal promoter sequences [64]. We cross-referenced the clusters containing a single upstream putative promoter sequence with a list of rho-independent terminator sequences, previously identified in the SF370 genome by TransTerm ().
+###end p 120
+###begin title 121
+Analysis of previously published streptococcal microarray data.
+###end title 121
+###begin p 122
+###xml 52 63 52 63 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 78 80 78 80 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030132-b057">57</xref>
+###xml 52 63 <span type="species:ncbi:1314">S. pyogenes</span>
+We analyzed recently published microarray data from S. pyogenes strain SF370 [57] in the same manner as the adherence data presented in this study to assess the overall reliability of our analytical methods. We applied the initial statistical package to assess the differential expression of individual genes, followed by the GenomeCrawler algorithms. We compared the results of this analysis, when applicable, to the published analysis of the array data.
+###end p 122
+###begin title 123
+Software and microarray datasets.
+###end title 123
+###begin p 124
+For MIAME (Minimum Information About a Microarray Experiment) compliance, all microarray datasets (pre- and post-processing) have been deposited in the National Center for Biotechnology Information (NCBI) Gene Expression Omnibus (GEO; ) and given accession number GSE7620. Software to implement the GenomeCrawler and GenomeSpyer algorithms, as well as all corresponding datasets, are available for download at .
+###end p 124
+###begin title 125
+Supporting Information
+###end title 125
+###begin title 126
+Comparison of Microarray and TaqMan Analyses
+###end title 126
+###begin p 127
+(876 KB EPS)
+###end p 127
+###begin p 128
+Click here for additional data file.
+###end p 128
+###begin title 129
+Statistically Significant Type I Neighbor Clusters in the SF370 Genome
+###end title 129
+###begin p 130
+(1.7 MB EPS)
+###end p 130
+###begin p 131
+Click here for additional data file.
+###end p 131
+###begin title 132
+Statistically Significant Type II Neighbor Clusters in the SF370 Genome
+###end title 132
+###begin p 133
+(1.7 MB EPS)
+###end p 133
+###begin p 134
+Click here for additional data file.
+###end p 134
+###begin title 135
+Statistically Significant Type III Neighbor Clusters in the SF370 Genome
+###end title 135
+###begin p 136
+(1.0 MB EPS)
+###end p 136
+###begin p 137
+Click here for additional data file.
+###end p 137
+###begin title 138
+Summary of All Streptococcal Genes Exhibiting Differential Expression during Adherence to Pharyngeal Cells as Compared with Associated Streptococcal Control
+###end title 138
+###begin p 139
+(138 KB XLS)
+###end p 139
+###begin p 140
+Click here for additional data file.
+###end p 140
+###begin title 141
+DNA Primers Used in This Study
+###end title 141
+###begin p 142
+(23 KB XLS)
+###end p 142
+###begin p 143
+Click here for additional data file.
+###end p 143
+###begin title 144
+Fold Changes in Gene Expression Estimated Using Microarray and Real-Time Quantitative PCR
+###end title 144
+###begin p 145
+(16 KB XLS)
+###end p 145
+###begin p 146
+Click here for additional data file.
+###end p 146
+###begin title 147
+All Putative Neighbor Clusters Generated by GenomeCrawler
+###end title 147
+###begin p 148
+(144 KB XLS)
+###end p 148
+###begin p 149
+Click here for additional data file.
+###end p 149
+###begin title 150
+Putative Neighbor Clusters Following Visual Inspection
+###end title 150
+###begin p 151
+(38 KB XLS)
+###end p 151
+###begin p 152
+Click here for additional data file.
+###end p 152
+###begin title 153
+Summary of Neighbor Clusters Identified as Putative Operons through In Silico Inspection
+###end title 153
+###begin p 154
+(21 KB XLS)
+###end p 154
+###begin p 155
+Click here for additional data file.
+###end p 155
+###begin title 156
+###xml 95 106 95 106 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 95 106 <span type="species:ncbi:1314">S. pyogenes</span>
+Comparison of Log-Fold Changes of Genes Reported in a Previously Published Microarray Study of S. pyogenes SF370
+###end title 156
+###begin p 157
+(40 KB XLS)
+###end p 157
+###begin p 158
+Click here for additional data file.
+###end p 158
+###begin title 159
+Summary of All Genes in a Mga-Deficient SF370 Mutant Exhibiting Differential Expression during Growth in Culture Broth Compared with the Parental SF370 Control
+###end title 159
+###begin p 160
+(188 KB XLS)
+###end p 160
+###begin p 161
+Click here for additional data file.
+###end p 161
+###begin title 162
+###xml 92 103 92 103 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 92 103 <span type="species:ncbi:1314">S. pyogenes</span>
+Putative Neighbor Clusters Identified by GenomeCrawler in Published Microarray Dataset from S. pyogenes SF370
+###end title 162
+###begin p 163
+(28 KB XLS)
+###end p 163
+###begin p 164
+Click here for additional data file.
+###end p 164
+###begin title 165
+Accession Numbers
+###end title 165
+###begin p 166
+###xml 36 47 36 47 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 36 47 <span type="species:ncbi:1314">S. pyogenes</span>
+The GenBank () accession number for S. pyogenes strain SF730 (serotype M1) is AE004092.
+###end p 166
+###begin p 167
+The National Center for Biotechnology Information (NCBI) Gene Expression Omnibus (GEO; ) accession number for all microarray datasets in this paper is GSE 7620.
+###end p 167
+###begin p 168
+###xml 35 46 35 46 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">S. pyogenes</named-content>
+###xml 35 46 <span type="species:ncbi:1314">S. pyogenes</span>
+We thank J. Ferretti for providing S. pyogenes strain SF370 and G. Khitrov for numerous microarray supplies. We are grateful to A. Farnsworth, J. Loeffler, and M. Collin for insightful discussions and review of the manuscript; M. Zeegers for review of the statistical analysis and algorithms; and all members of the Fischetti lab, especially T. Broudy, B. Juncosa, A. Raz, A. Daniel, and D. Nelson for helpful comments and suggestions. We especially thank Shiwei Zhu for expert technical support and assistance in cloning and PCR. We are indebted to Tshaka Cunningham for technical advice for qRT-PCR assays and analysis. We sincerely thank V. Pancholi, A. Farnsworth, A. Pearlman, and D. Nayduch for invaluable discussions and ideas, and C. Eastby and J. Nahory for technical assistance. BWK was supported in part by F. Barany, Weill Medical College, Cornell University (National Cancer Institute grant P01-CA65930).
+###end p 168
+###begin title 169
+Abbreviations
+###end title 169
+###begin p 170
+quantitative real time
+###end p 170
+###begin p 171
+real time
+###end p 171
+###begin title 172
+References
+###end title 172
+###begin article-title 173
+Microarrays-Guilt by association
+###end article-title 173
+###begin article-title 174
+Microarray expression profiling: Capturing a genome-wide portrait of the transcriptome
+###end article-title 174
+###begin article-title 175
+Computational analysis of microarray data
+###end article-title 175
+###begin article-title 176
+Cluster analysis and display of genome-wide expression patterns
+###end article-title 176
+###begin article-title 177
+The use of gene clusters to infer functional coupling
+###end article-title 177
+###begin article-title 178
+From genes to genomes: Universal scale-invariant properties of microbial chromosome organization
+###end article-title 178
+###begin article-title 179
+Pathogenesis of group A streptococcal infections
+###end article-title 179
+###begin article-title 180
+###xml 86 91 <span type="species:ncbi:9606">human</span>
+Genome-wide protective response used by group A Streptococcus to evade destruction by human polymorphonuclear leukocytes
+###end article-title 180
+###begin article-title 181
+Virulence control in group A Streptococcus by a two-component gene regulatory system: Global expression profiling and in vivo infection modeling
+###end article-title 181
+###begin article-title 182
+Longitudinal analysis of the group A Streptococcus transcriptome in experimental pharyngitis in cynomolgus macaques
+###end article-title 182
+###begin article-title 183
+###xml 69 89 <span type="species:ncbi:36470">group A streptococci</span>
+###xml 112 117 <span type="species:ncbi:9606">human</span>
+Induction of lysogenic bacteriophage and phage-associated toxin from group A streptococci during coculture with human pharyngeal cells
+###end article-title 183
+###begin article-title 184
+###xml 28 50 28 50 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 28 50 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+###xml 56 61 <span type="species:ncbi:9606">human</span>
+The in vitro interaction of Streptococcus pyogenes with human pharyngeal cells induces a phage-encoded extracellular DNase
+###end article-title 184
+###begin article-title 185
+Prophage induction and expression of prophage-encoded virulence factors in group A Streptococcus serotype M3 strain MGAS315
+###end article-title 185
+###begin article-title 186
+###xml 44 66 44 66 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 44 66 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Complete genome sequence of an M1 strain of Streptococcus pyogenes
+###end article-title 186
+###begin article-title 187
+###xml 0 20 <span type="species:ncbi:36470">Group A streptococci</span>
+###xml 39 44 <span type="species:ncbi:9606">human</span>
+Group A streptococci bind to mucin and human pharyngeal cells through sialic acid-containing receptors
+###end article-title 187
+###begin article-title 188
+Fundamentals of experimental design for cDNA microarrays
+###end article-title 188
+###begin article-title 189
+Design issues for cDNA microarray experiments
+###end article-title 189
+###begin article-title 190
+Normalization for cDNA microarray data: A robust composite method addressing single and multiple slide systematic variation
+###end article-title 190
+###begin article-title 191
+Statistical methods for identifying differentially expressed genes in replicated cDNA microarray experiments
+###end article-title 191
+###begin article-title 192
+Robust estimation in very small samples
+###end article-title 192
+###begin article-title 193
+###xml 159 175 159 175 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 159 179 <span type="species:ncbi:83333">Escherichia coli K12</span>
+Improved statistical inference from DNA microarray data using analysis of variance and a Bayesian statistical framework. Analysis of global gene expression in Escherichia coli K12
+###end article-title 193
+###begin article-title 194
+###xml 81 82 81 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+A Bayesian framework for the analysis of microarray expression data: Regularized t-test and statistical inferences of gene changes
+###end article-title 194
+###begin article-title 195
+Use of real-time quantitative PCR to validate the results of cDNA array and differential display PCR technologies
+###end article-title 195
+###begin article-title 196
+Molecular mechanisms of adhesion, colonization, and invasion of group A Streptococci
+###end article-title 196
+###begin article-title 197
+###xml 100 120 <span type="species:ncbi:36470">group A streptococci</span>
+Cytotoxic effects of streptolysin o and streptolysin s enhance the virulence of poorly encapsulated group A streptococci
+###end article-title 197
+###begin article-title 198
+Specificity of streptolysin O in cytolysin-mediated translocation
+###end article-title 198
+###begin article-title 199
+Cytolysin-dependent evasion of lysosomal killing
+###end article-title 199
+###begin article-title 200
+###xml 29 52 29 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Streptococcus pyogenes,</italic>
+###xml 29 51 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+The SpeB virulence factor of Streptococcus pyogenes, a multifunctional secreted and cell surface molecule with strepadhesin, laminin-binding and cysteine protease activity
+###end article-title 200
+###begin article-title 201
+###xml 79 101 79 101 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 79 101 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Genetic inactivation of an extracellular cysteine protease (SpeB) expressed by Streptococcus pyogenes decreases resistance to phagocytosis and dissemination to organs
+###end article-title 201
+###begin article-title 202
+###xml 45 50 <span type="species:ncbi:9606">human</span>
+Modulation of expression of superantigens by human transferring and lactoferrrin: A novel mechanism in host-streptococcus interactions
+###end article-title 202
+###begin article-title 203
+Reciprocal, temporal expression of SpeA and SpeB in invasive M1T1 group A streptococcal isolates in vivo
+###end article-title 203
+###begin article-title 204
+###xml 49 71 49 71 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 49 71 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Proteolysis and its regulation at the surface of Streptococcus pyogenes
+###end article-title 204
+###begin article-title 205
+###xml 97 117 <span type="species:ncbi:36470">group A streptococci</span>
+###xml 121 126 <span type="species:ncbi:9606">human</span>
+Genetic inactivation of the extracellular cysteine protease enhances in vitro internalization of group A streptococci by human epithelial and endothelial cells
+###end article-title 205
+###begin article-title 206
+###xml 86 108 86 108 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 86 108 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Streptococcal erythrogenic toxin B abrogates fibronectin-dependent internalization of Streptococcus pyogenes by cultured mammalian cells
+###end article-title 206
+###begin article-title 207
+###xml 56 78 56 78 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 56 78 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+SpeB modulates fibronectin-dependent internalization of Streptococcus pyogenes by efficient proteolysis of cell-wall-anchored protein F1
+###end article-title 207
+###begin article-title 208
+###xml 8 21 8 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Streptococcus</italic>
+Group A Streptococcus produce pilus-like structures containing protective antigens and Lancefield T antigens
+###end article-title 208
+###begin article-title 209
+###xml 22 35 22 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Streptococcus</italic>
+###xml 140 144 140 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">SpeB</italic>
+Invasive M1T1 group A Streptococcus undergoes a phase-shift in vivo to prevent the proteolytic degradation of multiple virulence factors by SpeB
+###end article-title 209
+###begin article-title 210
+###xml 64 86 64 86 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 64 86 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Identification and characterization of novel superantigens from Streptococcus pyogenes
+###end article-title 210
+###begin article-title 211
+###xml 81 103 81 103 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 81 103 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Genome analysis of an inducible prophage and prophage remnants integrated in the Streptococcus pyogenes strain SF370
+###end article-title 211
+###begin article-title 212
+###xml 94 118 94 118 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pneumoniae</named-content>
+###xml 94 118 <span type="species:ncbi:1313">Streptococcus pneumoniae</span>
+A cluster of four genes encoding enzymes for five steps in the folate biosynthetic pathway of Streptococcus pneumoniae
+###end article-title 212
+###begin article-title 213
+###xml 8 11 8 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">atp</italic>
+###xml 35 39 35 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">atpI</italic>
+###xml 50 62 50 62 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bacillus atp</named-content>
+###xml 87 89 87 89 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2+</sup>
+A tenth atp gene and the conserved atpI gene of a Bacillus atp operon have a role in Mg2+ uptake
+###end article-title 213
+###begin article-title 214
+###xml 103 125 103 125 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 103 125 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Rgg influences the expression of multiple regulatory loci to coregulate virulence factor expression in Streptococcus pyogenes
+###end article-title 214
+###begin article-title 215
+###xml 47 69 47 69 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 47 69 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Identification of Rgg-regulated exoproteins of Streptococcus pyogenes
+###end article-title 215
+###begin article-title 216
+Mutational analysis of the group A streptococcal operon encoding streptolysin S and its virulence role in invasive infection
+###end article-title 216
+###begin article-title 217
+###xml 0 4 0 4 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">relA</italic>
+###xml 59 81 59 81 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 59 81 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+relA-independent amino acid starvation response network of Streptococcus pyogenes
+###end article-title 217
+###begin article-title 218
+###xml 119 141 119 141 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 119 141 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Genomic localization of a T serotype locus to a recombinatorial zone encoding extracellular matrix-binding proteins in Streptococcus pyogenes
+###end article-title 218
+###begin article-title 219
+The Pfam protein families database
+###end article-title 219
+###begin article-title 220
+###xml 0 21 0 21 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Staphylococcus aureus</named-content>
+###xml 0 21 <span type="species:ncbi:1280">Staphylococcus aureus</span>
+Staphylococcus aureus sortase, an enzyme that anchors surface proteins to the cell wall
+###end article-title 220
+###begin article-title 221
+An embarrassment of sortases-A richness of substrates?
+###end article-title 221
+###begin article-title 222
+###xml 0 22 0 22 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 0 22 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Streptococcus pyogenes collagen type I-binding Cpa surface protein: Expression profile, binding characteristics, biological functions, and potential clinical impact
+###end article-title 222
+###begin article-title 223
+###xml 28 32 28 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nusA</italic>
+###xml 33 37 33 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">infB</italic>
+###xml 48 65 48 65 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bacillus subtilis</named-content>
+###xml 70 86 70 86 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 48 65 <span type="species:ncbi:1423">Bacillus subtilis</span>
+###xml 70 86 <span type="species:ncbi:562">Escherichia coli</span>
+Similar organization of the nusA-infB operon in Bacillus subtilis and Escherichia coli
+###end article-title 223
+###begin article-title 224
+###xml 86 110 86 110 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pneumoniae</named-content>
+###xml 86 110 <span type="species:ncbi:1313">Streptococcus pneumoniae</span>
+Solution structure and function of a conserved protein SP14.3 encoded by an essential Streptococcus pneumoniae gene
+###end article-title 224
+###begin article-title 225
+###xml 0 24 0 24 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pneumoniae</named-content>
+###xml 0 24 <span type="species:ncbi:1313">Streptococcus pneumoniae</span>
+Streptococcus pneumoniae YlxR at 1.35 A shows a putative new fold
+###end article-title 225
+###begin article-title 226
+Prediction of operons in microbial genomes
+###end article-title 226
+###begin article-title 227
+Computational identification of operons in microbial genomes
+###end article-title 227
+###begin article-title 228
+###xml 47 68 <span type="species:ncbi:36470">group A streptococcus</span>
+Genetic locus for streptolysin S production by group A streptococcus
+###end article-title 228
+###begin article-title 229
+###xml 120 141 <span type="species:ncbi:36470">group A streptococcus</span>
+Defining the Mga regulon: Comparative transcriptomes analysis reveals both direct and indirect regulation by Mga in the group A streptococcus
+###end article-title 229
+###begin article-title 230
+###xml 55 77 55 77 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 55 77 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+Virulence factor regulation and regulatory networks in Streptococcus pyogenes and their impact on pathogen-host interactions
+###end article-title 230
+###begin article-title 231
+###xml 64 68 <span type="species:ncbi:10090">mice</span>
+###xml 72 92 <span type="species:ncbi:36470">group A streptococci</span>
+Prevention and elimination of upper respiratory colonization of mice by group A streptococci by using a bacteriophage lytic enzyme
+###end article-title 231
+###begin article-title 232
+Construction and characterization of cyanobacterial mutants lacking the manganese-stabilizing polypeptide of photosystem II
+###end article-title 232
+###begin article-title 233
+Statistical methods and microarray data
+###end article-title 233
+###begin article-title 234
+###xml 45 49 45 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">mefA</italic>
+###xml 91 113 91 113 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptococcus pyogenes</named-content>
+###xml 91 113 <span type="species:ncbi:1314">Streptococcus pyogenes</span>
+M.SpyI, a DNA methyltransferase encoded on a mefA chimeric element, modifies the genome of Streptococcus pyogenes
+###end article-title 234
+###begin article-title 235
+###xml 72 92 <span type="species:ncbi:36470">group A streptococci</span>
+Novel series of plasmid vectors for gene inactivation and expression in group A streptococci (GAS)
+###end article-title 235
+###begin article-title 236
+Selection and characterization of a promoter for expression of single-copy recombinant genes in Gram-positive bacteria
+###end article-title 236
+###begin p 237
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Author contributions.</bold>
+Author contributions. PAR, BWK, and VAF conceived and designed the experiments. PAR and CWE performed the experiments. PAR and BWK analyzed the data. PAR, RS, and VAF contributed reagents/materials/analysis tools. PAR and VAF wrote the paper.
+###end p 237
+###begin p 238
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding.</bold>
+Funding. This study was supported and financed by grant AI11822 from the National Institutes of Health (VAF).
+###end p 238
+###begin p 239
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing interests.</bold>
+Competing interests. The authors have declared that no competing interests exist.
+###end p 239
+

@@ -1,0 +1,585 @@
+###begin article-title 0
+Quantitative evaluation of protein-DNA interactions using an optimized knowledge-based potential
+###end article-title 0
+###begin p 1
+###xml 606 642 606 642 <email xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">journals.permissions@oupjournals.org</email>
+The online version of this article has been published under an open access model. Users are entitled to use, reproduce, disseminate, or display the open access version of this article for non-commercial purposes provided that: the original authorship is properly and fully attributed; the Journal and Oxford University Press are attributed as the original place of publication with the correct citation details given; if an article is subsequently reproduced or disseminated not in its entirety but only in part or as a derivative work this must be clearly indicated. For commercial re-use, please contact journals.permissions@oupjournals.org.
+###end p 1
+###begin p 2
+###xml 810 811 810 811 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 1627 1643 1627 1643 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 1627 1643 <span type="species:ncbi:562">Escherichia coli</span>
+Computational evaluation of protein-DNA interaction is important for the identification of DNA-binding sites and genome annotation. It could validate the predicted binding motifs by sequence-based approaches through the calculation of the binding affinity between a protein and DNA. Such an evaluation should take into account structural information to deal with the complicated effects from DNA structural deformation, distance-dependent multi-body interactions and solvation contributions. In this paper, we present a knowledge-based potential built on interactions between protein residues and DNA tri-nucleotides. The potential, which explicitly considers the distance-dependent two-body, three-body and four-body interactions between protein residues and DNA nucleotides, has been optimized in terms of a Z-score. We have applied this knowledge-based potential to evaluate the binding affinities of zinc-finger protein-DNA complexes. The predicted binding affinities are in good agreement with the experimental data (with a correlation coefficient of 0.950). On a larger test set containing 48 protein-DNA complexes with known experimental binding free energies, our potential has achieved a high correlation coefficient of 0.800, when compared with the experimental data. We have also used this potential to identify binding motifs in DNA sequences of transcription factors (TF). The TFs in 79.4% of the known TF-DNA complexes have accurately found their native binding sequences from a large pool of DNA sequences. When tested in a genome-scale search for TF-binding motifs of the cyclic AMP regulatory protein (CRP) of Escherichia coli, this potential ranks all known binding motifs of CRP in the top 15% of all candidate sequences.
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin p 4
+###xml 476 477 476 477 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b1">1</xref>
+###xml 660 661 660 661 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b2">2</xref>
+###xml 662 663 662 663 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b3">3</xref>
+###xml 687 688 687 688 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b4">4</xref>
+###xml 689 690 689 690 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+###xml 735 736 735 736 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8">8</xref>
+###xml 737 739 737 739 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+###xml 930 932 930 932 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b13">13</xref>
+Protein-DNA interactions are involved in the regulations of many important cellular processes, such as transcription, replication, recombination and translation. Hence, accurate prediction of protein-DNA interactions is essential to our understanding of many cellular regulations, including transcriptional regulation. It is also important for genome annotation, where there is probably not a 'recognition code' in the regulator-DNA binding with obvious sequence preferences (1). Typically, binding motifs of transcription factors (TFs) are predicted through the identification of conserved sequence fragments using various approaches, such as Gibbs sampling (2,3), Hidden Markov Model (4-7) and combinatorial optimization techniques (8-12). Biophysical approaches have also been used to search for binding sites of TFs in DNA sequences, based on estimations of sequence-specific binding energy and the chemical potential of TFs (13). While these methods perform well in identifying potential binding motifs, they clearly lack the capabilities for validating their predictions. We believe that a validation capability could be and need to be developed through the application of protein structural information.
+###end p 4
+###begin p 5
+###xml 382 384 382 384 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b14">14</xref>
+###xml 385 387 385 387 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b15">15</xref>
+###xml 676 678 676 678 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b16">16</xref>
+###xml 679 681 679 681 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b19">19</xref>
+###xml 1196 1198 1196 1198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b20">20</xref>
+###xml 1233 1235 1233 1235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b21">21</xref>
+###xml 1236 1238 1236 1238 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b25">25</xref>
+The rapid growth in the number of solved protein-DNA complex structures provides a rich source of information, from which residue-nucleotide interaction potentials could be derived. We know that the knowledge-based potential, based on the theory of mean force field, has proven to be a powerful tool for estimating binding affinities using structural data. Margalit and co-workers (14,15) have developed a set of scoring parameters for assessing amino acid-nucleotide interactions. These parameters have been used to make a quantitative measure on the binding affinity between sequence variants of zinc-finger protein zif268 and their DNA-binding sites. Sarai and co-workers (16-19) systematically studied various aspects of interactions between regulatory proteins and their DNA-binding motifs, which include sequence composition, structural symmetry, conformational distribution in thermodynamics and physiochemical properties, such as solvent density and long-range dipole field distribution. They proposed a position-dependent knowledge-based potential at the residue/nucleotide level and employed a 'threading'-like procedure to predict DNA-binding sites recognized by a regulatory protein (20). Recently, Olson and co-workers (21-25) found that protein-DNA interactions often lead to the conformational deformation of DNA. They also discovered that specific interaction environments around the contacting amino acids and nucleotides contribute significantly to the binding affinity. This suggests that the simple amino acid-nucleotide interaction model, which is widely used in the statistical analysis in studies of mean force field, could not deal with the conformational changes adequately. More sophisticated multi-body interactions and well-thought details of the interaction environments need to be incorporated into the knowledge-based potential.
+###end p 5
+###begin p 6
+###xml 222 224 222 224 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b26">26</xref>
+###xml 225 227 225 227 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+###xml 472 474 472 474 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b31">31</xref>
+###xml 475 477 475 477 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b32">32</xref>
+The rapid increase in the number of experimental structures has made it possible to use distance-dependent knowledge-based potentials in protein folding, and predictions of protein-ligand and protein-protein interactions (26-30). In most of these potentials, the reference states have been carefully defined in order to eliminate the background noise of interactions. Among the existing models for reference states, the 'independent' reference state was the simplest one (31,32). It simulates the ideal gas state and assumes that there are no interactions between any units (atoms, amino acids or nucleotides). Though this model has been widely used in earlier predictions, it has low accuracy in quantitative predictions of binding affinities.
+###end p 6
+###begin p 7
+###xml 117 119 117 119 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b32">32</xref>
+###xml 120 122 120 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b36">36</xref>
+###xml 1041 1043 1041 1043 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b26">26</xref>
+###xml 1044 1046 1044 1046 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b27">27</xref>
+###xml 1365 1367 1365 1367 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b28">28</xref>
+###xml 1504 1506 1504 1506 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+###xml 1913 1915 1913 1915 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b32">32</xref>
+###xml 1916 1918 1916 1918 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b36">36</xref>
+The 'uniform density' reference state is a more general model and its revised forms are currently being widely used (32-36). In this type of reference model, the density of pairwise interactions in each distance bin is assumed to be the average densities of those of all folded structures. In such a model, all pairwise interactions are treated uniformly, and it is assumed that there are no interactions between the interaction pairs. While promising, most of the reference states constructed in this way did not have a well-behaved uniform density distribution across all distance bins, due to reasons, such as finiteness of structural volume and the small sampling size of complex structures, which does not reflect well the continuity of physical forces. For example, there were often fluctuations in the counts of interactions among adjacent distance bins, especially for those in the distance bins beyond interaction cutoff or without interactions. Hence, various corrections were proposed in the reference state. Zhou and co-workers (26,27) revised the 'uniform density' reference state by considering the interactions between interaction pairs. By introducing an adjustable distance parameter, their reference state could represent a distance-scaled finite-gas reference state that is quite similar to that of a stable protein structure. Muegge and Martin (28) introduced an accurate volume correction to get a consistent reference state with respect to distance bins. Shakhnovich and Ishchenko (30) adopted two exponential parameters for counts of the interacting units to correct for the reference state, which could potentially consider the influence of interaction distances or volume sizes and the effects between different interaction pairs. All these efforts led to more sensible reference states, and improved the scoring accuracy for protein folding and prediction of protein-ligand interaction (32-36).
+###end p 7
+###begin p 8
+###xml 1050 1051 1050 1051 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+In this paper, we use 'DNA tri-nucleotides' (triplets) as an interaction unit to facilitate the representation of multi-body interactions between a protein and DNA, which can handle the effects of DNA structural deformation and local interaction environments. A distance-dependent knowledge-based potential is developed based on a statistical analysis of interactions between protein-residues and DNA triplets in known protein-DNA complex structures. On the basis of the 'uniform density' reference state, we proposed a strategy for distance-normalization, where a distribution of interactions is considered as the 'distance-normalized' if it fits the ideal uniform density reference state. The corrections are conducted in two ways. One is to correct for the effect of interaction distances using our consistent reference state. The other is to correct for the effects caused by the triplet size and the number of occurrences of single interaction units (protein residue or DNA triplet). Then, the potential parameters are further optimized using a Z-score optimization. The details of each of these steps are explained in Methods. Our distance-dependent potential has been thoroughly tested on a large set of test data. The test results are highly encouraging, as described in the Results Section.
+###end p 8
+###begin title 9
+METHODS
+###end title 9
+###begin title 10
+Structural sets
+###end title 10
+###begin p 11
+###xml 67 69 67 69 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b37">37</xref>
+###xml 514 521 514 521 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl1">Table 1</xref>
+###xml 653 655 653 655 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b38">38</xref>
+Through a systematic search of the PDB (release January 26, 2004) (37), we have found 571 protein-DNA complex structures, of which 228 (all containing double-stranded DNA) are involved in transcription regulation. In this study, we only consider the 186 TF-DNA structures that were solved using X-ray crystallography with a resolution better than 3.5 A. Out of these complexes, 141 have diverse DNA-binding sequences (sequence similarity <75.0%) consisting of at least three different consecutive base pairs (bp) (Table 1). The protein structures involved in these complexes represent 48 non-redundant protein domains, based on the SCOP classification (38). We have used these 141 complexes as the structural set to derive our distance-dependent knowledge-based potential.
+###end p 11
+###begin title 12
+DNA triplet representation
+###end title 12
+###begin p 13
+###xml 228 230 228 230 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b21">21</xref>
+###xml 231 233 231 233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b25">25</xref>
+###xml 429 431 429 431 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b39">39</xref>
+###xml 432 434 432 434 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b42">42</xref>
+DNA has a compact structure with high density of hydrogen bonds. For a double-stranded DNA structure, its conformational deformation has a significant effect on the thermodynamic stability and the binding affinity to a protein (21-25). In some complexes, such as the zinc-finger protein-DNA complex, it has been shown that the triplet can form a binding core and is one of the principal binding modes in protein-DNA interaction (39-42). Hence, to evaluate the protein-DNA association accurately, it is critical to consider the local DNA interaction environment and the multi-body effects at the protein-DNA interaction interface.
+###end p 13
+###begin p 14
+For each amino acid alpha at the protein-DNA interaction interface, we consider its interactions with all DNA nucleotides within 15 A (see details later). We consider (i) two-body interactions between alpha and each of these nearby nucleotides, (ii) three-body interactions between alpha and any combination of two of these nucleotides and (iii) four-body interactions between alpha and any combination of three of these nucleotides. The total interaction energy is defined as the sum of these individual interaction energy terms. To simplify our discussion, we introduce a unified triplet representation for the DNA involved in the interactions, which could be used to represent two-, three- and four-body interactions discussed above.
+###end p 14
+###begin p 15
+###xml 1092 1093 1068 1069 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+We consider an alphabet of 5 nucleotides in DNA structures, four native nucleotides (nt) A, T, C, G and a pseudo nucleotide O that does not have any structural and energy contributions but just as a placeholder. A two-body interaction between the residue alpha and a nucleotide, says A, is represented as an interaction between alpha and triplet AOO (which is termed type-1 triplet and represented as [100]). Similarly, a three-body interaction involving alpha and nucleotides A, C will be represented as an interaction between alpha and triplet ACO (which is termed type-2 triplet and represented as [110]). Hence, an interaction between alpha and triplet ACG (which is termed type-3 triplet and represented as [111]) represents a four-body interaction between alpha and nucleotides A, C, G. In this representation, the sequential order of nucleotides is insignificant. In the following, a 'triplet' could mean 3 nt, 2 nt plus an O, or 1 nt plus two Os. We require that any two real nucleotides, if existing, in a triplet have their distance less than a cutoff distance (termed triplet size R), which is set to be 8 A in this study (see Discussion). It is easy to see that there are 34 types of triplets (4 of [100], 10 of [110] and 20 of [111]). The position of each nucleotide is represented as that of its glycosidic nitrogen atom connecting the base and the deoxyribose of the nucleotide. The nitrogen atoms are N1 in C and T, and N9 in A and G. The coordinate of the triplet will be the geometric center of the three corresponding nucleotides, while the pseudo nucleotide O is not included.
+###end p 15
+###begin p 16
+Clearly, the triplet representation allows representing both the preference of individual nucleotides (triplet [100]) and the local environment around the nucleotides (triplet [110] and [111]). In addition, when DNA binds to protein, its conformational deformation can be implicitly reflected by the change of the coordinates of the corresponding DNA triplets. Those multi-body effects are mainly contributed from DNA nucleotides with only one body from interaction protein. Clearly, more complicated combinations of DNA nucleotides, such as quadruplet, could provide more DNA local environment information. However, the weakness of such representation is apparent, knowing that a greater number of possible combinations of quadruplets and the amount of data will be needed to estimate the relevant parameters.
+###end p 16
+###begin p 17
+###xml 41 42 41 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 667 668 667 668 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</italic>
+###xml 727 728 727 728 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 832 833 832 833 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 835 836 835 836 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</italic>
+###xml 859 860 839 840 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 860 861 840 841 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sup>
+###xml 964 965 944 945 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 995 996 975 976 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1037 1038 1017 1018 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</bold>
+###xml 1058 1059 1038 1039 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1108 1109 1088 1089 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</bold>
+###xml 1174 1175 1154 1155 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</bold>
+###xml 1207 1208 1187 1188 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1210 1211 1190 1191 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1214 1215 1194 1195 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</italic>
+###xml 1238 1239 1198 1199 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1239 1240 1199 1200 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sup>
+###xml 1301 1302 1261 1262 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</bold>
+###xml 1336 1337 1296 1297 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1337 1338 1297 1298 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sup>
+###xml 1340 1341 1300 1301 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1345 1346 1305 1306 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</italic>
+###xml 1348 1349 1308 1309 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">L</italic>
+###xml 1380 1381 1320 1321 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1381 1382 1321 1322 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sup>
+###xml 1513 1514 1453 1454 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1520 1521 1460 1461 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1884 1885 1824 1825 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1891 1892 1831 1832 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 1894 1904 1834 1844 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e1">Equation 1</xref>
+###xml 1913 1914 1853 1854 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 1943 1944 1883 1884 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 1945 1946 1885 1886 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 1948 1949 1888 1889 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+In DNA structures, the observed numbers (K) of the aforementioned three types of triplets have different correlations with the triplet size. When different triplet sizes are used in deriving the potential function, they will greatly affect the distributions of the interactions involving the three triplet types, and affect the stability of the potential. Therefore, the effect of triplet size on distribution of interactions between protein residue and DNA triplets should be corrected. In an ideal model where a nucleotide is treated as a point and the nucleotides are distributed uniformly in an infinite space, the number of the observed neighboring nucleotides (L) of a given nucleotide within the cutoff of triplet size (R) is proportional to the volume of the corresponding neighborhood, which is proportional to the cube of R (L proportional, variant R3). Under such an ideal situation, it will provide an upper limit of the correlation between the number K of the observed triplets and R. First note that for a given nucleotide t and a triplet size R, the number of triplets of type [100] involving t is apparently 1. The number of triplets of type [110] involving t is proportional to the cube of R (K = L proportional, variant R3). Similarly, the number of triplets of type [111] involving t is proportional to the square of R3 {K = [L (L - 1)/2] proportional, variant R6}. However, in any real protein-DNA complex, it will not reach the ideal correlation between the numbers of the observed triplets (K) and R, because the complex has a finite volume and nucleotides are not strictly uniformly distributed in a DNA structure. We have systematically analyzed the three types of DNA triplets in our training complex structures without distinguishing the types of the nucleotides. Based on this analysis, we have derived a correction function between the number of triplets (K) and R (Equation 1), where T is the DNA triplet type and K(T, R) is the number of the observed triplets normalized by the actual number of triplets of type [100]. This function will be used in our development of the potential to correct for the effect of triplet size. 
+###end p 17
+###begin title 18
+Derivation of a consistent reference state
+###end title 18
+###begin p 19
+In deriving both distance-independent and distance-dependent knowledge-based potentials, researchers often use a distance cutoff. It is generally assumed that the region beyond the distance cutoff has no significant contributions to the interaction energy. Such a distance cutoff is often set in an arbitrary manner. Moreover, it is known that short-distance pairwise interactions are stronger, and therefore should have higher statistical significance compared with longer-distance interactions. However, the observed frequencies for such short-distance interactions are often lower than the true counts due to the distance or volume effect. Such distance effect has reduced the statistical significance of short-distance interactions, and greatly impaired the potential's performance especially those distance-independent potentials. Removing such distance effects poses a challenge for a finite protein-DNA system. Based on the assumption of 'uniform density' reference states, we propose a strategy of distance-normalization to overcome the distance effect, through an application of a consistent reference background (CRB) derived through fitting the interaction background using a distance function. After the normalization and additional corrections, the system will be well consistent with the 'uniform density' reference state.
+###end p 19
+###begin p 20
+First note that in each distance bin, the sum of the probabilities of all interactions is 1. Generally, the smaller the distance bin is, the more accurate the potential will be, assuming that we have sufficient amount of data. In practice, when the distributions are stable and the bins are small enough, the variation of bin-length will not affect the potential's performance in general.
+###end p 20
+###begin p 21
+###xml 610 618 610 618 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig1">Figure 1</xref>
+###xml 621 631 621 631 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e2">Equation 2</xref>
+###xml 768 769 768 769 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</italic>
+###xml 770 771 770 771 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 800 801 800 801 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 835 836 835 836 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</italic>
+###xml 838 839 838 839 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 951 952 951 952 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 972 973 972 973 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 1019 1029 1019 1029 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e3">Equation 3</xref>
+###xml 1128 1129 1128 1129 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</italic>
+###xml 1130 1131 1130 1131 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 1524 1525 1524 1525 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</italic>
+###xml 1526 1527 1526 1527 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 1598 1600 1598 1600 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b26">26</xref>
+###xml 1601 1603 1601 1603 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b27">27</xref>
+###xml 1993 1994 1993 1994 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 2059 2060 2059 2060 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</italic>
+###xml 2091 2101 2091 2101 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e3">Equation 3</xref>
+Here, a CRB is derived through the analysis of the distributions of the interactions between all protein-residues and DNA triplets in the structural data set. First, the distance bins of interactions are split evenly using a fixed bin-length. Then, the numbers of three types of interactions between three types of DNA triplets ([100], [110] and [111]) and protein residues in each distance-bin are counted, without distinguishing the types of protein residues and DNA nucleotides in triplets. All distributions of the three types of interactions converge to a same state, no matter what triplet size is used (Figure 1). Equation 2 shows that the observed frequency of interactions in the converged distribution has an exponential correlation with the distance, where F(r) is the observed frequency, r is the interaction distance, and A, B are correlation parameters. Further analysis revealed a rigorous correlation between the exponential parameter B and the bin-length X, which ranges from 1.0 to 5.0 A, as shown in Equation 3. This provides a criterion for constructing a CRB for different distance bins. Note that function F(r) is an ideal reference background, as it does not take the specificity of protein residues and DNA nucleotides into account and it provides a general description of consensus interaction density in protein-DNA complexes. It can remove the distance effect and the impact of a finite complex system, as discussed above, through a background deduction. Actually our distance correction function F(r) has a similar distance exponential parameter to that in Zhou's work (26,27), though our parameter is more consistent and is derived directly from the background distribution of interactions. However, the function does not explicitly consider the correlation among interactions between protein-residues and DNA-triplets. This correlation will be handled by two other parameters, as discussed below. Finally, to obtain a more accurate potential, a small bin-length (X), 1.0 A, is chosen, and the corresponding exponential parameter B is set at 3.345 obtained from Equation 3. 
+###end p 21
+###begin title 22
+Development of a distance-dependent knowledge-based potential
+###end title 22
+###begin p 23
+We now derive a distance-dependent knowledge-based potential through a statistical analysis of the interactions between protein-residues and DNA triplets. The coordinate of Cbeta atom of each residue is used to represent the residue position (a pseudo Cbeta is used for Glycine based on its geometric shape). We found a total of 185 468 interactions between 20 types of amino acids and 34 types of DNA triplets within an interaction distance of 15.0 A.
+###end p 23
+###begin p 24
+###xml 528 529 528 529 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 530 531 530 531 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 532 533 532 533 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">R</italic>
+###xml 616 617 616 617 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</italic>
+###xml 618 619 618 619 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+After counting the interactions between protein residues and DNA triplets in our structural data set, we correct the observed interaction frequency, translate the frequency to an energy term and build a transferable distance-dependent mean-force potential for the protein-DNA interactions. First, the initial number of interactions between protein residues and DNA triplets, , is corrected to satisfy the requirement of a 'uniform density' reference state. The idea is to eliminate the effect of triplet size using the function K(T,R), to remove the distance effect through distance-normalization using the function F(r), and to correct the correlations among residue-triplet interactions as outlined below.
+###end p 24
+###begin p 25
+###xml 293 295 293 295 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+###xml 296 298 296 298 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b36">36</xref>
+###xml 347 349 347 349 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b36">36</xref>
+###xml 466 468 466 468 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b30">30</xref>
+###xml 873 883 866 876 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e4">Equation 4</xref>
+###xml 886 888 879 881 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ij</sub>
+###xml 885 888 878 881 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N<sub>ij</sub></italic>
+###xml 889 890 882 883 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 933 934 926 927 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 939 940 932 933 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+Because of the inevitable incompleteness and redundancy of the training set, the observed fractions of interaction pairs are biased. It has also been pointed out by several groups that the correlations between observed interactions could affect the performance of the potential significantly (30,36). To correct for such effects, Lu and Skolnick (36) introduced the mole fractions of protein atoms into their threading potential function. Ishchenko and Shakhnovich (30) adopted the numbers of the interacting protein and ligand atoms, and optimized two new exponential parameters for the number of protein atoms and ligand atoms, respectively. Here, two exponential parameters alpha and beta, similar to those of Ishchenko and Shakhnovich's but only for the fraction of the interacting protein residues and the fraction of DNA triplets, respectively, are introduced. As in Equation 4, Nij(r) is the corrected number of interactions, i and j represent a protein-residue and a DNA triplet, respectively. 
+###end p 25
+###begin p 26
+###xml 0 1 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">W</italic>
+###xml 1 8 1 8 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">residue</sub>
+###xml 13 14 13 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">W</italic>
+###xml 14 21 14 21 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">triplet</sub>
+###xml 76 77 76 77 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 126 127 126 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 214 215 207 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 390 391 379 380 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 420 421 409 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 421 427 410 416 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cutoff</sub>
+###xml 593 595 582 584 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ij</sub>
+###xml 592 595 581 584 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N<sub>ij</sub></italic>
+###xml 596 597 585 586 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+Wresidue and Wtriplet represent the fraction of interacting protein residue i and the fraction of the interacting DNA triplet j, respectively; alpha and beta are two exponential parameters, to be optimized using a Z-score optimization. For regions with no observed interactions or only a few interactions, an offset parameter sigma is introduced, whose value will be determined through the Z-score optimization as well. Ncutoff is a cutoff on the number of interactions, which is set to 1. After these corrections, the observed numbers of interactions between protein-residue and DNA triplet Nij(r) should be normalized, which maximally follows the uniform density theory.
+###end p 26
+###begin p 27
+###xml 681 692 681 692 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e5">Equations 5</xref>
+###xml 693 694 693 694 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e7">7</xref>
+###xml 747 749 747 749 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ij</sub>
+###xml 746 749 746 749 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p<sub>ij</sub></italic>
+###xml 750 751 750 751 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 807 809 807 809 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ij</sub>
+###xml 806 809 806 809 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E<sub>ij</sub></italic>
+###xml 810 811 810 811 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 847 848 847 848 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 861 862 861 862 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 879 880 879 880 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 893 903 893 903 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e5">Equation 5</xref>
+###xml 911 912 911 912 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T</italic>
+###xml 936 937 936 937 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 1032 1042 1032 1042 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e6">Equation 6</xref>
+###xml 1142 1143 1142 1143 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+###xml 1257 1267 1257 1267 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e7">Equation 7</xref>
+Just like in any knowledge-based potential, we define a distance cutoff to exclude the regions that do not have much contribution to the potential. On the basis of the normalized distribution of the interactions, it is found that there is no statistical significance for interactions beyond 15.0 A. Hence, we used a distance cutoff 15.0 A. Our method works for both regions with no observed interactions and regions beyond the cutoff distance. In such regions, specific interactions between protein-residue and DNA-triplet are practically the same as the reference state with uniform density, and have an average distribution. Therefore, their energy contribution is zero based on Equations 5-7. The relationship between the observed probability pij(r) and the statistical thermodynamic interaction energy Eij(r) of an interaction between residue i and triplet j with a distance r is given by Equation 5, where T is the temperature and Z is the partition function. The uniform density reference state is used for each distance bin (Equation 6), where  is the mean probability of the interactions between residues and triplets with a distance r. The energy  in the final potential is given as the corrected energy with respect to the reference mean energy  (Equation 7). 
+###end p 27
+###begin title 28
+###xml 0 1 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+Z-score optimization
+###end title 28
+###begin p 29
+###xml 4 5 4 5 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 201 202 190 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 341 343 330 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b20">20</xref>
+###xml 344 346 333 335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b43">43</xref>
+###xml 347 349 336 338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b44">44</xref>
+###xml 415 416 404 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 510 520 499 509 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e8">Equation 8</xref>
+###xml 536 537 525 526 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 546 547 535 536 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</sub>
+###xml 545 547 534 536 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z<sub>t</sub></italic>
+###xml 731 732 720 721 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</sub>
+###xml 730 732 719 721 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z<sub>t</sub></italic>
+###xml 776 777 765 766 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 777 784 766 773 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Native&#8722;</sub>
+###xml 784 785 773 774 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</sub>
+###xml 784 785 773 774 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>t</sub></italic>
+###xml 811 812 800 801 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</sub>
+###xml 810 812 799 801 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E<sub>t</sub></italic>
+###xml 837 847 826 836 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e9">Equation 9</xref>
+###xml 863 864 848 849 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</sub>
+###xml 862 864 847 849 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E<sub>t</sub></italic>
+###xml 919 920 904 905 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 953 954 938 939 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 991 992 976 977 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 1017 1028 1002 1013 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e10">Equation 10</xref>
+###xml 1036 1037 1021 1022 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 1083 1084 1068 1069 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 1124 1125 1109 1110 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</sub>
+###xml 1123 1125 1108 1110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z<sub>t</sub></italic>
+The Z-score optimization is used to optimize the potential parameters alpha, beta and sigma. Based on the thermodynamic hypothesis that the native structure of a protein/complex has the lowest energy, Z-score optimization has been used successfully in optimizing potentials for protein folding, protein-peptide and protein-DNA interactions (20,43,44). For a protein-DNA complex conformation, the interaction energy E will be the sum of the energies  of all possible residue-triplet interactions within 15.0 A (Equation 8). The critical Z-score, Zt, measures how standout the native energy is when compared with the decoy energies, assuming that they are both random Gaussian variables from a continuous random energy model (REM). Zt measures the gap between the native energy ENative-t and the average energy <Et> of the decoy energies (Equation 9), where delta(Et) is the standard deviation of the decoy energies, and t refers to a protein-DNA complex t. For multiple complexes, an average Z-score is computed using Equation 10, where M is the number of complexes used. The average Z-score gives more weight to the larger Zt scores, representing those complexes whose natives are not easily distinguished from the decoys.
+###end p 29
+###begin p 30
+###xml 18 19 18 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 968 979 946 957 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e7">Equations 7</xref>
+###xml 984 985 962 963 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e8">8</xref>
+###xml 995 996 973 974 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 1024 1025 1002 1003 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</sub>
+###xml 1023 1025 1001 1003 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z<sub>t</sub></italic>
+###xml 1043 1044 1021 1022 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 1124 1125 1091 1092 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 1213 1214 1180 1181 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 1518 1519 1474 1475 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+In this work, the Z-score optimization is carried out through optimally distinguishing native DNA sequences from the decoy sequences. The optimization is used to parameterize alpha, beta and sigma by a Monte Carlo annealing simulation. Five hundred decoy DNA sequences are generated for each complex through randomly shuffling the nucleotide sequence of each protein-DNA structure. If the number of non-redundant decoy sequences through reshuffling is fewer than 500 for a complex, random DNA sequences will be used to make it 500. Given the initial values of alpha, beta and sigma, the initial potential can be determined. Subsequently, the decoy sequences are threaded onto the corresponding native DNA structure without gaps (note that 'threading' is to simply put a decoy sequence onto the same DNA position where the native sequence is; no search is involved). The interaction energies between the decoy sequences and the protein are computed using the potential Equations 7 and 8, and the Z-score for each structure (Zt) and the average Z-score. By changing the values of alpha, beta and sigma to optimize the average Z-score using the Monte Carlo simulation, the final potential is obtained when a minimal Z-score is reached. In this work, the parameters alpha and beta converge to 1.350 and 0.872, respectively, and sigma converges to 0.033 which has less effect on the observed number of interactions. The three parameters are more conserved when optimized using structural sets of different sizes; hence the Z-score optimization does not affect the statistical distribution of interactions nor distort the final potential. 
+###end p 30
+###begin title 31
+RESULTS
+###end title 31
+###begin p 32
+###xml 402 418 402 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 402 418 <span type="species:ncbi:562">Escherichia coli</span>
+We have evaluated our optimized potential through predicting the binding affinities for the zinc-finger protein-DNA complexes and a large set of protein-DNA complexes. We have also used the potential for recognition of the DNA-binding sites from a pool of DNA sequences for each given structure of TFs. Particularly, we have applied the potential to identify the DNA-binding sites of the CRP family in Escherichia coli.
+###end p 32
+###begin title 33
+Evaluation of interactions between zinc-finger protein and binding sequences
+###end title 33
+###begin p 34
+###xml 146 156 146 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Drosophila</italic>
+###xml 174 176 174 176 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b39">39</xref>
+###xml 177 179 177 179 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b42">42</xref>
+###xml 508 510 508 510 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b39">39</xref>
+###xml 1198 1209 1198 1209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e7">Equations 7</xref>
+###xml 1214 1215 1214 1215 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e8">8</xref>
+###xml 1595 1603 1595 1603 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig2">Figure 2</xref>
+###xml 1606 1608 1606 1608 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b15">15</xref>
+###xml 146 156 <span type="species:ncbi:7227">Drosophila</span>
+###xml 158 162 <span type="species:ncbi:10090|species:ncbi:10095">mice</span>
+###xml 167 172 <span type="species:ncbi:9606">human</span>
+The zinc-finger binding motifs are prevalent in eukaryotic genomes as zinc-finger plays an important role in the regulation of gene expression in Drosophila, mice and human (39-42). The protein zif268 (PDB ID 1AAY) consists of three zinc-finger domains, each of which has three amino acids in contact with a DNA site consisting of 3 bp. The modular nature of the interactions between a single domain and its DNA-binding sites contributes to the binding affinity and binding specificity. Desjarlais and Berg (39) designed two consensus sequences 'QNR-XXX-RHR' and 'GAG-NNN-GAT' for the key interaction sites between the three zinc-finger domains and the three DNA-binding sites, respectively, where X, N represents an arbitrary amino acid and nucleotide, respectively. Experimentally, they have determined the relative binding free energies of 13 DNA-binding sequences (NNN = GCT, 0.0 kcal/mol; GCG, 0.4 kcal/mol; TCA, 1.5 kcal/mol; GCC, 1.7 kcal/mol; GAG, 2.0 kcal/mol; TTT, 2.3 kcal/mol; GAA, 2.7 kcal/mol; ACG, 2.7 kcal/mol; CCA, 3.0 kcal/mol; ACT, 3.2 kcal/mol; CGT, 3.5 kcal/mol; TTC, 3.5 kcal/mol; and CGA, 3.9 kcal/mol) to the protein domain QNR-QDR-RHR. We have used our potential function (Equations 7 and 8) to predict the binding affinities for these zinc-finger protein-DNA complexes, using 1AYY, which is not included in the training structural set. We found that the correlation coefficient between our predicted binding affinities and the experimental relative binding free energies is 0.950, which is significantly higher than that (0.79) in Mandel-Gutfreund and Margalit's work (Figure 2) (15), suggesting that our potential could rank the interaction free energy between TF-DNA more accurately.
+###end p 34
+###begin p 35
+###xml 377 378 377 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 399 407 399 407 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig3">Figure 3</xref>
+###xml 486 487 486 487 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+###xml 906 907 906 907 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K</italic>
+###xml 907 908 907 908 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">d</sub>
+###xml 927 929 925 927 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b41">41</xref>
+###xml 1307 1308 1305 1306 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+Subsequently, we have conducted a test of our potential function on 1AAY against 10 000 randomly generated sequences and the DNA motifs that are known to bind to various zinc-finger domains. The key residues involved in the interaction in the three zinc-finger domains are RER-RHT-RER. The binding affinities of all the DNA sequences to the native protein are computed and the Z-scores are shown in Figure 3. We can see that the native sequence GCG-TGG-GCG is ranked the highest with a Z-score of -4.48. In addition, seven other sequences GCG-GTG-GCG, GCG-GCG-GCG, GCG-TTG-GCG, GCG-GAT-GCG, GCG-GAC-GCG, GCG-GCA-GCG and GCG-GTA-GCG, known to bind to proteins with the same two zinc-finger domains but a different central domain, were also ranked high (top 4.4%). The high binding affinity of one of these sequences, GCG-TTG-GCG, has been validated by experiments with an equilibrium dissociation constants Kd = 3.0 +/- 0.6 nM (41). We have also predicted the 13 aforementioned sequences with consensus pattern 'GAG-NNN-GAT', which are known to bind to zinc-finger domains with consensus pattern 'QNR-XXX-RHR'. However, they are ranked relatively lower in binding presumably because their native bound proteins have different zinc-finger domains from Zif268 (1AAY). As for the 10 000 random sequences, their Z-score distribution follows a Gaussian distribution. The vast majority (95.6%) of them are ranked lower than the native sequence and the seven sequences that could potentially bind to the target protein. These results demonstrate that our potential could accurately distinguish the native DNA sequences from the decoys.
+###end p 35
+###begin title 36
+General prediction of protein-DNA binding affinities
+###end title 36
+###begin p 37
+###xml 189 197 189 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig4">Figure 4</xref>
+###xml 293 295 293 295 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b16">16</xref>
+Our potential function is further tested on a set of 48 protein-DNA complex structures, which were extracted from the ProNIT website (), along with their binding free energies. As shown in Figure 4, the predicted results have a high correlation coefficient (0.800) with the experimental data (16). More importantly, our potential not only works well for TF/DNA complexes, but also achieves a high accuracy for the 27 non-TF/DNA complexes, suggesting that our potential function can possibly be used for the evaluation of protein-DNA binding beyond TFs.
+###end p 37
+###begin title 38
+Recognition of specific interactions between TFs and DNA-binding sites
+###end title 38
+###begin p 39
+###xml 1279 1286 1279 1286 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+We have also tested the recognition power of our potential in matching the DNA-binding motifs to their interacting TFs. For a set of protein-DNA complexes, we first extract all the binding DNA motifs and then append them into one long sequence of 2575 bp. We then scan the individual DNA motif along the long sequence using each complex structure. By doing this, we have generated more than 2500 sequence fragments for each complex structure. We then assess whether the potential function can distinguish the native binding DNA motif from a pool of decoy sequences for each TF. In PDB, there are at least 18 homeodomain protein-DNA complexes with distinct DNA sequences (PDB ID 1akh, 1apl, 1au7, 1b72, 1b8i, 1du0, 1e3o, 1fjl, 1ic8, 1ig7, 1jgg, 1lfu, 1nk2, 1oct, 1puf, 1yrn, 2hdd and 9ant, with SCOP classification as a.4.1.1). Because of the diversity of DNA sequences associated with the same protein structure, we consider that the recognition is correct if the native DNA sequence is ranked among top 25 (top 1%). In this test, 79.4% of the TFs correctly found their native binding DNA sequences based on this criterion. Particularly, 39.7% of the native DNA sequences have the highest ranking and 90.1% of TFs rank their native DNA sequences in the top 5% of all candidates (Table 2).
+###end p 39
+###begin title 40
+Identification of DNA-binding sites for TF CRP at genome scale
+###end title 40
+###begin p 41
+###xml 145 151 145 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 408 414 408 414 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 511 518 511 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl3">Table 3</xref>
+###xml 1665 1673 1665 1673 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig5">Figure 5</xref>
+###xml 1678 1685 1678 1685 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl3">Table 3</xref>
+###xml 145 151 <span type="species:ncbi:562">E.coli</span>
+###xml 408 414 <span type="species:ncbi:562">E.coli</span>
+We have also tested our potential function in the identification of DNA-binding sites of TF CRP (CAMP regulatory protein) at the genome scale in E.coli K12. CRP is selected because its complex structure (PDB ID 1O3T, not included in the training structural set) with DNA has been solved, and the DNA sequence in 1O3T has high sequence-similarity (>60.0%) to at least one of the 32 known DNA-binding sites in E.coli, which proves that the 1O3T is the right structural template for CRP and its DNA-binding sites (Table 3). We extracted all 32 known binding sites and 5000 bp flanks at both ends of each binding site. We then scan these sequences on the DNA structure of 1O3T to find which sequence fragments can bind to the protein and whether they are known CRP-binding sites. Since the DNA sequence in the 1O3T protein-DNA complex contains additional bases than each of the 32 annotated binding motifs (i.e. the sequence is longer), we need to first determine which portion of the DNA corresponds to the annotated binding motifs. So we first align each of these 32 binding motifs with this DNA sequence in the 1O3T complex, and found that the best aligned positions go from the 7th to 25th nucleotides in DNA sequences of 1O3T, which is exactly located in the center of the sequence. So we will consider a correct prediction in our test only if a scanned motif contains a known binding motif and the corresponding part is aligned to the aforementioned positions. Our sequence scan generated 639 232 potential binding sequences. We use our potential function to rank these sequences based on the predicted binding affinity with CRP using the 1O3T complex structure (Figure 5 and Table 3). The computational results show that all 32 known binding sites were ranked among the top 15% of all candidates. Particularly, 1 of these 32 sequences (AAAATATAGATCTCCGTCA) is ranked No. 2; 16 of these sequences were ranked in top 1%; and 26 are ranked in the top 5%. The result demonstrates that our potential function can be used to effectively screen binding site candidates at the genome scale. In the test, some non-binding DNA sequences are also ranked high, which will be discussed below.
+###end p 41
+###begin title 42
+DISCUSSION
+###end title 42
+###begin title 43
+Determination of DNA triplet size
+###end title 43
+###begin p 44
+###xml 866 874 866 874 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig1">Figure 1</xref>
+###xml 1535 1537 1535 1537 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b20">20</xref>
+###xml 1538 1540 1538 1540 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b45">45</xref>
+###xml 1646 1654 1646 1654 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig6">Figure 6</xref>
+As defined in Methods, the DNA 'triplet size' is the cutoff distance between two real nucleotides in a triplet. The cutoff directly affects the observed number of DNA triplets, especially for types [110] and [111]. Hence, the triplet size is crucial to an accurate estimation of interactions between protein-residues and DNA triplets. First, a good triplet size should cover sufficient local environment information in DNA while keeping the stable distributions of all representative DNA triplets. We have to determine a minimal cutoff of the triplet size to satisfy this requirement. As in the case of determining the reference background, we have conducted a statistical analysis on the distance distribution of all interactions between protein residues and DNA triplets while neglecting the types of protein residues and the types of nucleotides in DNA-triplets (Figure 1). As the triplet size increases, the distributions tend to converge to the reference background. Note that such distributions fluctuate within the distance range between 6.0 and 7.0 A. Therefore, to ensure a stable reference background, a minimal cutoff is set at 7.5 A. On the other hand, the increase in the triplet size would dilute the contribution of each specific nucleotide, and hence reduce the statistical significance of interaction distribution. For example, we have analyzed the interactions between amino acid PHE and those DNA triplets involving only nucleotide T, which appears at the interface of protein-DNA complex with an average frequency (20,45). It was found that an increase in the triplet size would greatly smoothen the interaction distribution (Figure 6). The distribution has obvious statistical significance when the triplet size falls between 7.5 and 8.0 A. When the triplet size is >10.0 A, a lower statistical significance is observed, especially for the interaction between PHE and TTT (triplet type [111]). Therefore, the maximal cutoff is set at 10.0 A. Based on the consideration of the aforementioned properties of the interaction distribution, we have set the triplet size at 8.0 A. In this work, only DNA was described using triplet. If both protein and DNA are represented using triplet, more complete and more complicated multi-body effects could be modeled.
+###end p 44
+###begin title 45
+Computational time
+###end title 45
+###begin p 46
+###xml 407 413 407 413 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 524 530 524 530 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 635 641 635 641 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 407 413 <span type="species:ncbi:562">E.coli</span>
+###xml 524 530 <span type="species:ncbi:562">E.coli</span>
+###xml 635 641 <span type="species:ncbi:562">E.coli</span>
+We have benchmarked the computing time of our method on the complex structure 1AAY against DNA sequences with different lengths, on a PC (Intel P4 2.8 GHz). We observed that the computing time is roughly linearly proportional to the length of DNA sequence. Typically, for a DNA fragment of 10 bp, the calculation would not be more than 0.002 s. Hence, for the binding-site screening at the genome scale for E.coli K12 () with 4 639 675 bp, it takes about 154 min. Moreover, if we screen all possible TF-binding sites in the E.coli genome, and conduct a comprehensive threading study between all templates in the structural set and the E.coli genome, the computation will take approximately361 h. Because this is a data-parallel problem, running this program on a multi-cpu Linux cluster can practically achieve linear speed-up. So to run this computational job on our 128-cpu Linux cluster, it can finish the computation within 2 h.
+###end p 46
+###begin title 47
+Sensitivity and specificity of protein-DNA recognition
+###end title 47
+###begin p 48
+###xml 128 133 128 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 143 145 143 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b19">19</xref>
+###xml 247 259 247 259 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e11">Equations 11</xref>
+###xml 264 266 264 266 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e12">12</xref>
+###xml 1448 1453 1436 1441 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 1810 1815 1798 1803 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+We computed the sensitivity and specificity of protein-DNA recognition using our  potential and compared the results with Ahmad et al.'s work (19). For consistency, we used the same definition of sensitivity and specificity as that in their work (Equations 11 and 12), where T is true, F is false, P is positive and N is negative. We should note that there is difference in the prediction methods, as they used DNA sequence to identify the exact binding TFs mainly using a sequence-based approach, while we used known TF to recognize the exact binding DNA motifs using structure-based technique. However, this difference should not affect the recognition ability between protein and DNA. We first compute the sensitivity and specificity of prediction for 141 TF/DNA complexes in the training set. For each complex, there are a total of approximately2500 tested sequences. The native binding sequence is treated as true sequence, and all other sequences are false because they specifically bind to different proteins and can be treated as random sequences for the given TF. In this computation, we consider a recognition as successful if the correct binding motif is placed among the top 5% of the predicted sequences. Using these criteria of top 5% as the positive, our method achieved an average sensitivity and specificity at 89.4 and 95.1%, respectively, on the training set, which compares favorably with 71.3 and 71.0%, respectively, by Ahmad et al.'s work. When computing these values on CRP set, which contains 32 true motifs, 639 200 false motifs, 31 961 positive predictions still using the same criterion of top 5% as the positive, and 26 found true positives, our method achieved an sensitivity and specificity at 81.3 and 95.0%, respectively, on the test set, compared with 68.6 and 63.4% by Ahmad et al.'s work. We should point out that the number of false sequences is much more than that of true motifs that in our prediction, which potentially increases the prediction specificity. In general, the discriminating power of our method is obvious.
+###end p 48
+###begin title 49
+Energy contribution of multi-body interactions
+###end title 49
+###begin p 50
+###xml 584 592 584 592 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig7">Figure 7</xref>
+###xml 1210 1218 1210 1218 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig7">Figure 7</xref>
+We have developed a triplet-based representation for DNA to represent the multi-body interactions and effects of DNA local environment. The energy contributions from the three kinds of triplet types were counted to evaluate the significance of the triplet representation. We systematically calculated all interactions between protein-residues and DNA triplet in the 141 training structures. The interactions were classified according to the triplet types, and the mean and standard deviation of the interaction energy for each triplet type in different distance bins were calculated (Figure 7). It was found that in each distance bin, the energy contributions from three-body interactions represented by triplet type [110] and from four-body interaction represented by triplet type [111] are comparable with that from two-body interactions represented by triplet type [100]. We found that the more complex the multi-body interactions are, the more fluctuations in energy are observed, which correspond to the exact variations in local DNA environments in different complexes. When the interaction distance between protein residue and DNA triplet is <7.0 A, the interaction energies are significant as shown in Figure 7. If the interactions are in shortest distance, within 2.0 A, the value of binding affinity is negative, suggesting that the attractive force draws protein and DNA close to each other. Note that the 2.0 A is the distance between the center of triplet and protein residue, not the actual distance between residue and nucleotide. For interactions between 2.0 and 5.0 A, the binding affinities are positive, which correspond to the repulsive forces and provide a balance effect in binding. The binding affinity will attenuate as the interaction distance increases further. Most of these interactions provide negative binding affinity and are related to remote attraction forces. For long-distance interactions, the energy deviations of four-body interactions are still obvious. Particularly, as the distance increases, more complicated multi-body interactions will dominate and will have more contributions to the total energy. Therefore, the multi-body interactions actually play important roles in protein-DNA interaction.
+###end p 50
+###begin title 51
+The accuracy of knowledge-based potential
+###end title 51
+###begin p 52
+###xml 224 231 202 209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+In our set of 141 complex structures, most TFs use alpha-helix (57) and alpha-helix+beta-strand binding modes (77). Compared with the alpha-helix binding mode, alpha-helix+beta-strand binding has higher prediction accuracy (Table 2). Our analysis of the known DNA-protein complexes showed that in most cases, an alpha-helix is the principal binding site that is inserted into the DNA groove and provides the binding specificity. Only when alpha-helix structure could not provide enough binding strength to stabilize the complex structure, a beta-strand would be added to the binding interaction to provide an additional anchor in the complex structure.
+###end p 52
+###begin p 53
+As a knowledge-based potential, our method mainly calculates the static thermodynamic value between a protein and DNA, while neglecting the kinetic effect. Note that not all DNA sequences, which have strong thermodynamic interactions to a specific TF, are DNA-binding sites because of the kinetic constraint. This can explain why many DNA sequences that are not DNA-binding sites were ranked high in the binding affinity prediction using our method. In addition, the knowledge-based potential is at the level of residues and triplets, which lacks the detailed atomic level information. Such a model could lead to steric clash, which could not form the specific interaction between the amino acid side chains and the accessible functional groups of the base pairs. Apparently, one way to improve the accuracy is to combine the method with extra energy constraints derived from DNA sequence analysis and to consider the atomic structural examination to reduce the false-positive predictions.
+###end p 53
+###begin title 54
+CONCLUSION
+###end title 54
+###begin p 55
+###xml 468 469 468 469 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+'DNA triplets' is proposed to represent a DNA structure. A triplet could well describe the DNA local interaction environment and handle the multi-body interaction effect. Based on the assumption of 'uniform density' reference state, we have proposed a strategy of distance-normalization for distribution of interactions between residues and DNA triplets, and have constructed the CRB that could make a sensible statistical correction on the distance effect. Through a Z-score optimization, we developed a distance-dependent knowledge-based potential for validating predictions of TF-DNA binding, using sequence-based methods. The potential could accurately and quantitatively predict the binding affinities between TF and DNA, and even for a large class of protein-DNA interactions. It is possible to apply this capability to rank DNA-binding sites for a particular protein structure at the genome scale. With future improvement at the atomic level, the potential would be useful for the prediction of protein-DNA docking, protein-DNA complex study and drug design area.
+###end p 55
+###begin p 56
+###xml 213 226 213 226 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Synechococcus</italic>
+###xml 213 229 <span type="species:ncbi:1131">Synechococcus sp</span>
+This research was supported in part by National Science Foundation (#NSF/DBI-0354771, #NSF/ITR-IIS-0407204), and by the US Department of Energy's Genomes to Life program () under project, 'Carbon Sequestration in Synechococcus sp.: From Molecular Machines to Hierarchical Modeling' (). Funding to pay the Open Access publication charges for this article was provided by National Science Foundation (# NSF/DBI-0354771).
+###end p 56
+###begin title 57
+REFERENCES
+###end title 57
+###begin article-title 58
+Protein-DNA interaction. No code for recognition
+###end article-title 58
+###begin article-title 59
+Detecting subtle sequence signals: a Gibbs sampling strategy for multiple alignment
+###end article-title 59
+###begin article-title 60
+Gibbs Recursive Sampler: finding transcription factor binding sites.
+###end article-title 60
+###begin article-title 61
+Additivity in protein-DNA interactions: how good an approximation is it?
+###end article-title 61
+###begin article-title 62
+Is there a code for protein-DNA recognition? Probab(ilistical)ly
+###end article-title 62
+###begin article-title 63
+Identifying transcription factor binding sites through Markov chain optimization
+###end article-title 63
+###begin article-title 64
+DNA binding sites: representation and discovery
+###end article-title 64
+###begin article-title 65
+Subtle motifs: defining the limits of motif finding algorithms
+###end article-title 65
+###begin article-title 66
+Finding weak motifs in DNA sequences
+###end article-title 66
+###begin article-title 67
+Finding motifs in the twilight zone
+###end article-title 67
+###begin article-title 68
+Clustering gene expression data using a graph-theoretic approach: an application of minimum spanning trees
+###end article-title 68
+###begin article-title 69
+Cubic: identification of regulatory binding sites through data clustering
+###end article-title 69
+###begin article-title 70
+A biophysical approach to transcription factor binding site discovery
+###end article-title 70
+###begin article-title 71
+A structure-based approach for prediction of protein binding sites in gene upstream regions
+###end article-title 71
+###begin article-title 72
+Quantitative parameters for amino acid-base interaction: implications for prediction of protein-DNA binding sites
+###end article-title 72
+###begin article-title 73
+Thermodynamic database for protein-nucleic acid interactions (ProNIT)
+###end article-title 73
+###begin article-title 74
+Intermolecular and intramolecular readout mechanisms in protein-DNA recognition
+###end article-title 74
+###begin article-title 75
+Solvent density and long-range dipole field around a DNA-binding protein studied by molecular dynamics
+###end article-title 75
+###begin article-title 76
+Analysis and prediction of DNA-binding proteins and their binding residues based on composition, sequence and structural information
+###end article-title 76
+###begin article-title 77
+Structure-based prediction of DNA target sites by regulatory proteins
+###end article-title 77
+###begin article-title 78
+Bending of DNA by asymmetric charge neutralization: all-atom energy simulations
+###end article-title 78
+###begin article-title 79
+DNA stretching and compression: large-scale simulations of double helical structures
+###end article-title 79
+###begin article-title 80
+DNA sequence-dependent deformability deduced from protein-DNA crystal complexes
+###end article-title 80
+###begin article-title 81
+Flexing and folding double helical DNA
+###end article-title 81
+###begin article-title 82
+B-DNA twisting correlates with base-pair morphology
+###end article-title 82
+###begin article-title 83
+An accurate, residue-level, pair potential of mean force for folding and binding based on the distance-scaled, ideal-gas reference state
+###end article-title 83
+###begin article-title 84
+Distance-scaled, finite ideal-gas reference state improves structure-derived potentials of mean force for structure selection and stability prediction
+###end article-title 84
+###begin article-title 85
+A general and fast scoring function for protein-ligand interactions: a simplified potential approach
+###end article-title 85
+###begin article-title 86
+Analysis of knowledge-based protein-ligand potentials using a self-consistent method
+###end article-title 86
+###begin article-title 87
+SMall Molecule Growth 2001 (SMoG2001): an improved knowledge-based scoring function for protein-ligand interactions
+###end article-title 87
+###begin article-title 88
+An efficient computational method for globally optimal threading
+###end article-title 88
+###begin article-title 89
+Potential of mean force for protein-protein interaction studies
+###end article-title 89
+###begin article-title 90
+###xml 6 13 6 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">de novo</italic>
+SMoG: de novo design method based on simple, fast, and accurate free energy estimates. 1. Methodology and supporting evidence
+###end article-title 90
+###begin article-title 91
+Calculation of conformational ensembles from potentials of mean force. An approach to the knowledge-based prediction of local structures in globular proteins
+###end article-title 91
+###begin article-title 92
+An all-atom distance-dependent conditional probability discriminatory function for protein structure prediction
+###end article-title 92
+###begin article-title 93
+A distance-dependent atomic knowledge-based potential for improved protein structure selection
+###end article-title 93
+###begin article-title 94
+The Protein Data Bank: unifying the archive
+###end article-title 94
+###begin article-title 95
+SCOP: a structural classification of proteins database for the investigation of sequences and structures
+###end article-title 95
+###begin article-title 96
+Length-encoded multiplex binding site determination: application to zinc finger proteins
+###end article-title 96
+###begin article-title 97
+###xml 0 7 0 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">In vivo</italic>
+In vivo repression by a site-specific DNA-binding protein designed against an oncogenic sequence
+###end article-title 97
+###begin article-title 98
+Selection of DNA binding sites for zinc fingers using rationally randomized DNA reveals coded interactions
+###end article-title 98
+###begin article-title 99
+Toward a code for the interactions of zinc fingers with DNA: selection of randomized fingers displayed on phage
+###end article-title 99
+###begin article-title 100
+Structural mining: self-consistent design on flexible protein-peptide docking and transferable binding affinity potential
+###end article-title 100
+###begin article-title 101
+How to derive a protein folding potential? A new approach to an old problem
+###end article-title 101
+###begin article-title 102
+Amino acid-base interactions: a three-dimensional analysis of protein-DNA interactions at an atomic level
+###end article-title 102
+###begin title 103
+Figures and Tables
+###end title 103
+###begin p 104
+The distribution of observed interactions between protein-residues and DNA triplets in the training set of 141 protein complexes. The interaction distributions of three kinds of triplet types [100], [110] and [111] are analyzed using different triplet size 6.0, 7.0, 7.5, 8.0, 10.0, 12.0 and 15.0 A, respectively.
+###end p 104
+###begin p 105
+###xml 312 313 312 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+A comparison between predicted binding affinity and experimental relative binding free energy for zinc-finger protein-DNA complexes. A total of 13 DNA-binding sequences (GAG-NNN-GAT, where NNN = GCT, GCG, TCA, GCC, GAG, TTT, GAA, ACG, CCA, ACT, CGT, TTC, or CGA) were tested and the fitted linear correlation is r = 0.950.
+###end p 105
+###begin p 106
+###xml 667 668 667 668 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Z</italic>
+Ranking of the binding affinities between DNA sequences and wild-type Zif268 protein. 'GCG-TGG-GCG' represents the rank of the native sequence GCG-TGG-GCG that binds to Zif268 mode RER-RHT-RER. 'GCG-NNN-GCG' corresponds to the ranks of seven sequences (GCG-GTG-GCG, GCG-GCG-GCG, GCG-TTG-GCG, GCG-GAT-GCG, GCG-GAC-GCG, GCG-GCA-GCG, GCG-GTA-GCG) binding to proteins with two zinc-finger domains of wild-type Zif268 but a different central domain. 'GAG-NNN-GAT' represents the 13 DNA sequences with motif GAG-NNN-GAT (NNN = GCT, GCG, TCA, GCC, GAG, TTT, GAA, ACG, CCA, ACT, CGT, TTC and CGA) that bind to another zinc-finger domain mode QNR-XXX-RHR. 'All' refers to the Z-score distribution of all sequences consisting of the aforementioned sequences and 10 000 random sequences.
+###end p 106
+###begin p 107
+###xml 149 150 149 150 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">r</italic>
+Correlation between predicted binding affinities and experimental binding free energies for 48 protein-DNA complexes. There is linear correlation of r = 0.800. Non-TF/DNA refers to 27 non-transcription factor/DNA complexes (including 1mse, 1tro, 1ca5, 2ezd, 1lcc, 1cjg, 1gcc, 1azp, 1az0, 1b69, 1tf3, 1bhm, 1ecr, 1cw0, 1hcr, 1yui, 1sx9, 7icr, 1qaa, 1jey, 1nk2, 1tau, 5gat, 1qrv, 1a73, 2gat and 1j1v), TF/DNA refers to remaining 21 transcription factor complexes (including 1lmb, 1cma, 1apl, 1par, 1run, 1glu, 1nfk, 1efa, 1mdy, 1tsr, 1ipp, 1ytf, 1vkx, 1oct, 1ihf, 1bc7, 1aay, 1cez, 1yrn, 1ysa and 1b3t).
+###end p 107
+###begin p 108
+A genome scale rank of binding affinities between CRP transcription factor and its 32 known DNA-binding sites. 'Top 1%' refers to 16 motifs ranked in top 1% of all 639 232 sequences. 'Top 5%' refers to 10 motifs ranked between top 1% and 5%, and 'Top 15%' refers to 6 motifs ranked between top 5% and 15%.
+###end p 108
+###begin p 109
+The interaction distributions between protein residue PHE and DNA triplets containing nucleotide T (TOO, TTO and TTT) only in the training set. The TOO, TTO and TTT belong to triplet types [100], [110] and [111], respectively. The interaction distributions are analyzed using different triplet size of 7.0, 7.5, 8.0, 10.0, 12.0 and 15.0 A, respectively.
+###end p 109
+###begin p 110
+The energy contribution of multi-body interactions represented by three different DNA triplet types in the training set. The solid black bar represents the energy contribution of four-body interaction between protein residue and DNA triplet type [111], the gray bar represents that of three-body interaction from DNA triplet type [110] and the light bar represents that of two-body pairwise interaction from triplet type [100].
+###end p 110
+###begin p 111
+Data set of protein-DNA complexes
+###end p 111
+###begin p 112
+Recognition accuracy for specific interactions between TFs and native bound DNA sequences
+###end p 112
+###begin p 113
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</sup>
+aalpha-helix and beta-strand refer to the secondary structures of DNA-binding sites. There are 57 proteins that bind DNA with alpha-helix only, 77 proteins bind to DNA with both alpha-helix and beta-strand structures.
+###end p 113
+###begin p 114
+###xml 64 70 64 70 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 64 70 <span type="species:ncbi:562">E.coli</span>
+A genome-scale analysis of 32 known DNA-binding sites of CRP in E.coli.K12 predicted using 1O3T (PDB ID)
+###end p 114
+

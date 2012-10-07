@@ -1,0 +1,837 @@
+###begin article-title 0
+A systematic strategy for large-scale analysis of genotype-phenotype correlations: identification of candidate genes involved in African trypanosomiasis
+###end article-title 0
+###begin p 1
+###xml 0 16 0 16 <!--CREATIVE COMMONS-->
+CREATIVE COMMONSThis is an Open Access article distributed under the terms of the Creative Commons Attribution Non-Commercial License () which permits unrestricted non-commercial use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin p 2
+###xml 695 700 <span type="species:ncbi:10090">mouse</span>
+###xml 911 916 <span type="species:ncbi:10090">mouse</span>
+It is increasingly common to combine Microarray and Quantitative Trait Loci data to aid the search for candidate genes responsible for phenotypic variation. Workflows provide a means of systematically processing these large datasets and also represent a framework for the re-use and the explicit declaration of experimental methods. In this article, we highlight the issues facing the manual analysis of microarray and QTL data for the discovery of candidate genes underlying complex phenotypes. We show how automated approaches provide a systematic means to investigate genotype-phenotype correlations. This methodology was applied to a use case of resistance to African trypanosomiasis in the mouse. Pathways represented in the results identified Daxx as one of the candidate genes within the Tir1 QTL region. Subsequent re-sequencing in Daxx identified a deletion of an amino acid, identified in susceptible mouse strains, in the Daxx-p53 protein-binding region. This supports recent experimental evidence that apoptosis could be playing a role in the trypanosomiasis resistance phenotype. Workflows developed in this investigation, including a guide to loading and executing them with example data, are available at .
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin p 4
+###xml 218 219 218 219 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B1">1</xref>
+###xml 220 221 220 221 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B2">2</xref>
+###xml 296 297 296 297 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B3">3</xref>
+###xml 668 669 668 669 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B4">4</xref>
+###xml 904 905 904 905 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B5">5</xref>
+###xml 824 828 <span type="species:ncbi:10090">mice</span>
+###xml 833 837 <span type="species:ncbi:10118|species:ncbi:10116">rats</span>
+The process of linking genotype and phenotype plays a crucial role in understanding the biological processes that contribute to overall cellular, tissue and organism responses, particularly when under a disease state (1,2). The first and classic example was the discovery of the Huntington gene (3), which enabled predictive tests for age of onset and severity of disease to be established. Since then researchers have discovered single-gene lesions for a large number of simple Mendelian traits. It has proved much more difficult, however, to discover genes underlying genetically complex traits which have continuous rather than discrete variation in the phenotype (4), since continuous variation is generally a product of small contributions from multiple genes. Over 2000 Quantative Trait Loci (QTL) have been mapped in mice and rats, yet <1% of these have been characterized at the molecular level (5).
+###end p 4
+###begin p 5
+###xml 658 659 658 659 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B4">4</xref>
+###xml 985 986 985 986 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B6">6</xref>
+The DNA polymorphism(s) underlying a QTL may be in an exon, which subsequently changes the primary amino acid structure of the gene. In other cases the polymorphism may lie in a regulatory region, possibly several kilobases from the transcription start site, altering the regulation of gene expression or splicing. Tens to hundreds of genes may be under even well-defined QTL. It is therefore vital that the identification, prioritization and functional testing of the polymorphisms identified in relation to the Quantitative Trait gene (QTg) and phenotype are carried out systematically without bias introduced from prior assumptions about candidate genes (4). With the advent of microarrays, researchers are able to directly examine the expression of all genes under a QTL and hence examine the effect of regulatory variation directly. This has made it possible to use expert knowledge of the pathways underlying the phenotype to identify a limited number of strong candidate genes (6).
+###end p 5
+###begin p 6
+###xml 137 138 137 138 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B7">7</xref>
+###xml 259 265 259 265 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al.</italic>
+###xml 267 268 267 268 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B6">6</xref>
+###xml 523 524 523 524 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B8">8</xref>
+The scale of data being generated by such high-throughput experiments has led some investigators to follow a hypothesis-driven approach (7), where the triage and selection of candidate genes is based on some prior knowledge or assumption. For example de Buhr et al. (6) selected candidate genes based on their known involvement in the immune response. Although these techniques for candidate gene identification can detect QTg, they run the risk of overlooking genes that have less obvious associations with the phenotype (8).
+###end p 6
+###begin p 7
+The complexity of multigenic traits can also lead to problems when attempting to identify the varied processes involved in the phenotype. For example numerous processes can be involved in the control of parasitic infection, including the ability of the host to kill the parasite, mounting an appropriate immune response, or control of host or parasite induced damage. By making selections based on prior assumptions of what processes may be involved, the pathways, and therefore genes, that may actually be involved in the phenotype can be overlooked or missed entirely.
+###end p 7
+###begin p 8
+###xml 467 558 467 558 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="9">Premature filtering of datasets to reduce the amount of information requiring investigation</p>
+###xml 467 558 467 558 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="9">Premature filtering of datasets to reduce the amount of information requiring investigation</p></list-item>
+###xml 558 667 558 667 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="10">Predominantly hypothesis-driven investigations instead of a complementary hypothesis and data-driven analysis</p>
+###xml 558 667 558 667 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="10">Predominantly hypothesis-driven investigations instead of a complementary hypothesis and data-driven analysis</p></list-item>
+###xml 667 762 667 762 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="11">User bias introduced on datasets and results, leading to single-sided, expert-driven hypotheses</p>
+###xml 667 762 667 762 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="11">User bias introduced on datasets and results, leading to single-sided, expert-driven hypotheses</p></list-item>
+###xml 762 798 762 798 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="12">Implicit data analysis methodologies</p>
+###xml 762 798 762 798 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="12">Implicit data analysis methodologies</p></list-item>
+###xml 798 905 798 905 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="13">Constant flux of data resources and software interfaces hinder reproducing searches and re-analysis of data</p>
+###xml 798 905 798 905 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="13">Constant flux of data resources and software interfaces hinder reproducing searches and re-analysis of data</p></list-item>
+###xml 905 954 905 954 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="14">Error proliferation from any of the listed issues</p>
+###xml 905 954 905 954 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="14">Error proliferation from any of the listed issues</p></list-item>
+###xml 467 954 467 954 <list xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" list-type="roman-lower"><list-item><p textid="9">Premature filtering of datasets to reduce the amount of information requiring investigation</p></list-item><list-item><p textid="10">Predominantly hypothesis-driven investigations instead of a complementary hypothesis and data-driven analysis</p></list-item><list-item><p textid="11">User bias introduced on datasets and results, leading to single-sided, expert-driven hypotheses</p></list-item><list-item><p textid="12">Implicit data analysis methodologies</p></list-item><list-item><p textid="13">Constant flux of data resources and software interfaces hinder reproducing searches and re-analysis of data</p></list-item><list-item><p textid="14">Error proliferation from any of the listed issues</p></list-item></list>
+In order to investigate whether such bias could be found within current analysis techniques, we conducted a review of the literature on combined QTL and microarray analyses. This detailed review is available within the Supplementary Data (Supplementray Table 2). Results from this review enabled us to identify the specific issues facing the manual analysis of microarray and QTL data, including the selection of candidate genes and pathways. These are listed below: Premature filtering of datasets to reduce the amount of information requiring investigationPredominantly hypothesis-driven investigations instead of a complementary hypothesis and data-driven analysisUser bias introduced on datasets and results, leading to single-sided, expert-driven hypothesesImplicit data analysis methodologiesConstant flux of data resources and software interfaces hinder reproducing searches and re-analysis of dataError proliferation from any of the listed issues
+###end p 8
+###begin p 9
+Premature filtering of datasets to reduce the amount of information requiring investigation
+###end p 9
+###begin p 10
+Predominantly hypothesis-driven investigations instead of a complementary hypothesis and data-driven analysis
+###end p 10
+###begin p 11
+User bias introduced on datasets and results, leading to single-sided, expert-driven hypotheses
+###end p 11
+###begin p 12
+Implicit data analysis methodologies
+###end p 12
+###begin p 13
+Constant flux of data resources and software interfaces hinder reproducing searches and re-analysis of data
+###end p 13
+###begin p 14
+Error proliferation from any of the listed issues
+###end p 14
+###begin p 15
+###xml 42 48 42 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ad hoc</italic>
+###xml 273 274 273 274 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B9">9</xref>
+###xml 333 335 333 335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B10">10</xref>
+###xml 498 507 498 507 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+A further complication is that the use of ad hoc methods for candidate gene identification are inherently difficult to replicate and are compounded by poor documentation of the methods used to generate and capture the data from such investigations in published literature (9). An example is the widespread use of 'link integration' (10) in bioinformatics. This process of hyperlinking through any number of data resources further exacerbates the problem of capturing the methods used for obtaining in silico results since it is often difficult to identify the essential data in the chain of hyperlinked resources.
+###end p 15
+###begin p 16
+###xml 122 124 122 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B11">11</xref>
+With an ever increasing number of institutes offering programmatic access to their resources in the form of web services (11), however, experiments previously conducted manually can now be replaced by automated experiments, capable of processing a far greater volume of data in a systematic and explicit manner. The integration of web services into an automated analysis pipeline or workflow enables the replication of the original chain of processes used in the traditional manual analyses. This is accomplished by connecting the outputs from one such service into the input of another in a consecutive manner. By replicating the original investigation methods in the form of workflows, we are now able to pass data directly from one service to the next without the need for any interaction from researchers. This enables us to process the data in a much more efficient, reliable, un-biased and explicit manner.
+###end p 16
+###begin p 17
+###xml 306 318 306 318 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Mus musculus</italic>
+###xml 561 563 561 563 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B12">12</xref>
+###xml 299 304 <span type="species:ncbi:10090">mouse</span>
+###xml 306 318 <span type="species:ncbi:10090">Mus musculus</span>
+In this article we propose a methodology that revises the known pathways that intersect a QTL and those derived from a set of differentially expressed genes. This methodology has been implemented systematically through the use of web services and workflows and has been applied to a use case in the mouse, Mus musculus: resistance to African trypanosomiasis. For the purpose of implementing this systematic pathway-driven approach, we have adopted a service-based infrastructure coupled with workflow technology. We chose to use the Taverna workflow workbench (12) for the means of constructing these workflows. This software was chosen based on previous experience with this workbench within the Manchester based research group. Although this workbench offers many features for workflow construction, the workflows discussed in this article may be constructed using any of the well-established workflow workbenches currently available. This investigation looks at the extent to which workflows will be able to reduce the issues labelled (i) to (vi) listed above, with respect to the manual analysis of gene expression and QTL data.
+###end p 17
+###begin title 18
+African trypanosomiasis as a motivation for a systematic approach to candidate gene identification
+###end title 18
+###begin p 19
+###xml 57 68 57 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Trypanosoma</italic>
+###xml 137 146 137 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T. brucei</italic>
+###xml 187 200 187 200 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T. congolense</italic>
+###xml 205 213 205 213 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T. vivax</italic>
+###xml 286 288 286 288 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B13">13</xref>
+###xml 491 493 491 493 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B14">14</xref>
+###xml 85 90 <span type="species:ncbi:9606">Human</span>
+###xml 137 146 <span type="species:ncbi:405156|species:ncbi:5691|species:ncbi:391901">T. brucei</span>
+###xml 167 173 <span type="species:ncbi:9913">cattle</span>
+###xml 187 200 <span type="species:ncbi:5692">T. congolense</span>
+###xml 205 213 <span type="species:ncbi:5699">T. vivax</span>
+###xml 245 251 <span type="species:ncbi:9913">cattle</span>
+African trypanosomiasis (sleeping sickness) is caused by Trypanosoma spp. parasites. Human sleeping sickness is caused by sub species of T. brucei. Trypanosomiasis of cattle is caused by T. congolense and T. vivax, and is a major restriction on cattle production in sub-Saharan Africa (13). With no vaccine available, and with heavy expenditure on trypanocidal and vector control, trypanosomiasis is estimated to cost over 4 billion US dollars each year in direct costs and lost production (14).
+###end p 19
+###begin title 20
+###xml 73 86 73 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T. congolense</italic>
+###xml 73 86 <span type="species:ncbi:5692">T. congolense</span>
+Positional cloning of genes controlling susceptibility to infection with T. congolense
+###end title 20
+###begin p 21
+###xml 102 104 102 104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B13">13</xref>
+###xml 105 107 105 107 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B14">14</xref>
+###xml 273 286 273 286 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T. congolense</italic>
+###xml 369 371 369 371 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B15">15</xref>
+###xml 372 374 372 374 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B16">16</xref>
+###xml 610 621 610 621 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Trypanosoma</italic>
+###xml 733 735 733 735 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B17">17</xref>
+###xml 23 29 <span type="species:ncbi:9913">cattle</span>
+###xml 184 190 <span type="species:ncbi:9913">cattle</span>
+###xml 225 229 <span type="species:ncbi:10090">Mice</span>
+###xml 273 286 <span type="species:ncbi:5692">T. congolense</span>
+###xml 310 314 <span type="species:ncbi:10090">mice</span>
+###xml 383 387 <span type="species:ncbi:10090">mice</span>
+###xml 442 448 <span type="species:ncbi:9913">cattle</span>
+###xml 487 492 <span type="species:ncbi:10090">mouse</span>
+###xml 565 570 <span type="species:ncbi:10090">mouse</span>
+###xml 824 829 <span type="species:ncbi:10090">mouse</span>
+Some breeds of African cattle, such as N'Dama, are able to tolerate infections and remain productive (13,14). This trait is presumed to have arisen through natural selection acting on cattle exposed to trypanosome infection. Mice strains also differ in their resistance to T. congolense infection; C57BL/6(B6) mice survive significantly longer than A/J(A) or Balb/c(C)(15,16). These mice strains act as a model for the modes of resistance in cattle. The differences in resistance in the mouse have been used to map 3 QTL controlling survival after infection in the mouse model. These loci have been designated Trypanosoma infection response (Tir) and numbered Tir1, Tir2 and Tir3. The Tir1 QTL showed the largest effect on survival (17), and was chosen as the proof-of-concept target for our methodology. Tir1 is located on mouse chromosome 17 in a particularly gene-rich area. It is therefore possible that this QTL contains multiple QTg-a fact that must be taken into account in any detailed analysis of Tir1 candidate genes.
+###end p 21
+###begin title 22
+###xml 50 63 50 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T. congolense</italic>
+###xml 31 35 <span type="species:ncbi:10090">mice</span>
+###xml 50 63 <span type="species:ncbi:5692">T. congolense</span>
+Analysis of gene expression of mice infected with T. congolense
+###end title 22
+###begin p 23
+###xml 671 673 671 673 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B18">18</xref>
+###xml 848 850 848 850 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B19">19</xref>
+###xml 956 958 956 958 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B20">20</xref>
+###xml 112 117 <span type="species:ncbi:10090">mouse</span>
+A microarray experiment was undertaken by researchers on the Wellcome Trust Pathogen-Host Project to survey the mouse genome for genes and pathways that were differentially expressed between susceptible (A/J and Balb/c) and resistant (C57BL/6) strains. RNA samples were prepared from liver and spleen at 0, 3, 7, 9 and 17 days post-infection and from kidney at Days 0 and 7 post-infection. Twenty-five tissue samples were collected, each condition being a unique combination of day, tissue and strain. The RNA prepared from these samples was combined to create five independent pools of five RNA samples for each condition, and was subsequently hybridized to Affymetrix (18) Mouse430_2 gene chips. A total of 180 microarrays were used to measure the expression of the 36 conditions that were studied. Microarray data was first analysed with DChip (19) to determine any outliers. All hybridizations that passed the DChip analysis were normalized using RMA (20). In addition, PCA analysis was performed to identify any hybridizations that passed the DChip quality control but could still be classified as outliers.
+###end p 23
+###begin title 24
+###xml 23 28 <span type="species:ncbi:10090">Mouse</span>
+###xml 29 32 <span type="species:ncbi:9913">Cow</span>
+Manual analysis of the Mouse-Cow syntenous region
+###end title 24
+###begin p 25
+###xml 24 37 24 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">T. congolense</italic>
+###xml 81 83 81 83 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B14">14</xref>
+###xml 24 37 <span type="species:ncbi:5692">T. congolense</span>
+###xml 73 79 <span type="species:ncbi:9913">cattle</span>
+###xml 108 114 <span type="species:ncbi:9913">cattle</span>
+###xml 119 124 <span type="species:ncbi:10090">mouse</span>
+###xml 172 177 <span type="species:ncbi:10090">mouse</span>
+###xml 214 220 <span type="species:ncbi:9913">bovine</span>
+###xml 281 286 <span type="species:ncbi:10090">mouse</span>
+Ten QTL for response to T. congolense infection have also been mapped in cattle (14). The comparison of the cattle and mouse QTL identified a 400 kb sub-region of the Tir1 mouse QTL that was syntenic with a QTL on bovine chromosome 7, spanning from approximately31.8 to 32.2 Mb on mouse chromosome 17.
+###end p 25
+###begin p 26
+###xml 611 613 611 613 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B21">21</xref>
+###xml 29 34 <span type="species:ncbi:10090">mouse</span>
+###xml 39 45 <span type="species:ncbi:9913">cattle</span>
+###xml 162 168 <span type="species:ncbi:10090">murine</span>
+###xml 485 489 <span type="species:ncbi:10090">mice</span>
+###xml 846 851 <span type="species:ncbi:10090">mouse</span>
+###xml 856 862 <span type="species:ncbi:9913">cattle</span>
+###xml 932 938 <span type="species:ncbi:10090">murine</span>
+###xml 943 949 <span type="species:ncbi:9913">bovine</span>
+It was hypothesized that the mouse and cattle QTL might both contain the same QTL genes; consequently this region, which contained just 8 of the 344 genes in the murine QTL, was prioritized for intensive research using the traditional manual methods. Another candidate gene chosen for further study was tumour necrosis factor (TNF). This was chosen as it lay within the Tir1 region and is known to be a key gene for control of immune response. Detailed experiments using TNF knock-out mice, however, seemed to demonstrate that TNF was not playing a key role in determining the resistant susceptible phenotypes (21). We therefore explored the hypothesis that a large-scale, systematic and data-driven approach could uncover other candidate quantitative trait genes that would be missed through targeted, hypothesis-driven strategies. Although the mouse and cattle regions do share syntenous regions, there is no expectation that the murine and bovine QTL will contain the same genes.
+###end p 26
+###begin title 27
+MATERIALS AND METHODS
+###end title 27
+###begin p 28
+###xml 317 319 317 319 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B22">22</xref>
+###xml 575 583 575 583 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F1">Figure 1</xref>
+###xml 700 709 700 709 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1.</label>
+###xml 710 711 710 711 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</bold>
+###xml 1234 1235 1234 1235 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</bold>
+###xml 709 2207 709 2207 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="29">(<bold>a</bold>) An illustration showing the prioritization of phenotype candidates, from the pathway-driven approach. All pathways are differentially expressed in the microarray data. Those pathways which contain genes from the QTL region are assigned a higher priority (pathways A and B) than those with no link to the QTL region (pathway C). Higher priority pathways are then ranked according to their involvement in the phenotypes expression, based on literature evidence. Abbreviations: CHR:Chromosome; QTL:Quantitative Trait Loci. (<bold>b</bold>) An illustration for the pathway-driven approach to genotype&#8211;phenotype correlations. The process of annotating candidate genes from microarray and QTL investigations with their biological pathways is shown. The pathways gathered from both studies are compared and those common to both are extracted as the candidate pathways for further analysis.These pathways represent a set of hypotheses, in that the candidates are the hypothetical processes which may contribute to the expression of the observed phenotype. Subsequent verification is required for each pathway by wet lab investigation and literature searches. This apporach is separated into two sections, distinguished by the dividing line between the selction of common pathways and the generation of hypotheses. The section labelled A represents the workflow side of the investigation;, whilst the section labelled B represents verification of the hypotheses through wet lab experimentation and literature mining.</p>
+###xml 709 2207 709 2207 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="29">(<bold>a</bold>) An illustration showing the prioritization of phenotype candidates, from the pathway-driven approach. All pathways are differentially expressed in the microarray data. Those pathways which contain genes from the QTL region are assigned a higher priority (pathways A and B) than those with no link to the QTL region (pathway C). Higher priority pathways are then ranked according to their involvement in the phenotypes expression, based on literature evidence. Abbreviations: CHR:Chromosome; QTL:Quantitative Trait Loci. (<bold>b</bold>) An illustration for the pathway-driven approach to genotype&#8211;phenotype correlations. The process of annotating candidate genes from microarray and QTL investigations with their biological pathways is shown. The pathways gathered from both studies are compared and those common to both are extracted as the candidate pathways for further analysis.These pathways represent a set of hypotheses, in that the candidates are the hypothetical processes which may contribute to the expression of the observed phenotype. Subsequent verification is required for each pathway by wet lab investigation and literature searches. This apporach is separated into two sections, distinguished by the dividing line between the selction of common pathways and the generation of hypotheses. The section labelled A represents the workflow side of the investigation;, whilst the section labelled B represents verification of the hypotheses through wet lab experimentation and literature mining.</p></caption>
+###xml 2207 2207 2207 2207 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkm623f1"/>
+###xml 700 2207 700 2207 <fig xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="F1" position="float"><label>Figure 1.</label><caption><p textid="29">(<bold>a</bold>) An illustration showing the prioritization of phenotype candidates, from the pathway-driven approach. All pathways are differentially expressed in the microarray data. Those pathways which contain genes from the QTL region are assigned a higher priority (pathways A and B) than those with no link to the QTL region (pathway C). Higher priority pathways are then ranked according to their involvement in the phenotypes expression, based on literature evidence. Abbreviations: CHR:Chromosome; QTL:Quantitative Trait Loci. (<bold>b</bold>) An illustration for the pathway-driven approach to genotype&#8211;phenotype correlations. The process of annotating candidate genes from microarray and QTL investigations with their biological pathways is shown. The pathways gathered from both studies are compared and those common to both are extracted as the candidate pathways for further analysis.These pathways represent a set of hypotheses, in that the candidates are the hypothetical processes which may contribute to the expression of the observed phenotype. Subsequent verification is required for each pathway by wet lab investigation and literature searches. This apporach is separated into two sections, distinguished by the dividing line between the selction of common pathways and the generation of hypotheses. The section labelled A represents the workflow side of the investigation;, whilst the section labelled B represents verification of the hypotheses through wet lab experimentation and literature mining.</p></caption><graphic xlink:href="gkm623f1"/></fig>
+The expression of genes within their biological pathways contributes to the expression of an observed phenotype. By investigating links between genotype and phenotype at the level of biological pathways, it is possible to obtain a global view of the processes which may contribute to the expression of the phenotype (22). Additionally, the explicit identification of responding pathways naturally leads to experimental verification in the laboratory. We therefore opted to analyse QTL and gene expression data not directly at the level of genes but at the level of pathways (Figure 1a). Using this pathway-driven approach provides a driving force for functional discovery rather than gene discovery. Figure 1.(a) An illustration showing the prioritization of phenotype candidates, from the pathway-driven approach. All pathways are differentially expressed in the microarray data. Those pathways which contain genes from the QTL region are assigned a higher priority (pathways A and B) than those with no link to the QTL region (pathway C). Higher priority pathways are then ranked according to their involvement in the phenotypes expression, based on literature evidence. Abbreviations: CHR:Chromosome; QTL:Quantitative Trait Loci. (b) An illustration for the pathway-driven approach to genotype-phenotype correlations. The process of annotating candidate genes from microarray and QTL investigations with their biological pathways is shown. The pathways gathered from both studies are compared and those common to both are extracted as the candidate pathways for further analysis.These pathways represent a set of hypotheses, in that the candidates are the hypothetical processes which may contribute to the expression of the observed phenotype. Subsequent verification is required for each pathway by wet lab investigation and literature searches. This apporach is separated into two sections, distinguished by the dividing line between the selction of common pathways and the generation of hypotheses. The section labelled A represents the workflow side of the investigation;, whilst the section labelled B represents verification of the hypotheses through wet lab experimentation and literature mining.
+###end p 28
+###begin p 29
+###xml 1 2 1 2 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">a</bold>
+###xml 525 526 525 526 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">b</bold>
+(a) An illustration showing the prioritization of phenotype candidates, from the pathway-driven approach. All pathways are differentially expressed in the microarray data. Those pathways which contain genes from the QTL region are assigned a higher priority (pathways A and B) than those with no link to the QTL region (pathway C). Higher priority pathways are then ranked according to their involvement in the phenotypes expression, based on literature evidence. Abbreviations: CHR:Chromosome; QTL:Quantitative Trait Loci. (b) An illustration for the pathway-driven approach to genotype-phenotype correlations. The process of annotating candidate genes from microarray and QTL investigations with their biological pathways is shown. The pathways gathered from both studies are compared and those common to both are extracted as the candidate pathways for further analysis.These pathways represent a set of hypotheses, in that the candidates are the hypothetical processes which may contribute to the expression of the observed phenotype. Subsequent verification is required for each pathway by wet lab investigation and literature searches. This apporach is separated into two sections, distinguished by the dividing line between the selction of common pathways and the generation of hypotheses. The section labelled A represents the workflow side of the investigation;, whilst the section labelled B represents verification of the hypotheses through wet lab experimentation and literature mining.
+###end p 29
+###begin p 30
+###xml 251 253 251 253 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B23">23</xref>
+###xml 816 824 816 824 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F1">Figure 1</xref>
+In order to determine which genes reside in the QTL region of choice, the physical boundaries of the QTL need to be determined. Each gene is then subsequently annotated with its associated biological pathways, obtained from the KEGG pathway database (23). The same process of pathway annotation is also carried out for the genes that are found to be differentially expressed in the microarray study of choice. These two sets of pathway data enable us to obtain a subset of common pathways that contain genes within the QTL region and genes that are differentially expressed in the microarray study. By identifying those pathways common to both microarray and QTL data, we are able to obtain a much richer model of the processes which may be influencing the expression of the phenotype. This process is summarized in Figure 1b.
+###end p 30
+###begin p 31
+One drawback of this approach, however, is the reliance on extant pathway annotations for genes identified in the QTL regions and from the microarray studies. However, by explicitly recording the workflow output from KEGG, we can, if required, identify genes that do not have pathways associated with them.
+###end p 31
+###begin p 32
+For such an approach to be conducted systematically, any web resources used (including their parameters) should be stated explicitly. By passing data from one service to the next in a workflow, vast amounts of data can be analysed with little input required from the user, other than that of parameter configuration. This makes workflow technology an ideal tool for processing high-throughput data in a systematic and explicit manner.
+###end p 32
+###begin p 33
+###xml 169 171 169 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B24">24</xref>
+###xml 250 252 250 252 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B16">16</xref>
+###xml 154 159 <span type="species:ncbi:10090">mouse</span>
+###xml 334 339 <span type="species:ncbi:10090">Mouse</span>
+###xml 450 455 <span type="species:ncbi:10090">Mouse</span>
+In order to determine the genes that lie within Tir1 QTL region, the position of flanking markers used in the original mapping studies were identified in mouse Ensembl (24) release 40. These were identified as D17Mit29 and D17Mit11 on chromosome 17 (16), at 28 394 586 and 38 278 830 bp respectively, within version 40 of the Ensembl Mouse database (NCBI build 36). The position of D17Mit11 was estimated based on close proximity to the gene Crisp2 (Mouse Genome Identifier - MGI:98815).
+###end p 33
+###begin p 34
+###xml 120 131 120 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">qtl_pathway</italic>
+###xml 340 342 340 342 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B25">25</xref>
+###xml 361 363 361 363 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B26">26</xref>
+###xml 496 504 496 504 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F2">Figure 2</xref>
+###xml 901 909 901 909 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F2">Figure 2</xref>
+###xml 911 920 911 920 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 2.</label>
+###xml 920 1559 920 1559 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="35">Annotation workflow to gather genes in a QTL region, and provide information on the pathways involved with a phenotype. This workflow, shown as a sub-set of the complete workflow, requires a chromosome, and QTL start and stop positions in base pairs. The genes in this QTL region are then returned from Ensembl via a BioMart plug-in. These genes are subsequently annotated with UniProt and Entrez identifiers, start and end positions, Ensembl Transcript ids and Affymetrix probeset identifiers for the chips Mouse430_2 and Mouse430a_2. The UniProt and Entrez ids are submitted to the KEGG gene database, retrieving a list of KEGG gene ids.</p>
+###xml 920 1559 920 1559 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="35">Annotation workflow to gather genes in a QTL region, and provide information on the pathways involved with a phenotype. This workflow, shown as a sub-set of the complete workflow, requires a chromosome, and QTL start and stop positions in base pairs. The genes in this QTL region are then returned from Ensembl via a BioMart plug-in. These genes are subsequently annotated with UniProt and Entrez identifiers, start and end positions, Ensembl Transcript ids and Affymetrix probeset identifiers for the chips Mouse430_2 and Mouse430a_2. The UniProt and Entrez ids are submitted to the KEGG gene database, retrieving a list of KEGG gene ids.</p></caption>
+###xml 1559 1559 1559 1559 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkm623f2"/>
+###xml 911 1559 911 1559 <fig xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="F2" position="float"><label>Figure 2.</label><caption><p textid="35">Annotation workflow to gather genes in a QTL region, and provide information on the pathways involved with a phenotype. This workflow, shown as a sub-set of the complete workflow, requires a chromosome, and QTL start and stop positions in base pairs. The genes in this QTL region are then returned from Ensembl via a BioMart plug-in. These genes are subsequently annotated with UniProt and Entrez identifiers, start and end positions, Ensembl Transcript ids and Affymetrix probeset identifiers for the chips Mouse430_2 and Mouse430a_2. The UniProt and Entrez ids are submitted to the KEGG gene database, retrieving a list of KEGG gene ids.</p></caption><graphic xlink:href="gkm623f2"/></fig>
+The implementation of the pathway-driven approach consisted of three Taverna workflows. The first workflow constructed, qtl_pathway, was implemented to identify genes within a QTL region, and subsequently map them to pathways held in the KEGG pathway database. Lists of genes within a QTL were obtained from Ensembl, together with UniProt (25) and Entrez gene (26) identifiers, enabling them to be cross-referenced to KEGG gene and pathway identifiers. A fragment of this workflow can be seen in Figure 2, which shows the mapping from QTL region (label A) to KEGG gene identifiers (label C). This workflow represents an automated version of the manual methods required to perform such a task, including the process of collating all information into single output files. Additional services were added to format data into the correct input/output style, these services have not been assigned labels in Figure 2. Figure 2.Annotation workflow to gather genes in a QTL region, and provide information on the pathways involved with a phenotype. This workflow, shown as a sub-set of the complete workflow, requires a chromosome, and QTL start and stop positions in base pairs. The genes in this QTL region are then returned from Ensembl via a BioMart plug-in. These genes are subsequently annotated with UniProt and Entrez identifiers, start and end positions, Ensembl Transcript ids and Affymetrix probeset identifiers for the chips Mouse430_2 and Mouse430a_2. The UniProt and Entrez ids are submitted to the KEGG gene database, retrieving a list of KEGG gene ids.
+###end p 34
+###begin p 35
+Annotation workflow to gather genes in a QTL region, and provide information on the pathways involved with a phenotype. This workflow, shown as a sub-set of the complete workflow, requires a chromosome, and QTL start and stop positions in base pairs. The genes in this QTL region are then returned from Ensembl via a BioMart plug-in. These genes are subsequently annotated with UniProt and Entrez identifiers, start and end positions, Ensembl Transcript ids and Affymetrix probeset identifiers for the chips Mouse430_2 and Mouse430a_2. The UniProt and Entrez ids are submitted to the KEGG gene database, retrieving a list of KEGG gene ids.
+###end p 35
+###begin p 36
+###xml 196 197 196 197 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</italic>
+###xml 210 211 210 211 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 233 234 233 234 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 1031 1038 1031 1038 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vivo</italic>
+###xml 1043 1051 1043 1051 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vitro</italic>
+###xml 62 66 <span type="species:ncbi:10090">mice</span>
+###xml 357 362 <span type="species:ncbi:10090">mouse</span>
+Analysis of microarray liver sample data from C57BL/6 and A/J mice at Days 3 and 7 post-infection, identified 981 and 1331 probesets that were differentially expressed on the basis of a corrected t-test with a p-value <0.01 and a log2 fold change >0.5. We chose to focus on the early time points of Days 3 and 7 for this investigation. This was because the mouse strains used in microarray study showed a strong gene expression response to infection at the early time points in the microarray data compared to that of the later time points. The later time points from the microarray study were found to be the result of secondary effects on infection. Permissive criteria were used at this stage of data analysis in order to reduce the incidence of false negative results (which could result in missing one of the true QTg). Any true negative results would later be discarded on correlation of the pathways with the observed phenotype. These correlations of pathways with the observed phenotype are carried out through traditional in vivo and in vitro analyses on the candidate QTg. Mining the literature for involvement of the pathways and candidate genes being involved in the expression of the phenotype are also required for hypothesis verification. As a result of permissive criteria being employed, 2312 probesets were chosen for further analysis and annotation with their biological pathways.
+###end p 36
+###begin p 37
+###xml 21 40 21 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Probeset_to_pathway</italic>
+The second workflow, Probeset_to_pathway, provided annotation of microarray probeset identifiers. Ensembl gene identifiers associated with Affymetrix probesets were obtained from Ensembl. These genes were entered into the same annotation workflow as that used for qtl_pathway. The Entrez and UniProt database identifiers were used to map the Affymetrix probeset identifiers to KEGG pathways.
+###end p 37
+###begin p 38
+###xml 264 266 264 266 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B27">27</xref>
+Significant problems were encountered when attempting to cross-reference between database identifiers. This has proven to be a considerable barrier in bioinformatics involving distributed resources, including the naming conventions assigned to biological objects (27). In an attempt to resolve this, we have provided a single and explicit methodology by which this cross-referencing was done. This methodology is captured within the workflows themselves.
+###end p 38
+###begin p 39
+###xml 136 151 136 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">common_pathways</italic>
+###xml 239 254 239 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">common_pathways</italic>
+To obtain the pathways which both intersect the QTL region and are present in the gene expression data, we used a third workflow, named common_pathways, to obtain a list of KEGG pathway descriptions. Each of the pathways returned from the common_pathways workflow were investigated in turn. Lists of intersecting QTL and microarray pathway outputs used in this study are available as Supplementary Data.
+###end p 39
+###begin p 40
+Details of gene sequencing methods, carried out for validating potential candidate QT genes, are also provided in the Supplementary Data (Supplementary Table 2 and sequencing_methods). Any additional information is available on request.
+###end p 40
+###begin p 41
+Microarray data used in this investigation is available in ArrayExpress (E-MEXP-1190).
+###end p 41
+###begin title 42
+RESULTS AND DISCUSSION
+###end title 42
+###begin title 43
+Candidate genes involved in trypanosomiasis resistance
+###end title 43
+###begin p 44
+The systematic application of the workflows to the lists of genes, from both the Tir1 QTL region and the microarray study, identified a total of 87 pathways from both Days 3 and 7 post-infection which contained genes in both the QTL and the set of differentially regulated genes (available in Supplementary Data named Tir1_DayX_intersecting_pathways.xls, where X represents the day post-infection). Of the 344 genes identified in the Tir1 QTL region, a total of 82 were subsequently mapped to their KEGG biological pathways.
+###end p 44
+###begin p 45
+###xml 0 7 0 7 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="T1">Table 1</xref>
+###xml 570 572 570 572 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B28">28</xref>
+###xml 799 807 799 807 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 1.</label>
+###xml 807 905 807 905 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="46">A subset of the KEGG pathways found to be differentially expressed at Day 7 in the microarray data</p>
+###xml 807 905 807 905 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="46">A subset of the KEGG pathways found to be differentially expressed at Day 7 in the microarray data</p></caption>
+###xml 905 921 905 921 <th xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">KEGG pathway Ids</th>
+###xml 921 941 921 941 <th xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Pathway descriptions</th>
+###xml 941 965 941 965 <th xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" colspan="4" rowspan="1">Genes in Tir1 QTL region</th>
+###xml 905 965 905 965 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><th rowspan="1" colspan="1">KEGG pathway Ids</th><th rowspan="1" colspan="1">Pathway descriptions</th><th colspan="4" rowspan="1">Genes in Tir1 QTL region</th></tr>
+###xml 905 965 905 965 <thead xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" align="left"><tr><th rowspan="1" colspan="1">KEGG pathway Ids</th><th rowspan="1" colspan="1">Pathway descriptions</th><th colspan="4" rowspan="1">Genes in Tir1 QTL region</th></tr></thead>
+###xml 965 978 965 978 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00240</td>
+###xml 978 1020 978 1020 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Pyrimidine metabolism&#8212;Mus musculus (mouse)</td>
+###xml 1020 1025 1020 1025 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Znrd1</td>
+###xml 1025 1025 1025 1025 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1025 1025 1025 1025 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1025 1025 1025 1025 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 965 1025 965 1025 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00240</td><td rowspan="1" colspan="1">Pyrimidine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Znrd1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1025 1038 1025 1038 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04610</td>
+###xml 1038 1094 1038 1094 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Complement and coagulation cascades&#8212;Mus musculus (mouse)</td>
+###xml 1094 1097 1094 1097 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">C4b</td>
+###xml 1097 1099 1097 1099 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">C2</td>
+###xml 1099 1102 1099 1102 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Cfb</td>
+###xml 1102 1102 1102 1102 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1025 1102 1025 1102 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04610</td><td rowspan="1" colspan="1">Complement and coagulation cascades&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">C4b</td><td rowspan="1" colspan="1">C2</td><td rowspan="1" colspan="1">Cfb</td><td rowspan="1" colspan="1"/></tr>
+###xml 1102 1115 1102 1115 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04320</td>
+###xml 1115 1164 1115 1164 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Dorso-ventral axis formation&#8212;Mus musculus (mouse)</td>
+###xml 1164 1170 1164 1170 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Notch3</td>
+###xml 1170 1176 1170 1176 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Notch4</td>
+###xml 1176 1176 1176 1176 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1176 1176 1176 1176 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1102 1176 1102 1176 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04320</td><td rowspan="1" colspan="1">Dorso-ventral axis formation&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Notch3</td><td rowspan="1" colspan="1">Notch4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1176 1189 1176 1189 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00620</td>
+###xml 1189 1229 1189 1229 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Pyruvate metabolism&#8212;Mus musculus (mouse)</td>
+###xml 1229 1233 1229 1233 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Glo1</td>
+###xml 1233 1233 1233 1233 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1233 1233 1233 1233 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1233 1233 1233 1233 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1176 1233 1176 1233 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00620</td><td rowspan="1" colspan="1">Pyruvate metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Glo1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1233 1246 1233 1246 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00600</td>
+###xml 1246 1290 1246 1290 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Sphingolipid metabolism&#8212;Mus musculus (mouse)</td>
+###xml 1290 1294 1290 1294 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Neu1</td>
+###xml 1294 1294 1294 1294 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1294 1294 1294 1294 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1294 1294 1294 1294 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1233 1294 1233 1294 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00600</td><td rowspan="1" colspan="1">Sphingolipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Neu1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1294 1307 1294 1307 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04370</td>
+###xml 1307 1351 1307 1351 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">VEGF signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 1351 1357 1351 1357 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk14</td>
+###xml 1357 1363 1357 1363 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk13</td>
+###xml 1363 1363 1363 1363 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1363 1363 1363 1363 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1294 1363 1294 1363 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04370</td><td rowspan="1" colspan="1">VEGF signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1363 1376 1363 1376 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04540</td>
+###xml 1376 1409 1376 1409 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Gap junction&#8212;Mus musculus (mouse)</td>
+###xml 1409 1414 1409 1414 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Tubb5</td>
+###xml 1414 1414 1414 1414 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1414 1414 1414 1414 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1414 1414 1414 1414 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1363 1414 1363 1414 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04540</td><td rowspan="1" colspan="1">Gap junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Tubb5</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1414 1427 1414 1427 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00565</td>
+###xml 1427 1470 1427 1470 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Ether lipid metabolism&#8212;Mus musculus (mouse)</td>
+###xml 1470 1476 1470 1476 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Agpat1</td>
+###xml 1476 1476 1476 1476 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1476 1476 1476 1476 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1476 1476 1476 1476 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1414 1476 1414 1476 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00565</td><td rowspan="1" colspan="1">Ether lipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1476 1489 1476 1489 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00564</td>
+###xml 1489 1540 1489 1540 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Glycerophospholipid metabolism&#8212;Mus musculus (mouse)</td>
+###xml 1540 1546 1540 1546 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Agpat1</td>
+###xml 1546 1546 1546 1546 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1546 1546 1546 1546 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1546 1546 1546 1546 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1476 1546 1476 1546 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00564</td><td rowspan="1" colspan="1">Glycerophospholipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1546 1559 1546 1559 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04310</td>
+###xml 1559 1602 1559 1602 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Wnt signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 1602 1608 1602 1608 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Csnk2b</td>
+###xml 1608 1608 1608 1608 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1608 1608 1608 1608 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1608 1608 1608 1608 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1546 1608 1546 1608 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04310</td><td rowspan="1" colspan="1">Wnt signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1608 1621 1608 1621 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00590</td>
+###xml 1621 1669 1621 1669 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Arachidonic acid metabolism&#8212;Mus musculus (mouse)</td>
+###xml 1669 1676 1669 1676 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Cyp4f14</td>
+###xml 1676 1683 1676 1683 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Cyp4f15</td>
+###xml 1683 1690 1683 1690 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Cyp4f13</td>
+###xml 1690 1697 1690 1697 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Cyp4f16</td>
+###xml 1608 1697 1608 1697 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00590</td><td rowspan="1" colspan="1">Arachidonic acid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cyp4f14</td><td rowspan="1" colspan="1">Cyp4f15</td><td rowspan="1" colspan="1">Cyp4f13</td><td rowspan="1" colspan="1">Cyp4f16</td></tr>
+###xml 1697 1710 1697 1710 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04620</td>
+###xml 1710 1768 1710 1768 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Toll-like receptor signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 1768 1774 1768 1774 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk14</td>
+###xml 1774 1777 1774 1777 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Tnf</td>
+###xml 1777 1783 1777 1783 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk13</td>
+###xml 1783 1783 1783 1783 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1697 1783 1697 1783 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04620</td><td rowspan="1" colspan="1">Toll-like receptor signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/></tr>
+###xml 1783 1796 1783 1796 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04912</td>
+###xml 1796 1840 1796 1840 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">GnRH signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 1840 1846 1840 1846 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk13</td>
+###xml 1846 1852 1846 1852 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk14</td>
+###xml 1852 1852 1852 1852 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1852 1852 1852 1852 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1783 1852 1783 1852 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04912</td><td rowspan="1" colspan="1">GnRH signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1852 1865 1852 1865 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04670</td>
+###xml 1865 1922 1865 1922 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Leukocyte transendothelial migration&#8212;Mus musculus (mouse)</td>
+###xml 1922 1928 1922 1928 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk13</td>
+###xml 1928 1934 1928 1934 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk14</td>
+###xml 1934 1934 1934 1934 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1934 1934 1934 1934 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1852 1934 1852 1934 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04670</td><td rowspan="1" colspan="1">Leukocyte transendothelial migration&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 1934 1947 1934 1947 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04330</td>
+###xml 1947 1992 1947 1992 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Notch signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 1992 1998 1992 1998 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Notch3</td>
+###xml 1998 2004 1998 2004 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Notch4</td>
+###xml 2004 2004 2004 2004 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2004 2004 2004 2004 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 1934 2004 1934 2004 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04330</td><td rowspan="1" colspan="1">Notch signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Notch3</td><td rowspan="1" colspan="1">Notch4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2004 2017 2004 2017 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04110</td>
+###xml 2017 2048 2017 2048 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Cell cycle&#8212;Mus musculus (mouse)</td>
+###xml 2048 2054 2048 2054 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Cdkn1a</td>
+###xml 2054 2054 2054 2054 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2054 2054 2054 2054 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2054 2054 2054 2054 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2004 2054 2004 2054 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04110</td><td rowspan="1" colspan="1">Cell cycle&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cdkn1a</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2054 2067 2054 2067 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00561</td>
+###xml 2067 2111 2067 2111 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Glycerolipid metabolism&#8212;Mus musculus (mouse)</td>
+###xml 2111 2117 2111 2117 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Agpat1</td>
+###xml 2117 2117 2117 2117 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2117 2117 2117 2117 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2117 2117 2117 2117 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2054 2117 2054 2117 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00561</td><td rowspan="1" colspan="1">Glycerolipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2117 2130 2117 2130 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04530</td>
+###xml 2130 2165 2130 2165 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Tight junction&#8212;Mus musculus (mouse)</td>
+###xml 2165 2171 2165 2171 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Csnk2b</td>
+###xml 2171 2171 2171 2171 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2171 2171 2171 2171 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2171 2171 2171 2171 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2117 2171 2117 2171 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04530</td><td rowspan="1" colspan="1">Tight junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2171 2184 2171 2184 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04510</td>
+###xml 2184 2219 2184 2219 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Focal adhesion&#8212;Mus musculus (mouse)</td>
+###xml 2219 2226 2219 2226 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Col11a2</td>
+###xml 2226 2230 2226 2230 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Tnxb</td>
+###xml 2230 2230 2230 2230 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2230 2230 2230 2230 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2171 2230 2171 2230 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04510</td><td rowspan="1" colspan="1">Focal adhesion&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Col11a2</td><td rowspan="1" colspan="1">Tnxb</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2230 2243 2230 2243 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04010</td>
+###xml 2243 2287 2243 2287 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">MAPK signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 2287 2293 2287 2293 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk14</td>
+###xml 2293 2296 2293 2296 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Tnf</td>
+###xml 2296 2300 2296 2300 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Daxx</td>
+###xml 2300 2306 2300 2306 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk13</td>
+###xml 2230 2306 2230 2306 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04010</td><td rowspan="1" colspan="1">MAPK signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Daxx</td><td rowspan="1" colspan="1">Mapk13</td></tr>
+###xml 2306 2319 2306 2319 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00062</td>
+###xml 2319 2377 2319 2377 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Fatty acid elongation in mitochondria&#8212;Mus musculus (mouse)</td>
+###xml 2377 2381 2377 2381 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Ppt2</td>
+###xml 2381 2381 2381 2381 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2381 2381 2381 2381 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2381 2381 2381 2381 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2306 2381 2306 2381 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00062</td><td rowspan="1" colspan="1">Fatty acid elongation in mitochondria&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Ppt2</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2381 2394 2381 2394 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04664</td>
+###xml 2394 2447 2394 2447 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Fc epsilon RI signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 2447 2453 2447 2453 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk14</td>
+###xml 2453 2456 2453 2456 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Tnf</td>
+###xml 2456 2462 2456 2462 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Mapk13</td>
+###xml 2462 2462 2462 2462 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2381 2462 2381 2462 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04664</td><td rowspan="1" colspan="1">Fc epsilon RI signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/></tr>
+###xml 2462 2475 2462 2475 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00310</td>
+###xml 2475 2514 2475 2514 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Lysine degradation&#8212;Mus musculus (mouse)</td>
+###xml 2514 2519 2514 2519 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Ehmt2</td>
+###xml 2519 2519 2519 2519 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2519 2519 2519 2519 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2519 2519 2519 2519 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2462 2519 2462 2519 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00310</td><td rowspan="1" colspan="1">Lysine degradation&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Ehmt2</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2519 2532 2519 2532 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04630</td>
+###xml 2532 2580 2532 2580 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Jak-STAT signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 2580 2584 2580 2584 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Pim1</td>
+###xml 2584 2584 2584 2584 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2584 2584 2584 2584 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2584 2584 2584 2584 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2519 2584 2519 2584 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04630</td><td rowspan="1" colspan="1">Jak-STAT signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Pim1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2584 2597 2584 2597 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00230</td>
+###xml 2597 2635 2597 2635 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Purine metabolism&#8212;Mus musculus (mouse)</td>
+###xml 2635 2640 2635 2640 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Pde9a</td>
+###xml 2640 2645 2640 2645 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Znrd1</td>
+###xml 2645 2645 2645 2645 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2645 2645 2645 2645 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2584 2645 2584 2645 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00230</td><td rowspan="1" colspan="1">Purine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Pde9a</td><td rowspan="1" colspan="1">Znrd1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2645 2658 2645 2658 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04910</td>
+###xml 2658 2705 2658 2705 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Insulin signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 2705 2710 2705 2710 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Flot1</td>
+###xml 2710 2710 2710 2710 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2710 2710 2710 2710 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2710 2710 2710 2710 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2645 2710 2645 2710 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04910</td><td rowspan="1" colspan="1">Insulin signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Flot1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2710 2723 2710 2723 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu03320</td>
+###xml 2723 2767 2723 2767 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">PPAR signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 2767 2771 2767 2771 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Rxrb</td>
+###xml 2771 2778 2771 2778 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Angptl4</td>
+###xml 2778 2778 2778 2778 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2778 2778 2778 2778 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2710 2778 2710 2778 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu03320</td><td rowspan="1" colspan="1">PPAR signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Rxrb</td><td rowspan="1" colspan="1">Angptl4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2778 2791 2778 2791 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00260</td>
+###xml 2791 2852 2791 2852 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Glycine, serine and threonine metabolism&#8212;Mus musculus (mouse)</td>
+###xml 2852 2855 2852 2855 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Cbs</td>
+###xml 2855 2855 2855 2855 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2855 2855 2855 2855 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2855 2855 2855 2855 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2778 2855 2778 2855 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00260</td><td rowspan="1" colspan="1">Glycine, serine and threonine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cbs</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2855 2868 2855 2868 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu00604</td>
+###xml 2868 2935 2868 2935 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Glycosphingolipid biosynthesis - ganglioseries&#8212;Mus musculus (mouse)</td>
+###xml 2935 2942 2935 2942 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">B3galt4</td>
+###xml 2942 2942 2942 2942 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2942 2942 2942 2942 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2942 2942 2942 2942 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2855 2942 2855 2942 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu00604</td><td rowspan="1" colspan="1">Glycosphingolipid biosynthesis - ganglioseries&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">B3galt4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2942 2955 2942 2955 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04520</td>
+###xml 2955 2993 2955 2993 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Adherens junction&#8212;Mus musculus (mouse)</td>
+###xml 2993 2999 2993 2999 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Csnk2b</td>
+###xml 2999 2999 2999 2999 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2999 2999 2999 2999 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2999 2999 2999 2999 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2942 2999 2942 2999 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04520</td><td rowspan="1" colspan="1">Adherens junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 2999 3012 2999 3012 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">path:mmu04920</td>
+###xml 3012 3065 3012 3065 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Adipocytokine signalling pathway&#8212;Mus musculus (mouse)</td>
+###xml 3065 3069 3065 3069 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Rxrb</td>
+###xml 3069 3072 3069 3072 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1">Tnf</td>
+###xml 3072 3072 3072 3072 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 3072 3072 3072 3072 <td xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" rowspan="1" colspan="1"/>
+###xml 2999 3072 2999 3072 <tr xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><td rowspan="1" colspan="1">path:mmu04920</td><td rowspan="1" colspan="1">Adipocytokine signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Rxrb</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr>
+###xml 965 3072 965 3072 <tbody xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" align="left"><tr><td rowspan="1" colspan="1">path:mmu00240</td><td rowspan="1" colspan="1">Pyrimidine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Znrd1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04610</td><td rowspan="1" colspan="1">Complement and coagulation cascades&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">C4b</td><td rowspan="1" colspan="1">C2</td><td rowspan="1" colspan="1">Cfb</td><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04320</td><td rowspan="1" colspan="1">Dorso-ventral axis formation&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Notch3</td><td rowspan="1" colspan="1">Notch4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00620</td><td rowspan="1" colspan="1">Pyruvate metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Glo1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00600</td><td rowspan="1" colspan="1">Sphingolipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Neu1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04370</td><td rowspan="1" colspan="1">VEGF signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04540</td><td rowspan="1" colspan="1">Gap junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Tubb5</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00565</td><td rowspan="1" colspan="1">Ether lipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00564</td><td rowspan="1" colspan="1">Glycerophospholipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04310</td><td rowspan="1" colspan="1">Wnt signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00590</td><td rowspan="1" colspan="1">Arachidonic acid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cyp4f14</td><td rowspan="1" colspan="1">Cyp4f15</td><td rowspan="1" colspan="1">Cyp4f13</td><td rowspan="1" colspan="1">Cyp4f16</td></tr><tr><td rowspan="1" colspan="1">path:mmu04620</td><td rowspan="1" colspan="1">Toll-like receptor signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04912</td><td rowspan="1" colspan="1">GnRH signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04670</td><td rowspan="1" colspan="1">Leukocyte transendothelial migration&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04330</td><td rowspan="1" colspan="1">Notch signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Notch3</td><td rowspan="1" colspan="1">Notch4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04110</td><td rowspan="1" colspan="1">Cell cycle&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cdkn1a</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00561</td><td rowspan="1" colspan="1">Glycerolipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04530</td><td rowspan="1" colspan="1">Tight junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04510</td><td rowspan="1" colspan="1">Focal adhesion&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Col11a2</td><td rowspan="1" colspan="1">Tnxb</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04010</td><td rowspan="1" colspan="1">MAPK signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Daxx</td><td rowspan="1" colspan="1">Mapk13</td></tr><tr><td rowspan="1" colspan="1">path:mmu00062</td><td rowspan="1" colspan="1">Fatty acid elongation in mitochondria&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Ppt2</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04664</td><td rowspan="1" colspan="1">Fc epsilon RI signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00310</td><td rowspan="1" colspan="1">Lysine degradation&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Ehmt2</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04630</td><td rowspan="1" colspan="1">Jak-STAT signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Pim1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00230</td><td rowspan="1" colspan="1">Purine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Pde9a</td><td rowspan="1" colspan="1">Znrd1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04910</td><td rowspan="1" colspan="1">Insulin signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Flot1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu03320</td><td rowspan="1" colspan="1">PPAR signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Rxrb</td><td rowspan="1" colspan="1">Angptl4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00260</td><td rowspan="1" colspan="1">Glycine, serine and threonine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cbs</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00604</td><td rowspan="1" colspan="1">Glycosphingolipid biosynthesis - ganglioseries&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">B3galt4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04520</td><td rowspan="1" colspan="1">Adherens junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04920</td><td rowspan="1" colspan="1">Adipocytokine signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Rxrb</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr></tbody>
+###xml 905 3072 905 3072 <table xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" frame="hsides" rules="groups"><thead align="left"><tr><th rowspan="1" colspan="1">KEGG pathway Ids</th><th rowspan="1" colspan="1">Pathway descriptions</th><th colspan="4" rowspan="1">Genes in Tir1 QTL region</th></tr></thead><tbody align="left"><tr><td rowspan="1" colspan="1">path:mmu00240</td><td rowspan="1" colspan="1">Pyrimidine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Znrd1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04610</td><td rowspan="1" colspan="1">Complement and coagulation cascades&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">C4b</td><td rowspan="1" colspan="1">C2</td><td rowspan="1" colspan="1">Cfb</td><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04320</td><td rowspan="1" colspan="1">Dorso-ventral axis formation&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Notch3</td><td rowspan="1" colspan="1">Notch4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00620</td><td rowspan="1" colspan="1">Pyruvate metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Glo1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00600</td><td rowspan="1" colspan="1">Sphingolipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Neu1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04370</td><td rowspan="1" colspan="1">VEGF signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04540</td><td rowspan="1" colspan="1">Gap junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Tubb5</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00565</td><td rowspan="1" colspan="1">Ether lipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00564</td><td rowspan="1" colspan="1">Glycerophospholipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04310</td><td rowspan="1" colspan="1">Wnt signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00590</td><td rowspan="1" colspan="1">Arachidonic acid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cyp4f14</td><td rowspan="1" colspan="1">Cyp4f15</td><td rowspan="1" colspan="1">Cyp4f13</td><td rowspan="1" colspan="1">Cyp4f16</td></tr><tr><td rowspan="1" colspan="1">path:mmu04620</td><td rowspan="1" colspan="1">Toll-like receptor signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04912</td><td rowspan="1" colspan="1">GnRH signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04670</td><td rowspan="1" colspan="1">Leukocyte transendothelial migration&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04330</td><td rowspan="1" colspan="1">Notch signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Notch3</td><td rowspan="1" colspan="1">Notch4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04110</td><td rowspan="1" colspan="1">Cell cycle&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cdkn1a</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00561</td><td rowspan="1" colspan="1">Glycerolipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04530</td><td rowspan="1" colspan="1">Tight junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04510</td><td rowspan="1" colspan="1">Focal adhesion&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Col11a2</td><td rowspan="1" colspan="1">Tnxb</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04010</td><td rowspan="1" colspan="1">MAPK signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Daxx</td><td rowspan="1" colspan="1">Mapk13</td></tr><tr><td rowspan="1" colspan="1">path:mmu00062</td><td rowspan="1" colspan="1">Fatty acid elongation in mitochondria&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Ppt2</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04664</td><td rowspan="1" colspan="1">Fc epsilon RI signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00310</td><td rowspan="1" colspan="1">Lysine degradation&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Ehmt2</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04630</td><td rowspan="1" colspan="1">Jak-STAT signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Pim1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00230</td><td rowspan="1" colspan="1">Purine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Pde9a</td><td rowspan="1" colspan="1">Znrd1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04910</td><td rowspan="1" colspan="1">Insulin signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Flot1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu03320</td><td rowspan="1" colspan="1">PPAR signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Rxrb</td><td rowspan="1" colspan="1">Angptl4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00260</td><td rowspan="1" colspan="1">Glycine, serine and threonine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cbs</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00604</td><td rowspan="1" colspan="1">Glycosphingolipid biosynthesis - ganglioseries&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">B3galt4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04520</td><td rowspan="1" colspan="1">Adherens junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04920</td><td rowspan="1" colspan="1">Adipocytokine signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Rxrb</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr></tbody></table>
+###xml 3072 3553 3072 3553 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="47">The genes listed above that appear in the differentially expressed pathways are also located within the Tir1 QTL region. We have chosen to ignore the pathways containing the H2 complex genes due to the highly polymorphic nature of these genes. Pathways that do not represent metabolic processes have also been removed from this table. A complete list of the genes and pathways common to the Tir1 QTL region and Day 7 gene expression data can be found within the Supplementary Data.</p>
+###xml 3072 3553 3072 3553 <fn xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="47">The genes listed above that appear in the differentially expressed pathways are also located within the Tir1 QTL region. We have chosen to ignore the pathways containing the H2 complex genes due to the highly polymorphic nature of these genes. Pathways that do not represent metabolic processes have also been removed from this table. A complete list of the genes and pathways common to the Tir1 QTL region and Day 7 gene expression data can be found within the Supplementary Data.</p></fn>
+###xml 3072 3553 3072 3553 <table-wrap-foot xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><fn><p textid="47">The genes listed above that appear in the differentially expressed pathways are also located within the Tir1 QTL region. We have chosen to ignore the pathways containing the H2 complex genes due to the highly polymorphic nature of these genes. Pathways that do not represent metabolic processes have also been removed from this table. A complete list of the genes and pathways common to the Tir1 QTL region and Day 7 gene expression data can be found within the Supplementary Data.</p></fn></table-wrap-foot>
+###xml 799 3553 799 3553 <table-wrap xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="T1" position="float"><label>Table 1.</label><caption><p textid="46">A subset of the KEGG pathways found to be differentially expressed at Day 7 in the microarray data</p></caption><table frame="hsides" rules="groups"><thead align="left"><tr><th rowspan="1" colspan="1">KEGG pathway Ids</th><th rowspan="1" colspan="1">Pathway descriptions</th><th colspan="4" rowspan="1">Genes in Tir1 QTL region</th></tr></thead><tbody align="left"><tr><td rowspan="1" colspan="1">path:mmu00240</td><td rowspan="1" colspan="1">Pyrimidine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Znrd1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04610</td><td rowspan="1" colspan="1">Complement and coagulation cascades&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">C4b</td><td rowspan="1" colspan="1">C2</td><td rowspan="1" colspan="1">Cfb</td><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04320</td><td rowspan="1" colspan="1">Dorso-ventral axis formation&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Notch3</td><td rowspan="1" colspan="1">Notch4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00620</td><td rowspan="1" colspan="1">Pyruvate metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Glo1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00600</td><td rowspan="1" colspan="1">Sphingolipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Neu1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04370</td><td rowspan="1" colspan="1">VEGF signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04540</td><td rowspan="1" colspan="1">Gap junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Tubb5</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00565</td><td rowspan="1" colspan="1">Ether lipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00564</td><td rowspan="1" colspan="1">Glycerophospholipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04310</td><td rowspan="1" colspan="1">Wnt signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00590</td><td rowspan="1" colspan="1">Arachidonic acid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cyp4f14</td><td rowspan="1" colspan="1">Cyp4f15</td><td rowspan="1" colspan="1">Cyp4f13</td><td rowspan="1" colspan="1">Cyp4f16</td></tr><tr><td rowspan="1" colspan="1">path:mmu04620</td><td rowspan="1" colspan="1">Toll-like receptor signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04912</td><td rowspan="1" colspan="1">GnRH signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04670</td><td rowspan="1" colspan="1">Leukocyte transendothelial migration&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04330</td><td rowspan="1" colspan="1">Notch signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Notch3</td><td rowspan="1" colspan="1">Notch4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04110</td><td rowspan="1" colspan="1">Cell cycle&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cdkn1a</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00561</td><td rowspan="1" colspan="1">Glycerolipid metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Agpat1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04530</td><td rowspan="1" colspan="1">Tight junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04510</td><td rowspan="1" colspan="1">Focal adhesion&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Col11a2</td><td rowspan="1" colspan="1">Tnxb</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04010</td><td rowspan="1" colspan="1">MAPK signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Daxx</td><td rowspan="1" colspan="1">Mapk13</td></tr><tr><td rowspan="1" colspan="1">path:mmu00062</td><td rowspan="1" colspan="1">Fatty acid elongation in mitochondria&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Ppt2</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04664</td><td rowspan="1" colspan="1">Fc epsilon RI signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Mapk14</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1">Mapk13</td><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00310</td><td rowspan="1" colspan="1">Lysine degradation&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Ehmt2</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04630</td><td rowspan="1" colspan="1">Jak-STAT signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Pim1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00230</td><td rowspan="1" colspan="1">Purine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Pde9a</td><td rowspan="1" colspan="1">Znrd1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04910</td><td rowspan="1" colspan="1">Insulin signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Flot1</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu03320</td><td rowspan="1" colspan="1">PPAR signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Rxrb</td><td rowspan="1" colspan="1">Angptl4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00260</td><td rowspan="1" colspan="1">Glycine, serine and threonine metabolism&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Cbs</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu00604</td><td rowspan="1" colspan="1">Glycosphingolipid biosynthesis - ganglioseries&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">B3galt4</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04520</td><td rowspan="1" colspan="1">Adherens junction&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Csnk2b</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr><tr><td rowspan="1" colspan="1">path:mmu04920</td><td rowspan="1" colspan="1">Adipocytokine signalling pathway&#8212;Mus musculus (mouse)</td><td rowspan="1" colspan="1">Rxrb</td><td rowspan="1" colspan="1">Tnf</td><td rowspan="1" colspan="1"/><td rowspan="1" colspan="1"/></tr></tbody></table><table-wrap-foot><fn><p textid="47">The genes listed above that appear in the differentially expressed pathways are also located within the Tir1 QTL region. We have chosen to ignore the pathways containing the H2 complex genes due to the highly polymorphic nature of these genes. Pathways that do not represent metabolic processes have also been removed from this table. A complete list of the genes and pathways common to the Tir1 QTL region and Day 7 gene expression data can be found within the Supplementary Data.</p></fn></table-wrap-foot></table-wrap>
+###xml 1000 1012 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1014 1019 <span type="species:ncbi:10090">mouse</span>
+###xml 1074 1086 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1088 1093 <span type="species:ncbi:10090">mouse</span>
+###xml 1144 1156 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1158 1163 <span type="species:ncbi:10090">mouse</span>
+###xml 1209 1221 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1223 1228 <span type="species:ncbi:10090">mouse</span>
+###xml 1270 1282 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1284 1289 <span type="species:ncbi:10090">mouse</span>
+###xml 1331 1343 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1345 1350 <span type="species:ncbi:10090">mouse</span>
+###xml 1389 1401 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1403 1408 <span type="species:ncbi:10090">mouse</span>
+###xml 1450 1462 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1464 1469 <span type="species:ncbi:10090">mouse</span>
+###xml 1520 1532 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1534 1539 <span type="species:ncbi:10090">mouse</span>
+###xml 1582 1594 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1596 1601 <span type="species:ncbi:10090">mouse</span>
+###xml 1649 1661 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1663 1668 <span type="species:ncbi:10090">mouse</span>
+###xml 1748 1760 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1762 1767 <span type="species:ncbi:10090">mouse</span>
+###xml 1820 1832 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1834 1839 <span type="species:ncbi:10090">mouse</span>
+###xml 1902 1914 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1916 1921 <span type="species:ncbi:10090">mouse</span>
+###xml 1972 1984 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 1986 1991 <span type="species:ncbi:10090">mouse</span>
+###xml 2028 2040 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2042 2047 <span type="species:ncbi:10090">mouse</span>
+###xml 2091 2103 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2105 2110 <span type="species:ncbi:10090">mouse</span>
+###xml 2145 2157 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2159 2164 <span type="species:ncbi:10090">mouse</span>
+###xml 2199 2211 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2213 2218 <span type="species:ncbi:10090">mouse</span>
+###xml 2267 2279 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2281 2286 <span type="species:ncbi:10090">mouse</span>
+###xml 2357 2369 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2371 2376 <span type="species:ncbi:10090">mouse</span>
+###xml 2427 2439 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2441 2446 <span type="species:ncbi:10090">mouse</span>
+###xml 2494 2506 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2508 2513 <span type="species:ncbi:10090">mouse</span>
+###xml 2560 2572 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2574 2579 <span type="species:ncbi:10090">mouse</span>
+###xml 2615 2627 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2629 2634 <span type="species:ncbi:10090">mouse</span>
+###xml 2685 2697 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2699 2704 <span type="species:ncbi:10090">mouse</span>
+###xml 2747 2759 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2761 2766 <span type="species:ncbi:10090">mouse</span>
+###xml 2832 2844 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2846 2851 <span type="species:ncbi:10090">mouse</span>
+###xml 2915 2927 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2929 2934 <span type="species:ncbi:10090">mouse</span>
+###xml 2973 2985 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 2987 2992 <span type="species:ncbi:10090">mouse</span>
+###xml 3045 3057 <span type="species:ncbi:10090">Mus musculus</span>
+###xml 3059 3064 <span type="species:ncbi:10090">mouse</span>
+Table 1 shows the set of candidate pathways and QT genes that may be involved in the trypanosomiasis resistance phenotype. From this list it is clear that the complete list of 344 genes, initially identified in the Tir1 QTL region, has been narrowed down significantly to just 32 candidate QT genes. A number of genes identified from these results, are present in multiple pathways from the 87 pathways identified in total. In order to determine the role of each QTg, each of the pathways was associated with the gene expression data using the GenMapp software package (28). Those pathways in which a high proportion of component genes showed differential expression following trypanosome challenge were prioritized for further analysis. One such pathway identified was the MapK signalling pathway. Table 1.A subset of the KEGG pathways found to be differentially expressed at Day 7 in the microarray dataKEGG pathway IdsPathway descriptionsGenes in Tir1 QTL regionpath:mmu00240Pyrimidine metabolism-Mus musculus (mouse)Znrd1path:mmu04610Complement and coagulation cascades-Mus musculus (mouse)C4bC2Cfbpath:mmu04320Dorso-ventral axis formation-Mus musculus (mouse)Notch3Notch4path:mmu00620Pyruvate metabolism-Mus musculus (mouse)Glo1path:mmu00600Sphingolipid metabolism-Mus musculus (mouse)Neu1path:mmu04370VEGF signalling pathway-Mus musculus (mouse)Mapk14Mapk13path:mmu04540Gap junction-Mus musculus (mouse)Tubb5path:mmu00565Ether lipid metabolism-Mus musculus (mouse)Agpat1path:mmu00564Glycerophospholipid metabolism-Mus musculus (mouse)Agpat1path:mmu04310Wnt signalling pathway-Mus musculus (mouse)Csnk2bpath:mmu00590Arachidonic acid metabolism-Mus musculus (mouse)Cyp4f14Cyp4f15Cyp4f13Cyp4f16path:mmu04620Toll-like receptor signalling pathway-Mus musculus (mouse)Mapk14TnfMapk13path:mmu04912GnRH signalling pathway-Mus musculus (mouse)Mapk13Mapk14path:mmu04670Leukocyte transendothelial migration-Mus musculus (mouse)Mapk13Mapk14path:mmu04330Notch signalling pathway-Mus musculus (mouse)Notch3Notch4path:mmu04110Cell cycle-Mus musculus (mouse)Cdkn1apath:mmu00561Glycerolipid metabolism-Mus musculus (mouse)Agpat1path:mmu04530Tight junction-Mus musculus (mouse)Csnk2bpath:mmu04510Focal adhesion-Mus musculus (mouse)Col11a2Tnxbpath:mmu04010MAPK signalling pathway-Mus musculus (mouse)Mapk14TnfDaxxMapk13path:mmu00062Fatty acid elongation in mitochondria-Mus musculus (mouse)Ppt2path:mmu04664Fc epsilon RI signalling pathway-Mus musculus (mouse)Mapk14TnfMapk13path:mmu00310Lysine degradation-Mus musculus (mouse)Ehmt2path:mmu04630Jak-STAT signalling pathway-Mus musculus (mouse)Pim1path:mmu00230Purine metabolism-Mus musculus (mouse)Pde9aZnrd1path:mmu04910Insulin signalling pathway-Mus musculus (mouse)Flot1path:mmu03320PPAR signalling pathway-Mus musculus (mouse)RxrbAngptl4path:mmu00260Glycine, serine and threonine metabolism-Mus musculus (mouse)Cbspath:mmu00604Glycosphingolipid biosynthesis - ganglioseries-Mus musculus (mouse)B3galt4path:mmu04520Adherens junction-Mus musculus (mouse)Csnk2bpath:mmu04920Adipocytokine signalling pathway-Mus musculus (mouse)RxrbTnfThe genes listed above that appear in the differentially expressed pathways are also located within the Tir1 QTL region. We have chosen to ignore the pathways containing the H2 complex genes due to the highly polymorphic nature of these genes. Pathways that do not represent metabolic processes have also been removed from this table. A complete list of the genes and pathways common to the Tir1 QTL region and Day 7 gene expression data can be found within the Supplementary Data.
+###end p 45
+###begin p 46
+A subset of the KEGG pathways found to be differentially expressed at Day 7 in the microarray data
+###end p 46
+###begin p 47
+The genes listed above that appear in the differentially expressed pathways are also located within the Tir1 QTL region. We have chosen to ignore the pathways containing the H2 complex genes due to the highly polymorphic nature of these genes. Pathways that do not represent metabolic processes have also been removed from this table. A complete list of the genes and pathways common to the Tir1 QTL region and Day 7 gene expression data can be found within the Supplementary Data.
+###end p 47
+###begin p 48
+###xml 277 279 277 279 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B29">29</xref>
+There are four genes from the MapK pathway within the Tir1 QTL: Daxx, TNF, Mapk13 and Map14. Of these, Daxx showed the strongest signal of differential expression at early time points. (Figure 4 in Supplementary Data) and TNF has already been shown to be a poor candidate QTg (29). Daxx was therefore chosen as the primary candidate QTg, from this pathway, to investigate further.
+###end p 48
+###begin p 49
+###xml 57 59 57 59 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B30">30</xref>
+###xml 60 62 60 62 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B31">31</xref>
+###xml 168 170 168 170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B32">32</xref>
+###xml 334 336 334 336 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B33">33</xref>
+###xml 405 413 405 413 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F1">Figure 1</xref>
+###xml 102 106 <span type="species:ncbi:10090">mice</span>
+Daxx is widely reported to be an enhancer for apoptosis (30,31). It is also reported that susceptible mice infected with trypanosomiasis show an increase in apoptosis (32). During the acute stage of trypanosome infection, a large number of leucocytes undergo apoptosis, as the immune response is re-modelled to control the infection (33). This pathway is therefore an example of the pathway labelled A in Figure 1a, with the candidate gene being directly related to the QTL region and known, through literature, to be involved in the phenotype.
+###end p 49
+###begin p 50
+###xml 574 576 574 576 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B34">34</xref>
+###xml 750 758 750 758 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="F3">Figure 3</xref>
+###xml 849 851 849 851 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B35">35</xref>
+###xml 872 878 872 878 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al.</italic>
+###xml 880 882 880 882 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B35">35</xref>
+###xml 1026 1028 1026 1028 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B35">35</xref>
+###xml 1029 1031 1029 1031 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B36">36</xref>
+###xml 1283 1291 1283 1291 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vitro</italic>
+###xml 1296 1303 1296 1303 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vivo</italic>
+###xml 1469 1478 1469 1478 <label xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 3.</label>
+###xml 1478 1645 1478 1645 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="51">Alignment of part of the acidic region of the Daxx gene in which an aspartate was deleted. 35/41 amino acids in this region are aspartic acid (D) or glutamic acid (E).</p>
+###xml 1478 1645 1478 1645 <caption xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="51">Alignment of part of the acidic region of the Daxx gene in which an aspartate was deleted. 35/41 amino acids in this region are aspartic acid (D) or glutamic acid (E).</p></caption>
+###xml 1645 1645 1645 1645 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xlink:href="gkm623f3"/>
+###xml 1469 1645 1469 1645 <fig xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" id="F3" position="float"><label>Figure 3.</label><caption><p textid="51">Alignment of part of the acidic region of the Daxx gene in which an aspartate was deleted. 35/41 amino acids in this region are aspartic acid (D) or glutamic acid (E).</p></caption><graphic xlink:href="gkm623f3"/></fig>
+###xml 1218 1223 <span type="species:ncbi:10090">mouse</span>
+###xml 1417 1423 <span type="species:ncbi:9913">bovine</span>
+The identification of Daxx as a candidate for the Tir1 QTL gene prompted the re-sequencing of this gene in order to identify polymorphisms that might correlate with the phenotype. Out of the 17 polymorphisms identified, 3 were found to have allele distributions that show a relationship with the phenotype. Two of these three were located in the intronic or 5' upstream region suggesting a possible affect on splicing or expression. The third mutation to associate with survival time was a three base deletion in exon 5, coding for an aspartic acid [in submission to dbSNP (34)]. This deletion of one aspartic acid residue (D) in a poly-aspartic acid tract was identified in BALB/c and A/J whereas no deletion was found the tolerant strain C57BL/6J (Figure 3). It has been previously noted that Daxx binds to the p53 protein via this acidic region (35). The study by Zhao et al. (35) showed that the deletion of this acidic region abolished the Daxx-p53 interaction. The protein p53 is reported to control cellular apoptosis (35,36). We therefore hypothesize that a mutation within this acidic region may alter the binding between Daxx and p53 in such a way as to result in a differing apoptosis phenotype between the mouse strains. In order to confirm this effect, however, further in vitro and in vivo studies are required. Further investigation is also required to confirm the presence of the Daxx gene within the bovine QTL region, and its role as a potential QTg. Figure 3.Alignment of part of the acidic region of the Daxx gene in which an aspartate was deleted. 35/41 amino acids in this region are aspartic acid (D) or glutamic acid (E).
+###end p 50
+###begin p 51
+Alignment of part of the acidic region of the Daxx gene in which an aspartate was deleted. 35/41 amino acids in this region are aspartic acid (D) or glutamic acid (E).
+###end p 51
+###begin p 52
+The remaining candidate genes identified from these workflows are currently undergoing further investigation to establish their precise role in the trypanosomiasis phenotype.
+###end p 52
+###begin title 53
+Workflows and the systematic approach
+###end title 53
+###begin p 54
+###xml 341 346 <span type="species:ncbi:9606">human</span>
+###xml 704 709 <span type="species:ncbi:10090">mouse</span>
+###xml 710 713 <span type="species:ncbi:9913">cow</span>
+###xml 864 869 <span type="species:ncbi:10090">mouse</span>
+Since we have chosen to automatically pass data from one service into the next using workflows, we are now able to process a far greater volume of information than can be achieved using manual analysis. This in turn provides the opportunity to systematically analyse any results we obtain without the need to prematurely filter the data for human convenience. An example of this triaging process was found, where studies carried out by researchers on the Wellcome Trust Pathogen-Host Project (see Acknowledgements section) had failed to identify Daxx as a candidate gene for trypanosomiasis resistance. This occurred when manually analysing the microarray and QTL data; researchers hypothesized that the mouse-cow syntenous QTL region may contain the same QT genes. It was later found through a systematic analysis that Daxx lay outside of this region, and so the mouse QTL data was prematurely filtered based on researcher bias (although this does not preclude the discovery of other QT genes within this syntenous region).
+###end p 54
+###begin p 55
+###xml 1153 1158 <span type="species:ncbi:10090">mouse</span>
+A note should be made in relation to the SNP density of this QTL region, and the possibility of further QTg within this region. Of the 344 genes identified within the QTL region, 194 were found to contain SNPs, of which 144 exhibit expression differences that correlate with phenotype. These 144 genes could therefore be candidate QT genes. Polymorphisms in individual genes in the QTL are insufficiently informative to reduce the list of candidate genes to a manageable number. The use of a workflow-based approach, however, makes it possible to prioritize those genes that have a functional association with pathways, and have been shown to respond to infection out of the initial list of candidate genes. It should be emphasized that whilst we have identified a correlation between a new polymorphism in Daxx and a pathway that responds to infection, we cannot yet conclude that this is the QTg. The Tir1 QTL is linked to survival after infection, whilst the correlation we propose is between a DNA polymorphism and gene expression. The polymorphism identified may result in changes of the gene expression, but not the differences in survival of the mouse strains used. Detailed functional studies of the Daxx-p53 interaction will be required to determine the effect, if any, the aspartate deletion plays in relation to the observed phenotype.
+###end p 55
+###begin p 56
+###xml 335 336 335 336 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B8">8</xref>
+The use of a hypothesis-driven approach is essential for the construction of a scientifically sound investigation, however, the use of a data-driven approach should also be considered. This would allow the experimental data to evolve in parallel to a given hypothesis to form its own hypotheses regardless of any previous assumptions (8), as shown by this case. This method can be used to either confirm or disprove any given hypotheses, compiled by a traditional hypothesis-driven analysis of the data. As such, we propose the use of a combined data and hypothesis-driven analyses of the experimental data.
+###end p 56
+###begin p 57
+Worthy of note is that the expression of genes and their subsequent pathways can be investigated with little to no prior knowledge, other than that of the selection of all candidate genes from the entire QTL region. This reduces the bias which may be encountered from traditional hypothesis/expert-driven approaches. By implementing the manually conducted experiments in the form of workflows, we have shown that an automated systematic approach reduces, if not eliminates, these biases whilst providing an explicit methodology for recording the processes involved. These explicit analysis pipelines increases the reproducibility of our methods and also provides a framework for which future experiments can adapt or update the underlying methods.
+###end p 57
+###begin p 58
+###xml 248 250 248 250 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B12">12</xref>
+In using the Taverna workflow workbench, we are able to state the services used and the parameters chosen at execution time. Specifying the processes in which these services interact with one another in the native Taverna workflow language, Scufl (12), enables researchers to re-use and re-run previously conducted experiments. An additional feature of the Taverna system is the capture of experimental provenance. The workflow parameters and individual results are captured in this execution log where the data obtained from previous analyses can be viewed.
+###end p 58
+###begin p 59
+###xml 260 265 <span type="species:ncbi:10090">mouse</span>
+###xml 664 670 <span type="species:ncbi:9913">cattle</span>
+The generality of these workflows allows them to be re-used for the integration of mapping and microarray data in other cases other than that of trypanosomiasis response. Furthermore, the QTL gene annotation workflow may be utilized in projects, which use the mouse model organism and do not have any gene expression data to back up findings. Likewise, the microarray gene annotation workflow may be used in studies with no quantitative evidence for the observed phenotype. Future work on this use case, investigating response to trypanosomiasis infection, will include analysis of the two remaining QTL regions, Tir2 and Tir3 (a, b and c), and the integration of cattle QTL and gene expression data.
+###end p 59
+###begin p 60
+It should be noted that an unavoidable ascertainment bias is introduced into the methodology, in the form of utilizing remote resources for candidate selection. This bias was observed on analysis of the Tir1 region, where a total of 344 unique candidate QT genes were identified from BioMart, of which 82 genes were annotated with their biological pathways. The lack of pathway annotations limits the ability to narrow down the true candidate genes from the total genes identified in the QTL region, with the reliance on extant knowledge. A rapid increase in the number of genes annotated with their pathways, however, means that the number of candidate QTg identified in subsequent analyses is sure to increase. The workflows described here provide the means to readily repeat the analysis.
+###end p 60
+###begin p 61
+Although we have successfully reduced the number of false negative QTg, one possible complication we envisage is the increase in the number of false positive candidate QTg returned to the user.
+###end p 61
+###begin p 62
+The KEGG pathway database was chosen as the primary source of pathway information due it being publicly available and containing a large set of biological pathway annotations. This results in a bias, relying on extant knowledge from a single data repository; however, this investigation was established as a proof of concept for the proposed methodology and, with further work, may be modified to query any number of pathway databases, provided they offer web service functionality.
+###end p 62
+###begin title 63
+CONCLUSION
+###end title 63
+###begin p 64
+In this investigation, we have illustrated how the large-scale analysis of microarray gene expression and quantitative trait data, investigated at the level of biological pathways, enables links between genotype and phenotype to be successfully established. This was implemented systematically through the use of workflows. Our investigation confirmed that non-systematic manual examination of QTL and microarray data does introduce bias into the processes, particularly by discarding candidates in premature filtering of such large datasets.
+###end p 64
+###begin p 65
+Analysis of the QTL and gene expression data collected under the Wellcome Trust Host-Pathogen project identified a candidate gene, Daxx, which is thought to be strongly associated with resistance to trypanosomiasis infection.
+###end p 65
+###begin p 66
+###xml 169 171 169 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="B37">37</xref>
+The workflows developed in this project are freely available for re-use-either by ourselves or others in future analyses and have been integrated into the myExperiment (37) project which supports scientific collaboration, discovery and workflow re-use.
+###end p 66
+###begin p 67
+###xml 151 287 151 287 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="68">Successfully reduced the premature filtering of datasets, where we are now able to process all data systematically through the workflows</p>
+###xml 151 287 151 287 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="68">Successfully reduced the premature filtering of datasets, where we are now able to process all data systematically through the workflows</p></list-item>
+###xml 287 392 287 392 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="69">The systematic analysis of the gene expression and QTL data has supported a data-driven analysis approach</p>
+###xml 287 392 287 392 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="69">The systematic analysis of the gene expression and QTL data has supported a data-driven analysis approach</p></list-item>
+###xml 392 579 392 579 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="70">The use of a data-driven approach has enabled a number of novel hypotheses to be inferred from the workflow results, including the role of apoptosis and Daxx in trypanosomiasis resistance</p>
+###xml 392 579 392 579 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="70">The use of a data-driven approach has enabled a number of novel hypotheses to be inferred from the workflow results, including the role of apoptosis and Daxx in trypanosomiasis resistance</p></list-item>
+###xml 579 676 579 676 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="71">The workflows have explicitly captured the data analysis methodologies used in this investigation</p>
+###xml 579 676 579 676 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="71">The workflows have explicitly captured the data analysis methodologies used in this investigation</p></list-item>
+###xml 676 789 676 789 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="72">Capturing these data analysis methods enables for the direct re-use of the workflows in subsequent investigations</p>
+###xml 676 789 676 789 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="72">Capturing these data analysis methods enables for the direct re-use of the workflows in subsequent investigations</p></list-item>
+###xml 789 908 789 908 <p xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" textid="73">The total number of errors within this investigation has been reduced as a whole from all of the issues addressed above</p>
+###xml 789 908 789 908 <list-item xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><p textid="73">The total number of errors within this investigation has been reduced as a whole from all of the issues addressed above</p></list-item>
+###xml 151 908 151 908 <list xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" list-type="roman-lower"><list-item><p textid="68">Successfully reduced the premature filtering of datasets, where we are now able to process all data systematically through the workflows</p></list-item><list-item><p textid="69">The systematic analysis of the gene expression and QTL data has supported a data-driven analysis approach</p></list-item><list-item><p textid="70">The use of a data-driven approach has enabled a number of novel hypotheses to be inferred from the workflow results, including the role of apoptosis and Daxx in trypanosomiasis resistance</p></list-item><list-item><p textid="71">The workflows have explicitly captured the data analysis methodologies used in this investigation</p></list-item><list-item><p textid="72">Capturing these data analysis methods enables for the direct re-use of the workflows in subsequent investigations</p></list-item><list-item><p textid="73">The total number of errors within this investigation has been reduced as a whole from all of the issues addressed above</p></list-item></list>
+Revisiting the issues (i) to (vi) outlined within the Introduction section, we can show that by utilizing workflows within this investigation we have: Successfully reduced the premature filtering of datasets, where we are now able to process all data systematically through the workflowsThe systematic analysis of the gene expression and QTL data has supported a data-driven analysis approachThe use of a data-driven approach has enabled a number of novel hypotheses to be inferred from the workflow results, including the role of apoptosis and Daxx in trypanosomiasis resistanceThe workflows have explicitly captured the data analysis methodologies used in this investigationCapturing these data analysis methods enables for the direct re-use of the workflows in subsequent investigationsThe total number of errors within this investigation has been reduced as a whole from all of the issues addressed above
+###end p 67
+###begin p 68
+Successfully reduced the premature filtering of datasets, where we are now able to process all data systematically through the workflows
+###end p 68
+###begin p 69
+The systematic analysis of the gene expression and QTL data has supported a data-driven analysis approach
+###end p 69
+###begin p 70
+The use of a data-driven approach has enabled a number of novel hypotheses to be inferred from the workflow results, including the role of apoptosis and Daxx in trypanosomiasis resistance
+###end p 70
+###begin p 71
+The workflows have explicitly captured the data analysis methodologies used in this investigation
+###end p 71
+###begin p 72
+Capturing these data analysis methods enables for the direct re-use of the workflows in subsequent investigations
+###end p 72
+###begin p 73
+The total number of errors within this investigation has been reduced as a whole from all of the issues addressed above
+###end p 73
+###begin title 74
+SUPPLEMENTARY DATA
+###end title 74
+###begin p 75
+Supplementary Data are available at NAR Online.
+###end p 75
+###begin title 76
+ACKNOWLEDGEMENTS
+###end title 76
+###begin p 77
+The authors would like to acknowledge the assistance of the myGrid consortium, software developers and its associated researchers. We would also like to thank the researchers of the Wellcome Trust Host-Pathogen Project-grant number GR066764MA. This work is supported by the UK e-Science EPSRC GR/R67743. Funding to pay the Open Access publication charges for this article was provided by the Wellcome Trust.
+###end p 77
+###begin p 78
+###xml 0 30 0 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Conflict of interest statement</italic>
+Conflict of interest statement. None declared.
+###end p 78
+###begin title 79
+REFERENCES
+###end title 79
+###begin article-title 80
+A classification of tasks for the systematic study of immune response using functional genomics data
+###end article-title 80
+###begin article-title 81
+From phenotype to genotype: issues in navigating the available information resources
+###end article-title 81
+###begin article-title 82
+A novel gene containing a trinucleotide repeat that is expanded and unstable on Huntington's disease chromosomes. The Huntington's Disease Collaborative Research Group
+###end article-title 82
+###begin article-title 83
+Finding genes that underlie complex traits
+###end article-title 83
+###begin article-title 84
+Strategies for mapping and cloning quantitative trait genes in rodents
+###end article-title 84
+###begin article-title 85
+Cd14, Gbp1, and Pla2g2a: three major candidate genes for experimental IBD identified by combining QTL and microarray analyses
+###end article-title 85
+###begin article-title 86
+Genotype-phenotype mapping: genes as computer programs
+###end article-title 86
+###begin article-title 87
+Here is the evidence, now what is the hypothesis? The complementary roles of inductive and hypothesis-driven science in the post-genomic era
+###end article-title 87
+###begin article-title 88
+Illuminating the black box (Editorial) (2006)
+###end article-title 88
+###begin article-title 89
+Integrating biological databases
+###end article-title 89
+###begin article-title 90
+Creating a bioinformatics nation
+###end article-title 90
+###begin article-title 91
+Taverna: a tool for the composition and enactment of bioinformatics workflows
+###end article-title 91
+###begin article-title 92
+###xml 14 20 <span type="species:ncbi:9913">bovine</span>
+Understanding bovine trypanosomiasis and trypanotolerance: the promise of functional genomics
+###end article-title 92
+###begin article-title 93
+###xml 142 148 <span type="species:ncbi:9913">cattle</span>
+Mapping of quantitative trait loci controlling trypanotolerance in a cross of tolerant West African N'Dama and susceptible East African Boran cattle
+###end article-title 93
+###begin article-title 94
+###xml 51 57 <span type="species:ncbi:10090">murine</span>
+Fine mapping of trypanosomiasis resistance loci in murine advanced intercross lines
+###end article-title 94
+###begin article-title 95
+###xml 57 61 <span type="species:ncbi:10090">mice</span>
+Marker-assisted introgression of trypanotolerance QTL in mice
+###end article-title 95
+###begin article-title 96
+###xml 67 71 <span type="species:ncbi:10090">mice</span>
+Localization of genes controlling resistance to trypanosomiasis in mice
+###end article-title 96
+###begin article-title 97
+Model-based analysis of oligonucleotide arrays: model validation, design issues and standard error application
+###end article-title 97
+###begin article-title 98
+Exploration, normalization, and summaries of high density oligonucleotide array probe level data
+###end article-title 98
+###begin article-title 99
+###xml 0 6 <span type="species:ncbi:9913">Bovine</span>
+Bovine trypanotolerance: a natural ability to prevent severe anaemia and haemophagocytic syndrome?
+###end article-title 99
+###begin article-title 100
+Novel integrative genomics strategies to identify genes for complex traits
+###end article-title 100
+###begin article-title 101
+KEGG: kyoto encyclopedia of genes and genomes
+###end article-title 101
+###begin article-title 102
+Ensembl 2006
+###end article-title 102
+###begin article-title 103
+The Universal Protein Resource (UniProt)
+###end article-title 103
+###begin article-title 104
+Entrez Gene: gene-centered information at NCBI
+###end article-title 104
+###begin article-title 105
+Babel's tower revisited: a universal resource for cross-referencing across annotation databases
+###end article-title 105
+###begin article-title 106
+GenMAPP, a new tool for viewing and analyzing microarray data on biological pathways
+###end article-title 106
+###begin article-title 107
+###xml 47 53 <span type="species:ncbi:10090">murine</span>
+###xml 54 84 <span type="species:ncbi:31286">Trypanosoma brucei rhodesiense</span>
+###xml 134 140 <span type="species:ncbi:10090">murine</span>
+###xml 141 163 <span type="species:ncbi:5692">Trypanosoma congolense</span>
+TNF-a mediates the development of anaemia in a murine Trypanosoma brucei rhodesiense infection, but not the anaemia associated with a murine Trypanosoma congolense infection
+###end article-title 107
+###begin article-title 108
+Daxx, a novel Fas-binding protein that activates JNK and apoptosis
+###end article-title 108
+###begin article-title 109
+###xml 0 17 <span type="species:ncbi:5693">Trypanosoma cruzi</span>
+Trypanosoma cruzi-induced immunosuppression: B cells undergo spontaneous apoptosis and lipopolysaccharide (LPS) arrests their proliferation during acute infection
+###end article-title 109
+###begin article-title 110
+###xml 45 49 <span type="species:ncbi:10090">mice</span>
+###xml 64 86 <span type="species:ncbi:5692">Trypanosoma congolense</span>
+Impaired Kupffer cells in highly susceptible mice infected with Trypanosoma congolense
+###end article-title 110
+###begin article-title 111
+###xml 49 54 <span type="species:ncbi:10090">mouse</span>
+Single nucleotide polymorphism (SNP) analysis of mouse quantitative trait loci for identification of candidate genes. J
+###end article-title 111
+###begin article-title 112
+dbSNP: the NCBI database of genetic variation
+###end article-title 112
+###begin article-title 113
+Negative regulation of p53 functions by Daxx and the involvement of MDM2
+###end article-title 113
+###begin article-title 114
+Wild-type p53 induces apoptosis of myeloid leukaemic cells that is inhibited by interleukin-6
+###end article-title 114
+

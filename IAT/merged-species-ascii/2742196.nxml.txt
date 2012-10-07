@@ -1,0 +1,766 @@
+###begin article-title 0
+Predicting Positive p53 Cancer Rescue Regions Using Most Informative Positive (MIP) Active Learning
+###end article-title 0
+###begin p 1
+Conceived and designed the experiments: S. Danziger R. Baronio G. Hatfield P. Kaiser R. Lathrop. Performed the experiments: S. Danziger R. Baronio L. Ho L. Hall K. Salmon P. Kaiser. Analyzed the data: S. Danziger R. Baronio P. Kaiser R. Lathrop. Contributed reagents/materials/analysis tools: S. Danziger K. Salmon G. Hatfield P. Kaiser. Wrote the paper: S. Danziger P. Kaiser R. Lathrop.
+###end p 1
+###begin p 2
+###xml 990 993 990 993 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p53</italic>
+###xml 1162 1171 1162 1171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+###xml 1309 1316 1309 1316 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vivo</italic>
+###xml 1432 1441 1432 1441 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+###xml 1604 1611 1604 1611 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">In vivo</italic>
+###xml 930 935 <span type="species:ncbi:9606">human</span>
+###xml 1038 1043 <span type="species:ncbi:9606">human</span>
+###xml 1406 1411 <span type="species:ncbi:9606">human</span>
+Many protein engineering problems involve finding mutations that produce proteins with a particular function. Computational active learning is an attractive approach to discover desired biological activities. Traditional active learning techniques have been optimized to iteratively improve classifier accuracy, not to quickly discover biologically significant results. We report here a novel active learning technique, Most Informative Positive (MIP), which is tailored to biological problems because it seeks novel and informative positive results. MIP active learning differs from traditional active learning methods in two ways: (1) it preferentially seeks Positive (functionally active) examples; and (2) it may be effectively extended to select gene regions suitable for high throughput combinatorial mutagenesis. We applied MIP to discover mutations in the tumor suppressor protein p53 that reactivate mutated p53 found in human cancers. This is an important biomedical goal because p53 mutants have been implicated in half of all human cancers, and restoring active p53 in tumors leads to tumor regression. MIP found Positive (cancer rescue) p53 mutants in silico using 33% fewer experiments than traditional non-MIP active learning, with only a minor decrease in classifier accuracy. Applying MIP to in vivo experimentation yielded immediate Positive results. Ten different p53 mutations found in human cancers were paired in silico with all possible single amino acid rescue mutations, from which MIP was used to select a Positive Region predicted to be enriched for p53 cancer rescue mutants. In vivo assays showed that the predicted Positive Region: (1) had significantly more (p<0.01) new strong cancer rescue mutants than control regions (Negative, and non-MIP active learning); (2) had slightly more new strong cancer rescue mutants than an Expert region selected for purely biological considerations; and (3) rescued for the first time the previously unrescuable p53 cancer mutant P152L.
+###end p 2
+###begin title 3
+Author Summary
+###end title 3
+###begin p 4
+###xml 756 761 <span type="species:ncbi:9606">human</span>
+Engineering proteins to acquire or enhance a particular useful function is at the core of many biomedical problems. This paper presents Most Informative Positive (MIP) active learning, a novel integrated computational/biological approach designed to help guide biological discovery of novel and informative positive mutants. A classifier, together with modeled structure-based features, helps guide biological experiments and so accelerates protein engineering studies. MIP reduces the number of expensive biological experiments needed to achieve novel and informative positive results. We used the MIP method to discover novel p53 cancer rescue mutants. p53 is a tumor suppressor protein, and destructive p53 mutations have been implicated in half of all human cancers. Second-site cancer rescue mutations restore p53 activity and eventually may facilitate rational design of better cancer drugs. This paper shows that, even in the first round of in vivo experiments, MIP significantly increased the discovery rate of novel and informative positive mutants.
+###end p 4
+###begin title 5
+Introduction
+###end title 5
+###begin p 6
+###xml 57 60 57 60 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Fersht1">[1]</xref>
+###xml 61 64 61 64 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Huston1">[2]</xref>
+###xml 190 193 190 193 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger1">[3]</xref>
+###xml 194 197 194 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Dantas1">[8]</xref>
+###xml 409 418 409 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+Engineering existing proteins to change their properties [1],[2] is an important task with many applications as diverse as environmental protection, synthetic biomaterials, and pharmacology [3]-[8]. Here we apply machine learning techniques to engineer the tumor suppressor protein p53. We choose where to mutate cancerous p53 to restore tumor suppressor function, using structure-based features derived from in silico protein homology models.
+###end p 6
+###begin title 7
+Biology of p53 Cancer Rescue Mutants
+###end title 7
+###begin p 8
+###xml 4 7 4 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p53</italic>
+###xml 226 229 226 229 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p53</italic>
+###xml 242 245 242 245 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Brooks1">[9]</xref>
+###xml 246 250 246 250 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Petitjean1">[12]</xref>
+###xml 369 376 369 376 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vivo</italic>
+###xml 486 490 486 490 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Baroni1">[13]</xref>
+###xml 491 495 491 495 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Otsuka1">[15]</xref>
+###xml 664 668 664 668 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Sharpless1">[16]</xref>
+###xml 669 673 669 673 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Xue1">[18]</xref>
+###xml 832 836 832 836 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Lain1">[19]</xref>
+###xml 837 841 837 841 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Lambert1">[24]</xref>
+###xml 1043 1047 1043 1047 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Kato1">[11]</xref>
+###xml 1049 1053 1049 1053 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Martin1">[25]</xref>
+###xml 1054 1058 1054 1058 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Cuff1">[28]</xref>
+###xml 131 136 <span type="species:ncbi:9606">human</span>
+###xml 263 268 <span type="species:ncbi:9606">human</span>
+The p53 gene encodes a tumor suppressor protein that is a key cellular defense against cancer. p53 mutations occur in about 50% of human cancers. The vast majority of these mutations are single point missense mutations in the p53 core domain [9]-[12]. Thus, many human cancers express full-length p53 cancer mutants that lack tumor suppressor function. As demonstrated in vivo, p53 cancer mutants can be reactivated through intragenic second-site suppressor ("cancer rescue") mutations [13]-[15]. Reactivated p53 holds great therapeutic promise because animal models have shown that reintroduction of active p53, even in advanced tumors, leads to tumor regression [16]-[18]. Consequently, there have been many efforts to find small molecule drugs that mimic the cancer rescue effect of reactivating p53 and suppressing tumor growth [19]-[24]. Despite some promising discoveries in p53 in specific, and small molecule docking in general, these efforts are hampered by a limited understanding of the p53 mutation-structure-function relationship [11], [25]-[28]. A larger and more diverse collection of cancer rescue mutations that reactivate p53 cancer mutants is therefore desired. Such a collection could lead to insight into general structural changes that can rescue p53 cancer mutants, and thereby facilitate rational drug design approaches by exploiting similar effects.
+###end p 8
+###begin p 9
+###xml 276 280 276 280 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Baroni1">[13]</xref>
+Several p53 cancer rescue mutants were identified previously by random mutagenesis in a region spanning amino acid residues 225-241. A portion of this region (235,239, and 240) thus was empirically identified as a "Global Suppressor Motif", the first p53 cancer rescue region [13]. The biological goal of this paper is to use computational techniques to discover novel p53 cancer rescue mutants and regions.
+###end p 9
+###begin title 10
+Integrated Experimental Design
+###end title 10
+###begin p 11
+###xml 177 181 177 181 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Cohn1">[29]</xref>
+The active learning paradigm was developed in the machine learning community to reduce the number of expensive examples that need to be acquired to build an accurate classifier [29]. Active learning typically starts with a small initial amount of labeled data. The initial data is used to determine a small informative set of unlabeled examples to label. Once labeled, these new examples are added to the pool of labeled data and a new unlabeled set is chosen. The process repeatedly labels new data until the classifier reaches some pre-determined criteria. Active learning methods increase the efficiency and cost effectiveness of the process by reducing the number of examples that need to be labeled. The active learning paradigm is readily applicable to biological experimentation, as it reduces the number of tedious and expensive experiments to be performed.
+###end p 11
+###begin p 12
+###xml 188 191 188 191 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+###xml 752 755 752 755 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+In a biological active learning paradigm, a computational classifier is trained with an initial set of examples labeled by direct experimentation. In the case of p53 cancer rescue mutants [4], this initial set consists of empirically labeled p53 mutants. The computational classifier then predicts which mutants should next be labeled to most improve the classifier accuracy. These mutants are then made, labeled by biological assays, and added to the classifier. The cycle repeats, iteratively improving classifier accuracy and adding to the set of p53 mutants with known function. In this way, an optimum active learning classifier would adequately explore a mutant sequence space while using a minimum amount of expensive biological experimentation [4].
+###end p 12
+###begin p 13
+It is important to note that in the context of biological experimentation, the slowest part of active learning is generally the biological experiments required to label the unknown examples. Therefore, any reference to speed in this paper refers to the number of expensive biological experiments (i.e. iterations of the active learning cycle) and not to computational speed. The computational goal of this paper is to provide and test computational methods that can discover gene regions wherein mutations produce proteins with a desired function, while requiring as few experiments as possible.
+###end p 13
+###begin title 14
+Traditional Active Learning
+###end title 14
+###begin p 15
+###xml 95 102 95 102 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi.1000498.s003">Text S1</xref>
+Here we present a formal description of the active learning problem. Notation is summarized in Text S1.
+###end p 15
+###begin p 16
+Let  be the Total set of all examples under consideration. Each example mutant, , has a labeling function, , such that  = Positive, Negative, or Unknown. During each active learning iteration, ,  is partitioned into two groups: (1) , examples with Known labels (i.e.,  = Positive or Negative); and (2) , examples with Unknown labels (i.e.,  = Unknown). A third set, , Chosen from , contains  examples to be tested and labeled in this step.
+###end p 16
+###begin p 17
+During each iteration the classifier provides a decision function, , trained on the examples with a known label, . Each unlabeled example  is predicted by the decision function  to be Positive or Negative.
+###end p 17
+###begin p 18
+A score function, , ranks each example in . As a control, Random active learning assigns each mutant a random score. The  highest ranked examples become  and are then tested and labeled. is merged with  to create and deleted from to create .
+###end p 18
+###begin p 19
+In the case of the p53 cancer rescue mutants here, each example is a p53 mutant.  = Positive if and only if mutant exhibits wild-type like p53 transcription activator activity.
+###end p 19
+###begin title 20
+Structure of this Paper
+###end title 20
+###begin p 21
+###xml 4 11 4 11 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s2">Methods</xref>
+###xml 159 166 159 166 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s3">Results</xref>
+###xml 181 190 181 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+###xml 295 302 295 302 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vivo</italic>
+###xml 375 385 375 385 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Discussion</xref>
+The Methods section presents a description of active learning, the MIP paradigm, computational evaluation methods, and the biological experimental design. The Results section shows in silico results indicating the computational techniques best suited to the p53 cancer rescue mutant problem and in vivo results showing how well those techniques performed in experiments. The Discussion section recites medical significance, sketches possible computational extensions of the MIP method, and concludes that a computational classifier and modeled structure-based features can guide function-based experimental discovery.
+###end p 21
+###begin title 22
+Methods
+###end title 22
+###begin p 23
+###xml 162 166 162 166 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Cohn1">[29]</xref>
+###xml 167 171 167 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Roy1">[32]</xref>
+###xml 576 579 576 579 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+Active learning refers to a body of iterative machine learning techniques designed to train an accurate classifier using the minimum number of expensive examples [29]-[32]. The Most Informative Positive (MIP) method, introduced here, preferentially selects examples (i.e., p53 mutants) predicted to be both informative and Positive. The MIP computational method can be used to modify any active learning method that does not consider predicted class as a criterion for choosing which expensive examples to learn. Here, MIP modified the active learning algorithms described in [4] and was used to select regions in the p53 tumor suppressor protein.
+###end p 23
+###begin p 24
+This section contains:
+###end p 24
+###begin p 25
+An introduction to structure-based features and active learning.
+###end p 25
+###begin p 26
+A description of the MIP active learning method.
+###end p 26
+###begin p 27
+Metrics for evaluating how quickly an active learning algorithm uncovers Positive mutants.
+###end p 27
+###begin p 28
+###xml 23 32 23 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+The data sets used for in silico evaluation.
+###end p 28
+###begin p 29
+The general Regional Selection algorithm.
+###end p 29
+###begin p 30
+Regional Selection as implemented for the p53 cancer rescue problem.
+###end p 30
+###begin p 31
+A brief overview of the biological techniques used to test the mutant regions.
+###end p 31
+###begin title 32
+Foundations: Structure-Based Features and Active Learning
+###end title 32
+###begin p 33
+###xml 134 137 134 137 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger1">[3]</xref>
+###xml 138 141 138 141 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+The techniques presented in this paper build on previous research using machine learning techniques to find p53 cancer rescue mutants [3],[4]. This section contains a brief overview of the foundational structure-based features and active learning techniques.
+###end p 33
+###begin p 34
+###xml 25 28 25 28 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger1">[3]</xref>
+###xml 29 32 29 32 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+###xml 148 157 148 157 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+###xml 241 245 241 245 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Cho1">[33]</xref>
+###xml 364 368 355 359 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Case1">[34]</xref>
+###xml 379 382 370 373 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger1">[3]</xref>
+###xml 682 686 673 677 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Friedler1">[35]</xref>
+###xml 788 792 779 783 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Francois1">[36]</xref>
+###xml 921 924 912 915 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+Structure-based features [3],[4] for each mutant considered were extracted from atomic-level homology models. Modeled mutant proteins were produced in silico using the B chain of the wildtype p53 core domain crystal structure (PDB ID: 1TSR) [33]. Amino acids were substituted and model energies were minimized using the Ambertrade mark molecular modeling software [34]. Features [3] were extracted from the minimized mutant model using 1D sequence and amino acid substitution information, 2D surface cartographical and electrostatic models, 3D steric analysis, and "4D" thermal stability predictions. Those features on the surface of the p53 core domain outside known binding sites [35] were compressed, resulting in 5,867 features per mutant. Conditional Mutual Information Maximization [36] selected various subsets of these features. It was found that 550 selected features resulted in the highest classifier accuracy [4].
+###end p 34
+###begin p 35
+###xml 25 28 25 28 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+###xml 274 278 274 278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Hearst1">[37]</xref>
+###xml 376 380 376 380 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Feng1">[38]</xref>
+###xml 809 812 809 812 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+###xml 986 989 986 989 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+###xml 1164 1168 1164 1168 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Itti1">[39]</xref>
+Seven previously studied [4] active learning algorithms were used here. Two of these methods are standard active learning techniques, taken from the literature, that work by separating the data into two classes with an n-dimensional hyper-plane. Minimum Marginal Hyperplane [37] selects examples based on the margin, i.e., the "distance" from the hyper-plane. Maximum Entropy [38] selects examples based on a class probability calculated from the margin and is related to the information theory concept of entropy. Two methods, Maximum Marginal Hyperplane and Minimum Entropy, are negative controls expected to perform badly. They were created by choosing the least informative example in the previous two methods. The other three methods were created specifically for this p53 cancer rescue research project [4] and are based on the anticipated change in classifier accuracy or correlation coefficient if a given example is chosen and labeled. These include Additive/Maximum Curiosity [4], which uses a cross-validated correlation coefficient to estimate classifier accuracy, and Additive Bayesian Surprise, which is based on the Kullback-Leibler (KL) divergence [39].
+###end p 35
+###begin title 36
+MIP Methodology
+###end title 36
+###begin p 37
+MIP optimizes the mutants chosen so that they are most likely to both improve the classifier and rapidly uncover Positive examples. To understand why this is important, suppose that Positive examples are sparse, as here, and one has only sufficient resources to assay 100 new examples. MIP active learning seeks to maximize the number of novel Positive examples discovered during those 100 assays, and at the same time quickly improve classifier accuracy. Traditional active learning also seeks to find an accurate classifier quickly, but may discover only very few novel Positives while so doing.
+###end p 37
+###begin p 38
+MIP active learning chooses  by first considering only those unlabeled examples predicted to be Positive (i.e.,  = Positive). Those predicted to be Positive and having the highest score, , are chosen for . Only if too few examples in  were predicted to be Positive would a Negative informative example be chosen for .
+###end p 38
+###begin p 39
+Active learning algorithms may become MIP algorithms by preferentially labeling those informative examples that are also predicted to be Positive. There are many ways to apply MIP to a specific active learning algorithm. Here we give a simple example, which shows a general approach and applies to nearly all active learning algorithms. Recall that  ranks unlabeled examples, and high-ranking examples are chosen to be labeled at the next iteration. To convert a traditional active learning algorithm to a MIP active learning algorithm, it is sufficient to weight the scoring function so that examples predicted to be Positive have a higher score than those predicted to be Negative:where  is a constant with  if  = Positive, and  if  = Negative.
+###end p 39
+###begin title 40
+Metrics: Halfway Point, Accuracy, Correlation Coefficient
+###end title 40
+###begin p 41
+For this paper and much biological research, the goal of iterative exploration is to uncover as many informative Positive examples as quickly as possible, i.e., with the fewest biological experiments. We require metrics to measure success at this task.
+###end p 41
+###begin p 42
+The Halfway Point metric measures the fraction of iterations necessary before half of all Positive examples in an unlabeled data set are uncovered. Several additional metrics were explored to measure how quickly Positive examples were found, including enrichment factor and positive area, but only Halfway Point is presented here for illustrative clarity because it is simple to explain and it provides similar results to the other metrics.
+###end p 42
+###begin p 43
+Formally, Halfway Point = , where is the smallest number of iterations such that contains half of all Positive mutants in  and is the number of mutants labeled at each iteration.
+###end p 43
+###begin p 44
+###xml 548 552 548 552 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Baldi1">[40]</xref>
+Since MIP optimizes a classifier to preferentially choose Positive mutants for , it is reasonable to wonder if there may be a corresponding loss of classifier accuracy. One way to estimate classifier accuracy for an active learning algorithm is to use the average 10-fold cross-validated accuracy and correlation coefficient of the training set  across all iterations of one or more of the Data Partitions described below. Accuracy is the fraction of correct predictions. The correlation coefficient is a standard of the machine learning community [40], and a better measure than accuracy when the data set contains unbalanced numbers of Positive and Negative examples. This is the usual case for biological data sets such as the p53 cancer rescue mutant data set, where the ratio of Negative to Positive mutants is about 4:1.
+###end p 44
+###begin p 45
+###xml 162 165 162 165 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+Several other metrics for accuracy were explored, including forward prediction accuracy, 3-point accuracy, and a more complicated cross-validation strategy, OECV [4]. Average 10-fold cross-validated accuracy and correlation coefficient were chosen for illustrative clarity here because they are simple to explain and give similar results to the other metrics.
+###end p 45
+###begin title 46
+###xml 11 20 11 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">In Silico</italic>
+Evaluation In Silico
+###end title 46
+###begin p 47
+###xml 32 41 32 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+###xml 240 243 240 243 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+To evaluate the MIP methodology in silico, MIP and non-MIP versions of seven active learning methods plus a random control were compared using the cross-validated metrics described above. Three previously studied partitions of the data set [4] were used to compare to previous research. These partitions test three common starting conditions for active learning:
+###end p 47
+###begin p 48
+Data Partition 1: Few mutants in and many in , i.e.,  = 25 and  = 236.
+###end p 48
+###begin p 49
+Data Partition 2: Similar numbers of mutants in and , i.e.,  = 123 and  = 138.
+###end p 49
+###begin p 50
+Data Partition 3: Many mutants in and few in , i.e.,  = 204 and  = 57.
+###end p 50
+###begin p 51
+The data set had about 20% Positive and 80% Negative mutants.
+###end p 51
+###begin title 52
+Regional Selection
+###end title 52
+###begin p 53
+###xml 254 257 254 257 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+Active learning and MIP as discussed so far apply to individual mutants. Limitations of this approach include loss of classifier accuracy when applied to new mutants from unfamiliar regions, leading to many experiments that yielded few Positive examples [4]. We generalized MIP active learning to apply to single amino acid changes in contiguous gene regions. This generalization supported several desirable outcomes. It allowed MIP active learning to exploit high throughput saturation mutagenesis techniques. The resulting training set enrichment should allow more accurate prediction of new Positive mutants, especially those requiring multiple amino acid changes. Regions enriched for rescue mutants may indicate promising candidate drug target sites.
+###end p 53
+###begin p 54
+Formally, let  be the set of all mutants containing a cancer mutation plus a single putative rescue at amino acid location , excluding mutants that exist in the initial training set . Letwhere  is the subset of for which  = Positive. Positive regions were ranked by summing  across each region. The Positive Region used below was chosen to be the 10 sequential amino acid long window with the highest average  across that window.
+###end p 54
+###begin p 55
+Similarly, letwhere is the subset of for which  = Negative. The Negative Region was chosen to be the 10 sequential amino acid long window with the highest average  across that window.
+###end p 55
+###begin p 56
+A similar non-MIP control region was constructed to be informative to the classifier regardless of whether mutants were predicted to be Positive or Negative. Let
+###end p 56
+###begin p 57
+The non-MIP Region was chosen to be the 10 sequential amino acid long window with the highest average  across that window.
+###end p 57
+###begin title 58
+Regional Selection Implementation
+###end title 58
+###begin p 59
+###xml 228 232 228 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Petitjean1">[12]</xref>
+###xml 757 760 757 760 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger1">[3]</xref>
+###xml 761 764 761 764 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+###xml 765 769 765 769 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Baroni1">[13]</xref>
+###xml 770 774 770 774 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Brachmann1">[14]</xref>
+###xml 215 220 <span type="species:ncbi:9606">human</span>
+###xml 729 734 <span type="species:ncbi:4932">yeast</span>
+To detect p53 cancer rescue regions, the task is to identify areas of the p53 core domain that are likely to have many Positive cancer rescue mutants. We considered ten p53 cancer mutants that are commonly found in human cancer [12] and can be constructed so that they differ by two or more nucleic acid changes from the wild-type.  consisted of these 10 common p53 cancer mutants paired with all possible single amino acid changes at each location in the core domain. All predictions and curiosity calculations were made with a training set, , of 463 mutants (91 Positive and 372 Negative). These 463 mutants contained the 261 mutants used for the Data Partitions plus 202 created during other experiments using variants of the yeast assay described below [3],[4],[13],[14].
+###end p 59
+###begin p 60
+###xml 27 30 27 30 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Danziger2">[4]</xref>
+###xml 101 110 101 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+###xml 123 130 123 130 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Results</xref>
+###xml 319 323 319 323 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Witten1">[41]</xref>
+###xml 285 289 <span type="species:ncbi:9125">Weka</span>
+The MIP Additive Curiosity [4] algorithm was used to choose the regions because it performed best in in silico trials (see Results). It was adapted to select three 10-amino acid long regions in the p53 core domain: a Positive region, a Negative region, and a non-MIP control region. A Weka Support Vector Machine, SMO, [41], was used to predict the activity, , for each mutant. The score for each mutant was calculated using MIP Additive Curiosity. These values were averaged over every possible 10-amino acid window. The classifier considered the resulting 34,776 putative cancer rescue mutants and selected approximately3,980 mutants in three regions. These regions were selected for the following criteria as described above:
+###end p 60
+###begin p 61
+Positive Region: predicted to be informative and contain novel Positive mutants.
+###end p 61
+###begin p 62
+Negative Region: a control predicted to be informative and contain few Positive mutants.
+###end p 62
+###begin p 63
+non-MIP Region: a control predicted to be informative regardless of mutant activity.
+###end p 63
+###begin p 64
+As another control, these regions were compared to:
+###end p 64
+###begin p 65
+Expert Region: a control selected for biological considerations by an expert p53 cancer rescue biologist and hypothesized to contain Positive cancer rescue mutants.
+###end p 65
+###begin p 66
+###xml 340 344 340 344 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Baroni1">[13]</xref>
+The Expert Region, spanning residues 114-123, was considered a potential cancer rescue region because several Positive mutations with multiple amino acid changes occurred there spontaneously in previous cancer rescue mutant screens. Therefore, this region was considered likely to have cancer rescue mutants with single amino acid changes ([13]; Brachmann, R. K., personal communication).
+###end p 66
+###begin p 67
+No single amino acid change cancer rescue mutations had been found previously in any of the Positive, Negative, non-MIP, or Expert regions.
+###end p 67
+###begin title 68
+###xml 36 41 <span type="species:ncbi:4932">Yeast</span>
+Regional Saturation Mutagenesis and Yeast Assay
+###end title 68
+###begin p 69
+###xml 731 735 731 735 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Baroni1">[13]</xref>
+###xml 700 705 <span type="species:ncbi:4932">yeast</span>
+All mutants produced in this study were initially created with a novel regional saturation mutagenesis method based on the Quick Change site-directed mutagenesis kit (Stratagene, La Jolla, CA, USA), (manuscript in preparation). Briefly, a set of overlapping degenerate oligonucleotides was designed such that each primer contained exactly one random codon. A standard site-directed mutagenesis reaction was performed with a mixture of oligonucleotides that collectively represented each possible codon change in the target region (30 base pairs). The overlapping primer design prevented multiple mutations in the same mutagenesis product. The generated mutants were analyzed for p53 activity using a yeast-based p53 activity assay [13].
+###end p 69
+###begin p 70
+###xml 83 87 83 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">URA3</italic>
+###xml 98 102 98 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">URA3</italic>
+###xml 249 253 249 253 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">URA3</italic>
+###xml 9 14 <span type="species:ncbi:4932">yeast</span>
+Briefly, yeast cells were engineered to depend on active p53 for expression of the URA3 gene. The URA3 gene product is required for the synthesis of uracil. When cells are grown in medium lacking uracil, cell growth is proportional to p53 activity (URA3 expression). The products of the saturation mutagenesis for all ten p53 cancer mutants in all tested regions were first selected for their ability to grow in the absence of uracil, indicating re-activated p53. All putative positive mutants were analyzed by DNA sequencing to determine the nature of the rescue mutation. Mutations were then recreated by site-directed mutagenesis, confirmed by resequencing, and retested.
+###end p 70
+###begin p 71
+###xml 12 20 12 20 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g001">Figure 1</xref>
+###xml 80 85 <span type="species:ncbi:4932">yeast</span>
+###xml 136 142 <span type="species:ncbi:4932">yeasts</span>
+As shown in Figure 1, mutants were designated as strong Positive mutants if the yeast cell growth was very robust. Mutants contained in yeasts that showed minimal growth were designated as weak Positive mutants. Strong and weak Positive mutants were collectively designated Positive. Those that did not grow were designated Negative. p53 mutants are described as <Cancer Mutation>_<putative rescue mutation>. For example, P152L_q100i identifies a cancer mutation with leucine replacing proline at amino acid 152 and a putative rescue mutation with isoleucine replacing glutamine at amino acid 100.
+###end p 71
+###begin title 72
+###xml 28 33 <span type="species:ncbi:4932">yeast</span>
+Growth results at different yeast concentrations.
+###end title 72
+###begin p 73
+###xml 20 26 <span type="species:ncbi:4932">yeasts</span>
+###xml 230 235 <span type="species:ncbi:4932">yeast</span>
+Wild-type refers to yeasts containing the wild-type p53 strain. Mutants annotated with (S) are strong Positive cancer rescue mutants, (W) are weak Positive cancer rescue mutants, and (N) are Negative mutants. Different numbers of yeast cells expressing wild-type or mutant p53 as indicated were spotted on growth media. The numbers of cells spotted (from left to right) was 10,000, 2,000 and 400 cells. Cells were then cultured at 37degreesC for 2 days and cell growth was assessed by the observable increase in cells, which is proportional to the starting cell number. Rescue mutants were designated as "strong" if they showed better growth at the 2,000 cells per spot position than the cancer mutant at 10,000 cells per spot. Rescue mutants were considered "weak" when growth advantage was only obvious when the 10,000 cells per spot were compared between rescue mutant and cancer mutant.
+###end p 73
+###begin title 74
+Results
+###end title 74
+###begin p 75
+###xml 300 309 300 309 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+Most Informative Positive (MIP) active learning was designed to find Positive examples, here p53 cancer rescue mutants, as quickly as possible. Fourteen active learning methods (seven implemented as MIP algorithms) and one random control were tested. The MIP method Additive Curiosity performed best in silico, so was used to select the Positive, Negative, and non-MIP regions. These regions were assayed for novel p53 cancer rescue mutants.
+###end p 75
+###begin p 76
+This section contains:
+###end p 76
+###begin p 77
+###xml 4 13 4 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+The in silico performance comparison of MIP and non-MIP active learning algorithms.
+###end p 77
+###begin p 78
+The regions selected by the regional selection algorithms.
+###end p 78
+###begin p 79
+Novel rescue mutants discovered in the Positive, Negative, and non-MIP regions.
+###end p 79
+###begin p 80
+Other predicted p53 regions.
+###end p 80
+###begin p 81
+3D Visualizations of the putative rescue regions and significant mutants.
+###end p 81
+###begin title 82
+Comparison of MIP and non-MIP Active Learning Methods
+###end title 82
+###begin p 83
+###xml 245 252 245 252 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t001">Table 1</xref>
+For the purposes of this study, the best active learning method was the method with the lowest Halfway Point, i.e., the method that discovered half of the Positive mutants in the test set using the smallest fraction of possible iterations. From Table 1, the best MIP method reached the Halfway Point in 33% fewer iterations, and the average MIP algorithm needed 28% fewer iterations, than their non-MIP counterparts (p<0.006). Even the MIP versions of the negative control methods, Maximum Marginal Hyperplane and Minimum Entropy, performed better than any of the non-MIP methods.
+###end p 83
+###begin title 84
+Active learning halfway points.
+###end title 84
+###begin p 85
+###xml 76 83 76 83 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s2">Methods</xref>
+The Halfway Points are averaged across the three data sets discussed in the Methods section. Applying a paired Student's t-test to these seven active learning methods reveals a two-tailed p-value = 0.011.
+###end p 85
+###begin p 86
+###xml 124 132 124 132 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g002">Figure 2</xref>
+A graph showing the Halfway Point for select active learning types with Data Partition 1,  = 25 and  = 236, is presented in Figure 2.
+###end p 86
+###begin title 87
+MIP versus non-MIP halfway points.
+###end title 87
+###begin p 88
+Shown are the fraction of Positive mutants uncovered by MIP Maximum Curiosity and Additive Curiosity compared with their non-MIP counterparts. The intersections with the dotted horizontal line correspond to the Halfway Point.
+###end p 88
+###begin p 89
+###xml 226 233 226 233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t002">Table 2</xref>
+###xml 238 245 238 245 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t003">Table 3</xref>
+Applying the MIP methodology improves how quickly a given active learning algorithm uncovers the Positive mutants, but what effect does it have on overall classifier accuracy? The 10-fold cross-validated results, presented in Table 2 and Table 3, show that MIP reduced the cross-validated accuracy by on average 1.1% (statistically significant, p-Value = 0.012) and the correlation coefficient by on average 0.001 (not significant, p-Value = 0.755).
+###end p 89
+###begin title 90
+10-fold cross-validated accuracy.
+###end title 90
+###begin p 91
+###xml 117 124 117 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s2">Methods</xref>
+The average 10-fold cross-validated accuracy for all training sets across the three Data Partitions discussed in the Methods section. Applying a paired Student's t-test to these seven active learning methods reveals a two-tailed p-value = 0.012.
+###end p 91
+###begin title 92
+10-fold cross-validated correlation coefficient.
+###end title 92
+###begin p 93
+###xml 132 139 132 139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s2">Methods</xref>
+The average 10-fold cross-validated correlation coefficient for all training sets across the three Data Partitions discussed in the Methods section. Applying a paired Student's t-test to these seven active learning methods reveals a two-tailed p-value = 0.755.
+###end p 93
+###begin title 94
+Positive, Negative, Non-MIP, and Expert Regions
+###end title 94
+###begin p 95
+###xml 55 63 55 63 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t001">Tables 1</xref>
+###xml 65 66 65 66 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t002">2</xref>
+###xml 72 73 72 73 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t003">3</xref>
+###xml 718 726 718 726 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g003">Figure 3</xref>
+###xml 792 800 792 800 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g004">Figure 4</xref>
+The MIP Additive Curiosity algorithm performed best in Tables 1, 2, and 3, and so was used to select three 10 amino acid long regions as the Positive, Negative, and non-MIP Regions. The Positive Region from residues 96-105 had the highest average  score (.938) and contained 351 mutants predicted to be Positive out of 1900 total. The Negative Region from residues 223-232 had the highest average  score (.937) and contained 33 mutants predicted to be Positive. The non-MIP Region from residues 222-231 had the highest  score (.938) and contained 53 mutants predicted to be Positive. For comparison, the Expert Region from residues 114-123 had a  score of (.462) and contained 34 mutants predicted to be Positive. See Figure 3 for the scores across possible Positive and Negative Regions and Figure 4 for a graph illustrating those regions within the p53 core domain.
+###end p 95
+###begin title 96
+Scores for Positive and Negative Regions using Additive Curiosity.
+###end title 96
+###begin p 97
+The score at each residue is the average Additive Curiosity score for the preceding ten residues. For example, the Positive Score at residue 105 scores the region from 96-105 to test if it is the best Positive Region. The non-MIP Scores are omitted because they are nearly indistinguishable from the Negative Scores.
+###end p 97
+###begin title 98
+Regional saturation mutagenesis scores and selections.
+###end title 98
+###begin p 99
+Count indicates the number of mutants predicted to be Positive at each residue in the p53 core domain and is represented as black dots corresponding to the leftmost y-axis. Average Curiosity Score is the average Additive Curiosity score for the mutants predicted to be Positive at each residue and is represented as solid purple diamonds connected with lines and corresponding to the rightmost y-axis. The solid green circles indicate contiguous regions of 10 or more residues that have high Curiosity and are predicted to be Positive. The solid red squares indicate the contiguous regions of 10 or more residues that have high Curiosity and are predicted to be Negative. The purple diamonds indicate contiguous regions that an expert might expect to contain rescue mutants based on previous experiments. The light blue +s with the lines descending to the x-axis indicate the region explored in Baroni, et al., (2004), though this region is not treated specially, nor is even known, by the classifier. The Positive, non-MIP, Negative, and Expert regions ultimately selected are presented above the plot and labeled with P, n, N, and E respectively. No single amino acid rescue mutations had been found previously in any of the Positive, non-MIP, Negative, or Expert regions.
+###end p 99
+###begin p 100
+###xml 263 270 263 270 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vivo</italic>
+Regional Saturation Mutagenesis produced all possible single amino acid mutations in these regions combined with the 10 common cancer mutants tested. A biological selection was performed to identify all rescue mutants based on re-activation of p53 cancer mutants in vivo.
+###end p 100
+###begin p 101
+###xml 44 51 44 51 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t004">Table 4</xref>
+The summary of these results is recorded in Table 4. The Positive Region contained 8 strong and 3 weak mutants, the Expert Regions contained 6 strong and 7 weak mutants, while the Negative and non-MIP regions each contained only 2 weak mutants.
+###end p 101
+###begin title 102
+Novel Positive cancer rescue mutant counts & statistics.
+###end title 102
+###begin p 103
+The range of numbers listed below the region names are the amino acid locations covered by that region. All p-values are two-tailed p-values; the corresponding one-tailed values are half what is listed.
+###end p 103
+###begin p 104
+###xml 0 7 0 7 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t004">Table 4</xref>
+Table 4 also shows the p-values associated with the null hypothesis "Positive mutants are equally likely to be drawn from the Positive Region as the Negative, non-MIP, or Expert Region." From this analysis we are at least 99.5% confident (one-tail) that the Positive Region contains more strong cancer rescue mutants than the Negative or non-MIP Region. Similarly, we infer that there is no significant difference between the number of cancer rescue mutants in the Positive and Expert regions.
+###end p 104
+###begin title 105
+Novel p53 Cancer Rescue Mutants
+###end title 105
+###begin p 106
+###xml 106 113 106 113 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t005">Table 5</xref>
+###xml 132 139 132 139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t006">Table 6</xref>
+The novel p53 cancer rescue mutants found in the Positive, Negative, and non-MIP regions are presented in Table 5 and summarized in Table 6. Three different cancer mutants were rescued by these regions: P152L, R158L and G245S. R158L was rescued strongly by the Positive Region, and weakly by the Negative and non-MIP regions. G245S was rescued weakly by the Negative and non-MIP regions. P152L, a previously unrescued cancer mutant, was rescued only by the Positive Region, and rescued strongly.
+###end p 106
+###begin title 107
+Novel Positive cancer rescue mutants by name.
+###end title 107
+###begin p 108
+###xml 202 204 202 204 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nd</sup>
+Mutants are named with the cancer mutation appearing first with capital letters followed by the putative cancer rescue mutation(s) appearing after the underscore. P152L means that the proline at the 152nd amino acid location in p53 is mutated into a leucine. The mutants appearing italicized with a (W), e.g., P152L_k101e, etc., are weak cancer rescue mutants. All others are strong cancer rescue mutants. Artifactual Mutants are cancer rescue mutants that contained more than one cancer rescue mutation or were not in any of the regions, due to background mutagenesis and limitations in early versions of the saturation mutagenesis technique.
+###end p 108
+###begin title 109
+Novel Positive cancer rescue mutants by cancer mutation.
+###end title 109
+###begin p 110
+###xml 134 136 134 136 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">th</sup>
+###xml 208 212 208 212 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Petitjean1">[12]</xref>
+###xml 100 105 <span type="species:ncbi:9606">human</span>
+###xml 186 191 <span type="species:ncbi:9606">human</span>
+The number listed before the cancer mutant is the frequency rank of that cancer mutant occurring in human cancer. e.g., R249S is the 7th most frequent single codon p53 mutation found in human cancer biopsies [12]. Weak Positive cancer rescue mutant counts are in parentheses. Mutants marked with asterisks had never been rescued at the beginning of this study.
+###end p 110
+###begin title 111
+Other Predicted p53 Regions
+###end title 111
+###begin p 112
+###xml 99 106 99 106 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t007">Table 7</xref>
+In addition to Additive Curiosity, six other (non-Random) active learning methods were considered. Table 7 shows the Positive, Negative, and non-MIP regions selected by those other methods. The non-MIP region was similar to the Negative region due to the preponderance of predicted Negative mutants in the test set.
+###end p 112
+###begin title 113
+Region selection by active learning algorithms.
+###end title 113
+###begin p 114
+###xml 294 302 294 302 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi.1000498.s002">Table S1</xref>
+The range of numbers listed below the region names are the amino acid locations covered by that region. Note that Minimum Entropy and Maximum Marginal Hyperplane were control active learning methods designed to work particularly poorly. More details are available in the supporting information Table S1.
+###end p 114
+###begin p 115
+Minimum Entropy and Maximum Marginal Hyperplane are versions of Maximum Entropy and Minimum Marginal Hyperplane (repectively) designed to do poorly, as negative controls. Indeed, the Negative Region chosen by Minimum Entropy overlaps nine of ten residues with the Positive Region chosen by Minimum Marginal Hyperplane. Similarly the Negative Region chosen by Maximum Marginal Hyperplane overlaps eight of ten residues with the Positive Region chosen by Maximum Entropy.
+###end p 115
+###begin p 116
+###xml 114 122 114 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g005">Figure 5</xref>
+One might wonder if the classifier would have found the Expert region as a Positive Region in future experiments. Figure 5 indicates the next Positive regions that would be selected, after the mutants found in the current Positive, Negative, and non-MIP regions, but not the Expert region, were added to the training set. There, the most informative positive mutants were found in the region from 130-156, but the region 103-119 also scored well, overlapping the Expert Region (114-123). This is somewhat surprising as the classifier does not consider the Expert criteria, i.e., whether or not this residue appeared in a rescue mutant previously.
+###end p 116
+###begin title 117
+New scores for Positive Regions using new data from the non-expert regions.
+###end title 117
+###begin p 118
+###xml 211 219 211 219 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g004">Figure 4</xref>
+The score at each residue is the average Additive Curiosity score for those mutants predicted to be Positive for the preceding ten residues. The classifier here was trained with the original 463 mutants used in Figure 4, all Positive cancer rescue mutants found in the Positive, Negative, and non-MIP Regions, and all mutants from those three regions that were not Positive labeled as Negative. The vertical lines show the original Expert Region from residues 114-123.
+###end p 118
+###begin title 119
+Visualizations of Results
+###end title 119
+###begin p 120
+###xml 186 190 186 190 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Cho1">[33]</xref>
+###xml 191 195 191 195 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Pettersen1">[42]</xref>
+###xml 197 205 197 205 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g006">Figure 6</xref>
+###xml 486 494 486 494 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g007">Figure 7</xref>
+###xml 567 571 567 571 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Francois1">[36]</xref>
+###xml 633 637 633 637 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Petitjean1">[12]</xref>
+###xml 639 647 639 647 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g008">Figure 8</xref>
+###xml 700 708 700 708 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g009">Figure 9</xref>
+###xml 750 757 750 757 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t006">Table 6</xref>
+###xml 759 768 759 768 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g010">Figure 10</xref>
+###xml 804 813 804 813 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g010">Figure 10</xref>
+###xml 849 857 849 857 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g007">Figure 7</xref>
+To better understand the regions selected and their relationship to the p53 protein, it is helpful to consider molecular visualizations of p53. Here, p53 is visualized with UCSF Chimera [33],[42]. Figure 6 presents a visualization of the Positive, Negative, non-MIP, and Expert regions on the p53 core domain. It is noteworthy that all of the regions selected in this study appear near the surface of the p53 molecule even though that was not explicitly a criterion in their selection. Figure 7 shows the surface residues selected by the mutual information algorithm [36] to be significant in determining the activity of p53 mutants [12]. Figure 8 shows all known single amino acid rescue mutations. Figure 9 shows the 10 cancer mutants presented in Table 6, Figure 10 including the newly rescued P152L. Figure 10 shows a different visualization of Figure 7.
+###end p 120
+###begin title 121
+The four p53 regions visualized with the UCSF Chimera package.
+###end title 121
+###begin p 122
+The blue atoms near the DNA are the Expert Region, the red atoms near the top are the Negative and non-MIP Regions, and the green atoms near the bottom right are the Positive Region.
+###end p 122
+###begin title 123
+Surface residues selected by mutual information.
+###end title 123
+###begin p 124
+The blue atoms are those on the p53 surface ranked in the top 50 by the mutual information algorithm as influential on determining classifier accuracy.
+###end p 124
+###begin title 125
+Single cancer rescue mutations.
+###end title 125
+###begin p 126
+###xml 272 280 272 280 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g007">Figure 7</xref>
+The green atoms clustered mostly in the center of p53 are single amino acid cancer rescue mutations. The blue atoms, such as those on the left and in the lower right corner, are those single cancer rescue mutations that are also selected by mutual information as shown in Figure 7.
+###end p 126
+###begin title 127
+The ten p53 cancer mutants studied here.
+###end title 127
+###begin p 128
+The red atoms clustered primarily near the top left are those cancer mutations that are currently unrescuable. The green atoms clustered primarily near the lower left are the rescuable cancer mutations. The yellow atoms near the right are the newly rescued P152 mutation.
+###end p 128
+###begin title 129
+Rescue by p53 surface residues.
+###end title 129
+###begin p 130
+###xml 39 47 39 47 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g009">Figure 9</xref>
+The above visualization is the same as Figure 9 but rotated and with the surface displayed.
+###end p 130
+###begin title 131
+Discussion
+###end title 131
+###begin p 132
+This paper introduced Most Informative Positive (MIP) active learning, based on machine learning techniques and modeled structure-based features, to help guide biological experiments. The method discovered novel and informative positive results.
+###end p 132
+###begin title 133
+Medical Significance of the Data Set
+###end title 133
+###begin p 134
+The ten different cancer mutants studied here account for about one million diagnosed cancers per year. The rescue of cancer mutant P152L by a mutation in the Positive Region is the first report that this common cancer mutant can be rescued at all.
+###end p 134
+###begin p 135
+###xml 4 13 4 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in silico</italic>
+###xml 319 328 319 328 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g010">Figure 10</xref>
+The in silico identification and biological verification of a new cancer rescue region is a small but hopefully useful step towards selection of p53 surface regions that potentially result in p53 cancer rescue when appropriately modified. Such regions eventually might be targeted by small molecule drugs. For example, Figure 10 shows an area on the surface of the p53 core domain that is: (1) away from the DNA binding region; (2) overlapping or adjacent to the Positive Region; (3) implicated by mutual information as influential in determining p53 activity; and (4) located where structural changes restore functional activity to some cancerous p53 mutants. Better knowledge of p53 mutant structure-function relationships eventually might lead to successful pharmaceutical manipulation of p53 mutant function.
+###end p 135
+###begin p 136
+###xml 152 156 152 156 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Bullock1">[22]</xref>
+###xml 157 161 157 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Martin1">[25]</xref>
+It has been hypothesized that different p53 cancer rescue mutants have different rescue mechanisms corresponding to different types of cancer mutations [22],[25]. For example, the Expert Region rescued the more frequent p53 cancer mutant G245S while the Positive Region did not. Conversely, the Positive Region is unique in its ability to rescue the P152L mutant. Different rescue regions may implement different rescue mechanisms, and so contribute different facets to knowledge of cancer rescue.
+###end p 136
+###begin title 137
+Extensions
+###end title 137
+###begin p 138
+###xml 5 13 5 13 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g004">Figure 4</xref>
+###xml 616 620 616 620 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Buchanan1">[43]</xref>
+###xml 733 737 733 737 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi.1000498-Leach1">[44]</xref>
+From Figure 4, the Expert Region had both low average curiosity (.462) and relatively few (34) mutants predicted Positive. Thus, this region was not selected by the classifier, yet a significant number of rescue mutants were identified in this region. This is not surprising, as the classifier was not directly exposed to the criteria used for selecting the Expert Region. Conversely, it is not surprising that an expert cancer biologist could pick a fruitful region for reasons unknown to the classifier. Adding expert-level knowledge to a performance system is a long-time success story of artificial intelligence [43]. Integrating diverse expert sources and methods using bioinformatics leads to biomedical discovery acceleration [44]. Adding new features that encode expert or literature knowledge directly into the feature vector that encodes each example is one simple way to make expert knowledge visible to any feature-based learning system.
+###end p 138
+###begin p 139
+Similarly, the classifier does not now weigh the medical impact of different p53 cancer mutants. Cancer mutation occurrence frequencies were not given to the classifier, so it is not surprising that it rescued a less frequent cancer mutant than did the expert. Weighting by cancer mutation frequency, or by any other desired utility function, is one simple way to implement a selection preference for some informative Positives over others.
+###end p 139
+###begin title 140
+Conclusion
+###end title 140
+###begin p 141
+MIP active learning using modeled structural features was introduced and shown to be a useful framework for function-based biological research. It provided an analysis tool yielding results that otherwise would have been unexpected or unavailable.
+###end p 141
+###begin p 142
+From the perspective of a biologist, the computer-selected Positive Region would not have been chosen as a potential region for cancer rescue: It did not contain any known cancer rescue mutants, and none of the random biology-based approaches had ever identified rescue activity in this region. This result provides a proof-of-concept that a computational classifier and modeled structure-based features can provide insight to help guide function-based experimental discovery.
+###end p 142
+###begin title 143
+Availability
+###end title 143
+###begin p 144
+###xml 99 109 99 109 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi.1000498.s001">Dataset S1</xref>
+All code and data used in this paper is freely available online at . The data is also available in Dataset S1.
+###end p 144
+###begin p 145
+All mutant DNA vectors are available under standard material transfer agreements through the UCI Office of Technology Alliances ().
+###end p 145
+###begin title 146
+Supporting Information
+###end title 146
+###begin p 147
+###xml 42 51 42 51 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g003">Figures 3</xref>
+###xml 54 55 54 55 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-1000498-g005">5</xref>
+###xml 85 92 85 92 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t007">Table 7</xref>
+The raw curiosity scores used to generate Figures 3 & 5 and select the regions shown Table 7.
+###end p 147
+###begin p 148
+(2.17 MB ZIP)
+###end p 148
+###begin p 149
+Click here for additional data file.
+###end p 149
+###begin p 150
+###xml 0 7 0 7 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-1000498-t007">Table 7</xref>
+###xml 124 134 124 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi.1000498.s001">Dataset S1</xref>
+Table 7 - Region Selection by Active Learning Algorithms as dynamically generated by Microsoft Excel. Intended for use with Dataset S1.
+###end p 150
+###begin p 151
+(0.23 MB XLS)
+###end p 151
+###begin p 152
+Click here for additional data file.
+###end p 152
+###begin p 153
+Active Learning Related Symbols
+###end p 153
+###begin p 154
+(0.06 MB DOC)
+###end p 154
+###begin p 155
+Click here for additional data file.
+###end p 155
+###begin p 156
+Thanks to Amanda Danziger for graphical design services, Dr. Rainer K. Brachmann for suggesting the Expert Region, and the blind reviewers for helpful improvements.
+###end p 156
+###begin title 157
+References
+###end title 157
+###begin article-title 158
+The folding of an enzyme. I. Theory of protein engineering analysis of stability and pathway of protein folding.
+###end article-title 158
+###begin article-title 159
+###xml 133 149 <span type="species:ncbi:562">Escherichia coli</span>
+Protein engineering of antibody binding sites: recovery of specific activity in an anti-digoxin single-chain Fv analogue produced in Escherichia coli.
+###end article-title 159
+###begin article-title 160
+Functional census of mutation sequence spaces: the example of p53 cancer rescue mutants.
+###end article-title 160
+###begin article-title 161
+Choosing where to look next in a mutation sequence space: Active Learning of informative p53 cancer rescue mutants.
+###end article-title 161
+###begin article-title 162
+Enzyme optimization: moving from blind evolution to statistical exploration of sequence-function space.
+###end article-title 162
+###begin article-title 163
+###xml 70 100 <span type="species:ncbi:1422">Geobacillus stearothermophilus</span>
+###xml 109 126 <span type="species:ncbi:45353">Candida methylica</span>
+Protein engineering applications of industrially exploitable enzymes: Geobacillus stearothermophilus LDH and Candida methylica FDH.
+###end article-title 163
+###begin article-title 164
+Semirational design of active tumor suppressor p53 DNA binding domain with enhanced stability.
+###end article-title 164
+###begin article-title 165
+###xml 82 87 <span type="species:ncbi:9606">human</span>
+High-resolution structural and thermodynamic analysis of extreme stabilization of human procarboxypeptidase by computational protein design.
+###end article-title 165
+###begin article-title 166
+p53 Activation: a case against Sir.
+###end article-title 166
+###begin article-title 167
+###xml 17 22 <span type="species:ncbi:9606">human</span>
+p53 mutations in human cancers.
+###end article-title 167
+###begin article-title 168
+Understanding the function-structure and function-mutation relationships of p53 tumor suppressor protein by high-resolution missense mutation analysis.
+###end article-title 168
+###begin article-title 169
+Impact of mutant p53 functional properties on TP53 mutation patterns and tumor phenotype: lessons from recent developments in the IARC TP53 database.
+###end article-title 169
+###begin article-title 170
+A global suppressor motif for p53 cancer mutants.
+###end article-title 170
+###begin article-title 171
+Genetic selection of intragenic suppressor mutations that reverse the effect of common p53 cancer mutations.
+###end article-title 171
+###begin article-title 172
+The screening of the second-site suppressor mutations of the common p53 mutants.
+###end article-title 172
+###begin article-title 173
+Cancer biology: gone but not forgotten.
+###end article-title 173
+###begin article-title 174
+Restoration of p53 function leads to tumour regression in vivo.
+###end article-title 174
+###begin article-title 175
+###xml 67 73 <span type="species:ncbi:10090">murine</span>
+Senescence and tumour clearance is triggered by p53 restoration in murine liver carcinomas.
+###end article-title 175
+###begin article-title 176
+Discovery, in vivo activity, and mechanism of action of a small-molecule p53 activator.
+###end article-title 176
+###begin article-title 177
+Small molecules that reactivate mutant p53.
+###end article-title 177
+###begin article-title 178
+Restoring p53-dependent tumor suppression.
+###end article-title 178
+###begin article-title 179
+Rescuing the function of mutant p53.
+###end article-title 179
+###begin article-title 180
+###xml 35 40 <span type="species:ncbi:9606">human</span>
+p53 mutants: the achilles' heel of human cancers?
+###end article-title 180
+###begin article-title 181
+PRIMA-1 reactivates mutant p53 by covalent binding to the core domain.
+###end article-title 181
+###begin article-title 182
+Integrating mutation data and structural analysis of the TP53 tumor-suppressor protein.
+###end article-title 182
+###begin article-title 183
+Structures of p53 cancer mutants and mechanism of rescue by second-site suppressor mutations.
+###end article-title 183
+###begin article-title 184
+A method for localizing ligand binding pockets in protein structures.
+###end article-title 184
+###begin article-title 185
+Analysis of void volumes in proteins and application to stability of the p53 tumour suppressor protein.
+###end article-title 185
+###begin article-title 186
+Active Learning with Statistical Models.
+###end article-title 186
+###begin article-title 187
+Active Sampling for Class Probability Estimation and Ranking.
+###end article-title 187
+###begin article-title 188
+Active learning for information extraction with multiple view feature sets.
+###end article-title 188
+###begin article-title 189
+Toward Optimal Active Learning through Sampling Estimation of Error Reduction.
+###end article-title 189
+###begin article-title 190
+Crystal structure of a p53 tumor suppressor-DNA complex: understanding tumorigenic mutations.
+###end article-title 190
+###begin article-title 191
+Binding of Rad51 and other peptide sequences to a promiscuous, highly electrostatic binding site in p53.
+###end article-title 191
+###begin article-title 192
+Fast Binary Feature Selection with Conditional Mutual Information.
+###end article-title 192
+###begin article-title 193
+Support vector machines.
+###end article-title 193
+###begin article-title 194
+A unified framework for image retrieval using keyword and visual features.
+###end article-title 194
+###begin article-title 195
+###xml 27 32 <span type="species:ncbi:9606">human</span>
+Bayesian surprise attracts human attention.
+###end article-title 195
+###begin article-title 196
+Assessing the accuracy of prediction algorithms for classification: an overview.
+###end article-title 196
+###begin article-title 197
+Data mining: practical machine learning tools and techniques.
+###end article-title 197
+###begin article-title 198
+UCSF Chimera-a visualization system for exploratory research and analysis.
+###end article-title 198
+###begin article-title 199
+Rule Based Expert Systems: The Mycin Experi-ments of the Stanford Heuristic Programming Project.
+###end article-title 199
+###begin article-title 200
+Biomedical discovery acceleration, with applications to craniofacial development.
+###end article-title 200
+###begin p 201
+The authors have declared that no competing interests exist.
+###end p 201
+###begin p 202
+This work was supported in part by the National Institute of Health (NIH) Biomedical Informatics Training grant [grant number LM-07443] to SD, the NIH BISTI grant [grant number CA-112560], and the NSF [grant number IIS-0326037]. URL: . The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.
+###end p 202
+

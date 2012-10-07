@@ -1,0 +1,650 @@
+###begin article-title 0
+NullHap - a versatile application to estimate haplotype frequencies from unphased genotypes in the presence of null alleles
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+Laboratory techniques used to determine haplotypes are often too expensive for large-scale studies and lack of phase information is commonly overcome using likelihood-based calculations. Whereas a number of programs are available for that purpose, none of them can handle loci with both multiple and null alleles.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 268 272 268 272 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR </italic>
+###xml 341 352 341 352 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS4/1D </italic>
+###xml 377 385 377 385 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS1 </italic>
+###xml 302 310 <span type="species:ncbi:9606">patients</span>
+Here we present a description of a modified Expectation - Maximization algorithm as well as its implementation (NullHap) which allow to effectively overcome these limitations. As an example of application we used Nullhap to reanalyze published data on distribution of KIR genotypes in Polish psoriasis patients and controls showing that the KIR2DS4/1D locus may be a marker of KIR2DS1 haplotypes with different effects on disease susceptibility.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+The developed application can estimate haplotype frequencies for every type of polymorphism and can effectively be used in genetic research as illustrated by a novel finding regarding the genetic susceptibility to psoriasis.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 52 53 52 53 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 228 229 228 229 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 414 415 414 415 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 479 480 479 480 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+Laboratory techniques used to determine haplotypes [1] are often too expensive for large-scale studies. The lack of phase information provided by the popular typing methods could be overcome using likelihood-based calculations [2], which estimate haplotype frequencies in a population, and reconstruct the haplotype pair in each individual. This approach is more cost-effective and powerful than linkage analysis [3], and gives more information than single marker-based methods [4].
+###end p 9
+###begin p 10
+###xml 139 140 139 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 192 193 192 193 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 279 280 279 280 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 303 304 303 304 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 320 321 320 321 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 348 350 348 350 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+Haplotype estimation procedures typically use maximum likelihood approach. The most popular algorithm implemented for example in Arlequin [5] is The Expectation - Maximization algorithm (EM) [6] but other methods were also proposed: Bayesian method using a pseudo-Gibbs sampler [7], partition-ligation [8], Monte Carlo [9] and Hidden Markov Model [10].
+###end p 10
+###begin p 11
+###xml 52 53 52 53 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 54 55 54 55 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 429 431 429 431 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 487 488 487 488 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 488 490 488 490 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 514 515 514 515 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 515 516 515 516 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 565 566 565 566 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 566 567 566 567 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 568 569 568 569 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 569 570 569 570 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 572 573 572 573 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 573 574 573 574 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 575 576 575 576 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 576 578 576 578 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 582 583 582 583 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 583 584 583 584 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 585 586 585 586 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 586 587 586 587 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 638 639 638 639 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 639 641 639 641 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 645 646 645 646 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 646 647 646 647 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 720 722 720 722 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 817 820 817 820 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR</italic>
+A frequent shortage of available software packages [5,7] is the lack of possibility to analyze loci where null variants occur with an appreciable frequency. In a diploid organism, a null allele is a variant which is not detected in genotyping, because of a deletion of an entire locus or because of a mutation interfering with analysis. This makes it impossible to distinguish between some heterozygous and homozygous genotypes [11]. For example, if there is only one alternative allele A1 besides the null allele A0, then there are three possible haplotype pairs: A1/A1, A1/A0 and A0/A0, but only two kinds of experimental observations: A0 and A1. An example of a genetic system, which is at present intensely studied [11] and which contains null alleles, is the locus encoding killer immunoglobulin-like receptors (KIR) of natural killer (NK) cells.
+###end p 11
+###begin p 12
+###xml 100 102 100 102 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+To our knowledge, the only available computer program designed to handle null alleles is Haplo-IHP [12], which, however, has a shortcoming of being applicable only to biallelic loci. The purpose of our work was to design a versatile application for estimation of haplotypes from unphased population data useful for multiallelic polymorphism with and/or without null alleles.
+###end p 12
+###begin title 13
+Implementation
+###end title 13
+###begin p 14
+###xml 61 63 61 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G </italic>
+###xml 109 111 109 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 160 161 160 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l</italic>
+###xml 161 163 161 163 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 161 163 161 163 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 224 225 224 225 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 236 241 236 237 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#948;</italic>
+###xml 241 243 237 239 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 241 243 237 239 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 250 251 246 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 288 293 284 285 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#948;</italic>
+###xml 293 295 285 287 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 293 295 285 287 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+The null variants decrease the number of different genotypes G which can be observed, equation (1), when the k polymorphic loci are analyzed and each locus has li different variants (optionally including a null variant) for i-th locus, deltai = 1 if i-th locus has null allele, otherwise deltai = 0. The number of haplotypes is .
+###end p 14
+###begin p 15
+
+###end p 15
+###begin p 16
+###xml 64 66 64 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 303 304 303 304 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 304 306 304 306 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 304 306 304 306 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+###xml 326 327 326 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 335 336 335 336 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 336 338 336 338 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 336 338 336 338 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+###xml 381 382 381 382 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 382 384 382 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 382 384 382 384 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+The average number of haplotype resolutions which give genotype j (when phase information is lost) grows exponentially with the number of observed loci, thus full space search algorithm cannot be used to find the best haplotype frequencies. The equation (2) provides the number of haplotype resolutions rj which give genotype j, where sj is the number of observed heterozygous and tj is the number of observed (not null) alleles for loci with null allele(s).
+###end p 16
+###begin p 17
+
+###end p 17
+###begin title 18
+Maximum likelihood approach to estimate haplotypes
+###end title 18
+###begin p 19
+###xml 57 58 57 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+###xml 58 60 58 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 58 60 58 60 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 177 179 177 179 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 217 219 217 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 222 223 222 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 223 224 223 224 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 226 227 226 227 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 227 228 227 228 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 234 235 234 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 235 236 235 236 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 235 236 235 236 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>G</italic></sub>
+###xml 245 247 245 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G </italic>
+###xml 344 345 344 345 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 345 347 345 347 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 345 347 345 347 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+###xml 383 384 383 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+In the maximum likelihood approach haplotype frequencies hi are estimated to maximize the probability of the given sample of genotyping data. The sample of genotyping data from n individuals is simplified to a vector S = (n1, n2,..., nG), where G is the number of different genotyping data (with a lack of phase information, equation (1)), and nj is the number of individuals having j-th genotype, .
+###end p 19
+###begin p 20
+###xml 38 39 38 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 73 74 73 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 74 75 74 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 74 75 74 75 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 168 174 168 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 193 194 189 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 194 195 190 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 194 195 190 191 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic></sub>
+The conditional probability of sample S, given each genotype probability gi, and assuming unrelatedness of individuals in the sample is provided in equation (3), where alpha does not depend on gj.
+###end p 20
+###begin p 21
+
+###end p 21
+###begin p 22
+###xml 26 27 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 27 29 27 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 27 29 27 29 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+###xml 85 86 85 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z</italic>
+###xml 86 88 86 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mn</italic>
+###xml 86 88 86 88 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>mn</italic></sub>
+###xml 220 221 220 221 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z</italic>
+###xml 221 224 221 224 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mn </italic>
+###xml 221 224 221 224 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>mn </italic></sub>
+###xml 259 261 259 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 265 266 265 266 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 268 269 268 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 269 271 269 271 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 269 271 269 271 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+###xml 312 313 312 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 344 345 344 345 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+###xml 345 346 345 346 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 345 346 345 346 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m</italic></sub>
+###xml 348 349 348 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+###xml 349 351 349 351 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 349 351 349 351 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>n </italic></sub>
+###xml 385 387 385 387 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 391 393 391 393 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+The frequency of genotype gj is the sum of frequencies of respective haplotype pairs zmn, and with Hardy-Weinberg equilibrium (HWE) assumption, it is calculated from haplotype frequencies as shown in equation (4), where zmn is the frequency of haplotype pair m and n, rj is the number of haplotype pairs for the j-th genotype (equation 2), and hm, hn are the frequencies of haplotypes m and n respectively.
+###end p 22
+###begin p 23
+
+###end p 23
+###begin p 24
+The estimation of haplotype frequencies to maximize the probability of the observed sample can be described as optimization, the equation (5) summarizes the considered approach.
+###end p 24
+###begin p 25
+
+###end p 25
+###begin title 26
+Extended EM algorithm
+###end title 26
+###begin p 27
+###xml 57 58 57 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 59 60 59 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 58 61 58 61 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>t</italic>)</sup>
+###xml 187 188 187 188 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 189 190 189 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 188 191 188 191 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>t</italic>)</sup>
+###xml 308 309 308 309 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 310 311 310 311 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 309 313 309 313 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>t</italic>) </sup>
+###xml 349 350 349 350 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 351 352 351 352 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 350 356 350 356 <sup xmlns:xlink="http://www.w3.org/1999/xlink">(<italic>t</italic>+1) </sup>
+The EM alternates between performing an expectation step E(t), which computes an expectation value of unknown parameters, here the frequencies of haplotype pairs, and a maximization step M(t), which computes the value of parameters by maximizing the probability of observed data. The parameters found on the M(t) step are then used to begin another E(t+1) step, and the process is repeated until the parameters are changed.
+###end p 27
+###begin p 28
+###xml 71 73 71 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 86 87 86 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l</italic>
+###xml 87 89 87 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 87 89 87 89 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 102 103 102 103 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 129 131 129 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 134 135 134 135 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 135 136 135 136 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 138 139 138 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 139 140 139 140 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 146 147 146 147 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 147 148 147 148 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 147 148 147 148 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>G</italic></sub>
+The description of algorithm details for the observed genotype data of k linked loci, li variants for i-th locus, and the sample S = (n1, n2,..., nG) is given below.
+###end p 28
+###begin title 29
+Initiation
+###end title 29
+###begin p 30
+###xml 198 200 198 200 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 239 244 239 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i-th </italic>
+###xml 311 316 311 316 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i-th </italic>
+The EM algorithm could be trapped into a local maximum, therefore multiple random starts are employed (any number determined by the user) in order to help the algorithm reach the global maximum. If n > 1 starting points are specified, for i-th point, the program calculates the mean error between the first and i-th estimate, and if this exceeds a predefined value (default = 0.05) a message is displayed about possible multiple local maxima. Since this feature increases computational time, it is optional.
+###end p 30
+###begin p 31
+###xml 111 112 111 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 112 114 112 114 <sup xmlns:xlink="http://www.w3.org/1999/xlink">0 </sup>
+###xml 282 283 282 283 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+If no random starts are used, the initial haplotype pair frequencies are set as described in equation (6) (the E0 step). For each haplotype resolution, the initial frequency depends only on the number of haplotype pairs for the given genotype. A similar initiation is described in [6].
+###end p 31
+###begin p 32
+
+###end p 32
+###begin title 33
+Maximization step
+###end title 33
+###begin p 34
+In this step, the typical EM algorithm was adopted, the only modification consisting of the fact that the genotype frequency calculation was performed as a sum of corresponding haplotype pair frequencies, equation (4), taking into account that the heterozygotes with null allele are genotyped identically as homozygotes without null allele.
+###end p 34
+###begin p 35
+###xml 372 373 372 373 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 373 375 373 375 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 373 375 373 375 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+###xml 411 412 411 412 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g</italic>
+###xml 412 414 412 414 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 412 414 412 414 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j </italic></sub>
+###xml 428 430 428 430 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+Next, the haplotype pair frequencies are corrected, to maximize the probability of a given sample. Details are given in equation (7), where  is the input haplotype pair frequency,  is the calculated genotype frequency (inclusive of appropriate heterozygous genotypes with null variants),  is the output haplotype pair frequency, corrected to maximize the observed sample, nj is the number of observed genotypes gj in sample and n is the number individuals in the sample.
+###end p 35
+###begin p 36
+
+###end p 36
+###begin title 37
+Expectation step
+###end title 37
+###begin p 38
+###xml 22 23 22 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+###xml 23 24 23 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 23 24 23 24 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m</italic></sub>
+###xml 83 84 83 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z</italic>
+###xml 84 86 84 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mn</italic>
+###xml 84 86 84 86 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>mn</italic></sub>
+Haplotype frequencies hms are calculated from the given haplotype pair frequencies zmns, as a half of the sum of frequencies of all pairs of haplotypes in which given haplotype occurs. The next expected haplotype pair frequencies are calculated using haplotype frequencies as described in equation (8).
+###end p 38
+###begin p 39
+
+###end p 39
+###begin title 40
+Stop conditions
+###end title 40
+###begin p 41
+###xml 173 181 173 175 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#949; </italic>
+###xml 227 235 221 229 <italic xmlns:xlink="http://www.w3.org/1999/xlink">epsilon </italic>
+###xml 240 242 234 236 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-5</sup>
+The algorithm stops, when the stability of estimations between the following steps is obtained, i.e. the absolute difference between the calculated frequencies is less then epsilon (equation 9). The default threshold value for epsilon is 10-5, and can be changed by a program option.
+###end p 41
+###begin p 42
+
+###end p 42
+###begin p 43
+The final step is calculation of the haplotype frequencies (another E step), and of the conditional probability of the haplotype pair, given genotype estimation (equation 10).
+###end p 43
+###begin p 44
+
+###end p 44
+###begin title 45
+Results and Discussion
+###end title 45
+###begin p 46
+###xml 75 77 75 77 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+The described algorithm was implemented using C++ and the Boost libraries [13] and called NullHap. The main advantage of our application is the ability to handle problems, when one or more multiallelic loci containing null variant occur.
+###end p 46
+###begin p 47
+###xml 139 140 139 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 150 151 150 151 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 168 170 168 170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+NullHap was tested on simulated and real data sets and its performance was compared with those of previously described programs: Arlequin [5], PHASE [7] and Haplo-IHP [12].
+###end p 47
+###begin title 48
+Test on generated data sets
+###end title 48
+###begin p 49
+###xml 318 319 318 319 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 330 331 330 331 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 463 465 463 465 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 495 496 495 496 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+Firstly, the simulated data sets were obtained as the most probable samples generated for polymorphisms with varying locus characteristics, and accuracy of estimated frequencies for different computer programs was analyzed. An example of assumed and estimated frequencies used in one such simulation is shown in Table 1. In Table 2, results of six simulations are summarized by giving a mean absolute percentage error, calculated as shown in equation (11), where x is the assumed frequency, and x* is the calculated one.
+###end p 49
+###begin p 50
+Assumed and estimated haplotype frequencies
+###end p 50
+###begin p 51
+The assumed and estimated haplotype frequencies for a polymorphism with 3 loci: A(multiallelic with null variant), B(multiallelic), C(biallelic with null variant).
+###end p 51
+###begin p 52
+Haplotype estimation frequency error
+###end p 52
+###begin p 53
+Haplotype estimation frequency error for six polymorphisms with varying locus characteristics.
+###end p 53
+###begin p 54
+
+###end p 54
+###begin p 55
+Since it may not be known beforehand, whether a locus has a null allele, we also checked performance of NullHap which was run assuming the presence of a null allele in each locus. Such an approach allows to screen the likelihood of the presence of a null allele in a given locus by evaluating the frequencies of haplotypes containing this allele. An appreciable frequency of any such haplotype in the output indicates the need to include a null allele in this particular locus. Otherwise, the conclusion is, that given locus most likely does not contain a null variant. Alternatively, genotypes of each locus could be analyzed for deviation from HWE by any of the available programs. When typing mistakes are excluded, deviation from HWE strongly indicates the presence of a null allele.
+###end p 55
+###begin p 56
+###xml 115 117 115 117 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 269 271 269 271 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 315 317 315 317 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 475 476 475 476 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 503 504 503 504 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+Secondly, the effect of sample size on the performance of the method was investigated. This was done by generating k random samples of 25, 50, 100, 200, 500 and 1000 individuals from an infinite population in HWE. The haplotype frequencies were estimated and median of k mean absolute errors (calculated as , where N is the number of individuals in the sample) was calculated. The results obtained for haplotype distributions such as those given in examples 5 and 6 in Table 2 are illustrated in Figure 1. As can be seen, with a sample size of 200 individuals, an error of approximately 2% can be expected in haplotype frequency estimation, whereas a lower sample size may lead to substantially higher errors.
+###end p 56
+###begin p 57
+###xml 0 47 0 47 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Effect of sample size on accuracy of estimation</bold>
+Effect of sample size on accuracy of estimation. Effect of sample size on accuracy of estimation of haplotype frequencies. Ten samples of 25, 50, 100, 200, 500, 1000 individuals were generated from population in HWE. The error in function of sample size is shown. The haplotype distribution is given in example 5 (red) and example 6 (blue) in Table 2, respectively.
+###end p 57
+###begin p 58
+###xml 202 204 202 204 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f </italic>
+###xml 224 226 224 226 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 227 229 227 229 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+Thirdly, tests of the effect of different levels of HWE violation on the accuracy of the algorithm were performed. The degree of HWE violation was modeled by increasing values of inbreeding coefficient f as defined by Weir [14,15], equation (12).
+###end p 58
+###begin p 59
+
+###end p 59
+###begin p 60
+###xml 27 28 27 28 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 87 89 87 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f </italic>
+As can be seen from Figure 2, there was a linear correlation of inbreeding coefficient f with the accuracy of estimation of haplotype frequencies.
+###end p 60
+###begin p 61
+###xml 0 49 0 49 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Effect of HWE violation on accuracy of estimation</bold>
+###xml 174 176 174 176 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f </italic>
+Effect of HWE violation on accuracy of estimation. Effect of HWE violation on the accuracy of the algorithm. The figure shows the error in function of inbreeding coefficient f for two polymorphisms characterized in Table 2 (example 5 - red line, example 6 - blue line).
+###end p 61
+###begin p 62
+###xml 195 197 195 197 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A </italic>
+###xml 211 212 211 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 212 213 212 213 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 215 216 215 216 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 216 217 216 217 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 219 220 219 220 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 220 222 220 222 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 226 228 226 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B </italic>
+###xml 242 243 242 243 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 243 244 243 244 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 246 247 246 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 247 248 247 248 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 280 281 280 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 281 282 281 282 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 282 283 282 283 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 283 284 283 284 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 286 287 286 287 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 287 288 287 288 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 288 289 288 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 289 290 289 290 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 292 293 292 293 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 293 294 293 294 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 294 295 294 295 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 295 296 295 296 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 298 299 298 299 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 299 300 299 300 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 300 301 300 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 301 302 301 302 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 304 305 304 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 305 306 305 306 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 306 307 306 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 307 309 307 309 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 419 420 419 420 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 420 421 420 421 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 421 422 421 422 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 422 424 422 424 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 547 548 547 548 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+Finally, to evaluate the effect of haplotype frequency on the error of the estimation, 10 samples of 1000 individuals were generated from a population in HWE, for a simple two loci polymorphism: A with variants A0, A1, A2 and B with variants B0, B1. The frequencies of haplotypes A0B1, A1B0, A1B1, A2B0, A2B1 were fixed and equal to 0.19, 0.18, 0.16, 0.1, 0.04 and 0.02 respectively, whereas the frequency of haplotype A0B0 varied from 0.05 to 0.9. Results expressed as median of mean absolute percentage error (equation (11)) are shown in Figure 3. As can be seen, the lowest error occured with haplotype frequency close to 0.5.
+###end p 62
+###begin p 63
+###xml 0 60 0 60 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Effect of haplotype frequency on the error of the estimation</bold>
+###xml 238 239 238 239 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 239 240 239 240 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 242 243 242 243 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 243 244 243 244 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 246 247 246 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 247 249 247 249 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 269 270 269 270 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 270 271 270 271 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 273 274 273 274 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 274 275 274 275 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+Effect of haplotype frequency on the error of the estimation. Effect of haplotype frequency on the error of the estimation. Ten samples of 1000 individuals were generated for population in HWE, for a 2 locus polymorphism: A with variants A0, A1, A2 and B with variants B0, B1. The graph shows the error of haplotype frequency estimation in function of assumed frequency of this haplotype.
+###end p 63
+###begin title 64
+Performance tests
+###end title 64
+###begin p 65
+###xml 139 140 139 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+We also performed analysis of computational time in different scenarios. Results presented for appropriate applications are shown in Table 3. All computations were achieved on Celeron M 1.6 GHz, 1 GB RAM, under Debian Linux or Windows XP.
+###end p 65
+###begin p 66
+Computational time comparison
+###end p 66
+###begin p 67
+Computational time for considered applications (HaploIHP in parenthesis with greedy algorithm). Results presented only for applications able to handle the given polymorphism, otherwise '-'.
+###end p 67
+###begin p 68
+Because the number of haplotypes grows exponentially with the number of considered loci, there is a practical restriction to approximately 50,000 haplotypes, e.g. 15 biallelic loci. We noted with moderate number of loci the restriction is due to computational time, whereas for the very large number of loci (e.g. 100 loci) the memory becomes a limiting factor.
+###end p 68
+###begin title 69
+Tests on real data sets
+###end title 69
+###begin p 70
+###xml 46 55 46 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HLA-DRB1 </italic>
+###xml 59 68 59 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">HLA-DQB1 </italic>
+###xml 120 121 120 121 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+To perform a test on real data, we first used HLA-DRB1 and HLA-DQB1 allele distributions among 99 Poles as supplied by [5]. Both loci are multiallelic (36 and 14 variants, respectively) without null variants. The difference between estimated frequencies among programs Arlequin, PHASE and NullHap (i.e. programs handling such loci) was less than 2%.
+###end p 70
+###begin p 71
+###xml 82 86 82 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR </italic>
+###xml 120 122 120 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+To test the application in the presence of biallelic loci with null variants, the KIR genotypes for 200 Irish subjects [12] were analyzed with NullHap and Haplo-IHP (the only available program suitable for such loci). The difference of estimated frequencies between programs was about 3%.
+###end p 71
+###begin title 72
+Reanalysis of published data indicates that the KIR2DS4/1D locus may be a marker of KIR2DS1 haplotypes with different effects on psoriasis susceptibility
+###end title 72
+###begin p 73
+###xml 129 133 129 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR </italic>
+###xml 186 188 186 188 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 261 269 261 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS1 </italic>
+###xml 357 359 357 359 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 360 362 360 362 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 409 411 409 411 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 468 470 468 470 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 493 497 493 497 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR </italic>
+###xml 522 530 522 530 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS1 </italic>
+###xml 599 603 599 603 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR </italic>
+###xml 662 664 662 664 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 163 171 <span type="species:ncbi:9606">patients</span>
+In order to apply NullHap to real data from an association study we reanalyzed the results of Luszczek et al. on distribution of KIR genotypes in Polish psoriasis patients and controls [16]. In the original report these authors described an association between KIR2DS1 and psoriasis, which was also observed in two subsequent studies from Japan and the US [17,18], but not in a study a of Chinese population [19]. Further analysis of genotype data of Luszczek et al. [16] indicated a role for KIR gene variants other than KIR2DS1 in conferring susceptibility to psoriasis, suggesting, that distinct KIR haplotypes could be responsible for observed associations [20].
+###end p 73
+###begin p 74
+###xml 21 25 21 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR </italic>
+###xml 105 106 105 106 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 137 141 137 141 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR </italic>
+###xml 299 312 299 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink">K2DL2/KIR2DL3</italic>
+###xml 314 326 314 326 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIRDS4/KIR1D</italic>
+###xml 332 348 332 348 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS3/KIR2DS5 </italic>
+###xml 400 408 400 408 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS3 </italic>
+###xml 412 420 412 420 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS5 </italic>
+###xml 501 503 501 503 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 610 612 610 612 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 42 50 <span type="species:ncbi:9606">patients</span>
+The distributions of KIR haplotypes among patients and controls obtained with NullHap are given in Table 4. Because the structure of the KIR region is very complex, it is not fully known which genes are truly allelic, i.e. occupy precisely the same chromosomal locus. At first, in our analysis, the K2DL2/KIR2DL3, KIRDS4/KIR1D, and KIR2DS3/KIR2DS5 genes were treated as alleles. Since in the case of KIR2DS3 and KIR2DS5 this may be controversial due to some haplotypes which harbor both genes in cis [21], we also repeated the analysis after exclusion of these variants. In all loci a null allele was allowed [21].
+###end p 74
+###begin p 75
+The distribution of KIR haplotypes
+###end p 75
+###begin p 76
+*with Bonferroni correction (correction factor = 18)
+###end p 76
+###begin p 77
+###xml 20 24 20 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR </italic>
+###xml 143 145 143 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 260 262 260 262 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 51 59 <span type="species:ncbi:9606">patients</span>
+The distribution of KIR haplotypes among psoriasis patients and controls obtained with NullHap based on genotypes reported by Luszczek et al. [16]. Only haplotypes with frequency > 5% in either group are shown. Odds ratio (OR) calculated according to Haldane [22], P value calculated by Fisher exact test. NS -not significant.
+###end p 77
+###begin p 78
+###xml 26 27 26 27 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 142 150 142 150 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS1 </italic>
+###xml 218 220 218 220 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 221 223 221 223 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 330 338 330 338 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS3 </italic>
+###xml 360 362 360 362 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 427 435 427 435 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS1 </italic>
+###xml 513 521 513 521 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS5 </italic>
+###xml 601 603 601 603 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 639 647 639 647 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS5 </italic>
+###xml 650 657 650 657 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2D3 </italic>
+###xml 719 727 719 727 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS1 </italic>
+###xml 763 764 763 764 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 810 818 810 818 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS1 </italic>
+###xml 859 870 859 870 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS4/1D </italic>
+###xml 955 958 955 958 <italic xmlns:xlink="http://www.w3.org/1999/xlink">1D </italic>
+###xml 1011 1019 1011 1019 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS4 </italic>
+###xml 1049 1060 1049 1060 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS4/1D </italic>
+###xml 1130 1138 1130 1138 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS3 </italic>
+###xml 1142 1150 1142 1150 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS5 </italic>
+###xml 1212 1213 1212 1213 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 93 101 <span type="species:ncbi:9606">patients</span>
+###xml 479 487 <span type="species:ncbi:9606">patients</span>
+As can be seen from Table 4, two haplotypes (#1, #2) were strongly overrepresented among the patients. The fact that these haplotypes encoded KIR2DS1 is consistent with the association between this gene and psoriasis [16-18] whereas the lower OR associated with haplotype #2 vs. #1 (27 vs. 52.5) supports the protective effect of KIR2DS3 suggested previously [20]. In contrast to haplotypes #1 and #2 other haplotypes encoding KIR2DS1 (#4, #6) were not overrepresented among the patients. Both haplotypes encoded KIR2DS5 which could be interpreted as the postulated protective effect of this variant [20]. However, whereas the presence of KIR2DS5 or KIR2D3 offers one explanation of the heterogeneity of the effects of KIR2DS1 haplotypes, the inspection of Table 4 shows that the risk - conferring and neutral KIR2DS1 haplotypes are also distinguished by the KIR2DS4/1D locus, which is a novel observation. As can be seen, the haplotypes #1, #2 share the 1D variant, whereas the haplotypes #4, #6 both have the KIR2DS4 null allele. These effects of KIR2DS4/1D locus were also apparent in analysis performed after the exclusion of KIR2DS3 and KIR2DS5 genes (haplotypes #8 and #9 vs. haplotypes #12 and #17, Table 4).
+###end p 78
+###begin p 79
+###xml 14 25 14 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS4/1D </italic>
+###xml 29 37 29 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS1 </italic>
+###xml 67 69 67 69 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 327 338 327 338 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS4/1D </italic>
+###xml 346 353 346 353 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR 1D </italic>
+###xml 357 364 357 364 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIRDS4 </italic>
+###xml 381 389 381 389 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS1 </italic>
+###xml 520 522 520 522 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 540 548 540 548 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIR2DS1 </italic>
+###xml 717 719 717 719 <italic xmlns:xlink="http://www.w3.org/1999/xlink">1D</italic>
+###xml 794 801 794 801 <italic xmlns:xlink="http://www.w3.org/1999/xlink">KIRDS1 </italic>
+###xml 858 860 858 860 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+The fact that KIR2DS4/1D and KIR2DS1 loci are physically adjacent [21] suggests that the strong predictive effect of their haplotypic combinations may be caused by linkage disequilibrium with an unknown variant in the region, which is primarily associated with psoriasis. The indirect association is particularly plausible for KIR2DS4/1D because KIR 1D and KIRDS4 null (which mark KIR2DS1 haplotypes with distinct effects on disease susceptibility) are both non functional and thus should be equivalent physiologically [21]. In case of the KIR2DS1 it would be tempting to speculate that the susceptibility conferring effect is limited to a rare allele (absent in controls) being in strong linkage disequilibrium with 1D. Interestingly, such a theory could explain a lack of association between KIRDS1 and psoriasis recently reported in a Chinese population [19].
+###end p 79
+###begin title 80
+Conclusion
+###end title 80
+###begin p 81
+The developed application can effectively estimate haplotype frequencies with a performance that is similar or better than those of other available computer programs. It should be emphasized, that the main advantage of the created application is the ability to estimate haplotypes for every type of polymorphism, in particular polymorphisms with multiallelic loci with null variants.
+###end p 81
+###begin p 82
+###xml 179 180 179 180 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+The presented application is under development, and some improvements are planned, such as an additional step removing unimportant haplotypes or the partition-ligation algorithm [8] to speed-up computations for a large number of loci. Other planned improvements are a graphical user interface as well as an import/export module for popular data formats. The new versions will be available at project homepage.
+###end p 82
+###begin title 83
+Availability and requirements
+###end title 83
+###begin p 84
+###xml 0 12 0 12 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Project name</bold>
+Project name: NullHap
+###end p 84
+###begin p 85
+###xml 0 16 0 16 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Project homepage</bold>
+Project homepage:
+###end p 85
+###begin p 86
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Operating systems(s)</bold>
+Operating systems(s): OS Portable
+###end p 86
+###begin p 87
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Precompiled binaries</bold>
+Precompiled binaries: Windows NT/2000/XP, Debian Linux
+###end p 87
+###begin p 88
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Programming language</bold>
+Programming language: C++
+###end p 88
+###begin p 89
+###xml 0 7 0 7 <bold xmlns:xlink="http://www.w3.org/1999/xlink">License</bold>
+License: GNU LGPL
+###end p 89
+###begin title 90
+Authors' contributions
+###end title 90
+###begin p 91
+RN adopted algorithm, implemented application, performed calculations and drafted manuscript. RP proposed the idea to develop the software, outlined its main features, participated in validation process and provided biological interpretation of results of reanalysis of KIR haplotypes. All authors read and approved the final manuscript.
+###end p 91
+###begin title 92
+Acknowledgements
+###end title 92
+###begin p 93
+This work was supported by the statutory research of Institute of Electronic Systems of Warsaw University of Technology and Medical University of Warsaw Grant 1WY/N/2008. We would like to thank the editor and anonymous referees for their insightful comments.
+###end p 93
+###begin article-title 94
+Experimentally derived haplotypes substantially increase the efficiency of linkage disequilibrium studies
+###end article-title 94
+###begin article-title 95
+Maximum likelihood from incomplete data via the em algorithm
+###end article-title 95
+###begin article-title 96
+###xml 33 38 <span type="species:ncbi:9606">human</span>
+Discovering genotypes underlying human phenotypes: past successes for Mendelian disease, future approaches for complex disease
+###end article-title 96
+###begin article-title 97
+On the advantage of haplotype analysis in the presence of multiple disease susceptibility alleles
+###end article-title 97
+###begin article-title 98
+Arlequin ver. 3.0: An integrated software package for population genetics data analysis
+###end article-title 98
+###begin article-title 99
+Maximum-likelihood estimation of molecular haplotype frequencies in a diploid population
+###end article-title 99
+###begin article-title 100
+A new statistical method for haplotype reconstruction from population data
+###end article-title 100
+###begin article-title 101
+Bayesian haplotype inference for multiple linked single nucleotide polymorphisms
+###end article-title 101
+###begin article-title 102
+A Monte Carlo Approach for Estimation of Haplotype Probabilities in Half-Sib Families
+###end article-title 102
+###begin article-title 103
+Haplotype inference using a Bayesian Hidden Markov model
+###end article-title 103
+###begin article-title 104
+The killer immunoglobulin-like receptor gene cluster: tuning the genome for defense
+###end article-title 104
+###begin article-title 105
+Haplotype inference for present-absent genotype data using previously identified haplotypes and haplotype patterns
+###end article-title 105
+###begin article-title 106
+The boost libraries
+###end article-title 106
+###begin article-title 107
+A Bayesian Characterization of Hardy-Weinberg Disequilibrium
+###end article-title 107
+###begin article-title 108
+Gene for the activating natural killer cell receptor, KIR2DS1, is associated with susceptibility to psoriasis vulgaris
+###end article-title 108
+###begin article-title 109
+Genetic Polymorphisms of Killer Cell Immunoglobulin-Like Receptors Are Associated with Susceptibility to Psoriasis Vulgaris
+###end article-title 109
+###begin article-title 110
+Distinct HLA-C/KIR genotype profile associates with guttate psoriasis
+###end article-title 110
+###begin article-title 111
+The Killer Cell Immunoglobulin-Like Receptor Genes Do Not Confer Susceptibility to Psoriasis Vulgaris Independently in Chinese
+###end article-title 111
+###begin article-title 112
+A role for KIR gene variants other than KIR2DS1 in conferring susceptibility to psoriasis
+###end article-title 112
+###begin article-title 113
+KIR and disease: a model system or system of models?
+###end article-title 113
+###begin article-title 114
+The estimation and significance of the logarithm of a ratio of frequencies
+###end article-title 114
+

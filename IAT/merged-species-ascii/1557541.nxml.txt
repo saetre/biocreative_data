@@ -1,0 +1,559 @@
+###begin article-title 0
+PIPE: a protein-protein interaction prediction engine based on the re-occurring short polypeptide sequences between known interacting protein pairs
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+Identification of protein interaction networks has received considerable attention in the post-genomic era. The currently available biochemical approaches used to detect protein-protein interactions are all time and labour intensive. Consequently there is a growing need for the development of computational tools that are capable of effectively identifying such interactions.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 212 217 <span type="species:ncbi:4932">yeast</span>
+###xml 218 242 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 419 424 <span type="species:ncbi:4932">yeast</span>
+###xml 694 699 <span type="species:ncbi:4932">yeast</span>
+###xml 756 761 <span type="species:ncbi:4932">yeast</span>
+###xml 1156 1161 <span type="species:ncbi:4932">yeast</span>
+###xml 1468 1473 <span type="species:ncbi:4932">yeast</span>
+###xml 1601 1606 <span type="species:ncbi:4932">yeast</span>
+Here we explain the development and implementation of a novel Protein-Protein Interaction Prediction Engine termed PIPE. This tool is capable of predicting protein-protein interactions for any target pair of the yeast Saccharomyces cerevisiae proteins from their primary structure and without the need for any additional information or predictions about the proteins. PIPE showed a sensitivity of 61% for detecting any yeast protein interaction with 89% specificity and an overall accuracy of 75%. This rate of success is comparable to those associated with the most commonly used biochemical techniques. Using PIPE, we identified a novel interaction between YGL227W (vid30) and YMR135C (gid8) yeast proteins. This lead us to the identification of a novel yeast complex that here we term vid30 complex (vid30c). The observed interaction was confirmed by tandem affinity purification (TAP tag), verifying the ability of PIPE to predict novel protein-protein interactions. We then used PIPE analysis to investigate the internal architecture of vid30c. It appeared from PIPE analysis that vid30c may consist of a core and a secondary component. Generation of yeast gene deletion strains combined with TAP tagging analysis indicated that the deletion of a member of the core component interfered with the formation of vid30c, however, deletion of a member of the secondary component had little effect (if any) on the formation of vid30c. Also, PIPE can be used to analyse yeast proteins for which TAP tagging fails, thereby allowing us to predict protein interactions that are not included in genome-wide yeast TAP tagging projects.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+###xml 26 31 <span type="species:ncbi:4932">yeast</span>
+###xml 132 137 <span type="species:ncbi:4932">yeast</span>
+###xml 274 279 <span type="species:ncbi:4932">yeast</span>
+PIPE analysis can predict yeast protein-protein interactions. Also, PIPE analysis can be used to study the internal architecture of yeast protein complexes. The data also suggests that a finite set of short polypeptide signals seem to be responsible for the majority of the yeast protein-protein interactions.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 345 346 345 346 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 347 348 347 348 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 556 557 556 557 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 558 559 558 559 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 685 686 685 686 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 687 688 687 688 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+Proteins carry out the majority of the biological processes in cells. Most often, proteins accomplish this task in association with protein partners, forming stable or transient protein complexes. It is therefore generally accepted that protein-protein interactions are responsible for the cell's behaviour and its responses to various stimuli [1-3]. Further, the completion of higher eukaryotic genome projects have led to the understanding that the biological complexity underlying higher organisms is not accomplished by increasing the number of genes [4-6]. It is now thought that this complexity stems from an elevated pattern of protein-protein interactions in higher organisms [7,8]. As a consequence, charting protein-protein interaction maps remains a major goal in biological research.
+###end p 9
+###begin p 10
+###xml 405 406 405 406 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 407 408 407 408 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 438 463 438 463 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 643 644 643 644 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 645 647 645 647 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 432 437 <span type="species:ncbi:4932">yeast</span>
+###xml 438 462 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+###xml 627 632 <span type="species:ncbi:4932">yeast</span>
+A large part of post-genomic research has focused on the analysis of protein-protein interactions. Measurement, prediction and analysis of interactions between proteins have been extensively used to identify proteins that are functionally related. As a consequence, analysis of protein interaction networks has become a powerful tool to assign putative functions to previously ill-characterized proteins [2,3]. In this context, the yeast Saccharomyces cerevisiae has emerged as the model organism for studying functional proteomics. Very recently, we used protein interaction analysis to assign putative functions to different yeast proteins [9,10].
+###end p 10
+###begin p 11
+###xml 200 207 200 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo</italic>
+###xml 463 465 463 465 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 466 468 466 468 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 681 683 681 683 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 684 686 684 686 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 731 739 731 739 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo </italic>
+###xml 952 960 952 960 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo </italic>
+###xml 1013 1015 1013 1015 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 1016 1018 1016 1018 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 1089 1091 1089 1091 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 1092 1094 1092 1094 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 1095 1097 1095 1097 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 121 126 <span type="species:ncbi:4932">yeast</span>
+###xml 360 365 <span type="species:ncbi:4932">yeast</span>
+Protein-protein interactions can be most readily identified by protein affinity chromatography or pull-down experiments, yeast two-hybrid screens, or purifying protein complexes that have been tagged in vivo. These methods are all labour and time consuming and have a high cost associated with them. Each of them has inherent advantages and disadvantages. The yeast two-hybrid system has the advantage of identifying the direct interaction between protein pairs [11,12]. However, the data gathered from this method has a high (as much as 50%) rate of false positives and in the absence of other lines of evidence, this data alone may not be considered as biologically significant [13,14]. Affinity purification methods such as the in vivo double-tagging of protein complexes followed by purification steps using affinity chromatography, also known as tandem affinity purification (TAP tag), has the advantage of identifying complexes that really exist in vivo (as long as the tagged protein is not overproduced) [15,16]. However, all affinity purification methods suffer from limitations [13,14,17]. First, the addition of a tag, large or small, to the protein may change its properties, causing changes in complex stability or composition. Second, all purification methods suffer from the co-purification of "contaminating" proteins. It is often difficult to conclude whether these "contaminants" represent true endogenous partners or artificial associations induced by cell disruption. Third, during affinity purifications proteins are isolated as complexes and therefore the direct interactions between protein pairs are not readily distinguished from the indirect (via intermediates) ones.
+###end p 11
+###begin p 12
+###xml 383 385 383 385 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 386 388 386 388 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 469 471 469 471 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 472 474 472 474 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 528 530 528 530 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 531 533 531 533 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 805 807 805 807 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 808 810 808 810 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+The high cost, as well as the technical limitations associated with such biochemical approaches has resulted in a growing need for the development of computational tools that are capable of identifying protein-protein interactions. As a result, there have been a number of such tools developed over the past few years. Some of these tools are based on previously identified domains [18-20], some use similarities and sequence conservation between interacting proteins [21,22], others use the structural information of proteins [23-25] etc. The primary structure of the proteins has also been used to detect protein-protein interactions. Using a vector based learning machine it has been shown that the primary sequence of amino acids alone may successfully be used to detect protein-protein interactions [26,27]. A disadvantage of the protein-protein interaction detection tools is that they often have limited abilities to detect novel interactions and to differentiate them from false positives. A high rate of false negatives is another disadvantage associated with some of these tools.
+###end p 12
+###begin p 13
+###xml 971 985 971 985 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 971 984 <span type="species:ncbi:4932">S. cerevisiae</span>
+Here, we ask the question: can novel protein-protein interactions be successfully predicted from amino acid sequences (the primary structures) alone and without any further information/prediction about the proteins? Our hypothesis is that some of the interactions between proteins are mediated by a finite number of short polypeptide sequences. These sequences may be typically shorter than the classical domains and are used repeatedly in different proteins and in different contexts within the cell. Once the interaction database is large enough to sample these sequences, it should be possible to accurately predict such protein-protein interactions. In this paper, we report on the development and implementation of a computational tool termed Protein-Protein Interaction Prediction Engine (PIPE). This engine uses the primary structure of proteins together with the available protein interaction data to predict the potential interaction between any target pairs of S. cerevisiae proteins.
+###end p 13
+###begin title 14
+Results and discussion
+###end title 14
+###begin p 15
+###xml 187 200 187 200 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae</italic>
+###xml 385 389 385 389 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1(a)</xref>
+###xml 394 398 394 398 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1(b)</xref>
+###xml 187 200 <span type="species:ncbi:4932">S. cerevisiae</span>
+Our protein-protein interaction prediction algorithm (PIPE) is described in detail in the Materials and Methods section of this paper. It relies on previously determined interactions for S. cerevisiae. For two target proteins A and B, PIPE determines the likelihood for A and B to interact. Typical PIPE output for non-interacting and interacting pairs of proteins are shown in Figure 1(a) and 1(b) respectively. A peak with a score higher than 10 indicates that PIPE is predicting an interaction.
+###end p 15
+###begin title 16
+Ability of PIPE to detect interacting proteins
+###end title 16
+###begin p 17
+###xml 387 388 387 388 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 846 854 846 854 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo </italic>
+###xml 935 937 935 937 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 980 982 980 982 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 1054 1062 1054 1062 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo </italic>
+###xml 1069 1071 1069 1071 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 1184 1186 1184 1186 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 222 227 <span type="species:ncbi:4932">yeast</span>
+###xml 1126 1131 <span type="species:ncbi:4932">yeast</span>
+PIPE accuracy was determined by analyzing sets of known interacting pairs and expected non-interacting pairs. PIPE successfully detected 61% of interacting proteins in a randomly selected set of 100 protein pairs from the yeast protein interaction literature for which at least three different lines of experimental evidence supported the interaction (positive validation set; see Table 1). This positive validation set was selected independently of the dataset of the interacting protein pairs used by PIPE to predict interactions. This observation suggests a sensitivity of 61% and a false negative rate of 39% for PIPE data. As discussed in Materials and Methods below, the PIPE method is computationally intensive and our evaluation of PIPE took close to 1000 hours of computation time. PIPE's success rate is comparable to those obtained by in vivo experiments. TAP tag data are estimated to have a false negative rate of 15-50% [13] with an internal reproducibility of 70% [14], which applies only to those proteins that can be successfully tagged in vivo (89%) [14]. A conservative estimation of false negative rate in yeast two-hybrid screens suggests a range from 43 to 71% [13]. This finding indicates that protein interactions mediated by short polypeptide sequences may comprise the majority of protein interactions experimentally observed.
+###end p 17
+###begin p 18
+###xml 183 184 183 184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 932 934 932 934 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 888 893 <span type="species:ncbi:4932">yeast</span>
+In order to evaluate the specificity and the rate of false positives associated with PIPE, a negative validation set of 100 protein pairs were gathered from the literature (see Table 2). These protein pairs are expected to not interact based on protein localization data, co-expression profiling, known direct or indirect functional or genetic relationships and the information gathered from the complete set of protein interaction datasets. 11 of these non-interacting protein pairs were predicted by PIPE to be interacting, indicating a specificity of 89% and a false/novel positive rate of 11%. It also suggests that PIPE has an overall accuracy of 75%. The low false positive rate associated with PIPE is substantially better than most experimental protein interaction detection methods. It is thought that the false/novel positive rate might be as high as 77% and 64% in TAP tag and yeast two hybrid experiments, respectively [13].
+###end p 18
+###begin p 19
+In addition to the negative validation set of 100 protein pairs discussed above, we also presented 10 pairs of random amino acid sequences of length 500 to PIPE, and PIPE detected no interactions among those 10 pairs, another indication of a low false/novel positive rate for PIPE (data not shown).
+###end p 19
+###begin p 20
+###xml 546 548 546 548 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 659 661 659 661 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 662 664 662 664 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 687 689 687 689 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+All together these data indicate that PIPE can effectively identify protein-protein interactions based on the primary structure (amino acid sequences) of proteins alone and without any previous knowledge about the higher structure, domain composition, evolutionary conservation or the function of the target proteins. This is a significant improvement over some commonly used protein-protein interaction prediction algorithms. For example, our analysis using Interpret, one of the most commonly used protein-protein interaction prediction tools [24], failed to detect the previously identified interactions for protein pairs YKL028W-YDR311W, YKR048C-YCL024W [17,28] and YOR358W-YGL237C [12] for which limited structural information is available. PIPE analysis, however, detected an interaction for these pairs with scores of 250, 160 and 100, respectively.
+###end p 20
+###begin p 21
+###xml 251 256 <span type="species:ncbi:4932">yeast</span>
+We note, however, that although PIPE appears to have a good specificity, it would be weak for detecting novel interactions among genome wide large-scale data sets. For example, assume that we were able to run PIPE on all (approx. 20,000,000) pairs of yeast proteins, despite PIPE's current running time. If we assume that there are approximately 50,000 true interactions, then PIPE would be expected to report approximately 30,000 true positives, 2,200,000 false positives, 17,750,000 true negatives and 20,000 false negatives. The large number of false positives compared to the number of true positives makes PIPE a weak tool for analyzing such data sets.
+###end p 21
+###begin p 22
+###xml 164 166 164 166 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+During the preparation of this manuscript an algorithm termed Linear Motif Discovery (LMD), which contains some parallel features to PIPE, was published elsewhere [29]. In that report the primary sequences of proteins in the database of interacting protein pairs were analyzed to identify novel protein interaction motifs. In this manner the authors identified dozens of novel interacting motif candidates. A significant difference between PIPE and this approach is that PIPE is optimized to predict the likelihood of an interaction between a given pair of proteins, whereas LMD is optimized to identify protein-protein binding motifs. The existence of a protein-protein binding motif in a pair of proteins does not indicate how likely this is going to result in an actual protein-protein interaction.
+###end p 22
+###begin title 23
+Ability of PIPE to detect the sites of interactions between protein pairs
+###end title 23
+###begin p 24
+###xml 110 111 110 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 400 402 400 402 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 580 581 580 581 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 1012 1014 1012 1014 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 1356 1358 1356 1358 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 1359 1361 1359 1361 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 1727 1729 1727 1729 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 1730 1732 1730 1732 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 1902 1904 1902 1904 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 1969 1971 1969 1971 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+To examine whether PIPE can detect the sites of interaction between proteins, we took 10 protein pairs (Table 3) for which their sites of interactions had previously been reported. Of the 10 protein pairs, PIPE identified 7 pairs as interactors. The sites of interactions reported by PIPE for 4 of these pairs were the same as those previously reported in the literature. It was previously shown in [30] that the region 310-768 in protein YNL243W is responsible for its interaction with amino acids 118-361 in protein YBL007C. PIPE analysis of the protein pair is shown in Figure 2. Apparent by a peak with a high score of 45, PIPE analysis indicates that the region between amino acids 350 and 410 in protein YNL243W co-occurs frequently with the region between amino acids 100 and 250 in protein YBL007C. This observation suggests that the two proteins are interacting via the mentioned regions. This is in agreement with the regions experimentally shown to mediate an interaction between YNL243W and YBL007C [30]. Interestingly, PIPE also detected a second potential site of interaction between the same region (amino acids 350-410) for YNL243W as above and the C-terminal region (amino acids 1175-1225) of YBL007C. Of interest is that previously it was shown that the C-terminal domain of YBL007C can function as a site of protein-protein interaction [31,32]. Further studies are required, however, to verify the presence of an interaction between these newly predicted sites. Furthermore, PIPE successfully determined the previously documented site of interaction between YCR084C and YBR112C. It is reported that the first 75 amino acids of YCR084C is responsible for an interaction with the N-terminal region of YBR112C [33,34]. PIPE correctly predicted an interaction between these two sites. In addition PIPE analysis successfully predicted the known interaction site between YBR079CandYNL243W[35] as well as the region responsible for dimerization of YMR159C [36].
+###end p 24
+###begin p 25
+All together, this data indicates a 40% success for PIPE to identify the previously reported interaction sites between proteins. We note that this success rate is measured from a very small data set since there is not much reliable data available that correctly identifies the sites of protein interactions.
+###end p 25
+###begin title 26
+Ability of PIPE to detect novel protein-protein interactions
+###end title 26
+###begin p 27
+###xml 516 518 516 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 575 579 575 579 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3(a)</xref>
+###xml 858 860 858 860 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 1209 1216 1209 1216 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo</italic>
+###xml 1237 1241 1237 1241 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3(b)</xref>
+###xml 740 745 <span type="species:ncbi:4932">yeast</span>
+The ability of PIPE to detect novel protein-protein interactions was examined by analyzing the potential interaction between a novel pair of proteins, YGL227W-YMR135C for which no experimental interaction data was available when we initiated this project. Little is known about the molecular function of these genes, but the inactivation of either YGL227W or YMR135C, also known as vid30 and gid8, respectively, are shown to alter proteasome dependent catabolite degradation of fructose-1,6-bisphosphatase (FBPase) [37]. PIPE analysis of this protein pair is shown in Figure 3(a). The peak score of 140 indicates that the proteins are capable of interacting with one another. This is in agreement with the phenotypic characteristics of the yeast strains in which either YGL227W or YMR135C is deleted. Both deletion strains are incapable of degrading FBPase [37]. To confirm the validity of the observed interaction, TAP tag methodology was employed. An advantage of TAP-tagging over other generic protein-protein interaction detection assays is that it detects those interactions that occur under native level of protein expression in the cell. Therefore, TAP tag identifies those complexes that really exist in vivo. As shown in Figure 3(b) when YGL227W is TAP-tagged and its corresponding complex is affinity purified, YMR135C is identified as an interacting protein partner. The LC-MS MS analysis also indicated that YMR135C co-purified as an interacting partner when TAP-tagged YGL227W was purified. The reciprocal tagging and purification of YMR135C confirmed this interaction. YGL227W was identified as an interacting partner when TAP-tagged YMR135C complex was affinity purified. The presence of YGL227W in the purified mixture was also verified by LC-MS MS analysis. All together, these data demonstrate that PIPE has the ability to successfully predict novel protein-protein interactions.
+###end p 27
+###begin title 28
+Ability of PIPE to detect novel protein-protein interactions that cannot be identified by TAP tagging
+###end title 28
+###begin p 29
+###xml 342 344 342 344 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 375 377 375 377 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 560 562 560 562 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 706 708 706 708 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 118 123 <span type="species:ncbi:4932">yeast</span>
+###xml 188 193 <span type="species:ncbi:4932">yeast</span>
+###xml 250 255 <span type="species:ncbi:4932">yeast</span>
+###xml 588 593 <span type="species:ncbi:4932">yeast</span>
+###xml 681 686 <span type="species:ncbi:4932">yeast</span>
+Besides the obvious advantages of PIPE over TAP tagging (speed and the ease of use), PIPE can also be used to analyse yeast proteins for which TAP tagging fails. A very recent genome-wide yeast TAP tagging project has indicated that out of the 6,466 yeast open reading frames, only 1,993 (or 31%) can be successfully TAP-tagged and purified [38]. Data from the same authors [38] suggest that TAP tagging of YCR093W was unsuccessful. However, with a score of 60, PIPE analysis successfully identified a previously known interaction between YCR093W and YPR072W [39]. Since the screening of yeast complexes to saturation using TAP tag has identified approximately 62% of the expected yeast protein complexes [38], it might be expected that a different approach like PIPE may be able to contribute to the identification of some remaining interactions.
+###end p 29
+###begin title 30
+Ability of PIPE to elucidate the internal architecture of protein complexes
+###end title 30
+###begin p 31
+###xml 158 162 158 162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3(b)</xref>
+###xml 451 455 451 455 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3(b)</xref>
+TAP tagging of YGL227W resulted in the co-purification of six other proteins (YIL017C, YMR135C, YDL176W, YIL097W, YBR105C and YDR255C) as indicated in Figure 3(b). This suggests that YGL227W forms a novel protein complex with these proteins that here we term vid30 complex (vid30c). The presence of this protein complex is further confirmed by TAP tagging of YMR135C, which resulted in the co-purification of the same constituent subunits; see Figure 3(b). The internal architecture of this protein complex, however, remains unknown, as TAP tag has a limited ability to resolve the internal structure of complexes.
+###end p 31
+###begin p 32
+###xml 291 292 291 292 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 429 430 429 430 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+To test the ability of PIPE to provide a better understanding of the internal architecture of protein complexes, we systematically analyzed protein pairs of vid30c constituent subunits using PIPE. This resulted in the analysis of 21 protein pairs, the result of which is summarized in Table 4. This data was then used to generate a hypothetical representation of how the protein subunits might be interacting. As shown in Figure 4, vid30c seem to have a core component consisting of four subunits YGL227W, YIL017C, YMR135C and YDL176W. These four subunits seem to be in direct interaction with each other. The complex also seems to have a secondary component, the members of which (YIL097W, YBR105C and YDR255C) seem to interact with YGL227W and YIL017C only and not to each other. The hypothesized interactions among the subunits of the core component seem to have high PIPE scores suggesting high affinity and likelihood for interactions. The PIPE scores associated with the secondary components, however, tend to be lower. The highest PIPE score (460) was that for the interaction between YIL017C and YIL017C, which might be expected, as all the subunits of vid30c seem to interact with these two proteins. The lowest significant PIPE score was for YDR255C, which only had two significant scores, 25 and 17, for interactions with YGL227W and YIL017C, respectively, suggesting a low affinity for an interaction with vid30c. The hypothetical sites of interactions identified by PIPE are different in size. For example, YIL017C seem to interact with a small region of YBR105C (75-100), and with a relatively broader region of YGL227W (100-200). It also seems that each protein may have a specific region responsible for interaction with protein partners. This in turn may suggest that some of these proteins may compete for an interaction with the same partner. There remains the possibility however, that the broader regions (such as YGL227W region 100-200) may support simultaneous interactions with more than one protein partners.
+###end p 32
+###begin p 33
+###xml 1021 1025 1009 1013 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3(b)</xref>
+###xml 1261 1265 1245 1249 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3(b)</xref>
+###xml 667 672 <span type="species:ncbi:4932">yeast</span>
+###xml 832 837 <span type="species:ncbi:4932">yeast</span>
+To experimentally examine the information from PIPE analysis about the internal topology of vid30c, we made two gene deletion strains. For this purpose YDR255C and YMR135C were selected which have similar molecular weights (50 and 52 kD, respectively). According to PIPE, YDR255C has the lowest affinity to vid30c. Therefore, it might be expected that the deletion of this gene may be insignificant to the integrity of vid30c. However, PIPE analysis placed YMR135C in the core component of vid30c. Depending on the molecular function of YMR135C, it might be expected that the elimination of this protein may (or may not) alter the formation of vid30c. Therefore, two yeast deletion strains, YDR255CDelta and YMR135CDelta, were generated in which either the YDR255C or YMR135C gene was deleted, respectively, in a TAP-tagged YGL227W yeast background. In agreement with PIPE analysis, TAP tagging of YDR255CDelta strain indicated that deletion of YDR255C showed no significant effect in the formation of vid30c; see Figure 3(b). Besides YDR255C all other members of vid30c co-purified with TAP-tagged YGL227W. However, when YMR135C was deleted (YMR135CDelta), the interactions between TAP-tagged YGL227W and most other vid30c subunits were eliminated; see Figure 3(b). This suggests that vid30c was not formed in the absence of YMR135C. This is in agreement with PIPE analysis, which indicated a low affinity between YDR255C and vid30c, but placed YMR135C in the core component of vid30c with strong affinity to this complex.
+###end p 33
+###begin p 34
+###xml 146 147 146 147 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T5">5</xref>
+To estimate the success rate of PIPE in predicting the internal structure of protein complexes, we tested PIPE on 10 protein complexes (see Table 5). Each complex consists of three subunits, and the subunits are reported to be interacting with each other in a chain format, that is "a-b-c", where protein "a" interacts with "b" but not with "c", and protein "c" interacts with "b" only. It should be noted however, that due to the technical limitations associated with the approaches used to generate our current view of the internal structure of protein complexes and in the absence of a sufficient number of studies on the crystal structural analysis of protein complexes, the topology of the reported complexes should be considered with caution. Regardless, these 10 protein complexes generated a total of 30 potential interactions, 20 of which were shown to exist and 10 of which were shown not to. PIPE detected 13 interactions of the 20 shown to exist. It also detected 4 false/novel interactions of the 10 shown not to exist. In total, from the 10 protein complexes, PIPE detected 3 internal architectures identical to what was reported previously. It should be noted that due to the absence of more reliable data, this may not represent the true success rate of PIPE but instead represents the overlap between the existing small data set and the data generated by PIPE.
+###end p 34
+###begin title 35
+Discussion of the algorithmic approach
+###end title 35
+###begin p 36
+As outlined in Materials and Methods, the PIPE method predicts the likelihood of interaction between two query proteins A and B by measuring how often pairs of subsequences in A and B co-occur in pairs of protein sequences in the dataset that are known to interact. The amount of computation involved is substantial. For a pair of interacting proteins, on average, several hours of computation time were required for a standard desktop machine. This time was observed to be directly proportional to the number of re-occurrences of similar sequences in different interacting proteins in our dataset of interacting protein partners. As the number of corresponding sequences that co-occurred in the dataset increased, so did the computation time associated with analyzing the target protein pair. Similarly, the computation time required for non-interacting protein pairs were observed to be significantly lower as the co-occurring sequences were absent in these pairs. For the next version of PIPE, we expect considerable speed improvements. The current version of PIPE concentrates on the predictive precision of the method and we are currently in the process of applying more sophisticated data structures and algorithms to reduce PIPE's computation time. In addition, we plan to parallelize PIPE so that it can be executed on a processor cluster instead of a single workstation, which is rather straightforward. We expect that this will provide further significant performance improvements.
+###end p 36
+###begin title 37
+Conclusion
+###end title 37
+###begin p 38
+###xml 125 139 125 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 125 138 <span type="species:ncbi:4932">S. cerevisiae</span>
+Here we report on the making of a computational tool, termed PIPE, which can effectively identify protein interactions among S. cerevisiae protein pairs. The sensitivity of this engine to identify true interactions is estimated to be 61%, which is comparable to that of the currently available generic biochemical assays used for large-scale detection of protein-protein interactions. PIPE has an estimated specificity of 89%, which is a significant improvement over the currently available confidence rates for most other assays. In addition, PIPE considerably reduces the cost associated with detecting protein interactions by traditional biochemical methods.
+###end p 38
+###begin p 39
+###xml 1036 1041 <span type="species:ncbi:9606">human</span>
+We are currently in the process of applying more sophisticated data structures and algorithms as well as parallel processing technology to significantly reduce PIPE's computation time. Furthermore, by incorporating additional protein interaction data into PIPE's database, as well as using more precise tools for detecting similar short polypeptide sequences in different proteins (e.g. allowing for gaps), we hope to further increase the precision of PIPE in the future. In addition, the incorporation of the data gathered from three-dimensional structures of proteins and protein complexes is also expected to further enhance the ability of PIPE to detect protein-protein interactions. The fact that protein-protein interactions can be successfully detected from the amino acid sequences of proteins alone and without additional information/predictions about the proteins can set path for the development of other such tools for predicting interactions in other organisms. We are currently in the process of modifying PIPE to predict human protein-protein interactions.
+###end p 39
+###begin title 40
+Methods
+###end title 40
+###begin title 41
+PIPE algorithm
+###end title 41
+###begin p 42
+###xml 280 294 280 294 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S. cerevisiae </italic>
+###xml 336 338 336 338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 350 352 350 352 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 230 235 <span type="species:ncbi:4932">yeast</span>
+###xml 280 293 <span type="species:ncbi:4932">S. cerevisiae</span>
+Our protein-protein interaction prediction algorithm relies on previously determined interactions. At the time we initiated this study, our dataset was composed of 15118 pairs of protein-protein interactions using a total of 6304 yeast protein sequences and was compiled from the S. cerevisiae protein interactions reported in the DIP [40] and MIPS [41] databases. These interactions were determined using several methods, each having a limited accuracy. Since our algorithm is based on uncertain data, we expect a certain degree of error associated with our predictions.
+###end p 42
+###begin p 43
+###xml 726 727 726 727 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+The principle of our method is as follows: assume we have two query proteins A and B, along with the knowledge that certain proteins C and D are interacting. If a region (subsequence) a1 in A resembles a region in C, and a sequence b1 in B resembles a region in D, there is a possibility that A and B are also interacting via an interaction between the corresponding a1 and b1 sequences, which co-occur in both protein pairs A-B and C-D. As the number of interacting protein pairs in the database which contain the corresponding sequences a1 and b1 increases so does the likelihood that a1 and b1 are the true mediators of an interaction between A and B. The algorithm can be divided into the following steps (see also Figure 5):
+###end p 43
+###begin p 44
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Step 1: </bold>
+Step 1: Input the dataset of known protein interaction (referred to as the interaction list):
+###end p 44
+###begin p 45
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(a) </bold>
+(a) Every protein sequence in the interaction list is represented as a node in a graph G.
+###end p 45
+###begin p 46
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(b) </bold>
+(b) Every interacting pair of sequences in the interaction list results in an edge l in G between the two respective nodes.
+###end p 46
+###begin p 47
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(c) </bold>
+(c) Input the two query sequences: sequence A of length m and sequence B of length n.
+###end p 47
+###begin p 48
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Step 2: </bold>
+###xml 205 206 205 206 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+Step 2: Sequence A is fragmented into overlapping segments of w amino acids each. In other words, we use a sliding window of length w and move it forward by one amino acid in each step. For each fragment ai, i = 1 to (m-w+1), we do the following:
+###end p 48
+###begin p 49
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(a) </bold>
+###xml 25 27 25 27 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i </sub>
+###xml 248 249 248 249 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+(a) Search for fragment ai in every sequence in the database. We also use a sliding window of length w in every sequence in the database and for every fragment in each sequence, we use the PAM120 matrix to match the corresponding amino acids with ai. We define a score which is the sum of PAM120 scores for the w pairs of amino acids matched. That score will be used to identify whether two fragments are similar or not.
+###end p 49
+###begin p 50
+###xml 0 4 0 4 <bold xmlns:xlink="http://www.w3.org/1999/xlink">(b) </bold>
+###xml 59 60 59 60 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 102 105 102 105 <sub xmlns:xlink="http://www.w3.org/1999/xlink">pam</sub>
+(b) For every sequence containing a fragment that matches ai(score equal or greater than a threshold Spam), we add to a list R all neighbours of that sequence in G (by following its adjacent edges in G).
+###end p 50
+###begin p 51
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Step 3: </bold>
+###xml 28 30 28 30 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i </sub>
+###xml 162 164 162 164 <sub xmlns:xlink="http://www.w3.org/1999/xlink">j </sub>
+###xml 259 260 259 260 <sub xmlns:xlink="http://www.w3.org/1999/xlink">j</sub>
+###xml 333 335 333 335 <sub xmlns:xlink="http://www.w3.org/1999/xlink">j </sub>
+###xml 439 441 439 441 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i </sub>
+###xml 490 492 490 492 <sub xmlns:xlink="http://www.w3.org/1999/xlink">j </sub>
+Step 3: Once all fragments ai have been searched in the database and all neighbours of successful matches have been added to the list R, we search all fragments bj of sequence B in R. As in Step 2, we use again a sliding window of size w to create fragments bj, j = 1 to (n-w+1), of B and then search each bj in R. Every match of a bj in R will result in a score increment of one in a result matrix where each row i represents a fragment ai in A and each column j represents each fragment bj in B.
+###end p 51
+###begin p 52
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Step 4: </bold>
+###xml 107 109 107 109 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i </sub>
+###xml 114 115 114 115 <sub xmlns:xlink="http://www.w3.org/1999/xlink">j</sub>
+###xml 242 244 242 244 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i </sub>
+Step 4: The result matrix is presented as a 3D surface where the rows and columns represent the fragments ai and bj, respectively, and the elevation represents the score S, i.e. the number of matches observed for the corresponding fragments ai and bj.
+###end p 52
+###begin title 53
+PIPE parameter tuning
+###end title 53
+###begin p 54
+###xml 104 108 104 108 <sub xmlns:xlink="http://www.w3.org/1999/xlink">pam </sub>
+###xml 267 269 267 269 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i </sub>
+###xml 274 275 274 275 <sub xmlns:xlink="http://www.w3.org/1999/xlink">j</sub>
+###xml 360 364 360 364 <sub xmlns:xlink="http://www.w3.org/1999/xlink">pam </sub>
+###xml 939 943 939 943 <sub xmlns:xlink="http://www.w3.org/1999/xlink">pam </sub>
+There are three main parameters that need to be set for PIPE: (1) the window size w, (2) the threshold Spam that determines a match between two fragments with respect to PAM120, and (3) the threshold M for the PIPE score (number of matches observed for two fragment ai and bj) above which PIPE reports an interaction between two proteins. The three values w, Spam and M depend on each other. One of them can be set as a free parameter and the other two then need to be set accordingly. We chose to set the window size w to 20. Theoretically, one would want w to be as small as possible in order to identify interaction sites as precisely as possible. However, too small a window size would create too many random matches. A window size of 20 is a small value for which the probability of random matches small enough (see "Method 2" discussion below). We used two different methods to determine the values of the remaining two parameters, Spam and M.
+###end p 54
+###begin p 55
+###xml 133 137 133 137 <sub xmlns:xlink="http://www.w3.org/1999/xlink">pam </sub>
+###xml 239 243 239 243 <sub xmlns:xlink="http://www.w3.org/1999/xlink">pam </sub>
+Method 1: Trial and error. For a set of 20 interacting pairs and 20 non-interacting protein pairs, we tried various combinations of Spam and M, requiring close to 400 hours of computation time. It was observed that a PAM120 cut off score Spam = 35 and a threshold for the number of matches M = 10 was most selective in differentiating between interacting and non-interacting pairs.
+###end p 55
+###begin p 56
+###xml 118 122 118 122 <sub xmlns:xlink="http://www.w3.org/1999/xlink">pam </sub>
+###xml 403 407 403 407 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6(a)</xref>
+###xml 626 628 626 628 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-6</sup>
+###xml 900 904 900 904 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6(b)</xref>
+###xml 1074 1076 1074 1076 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-6</sup>
+###xml 380 385 <span type="species:ncbi:4932">yeast</span>
+###xml 782 787 <span type="species:ncbi:4932">yeast</span>
+Method 2: Statistical evaluation. To evaluate the significance of M = 10 matches observed for a PAM120 cut off score Spam = 35 with window size w = 20, we measured the likelihood of such an event for random sequences. First, we built 1,000,000 random fragment pairs by creating 2,000,000 random fragments of length 20 whose amino acid distribution is the same as measured for our yeast database. Figure 6(a) shows the measured probability for two random fragments to match with a given PAM120 score (fragment score). We observe that the probability for two fragments to match with a PAM120 score larger than 35 is less than 10-6. Next, we built 1,000 random protein pairs by creating 2,000 random proteins of length 500 whose amino acid distribution is the same as measured for our yeast database. For each protein pair, we ran PIPE and determined the maximum score in the PIPE result matrix. Figure 6(b) shows the measured probability for two random proteins to have a given maximum PIPE score. We observe that the probability of a PIPE score larger than 10 is less than 10-6.
+###end p 56
+###begin title 57
+Interpretation of PIPE output
+###end title 57
+###begin p 58
+###xml 76 80 76 80 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1(a)</xref>
+###xml 85 89 85 89 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1(b)</xref>
+Typical graphs of non-interacting and interacting pairs are shown in Figure 1(a) and 1(b) respectively. The x and y axis represent the amino acids regions of the target proteins, starting from the N-terminal amino acid at position 1. Therefore position 5 corresponds to the 20 amino acids window starting at the fifth amino acid of the polypeptide. The score on the z axis represents the number of times that a pair of 20 amino acid sequences co-occurs in the dataset of interacting proteins. A high score corresponds to a high incidence of co-occurrence of the sequences among the database of interacting proteins. Therefore a score of 5 indicates that the corresponding sequences co-occur five times in our database, whereas a score of 50 indicates that the co-occurrence is present in 50 pairs of interacting proteins. We assume that a high score represents a soaring affinity for an interaction.
+###end p 58
+###begin p 59
+PIPE's sensitivity is calculated as (TP/(TP+FN)) [%], its specificity as (TN/(TN+FP)) [%], and its accuracy as ((TP+TN)/(TP+FN+FP+TN)) [%] where TP is the number of true positive, FN the number of false negatives, TN the number of true negatives, and FP the number of false positives. We note that a major source of false positives reported by PIPE is motifs with frequent occurrence in the database. Pairs of such motifs can have a high co-occurrence simply because they are very frequent.
+###end p 59
+###begin title 60
+###xml 0 5 <span type="species:ncbi:4932">Yeast</span>
+Yeast strains and purification procedure
+###end title 60
+###begin p 61
+###xml 259 260 259 260 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 261 263 261 263 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 1064 1066 1056 1058 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 14 19 <span type="species:ncbi:4932">yeast</span>
+###xml 385 390 <span type="species:ncbi:4932">yeast</span>
+###xml 984 989 <span type="species:ncbi:4932">yeast</span>
+The following yeast strains were used in this study: OshB6 MATa ura3-1 leu2-3,112 his3-11,15 trp1 ade2-1 YGL227W-TAP::TRP1 and OshB7 MATa ura3-1 leu2-3,112 his3-11,15 trp1 ade2-1 YMR135C -TAP:TRP1. TAP-tagged YGL227W and YMR135C proteins were purified as in [9,10]. In brief, the tagged proteins were affinity purified on immunoglobulin G (IgG) and calmodulin columns from extracts of yeast cells (3 liters). Half of the affinity purified complex mixture was fractioned on an SDS-PAGE and visualized (using silver staining). The protein bands were subjected to in gel trypsin digestion followed by identification using matrix associated laser desorption ionization-time-of-flight (MALDI-TOF) mass spectrometry (MS). The protein detection limitations of MALDI-TOF MS was complemented by subjecting the other half of the purified mixture to gel-free microcapillary-scale reverse-phase liquid chromatography-electrospray iontrap tandem (LC-MS) MS analysis. YDR255CDelta and YMR135CDelta yeast deletion strains were generated by one-step PCR transformation as before [10] using primer pairs: TCAGTATGAGATAAGTGTGTCTTCAAGAGAGATGCAGCACTGAGTAGGGAACCAAGAAACGCACATACGATTTAGGTGACAC, CGAGAGCAGGTTGCTAAAGGTGGTTTACTGTAGAAAACTACTGTGTTCTGTTATCGCTTCCAATAATACGACTCACTATAGGGAG and AAAGGGGCAGTAGAGACAAATATCAGCCGGATGAAGATATATTTGTGTGTGGTAACAAATAGAACACATACGATTTAGGTGACAC, CACACTCACACATGCACACGCACACACACATATATAAATATATACGTACTATGTATGAATACGACTCACTATAGGGAG, respectively.
+###end p 61
+###begin title 62
+Availability and requirements
+###end title 62
+###begin p 63
+###xml 216 218 216 218 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 291 293 291 293 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+PIPE program was written in C++ with Linux as the operating system. The source code is subjected to the terms established by GNU and is available free of charge from the authors on request or can be downloaded from [42]. We have also set up a user-friendly WWW interface for the program at [42].
+###end p 63
+###begin title 64
+Authors' contributions
+###end title 64
+###begin p 65
+AG, SP, FD, AC, JC contributed to the conceptual development of PIPE. SP and XL contributed to the implementation of PIPE. AD, AE, MG, JG, MJ, NK, AG contributed towards the TAP tagging experiments and data collection. All authors read and approved the final manuscript.
+###end p 65
+###begin title 66
+Acknowledgements
+###end title 66
+###begin p 67
+The authors are grateful for the excellent technical assistance by Latifa Haider, Candice Johnson, Victoria Lee and Ryan Taylor. We thank Michel Dumontier for his helpful comments on the first version of this paper. This research was funded by grants from the Natural Sciences and Engineering Research Council of Canada theUSNationalInstituteofHealth.
+###end p 67
+###begin article-title 68
+Proteomics to study genes and genomes
+###end article-title 68
+###begin article-title 69
+###xml 45 50 <span type="species:ncbi:4932">yeast</span>
+A network of protein-protein interactions in yeast
+###end article-title 69
+###begin article-title 70
+###xml 75 80 <span type="species:ncbi:4932">yeast</span>
+Functional genomics and proteomics: charting a multidimensional map of the yeast cell
+###end article-title 70
+###begin article-title 71
+###xml 39 44 <span type="species:ncbi:9606">human</span>
+Initial sequencing and analysis of the human genome
+###end article-title 71
+###begin article-title 72
+###xml 51 56 <span type="species:ncbi:10090">mouse</span>
+Initial sequencing and comparative analysis of the mouse genome
+###end article-title 72
+###begin article-title 73
+###xml 23 46 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+The genome sequence of Drosophila melanogaster
+###end article-title 73
+###begin article-title 74
+###xml 43 48 <span type="species:ncbi:9606">human</span>
+Gene number. What if there are only 30,000 human genes?
+###end article-title 74
+###begin article-title 75
+The draft sequences: Comparing species
+###end article-title 75
+###begin article-title 76
+Bre1, an E3 ubiquitin ligase required for recruitment and substrate selection of Rad6 at a promoter
+###end article-title 76
+###begin article-title 77
+###xml 37 62 37 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 37 61 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Methylation of histone H3 by Set2 in Saccharomyces cerevisiae is linked to transcriptional elongation by RNA polymerase II
+###end article-title 77
+###begin article-title 78
+###xml 10 15 <span type="species:ncbi:4932">yeast</span>
+Using the yeast two-hybrid system to identify interacting proteins
+###end article-title 78
+###begin article-title 79
+###xml 51 56 <span type="species:ncbi:4932">yeast</span>
+A comprehensive two-hybrid analysis to explore the yeast protein interactome
+###end article-title 79
+###begin article-title 80
+Bridging structural biology and genomics: assessing protein interaction data with known complexes
+###end article-title 80
+###begin article-title 81
+Recent developments in the analysis of protein complexes
+###end article-title 81
+###begin article-title 82
+A generic protein purification method for protein complex characterization and proteome exploration
+###end article-title 82
+###begin article-title 83
+The tandem affinity purification (TAP) method: a general procedure of protein complex purification
+###end article-title 83
+###begin article-title 84
+###xml 31 36 <span type="species:ncbi:4932">yeast</span>
+Functional organization of the yeast proteome by systematic analysis of protein complexes
+###end article-title 84
+###begin article-title 85
+PreSPI: a domain combination based prediction system for protein-protein interaction
+###end article-title 85
+###begin article-title 86
+Large scale statistical prediction of protein-protein interaction by potentially interacting domain (PID) pair
+###end article-title 86
+###begin article-title 87
+Correlated sequence-signatures as markers of protein-protein interaction
+###end article-title 87
+###begin article-title 88
+POINT: a database for the prediction of protein-protein interactions based on the orthologous interactome
+###end article-title 88
+###begin article-title 89
+Prediction of protein-protein interactions using distant conservation of sequence patterns and structure relationships
+###end article-title 89
+###begin article-title 90
+PRISM: protein interactions by structural matching
+###end article-title 90
+###begin article-title 91
+InterPreTS: protein interaction prediction through tertiary structure
+###end article-title 91
+###begin article-title 92
+Interrogating protein interaction networks through structural biology
+###end article-title 92
+###begin article-title 93
+Predicting protein-protein interactions from primary structure
+###end article-title 93
+###begin article-title 94
+Predicting protein-protein interactions using signature products
+###end article-title 94
+###begin article-title 95
+###xml 60 84 60 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae</italic>
+###xml 60 84 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+A comprehensive analysis of protein-protein interactions in Saccharomyces cerevisiae
+###end article-title 95
+###begin article-title 96
+Systematic Discovery of New Recognition Peptides Mediating Protein Interaction Networks
+###end article-title 96
+###begin article-title 97
+###xml 108 113 <span type="species:ncbi:4932">yeast</span>
+An interaction between Sla1p and Sla2p plays a role in regulating actin dynamics and endocytosis in budding yeast
+###end article-title 97
+###begin article-title 98
+###xml 31 36 <span type="species:ncbi:4932">yeast</span>
+Pan1p, End3p, and S1a1p, three yeast proteins required for normal cortical actin cytoskeleton organization, associate with each other and play essential roles in cell wall morphogenesis
+###end article-title 98
+###begin article-title 99
+###xml 14 19 <span type="species:ncbi:4932">yeast</span>
+Regulation of yeast actin cytoskeleton-regulatory complex Pan1p/Sla1p/End3p by serine/threonine kinase Prk1p
+###end article-title 99
+###begin article-title 100
+###xml 29 34 <span type="species:ncbi:4932">yeast</span>
+Functional dissection of the yeast Cyc8-Tup1 transcriptional co-repressor complex
+###end article-title 100
+###begin article-title 101
+Distinct TPR motifs of Cyc8 are involved in recruiting the Cyc8-Tup1 co-repressor complex to differentially regulated promoters
+###end article-title 101
+###begin article-title 102
+Rpg1p/Tif32p, a subunit of translation initiation factor 3, interacts with actin-associated protein Sla2p
+###end article-title 102
+###begin article-title 103
+###xml 73 78 <span type="species:ncbi:4932">yeast</span>
+Apg16p is required for the function of the Apg12p-Apg5p conjugate in the yeast autophagy pathway
+###end article-title 103
+###begin article-title 104
+###xml 67 92 67 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces cerevisiae </italic>
+###xml 61 66 <span type="species:ncbi:4932">yeast</span>
+###xml 67 91 <span type="species:ncbi:4932">Saccharomyces cerevisiae</span>
+Catabolite degradation of fructose-1,6-bisphosphatase in the yeast Saccharomyces cerevisiae : a genome-wide screen identifies eight novel GID genes and indicates the existence of two degradation pathways
+###end article-title 104
+###begin article-title 105
+###xml 42 47 <span type="species:ncbi:4932">yeast</span>
+Proteome survey reveals modularity of the yeast cell machinery
+###end article-title 105
+###begin article-title 106
+Characterization of NOT5 that encodes a new component of the Not protein complex
+###end article-title 106
+###begin article-title 107
+The Database of Interacting Proteins: 2004 update
+###end article-title 107
+###begin article-title 108
+MIPS: a database for genomes and protein sequences
+###end article-title 108
+###begin article-title 109
+PIPE web page
+###end article-title 109
+###begin title 110
+Figures and Tables
+###end title 110
+###begin p 111
+###xml 0 18 0 18 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Interaction graphs</bold>
+Interaction graphs. Two interaction graphs showing potential interaction sites for a pair of non-interacting proteins (a) and a pair of interacting proteins (b). In (a), the number of corresponding short amino acid sequences between YBL090W and YGL055W, which also co-occur in the dataset of the interacting proteins, is calculated to be very low and hence no obvious picks are detected in this graph. In (b), a sharp pick with a score of 115 indicates that the two corresponding short amino acid sequences one in middle section of YBR288C (around amino acid 140) and the other at the C-terminal end of YGR261C co-occur 115 times in the dataset of the interacting protein pairs. It is therefore hypothesized that the two proteins YBR288C and YGR261C can potentially interact.
+###end p 111
+###begin p 112
+###xml 0 55 0 55 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Potential interaction sites between YNL243W and YBL007C</bold>
+Potential interaction sites between YNL243W and YBL007C. PIPE can successfully determine the previously known sites of interaction between the two proteins YNL243W and YBL007C. It was previously shown that the region 310-768 in protein YNL243W is responsible for its interaction with amino acids 118-361 in protein YBL007C. Visualized by its highest pick with a score of 45, PIPE has successfully detected an interaction between YNL243W and YBL007C via their corresponding amino acid regions 350-410 and 100-250, respectively. A second highest pick with a score of 42 also suggest a second site of interaction between the two proteins. According to PIPE analysis it is possible that the C-terminal end of the YBL007C protein may also serve as a site of interaction.
+###end p 112
+###begin p 113
+###xml 0 34 0 34 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Novel protein-protein interactions</bold>
+Novel protein-protein interactions. PIPE can successfully detect novel protein-protein interactions. With a score of 136 in (a), PIPE analysis predicts an interaction between YGL227W and YMR135C. (b) TAP-tag analysis confirms the interaction between YGL227W and YMR135C. When YGL227W is TAP-tagged, YMR135C is purified as an interacting subunit (panel 1). Reciprocal TAP-tagging of YMR135C also identifies YGL227W as an interacting partner, confirming the validity of the observed interaction between the two proteins (panel 2). Panels 3 and 4 show the purifications of TAP-tagged YGL227W strains in which either YDR255C (YDR255CDelta) or YMR135C (YMR135CDelta) were deleted, respectively. Deletion of YDR255C (panel 3) had no effect in the co-purification of other subunits. However, when YMR135C (panel 4) was deleted, the interactions between TAP-tagged YGL227W and most other subunits were eliminated. Panel 5 is used as a control and shows the purification of a strain, which is not tagged.
+###end p 113
+###begin p 114
+###xml 0 53 0 53 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Internal architecture of vid30c, as suggested by PIPE</bold>
+Internal architecture of vid30c, as suggested by PIPE. YGL227W, YIL017C, YMR135C and YDL176W all interact with each other with relatively high PIPE scores, and seem to form a core compartment of vid30c. YIL097W, YBR105C and YDR255C, with relatively lower PIPE scores, interact with YGL227W and YIL017C only, and not with each other, suggesting a secondary component of vid30c. PIPE scores are embedded within the connecting lines. The regions responsible for interactions are indicated.
+###end p 114
+###begin p 115
+###xml 0 30 0 30 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Illustration of PIPE algorithm</bold>
+Illustration of PIPE algorithm. Illustration of the four main steps in the PIPE algorithm. In Step 1 we input the database as well as the input sequences A and B. Using the database we build the interaction graph G. Step 2 involves searching every fragment ai of size w in all the proteins of the database. When matches are found, the neighbours or the sequence containing the match are added to the list of neighbours R. In Step 3, we search for fragment bj in the proteins in R. If a match occurs, we increase the cell aibj in the result matrix M. Once all fragments have been processed, the result matrix M is graphed into a 3D surface, where peaks are possible sites of interaction.
+###end p 115
+###begin p 116
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink">PIPE parameter tuning</bold>
+###xml 149 152 149 152 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-6 </sup>
+###xml 407 409 407 409 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-6</sup>
+PIPE parameter tuning. In (a) the measured probability for two random fragments to match with a given PAM120 score (fragment score) is shown to be 10-6 for scores larger than 35. This was done using 1 M random fragment pairs of length 20. In (b) 1,000 random protein pairs of length 500 are used to show that the measured probability for two random proteins to have a maximum PIPE score larger than 10 is 10-6.
+###end p 116
+###begin p 117
+Positive validation set. The list of the protein pairs that our known to interact. This list was used to evaluate PIPE's accuracy to detect protein interactions.
+###end p 117
+###begin p 118
+Negative validation set. The list of the protein pairs that our known not to interact. This list was used to evaluate PIPE's accuracy to detect protein interactions.
+###end p 118
+###begin p 119
+Set of interacting proteins with previously reported interaction sites. This list was used to evaluate the efficiency of PIPE to predict sites of interactions for an interacting protein pair.
+###end p 119
+###begin p 120
+Internal PIPE scores for vid30c. PIPE scores are used to show the potential interactions between the subunits of vid30c.
+###end p 120
+###begin p 121
+Set of protein complexes with previously reported internal structures. This list was used to evaluate the efficiency of PIPE to predict the internal architecture of protein complexes. Only the adjacent subunits are reported to be interacting.
+###end p 121
+

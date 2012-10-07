@@ -1,0 +1,907 @@
+###begin article-title 0
+###xml 47 57 47 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ab initio </italic>
+Identification of clustered microRNAs using an ab initio prediction method
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+MicroRNAs (miRNAs) are endogenous 21 to 23-nucleotide RNA molecules that regulate protein-coding gene expression in plants and animals via the RNA interference pathway. Hundreds of them have been identified in the last five years and very recent works indicate that their total number is still larger. Therefore miRNAs gene discovery remains an important aspect of understanding this new and still widely unknown regulation mechanism. Bioinformatics approaches have proved to be very useful toward this goal by guiding the experimental investigations.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 675 685 675 685 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ab initio </italic>
+###xml 312 317 <span type="species:ncbi:9606">human</span>
+###xml 319 324 <span type="species:ncbi:10090">mouse</span>
+###xml 329 332 <span type="species:ncbi:10116">rat</span>
+###xml 1216 1221 <span type="species:ncbi:9606">human</span>
+###xml 1229 1234 <span type="species:ncbi:10090">mouse</span>
+###xml 1244 1247 <span type="species:ncbi:10116">rat</span>
+In this work we describe our computational method for miRNA prediction and the results of its application to the discovery of novel mammalian miRNAs. We focus on genomic regions around already known miRNAs, in order to exploit the property that miRNAs are occasionally found in clusters. Starting with the known human, mouse and rat miRNAs we analyze 20 kb of flanking genomic regions for the presence of putative precursor miRNAs (pre-miRNAs). Each genome is analyzed separately, allowing us to study the species-specific identity and genome organization of miRNA loci. We only use cross-species comparisons to make conservative estimates of the number of novel miRNAs. Our ab initio method predicts between fifty and hundred novel pre-miRNAs for each of the considered species. Around 30% of these already have experimental support in a large set of cloned mammalian small RNAs. The validation rate among predicted cases that are conserved in at least one other species is higher, about 60%, and many of them have not been detected by prediction methods that used cross-species comparisons. A large fraction of the experimentally confirmed predictions correspond to an imprinted locus residing on chromosome 14 in human, 12 in mouse and 6 in rat. Our computational tool can be accessed on the world-wide-web.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+Our results show that the assumption that many miRNAs occur in clusters is fruitful for the discovery of novel miRNAs. Additionally we show that although the overall miRNA content in the observed clusters is very similar across the three considered species, the internal organization of the clusters changes in evolution.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 170 171 170 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 172 173 172 173 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 367 368 367 368 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 541 542 541 542 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 620 621 620 621 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 703 704 703 704 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 801 802 801 802 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 909 910 909 910 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+MicroRNAs (miRNAs) form a recently-discovered family of single-stranded RNA molecules of length approximatively 22 nucleotides that are present in all higher eukaryotes [1,2]. As shown by the growing number of specific examples, they regulate gene expression at a post-transcriptional level by binding to specific mRNA targets whose translation is thereby inhibited [3]. Although some details of miRNA biogenesis are still missing, a consensus scenario has now emerged: primary miRNA (pri-miRNAs) are transcribed generally by polymerase II [4], these transcripts are processed in the nucleus by the Drosha endonuclease [5] and exported as individual pre-miRNA stem loops to the cytoplasm by Exportin 5 [6]. In the cytoplasm, the mature forms are produced through the action of the Dicer endonuclease [7]. It appears that a crucial feature throughout these processing steps is a stem loop secondary structure [8].
+###end p 9
+###begin p 10
+###xml 92 99 92 99 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al. </italic>
+###xml 117 118 117 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 186 193 186 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al. </italic>
+###xml 262 264 262 264 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 54 59 <span type="species:ncbi:9606">human</span>
+An upper bound on the number of miRNAs present in the human genome was initially set by Lim et al. to a few hundred [9]. Recently however, this number has been re-evaluated by Berezikov et al. who argued that mammalian genomes encode close to a thousand miRNAs [10]. Thus, the debate about the number and identity of the miRNAs in mammalian genomes is open, especially considering that these estimates concern only miRNAs that are conserved between relatively distant species such as primates and rodents and not miRNAs that are of a more recent evolutionary origin.
+###end p 10
+###begin p 11
+###xml 227 229 227 229 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 596 598 596 598 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+The complete miRNA transcription units (pri-miRNA) remain to be defined, although some studies have already associated miRNAs with cDNAs sequences corresponding presumably to pri-miRNAs that can be found in sequence databases [11]. This and other studies (as well as our own unpublished data) show that some miRNAs are transcribed as polycistronic transcripts which are several kb long. Additional support for this hypothesis comes from a recent study that revealed that miRNAs that are found within 50 kb of each other on the same strand display correlated expression in microarray experiments [12]. Therefore the genomic regions around the loci of known miRNAs appear particularly promising for discovering additional miRNAs.
+###end p 11
+###begin p 12
+###xml 182 184 182 184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 185 187 185 187 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 188 190 188 190 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 568 570 568 570 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 871 873 871 873 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 1099 1108 1099 1108 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ab initio</italic>
+###xml 542 560 <span type="species:ncbi:10376">Epstein-Barr virus</span>
+In the past few years several algorithms have been designed for detecting (pre-)miRNAs, and they proved to be extremely efficient in supporting experimental mature miRNAs discovery [10,13-15]. Very generally, these methods identify specific secondary structures corresponding to miRNA precursors in regions of the genome that are conserved between species. Recent experiments have uncovered, however, a number of miRNAs that do not have close homologs in the sequenced genomes available to date, such as for example the miRNAs encoded by the Epstein-Barr virus (EBV) [16]. This finding emphasized that it would be desirable to have a method able to predict miRNAs in a single genome, without an absolute requirement for cross-species conservation. We developed such a prediction method and we used it to discover miRNAs in a number of members of the herpes virus family [17]. By similarity with protein-coding gene prediction methods that only scan genomic regions looking for signals characteristic to protein-coding genes and do not use external transcripts or other genomes, we called our method ab initio.
+###end p 12
+###begin p 13
+###xml 263 265 263 265 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 397 399 397 399 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 174 179 <span type="species:ncbi:9606">human</span>
+###xml 181 186 <span type="species:ncbi:10090">mouse</span>
+###xml 191 194 <span type="species:ncbi:10116">rat</span>
+###xml 636 641 <span type="species:ncbi:9606">human</span>
+###xml 643 648 <span type="species:ncbi:10090">mouse</span>
+###xml 653 656 <span type="species:ncbi:10116">rat</span>
+Here we apply our method to search for novel miRNAs that are in close proximity, and may be co-transcribed, with already known miRNAs. As the set of known miRNAs we take the human, mouse and rat sequences from the April 2005 release of the Rfam miRNA repository [18]. To evaluate the performance of the method, we use a growing set of mammalian sequences that are cloned in the Tuschl laboratory [19]. In the following we first present the general ideas behind our pre-miRNA prediction method, then show the results of two validation tests and finally move on to its application to the discovery of potentially co-transcribed miRNAs in human, mouse and rat.
+###end p 13
+###begin title 14
+Results
+###end title 14
+###begin title 15
+Overview of the pre-miRNA prediction method
+###end title 15
+###begin p 16
+###xml 568 569 568 569 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 570 571 570 571 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 674 675 674 675 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 688 689 688 689 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 755 756 755 756 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+The general idea of our approach to pre-miRNA prediction is to design a computational method that can be used to better understand the constraints that define miRNA precursors in relationship to their processing enzymes. We start with the observation that one of the generic features shared by all miRNA genes is the secondary structure assumed by the transcript region surrounding the mature miRNA. Indeed, mature miRNAs appear to reside inside one arm (5' or 3') of a stem loop with good, though not perfect, base pairing during the various steps of the biogenesis [1,2]. This stem loop structure is important for miRNA precursor recognition by RNAase III enzymes Drosha [5] and Dicer [7] as well for the export of the miRNA precursor from the nucleus [6]. The intermediates in this processing pathway differ in the length of the sequence surrounding the mature miRNA, implying that the stem loop structure of the pre-miRNA persists independently of the precise sequence context that varies from several kb for the pri-miRNA transcripts to 50-70 nucleotides for the relatively short pre-miRNA. We thus design our prediction method to identify such "context-robust" (or shortly, "robust") stem loops and then characterize their compositional and secondary structure properties in relationship to those of known pre-miRNA as well as negative examples. Our approach consists in three steps:
+###end p 16
+###begin p 17
+1. From the input sequence we first extract a set of genomic regions that are predicted to exhibit the same stem loop secondary structure, irrespectively of the size of the larger transcript in which they are embedded. We call these "robust" stem loops.
+###end p 17
+###begin p 18
+###xml 107 112 <span type="species:ncbi:9606">human</span>
+###xml 475 480 <span type="species:ncbi:9606">human</span>
+2. Each of the stem loops thus detected is assigned a score that reflects its similarity to known cases of human pre-miRNAs. Since the precise structural features that contribute to miRNA precursor recognition by processing enzymes are not known, we use a device from statistical machine learning called "support vector machine" (SVM), as follows. We describe any given stem loop in terms of sequence and structure features. Then, using two training sets consisting of known human miRNA precursor sequences as positive examples and random subsequences from genomic regions, tRNA, rRNA and mRNA genes as negative examples we build a model which describes the relative contribution (weight) of each of the features to the score assigned to any given stem loop. The score measures the distance (in our feature space) from the candidate stem loop to the hypersurface that best separates the positive from the negative examples. The weights associated with the features that we used to describe the stem loops give us insight into the constraints that appear to be most important for the recognition of miRNA precursors by the processing enzymes.
+###end p 18
+###begin p 19
+3. In order to guide experimental investigations, we develop a probabilistic mathematical framework that enables us to estimate the pre-miRNA content of the input genomic sequence from the scores assigned to all the stem loops identified in this sequence. This framework that has the advantage of not being dependent of the somehow arbitrary score cut-off used to define the predicted miRNA precursor stem loops.
+###end p 19
+###begin p 20
+Further details about each of these components are presented in the "Methods" section.
+###end p 20
+###begin title 21
+Validation of the method
+###end title 21
+###begin title 22
+Identification of viral miRNAs
+###end title 22
+###begin p 23
+###xml 147 149 147 149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 514 515 514 515 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 630 632 630 632 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 1001 1002 1001 1002 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 52 57 <span type="species:ncbi:9606">human</span>
+We initially validated our method on a set of eight human pathogenic viruses for which experimental investigations were simultaneously undertaken [17]. We made 32 pre-miRNA predictions, out of which 13 were confirmed by the cloning study, giving a confirmation rate of 41%. As explained in the "Method" section, the first step of our prediction method consists in extracting genomic regions which are able to form robust stem loop structures. The number of such regions grows linearly with the genome size (Figure 1, upper panel). The number of predicted pre-miRNAs, however, is not merely a linearly function of the genome size [17]. This property shows that the classifier that we have developed captures specific features of pre-miRNAs that are not uniformly distributed across the input genomic sequence. We have also developed a method for estimating the expected number of pre-miRNAs in a given genomic sequence (see Equation 4 from the "Methods" section). As shown in the lower panel of Figure 1, the expected number of pre-miRNAs in a genome is, as expected, strongly correlated with the number of predicted pre-miRNAs (i.e. the number of stem loops with a positive prediction score). At the same time this statistics is more robust against small variations in the value of the score threshold defining the predictions. An additional advantage of using this estimation approach is that it enables us to identify genomic regions that are likely to give rise to miRNAs without having to pinpoint their precise location. This is useful for directing experimental studies to promising genomes or genomic regions.
+###end p 23
+###begin p 24
+###xml 0 43 0 43 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Robust stem loops and pre-miRNA predictions</bold>
+Robust stem loops and pre-miRNA predictions. The upper panel shows a plot of the number of robust stem loops versus the size of the genomic sequence they originate from. The data come from the application of our method to viruses [17] and, for the three at the extreme right-hand side, from the present study (see Subsection "Identification of novel clustered miRNAs"). The linear dependence is very clear and corresponds to an average of 1.2 robust stem loop every kb. The lower panel shows the relation between the number of predicted pre-miRNAs (stem loops with positive SVM score) and the expected number of pre-miRNAs, given by Equation 4. The linear dependence is also clear here, but the slope is smaller than 1, which would have corresponded to a strict equality between the two sets.
+###end p 24
+###begin title 25
+Recovering known miRNA in distantly-related species
+###end title 25
+###begin p 26
+###xml 365 388 365 388 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Caernorhabditis elegans</italic>
+###xml 134 139 <span type="species:ncbi:9606">human</span>
+It is perhaps not surprising that we can predict viral miRNAs, given that they are processed by the miRNA processing machinery of the human host, as are the miRNAs with which we have trained our model. To test the ability of our method to identify pre-miRNAs in distantly-related species, we applied it to the regions known to encode miRNA loci in the invertebrate Caernorhabditis elegans. Of the 116 known miRNA precursors, we recover 50 (43%) as predictions. This results indicates that our prediction method has a reasonable sensitivity for a wide range of genomes from worms, to vertebrates to animal viruses.
+###end p 26
+###begin title 27
+###xml 33 38 <span type="species:ncbi:9606">human</span>
+###xml 40 45 <span type="species:ncbi:10090">mouse</span>
+###xml 50 53 <span type="species:ncbi:10116">rat</span>
+Predictions: clustered miRNAs in human, mouse and rat
+###end title 27
+###begin title 28
+Identification of novel clustered miRNAs
+###end title 28
+###begin p 29
+###xml 496 498 496 498 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 597 599 597 599 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 1489 1490 1489 1490 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1492 1493 1492 1493 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 1499 1500 1499 1500 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 232 237 <span type="species:ncbi:9606">human</span>
+###xml 686 691 <span type="species:ncbi:9606">human</span>
+###xml 692 697 <span type="species:ncbi:10090">mouse</span>
+###xml 698 701 <span type="species:ncbi:10116">rat</span>
+miRNAs are often found in genomic clusters, some of which are believed to be transcribed as a single transcript (polycistronic pri-miRNA). A nice example is the cluster of hsa-mir-17, whose elements reside within a 1 kb interval on human chromosome 13 and are indeed co-transcribed (cDNA Genbank accession number ). Motivated by the recent microarray study by Baskerville and Bartel showing that correlated expression of miRNAs can be shown up to the order of 50 kb of relative genomic distance [12], we set to discover novel miRNAs in the neighborhood of confirmed miRNAs from the Rfam database [18]. We adopt the following strategy. We first group into clusters the known miRNAs from human/mouse/rat Rfam6.0 that are closer than 10 kb from each other and have the same transcription sense. We find that 105/111/82 of the total 227/232/186 pre-miRNAs (i.e. 46%/48%/44%) belong to a cluster of at least two elements. By adding these to the miRNAs that so far appear to be isolated, we obtain a total of 162/161/138 clusters. We then extend the genomic regions of all of these clusters by 10 kb on each side and submit the resulting sequences to the prediction method. In total, we analyze 3.36/3.35/2.84 million nucleotides and we find that 224/192/208 of the 3829/3537/3034 candidate stems are classified as predicted pre-miRNA by our prediction method. After filtering out the known pre-miRNAs in these clusters, we obtain a total of 89/66/105 predictions, given in the Additional files 1, 2, and 3.
+###end p 29
+###begin p 30
+###xml 155 157 155 157 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 245 255 245 255 <italic xmlns:xlink="http://www.w3.org/1999/xlink">perfectly </italic>
+###xml 1145 1146 1145 1146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">4</xref>
+###xml 1148 1149 1148 1149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">5</xref>
+###xml 1155 1156 1155 1156 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">6</xref>
+###xml 93 98 <span type="species:ncbi:9606">human</span>
+###xml 100 105 <span type="species:ncbi:10090">mouse</span>
+###xml 110 113 <span type="species:ncbi:10116">rat</span>
+In order to validate these predictions, we have searched a large database of small RNAs from human, mouse and rat that have been cloned in the Tuschl lab [19]. We consider a prediction to be validated if one of the arms of the stem loop matches perfectly a cloned small RNA that is not known to be derived from a rRNA, tRNA, snRNA or snoRNA. Additionally, although our predictions include sequences coming from repeated regions, we discard cases where the cloned small RNA has more than two perfect mappings to the genome of the species it originates from. We then find that 20/17/6 of the predictions have a match from the same species, and these numbers raise to 22/20/26 if matches from small RNAs from all three species are allowed. This corresponds to confirmation rates between 25% and 30%, which are somewhat lower than the one obtained with the earlier application of our method to viruses (40%). The pre-miRNAs predicted in repetitive elements are partially responsible for these lower confirmation rates. The complete list of the confirmed predictions together with the sequences of the cloned miRNAs are given in the Additional files 4, 5, and 6.
+###end p 30
+###begin p 31
+###xml 371 372 371 372 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">7</xref>
+###xml 374 375 374 375 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+###xml 381 382 381 382 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S9">9</xref>
+The false negative rate of our prediction method, as determined from the cloning data, is 34%, a value which is close to the false negative rate of 29% that we obtained for our SVM training set, using a threshold score of 0. This indicates that the prediction method behaves as expected. For completeness, the false negative predictions are shown in the Additional files 7, 8, and 9.
+###end p 31
+###begin p 32
+###xml 89 94 <span type="species:ncbi:9606">human</span>
+###xml 101 106 <span type="species:ncbi:10090">mouse</span>
+###xml 116 119 <span type="species:ncbi:10116">rat</span>
+###xml 509 514 <span type="species:ncbi:9606">human</span>
+###xml 515 520 <span type="species:ncbi:10090">mouse</span>
+###xml 521 524 <span type="species:ncbi:10116">rat</span>
+If we consider our results at the level of genomic clusters, we find 5 novel clusters in human, 5 in mouse and 6 in rat. By "novel clusters" we mean a set of precursor miRNAs that contains, beside the confirmed predictions, known cases that were not considered to be in clusters, i.e. which did not have another known pre-miRNA with same transcription sense at distance smaller than 10 kb from its genomic location. This corresponds to an increase of the total number of clusters from 40/40/34 to 44/45/38 in human/mouse/rat.
+###end p 32
+###begin title 33
+Phylogenetic conservation of the clustered miRNAs
+###end title 33
+###begin p 34
+###xml 394 395 394 395 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 397 398 397 398 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 404 405 404 405 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 539 540 539 540 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 583 585 581 583 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-5</sup>
+###xml 997 999 995 997 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 197 202 <span type="species:ncbi:9606">human</span>
+###xml 204 209 <span type="species:ncbi:10090">mouse</span>
+###xml 214 217 <span type="species:ncbi:10116">rat</span>
+Since cross-species conservation was not used in the process of generating our predictions, we can now go back and ask the question of whether the predicted pre-miRNAs are indeed conserved between human, mouse and rat. We define the "conservation" relation between two given species at three progressive levels, corresponding to the three columns labeled "Conservation" in the Additional files 1, 2, and 3. The first level requires that a homologous sequence is found for a predicted miRNA precursor in another genome (sequences alignment E-value given by the WU-Blast program </= 10-5). The second level requires that both the predicted precursor as well as the homologous sequence fold into simple (not branched) stem loops. The third level requires that the two homologous sequences are predicted to be miRNA precursors by a method that uses cross-species conservation. For this purpose, we use the web interface to the MiRscan method with the default parameters (threshold at score value 14) [13].
+###end p 34
+###begin p 35
+###xml 33 34 33 34 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 36 37 36 37 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 43 44 43 44 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+As shown in the Additional files 1, 2, and 3, the predictions that are conserved across species are more likely to be experimentally confirmed than the one that are not. Indeed the confirmation rates are 1%, 22% and 49% for predicted precursors with homologs in none, precisely one and both species, respectively. We thus conclude that the cross-species information strongly improves the specificity of the prediction method. If we now restrict ourselves to predictions that have experimental confirmation, we find that for almost all of them (95%) a strong sequence homology is equivalent to a conserved stem loop structure. Additionally, we learn from the third conservation column that only 68% of the conserved and confirmed miRNAs that we predict are also classified as miRNA precursors by MiRscan.
+###end p 35
+###begin p 36
+###xml 124 127 <span type="species:ncbi:10116">rat</span>
+###xml 254 259 <span type="species:ncbi:10090">mouse</span>
+###xml 378 381 <span type="species:ncbi:10116">rat</span>
+###xml 675 680 <span type="species:ncbi:10090">mouse</span>
+###xml 685 690 <span type="species:ncbi:9606">human</span>
+In some cases we discovered miRNAs that are known in some species, but were not reported in others. This is the case of the rat homolog of mmu-mir-1, which corresponds to our predicted RP-79. The predicted precursor has over 97% identity relative to the mouse precursor, and the region corresponding to the mature miRNA is perfectly conserved. This miRNA has not been cloned in rat. In other cases we discovered miRNAs that are conserved across all three species but that are found in the neighborhood of a miRNA only known to exist in one of the species. This is the case of RP-97, which is close to rno-mir-421. For this miRNA we found cloning and conservation evidence in mouse and human as well. Note, however, that we do not report here candidate pre-miRNAs that are homologous to some of our predictions but that were not part of our predicted set because in their species of origin they are not found in the neighborhood of a known miRNA.
+###end p 36
+###begin title 37
+Genomic locations of the miRNA clusters
+###end title 37
+###begin p 38
+Most of the confirmed predictions come from a relatively small number of clusters. These are the following:
+###end p 38
+###begin p 39
+###xml 200 202 200 202 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 352 354 352 354 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 355 357 355 357 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 358 360 358 360 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 465 466 465 466 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 471 472 471 472 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 610 611 610 611 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">7</xref>
+###xml 613 614 613 614 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+###xml 620 621 620 621 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S9">9</xref>
+###xml 1371 1372 1371 1372 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1377 1378 1377 1378 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 52 57 <span type="species:ncbi:9606">human</span>
+###xml 76 81 <span type="species:ncbi:10090">mouse</span>
+###xml 102 105 <span type="species:ncbi:10116">rat</span>
+###xml 156 161 <span type="species:ncbi:9606">human</span>
+###xml 816 821 <span type="species:ncbi:9606">human</span>
+###xml 887 892 <span type="species:ncbi:9606">human</span>
+###xml 1025 1030 <span type="species:ncbi:9606">human</span>
+###xml 1035 1040 <span type="species:ncbi:10090">mouse</span>
+###xml 1274 1279 <span type="species:ncbi:9606">human</span>
+###xml 1304 1309 <span type="species:ncbi:9606">human</span>
+###xml 1519 1524 <span type="species:ncbi:9606">human</span>
+###xml 1529 1534 <span type="species:ncbi:10090">mouse</span>
+###xml 1564 1569 <span type="species:ncbi:9606">human</span>
+###xml 1817 1822 <span type="species:ncbi:10090">mouse</span>
+###xml 2034 2039 <span type="species:ncbi:9606">human</span>
+###xml 2114 2119 <span type="species:ncbi:10090">mouse</span>
+1. The orthologous loci located on chromosome 14 in human, chromosome 12 in mouse and chromosome 6 in rat, each of which is less than 200 kb in length. The human locus has been shown to be imprinted [20]. Only a few miRNAs from these loci have been deposited in Rfam, although other studies have also published computational predictions matching them [10,20,21]. The fine-grained structure of these loci has some species-specific aspects, as illustrated by Figures 2 and 3. The figures show all the validated miRNAs in these regions, including those with suboptimal prediction scores from the Additional files 7, 8, and 9. We find that some miRNAs that are related in sequence, and have presumably arisen by duplication (such as the mir-368/mir-376-related sequences) have different numbers of copies in rodents and human. We also find rodent- (MP-33/RP-30, MP-34/RN-4, MP-44/RP-49) and human-specific (HP-31) miRNAs, meaning that they do not have very close mature form homologs in the other species. Yet in other cases the human and mouse sequence have diverged slightly, as the predicted miRNAs HP-30/MP-32 and HP-41/MP-41. Because the mature forms of these miRNAs differ by a deletion or a substitution, and because we only considered perfectly matching small RNAs from human as validation, only the human miRNA genes end up being validated (see the Additional files 1 and 2). Finally, there are cases of more complicated species-specific evolutionary pattern. For example, mir-329 appears to have diverged between human and mouse: at the syntenic location in human we find two identical copies of a miRNA distantly-related to mmu-mir-329 (HP-33 and HP-34). Furthermore, this cluster has a complex composition, containing other related sequences {hsa-mir-323, HP-33, HP-34, HP-35, HN-6} whereas the corresponding mouse cluster {mmu-mir-323, mmu-mir-329, MP-35, MN-7, MP-37} additionally contains a rodent-specific sequence, MN-7, which is not related to the other sequences in the cluster. A similar situation can be found in the human cluster {hsa-mir-368, HP-37, HN-7, hsa-mir-376a} which corresponds to the mouse {mmu-mir-376a, mmu-mir-376b, MP-38}.
+###end p 39
+###begin p 40
+###xml 0 51 0 51 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Mappings between the human and mouse imprinted loci</bold>
+###xml 260 261 260 261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">4</xref>
+###xml 266 267 266 267 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">5</xref>
+###xml 318 319 318 319 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">7</xref>
+###xml 324 325 324 325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+###xml 21 26 <span type="species:ncbi:9606">human</span>
+###xml 31 36 <span type="species:ncbi:10090">mouse</span>
+###xml 57 62 <span type="species:ncbi:9606">human</span>
+###xml 67 72 <span type="species:ncbi:10090">mouse</span>
+Mappings between the human and mouse imprinted loci. For human and mouse we take all the sequences of the mature miRNAs belonging to the imprinted loci on chromosomes 14 and 12 that are present in Rfam6.0, in our set of confirmed predictions (Additional files 4 and 5) and in the false negatives set (Additional files 7 and 8). We sort them according to their genomic coordinates and display on the graph the sequence similarity (i.e. the number of matches in a CLUSTALW alignment) for all possible pairs between the two set. Although a clear diagonal signal indicating cross-species conservation is visible, it is also very clear that species-specific features altering it are numerous, as described in the text.
+###end p 40
+###begin p 41
+###xml 0 51 0 51 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Mappings between the human and mouse imprinted loci</bold>
+###xml 21 26 <span type="species:ncbi:9606">human</span>
+###xml 31 36 <span type="species:ncbi:10090">mouse</span>
+###xml 83 88 <span type="species:ncbi:10090">mouse</span>
+###xml 93 96 <span type="species:ncbi:10116">rat</span>
+Mappings between the human and mouse imprinted loci. The same as Figure 2, but for mouse and rat. We clearly observe a much better diagonal signal, as expected. Off-diagonal bright spots indicate miRNAs that are related in sequence and that have probably arisen by duplication of a common ancestor.
+###end p 41
+###begin p 42
+###xml 305 307 305 307 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 849 854 <span type="species:ncbi:9606">human</span>
+###xml 1023 1028 <span type="species:ncbi:10090">mouse</span>
+2. Chromosome X also contains a substantial number of novel miRNAs in all three species. They are spread over the full chromosome and eventually form small clusters with only a few elements. In the mir-17 cluster paralog on chromosome X, whose evolution has been analyzed in detail by Tanzer and Stadler [22], we found two additional miRNAs that are conserved in all three species. In the order of genome location, the cluster then reads: mir-106a, HN-14/MP-56/RP-100, mir-19b-2, mir-92-2, and HP-85/MN-8/RP-99. Consistent with the evolutionary scenario proposed by these authors we find that these novel miRNAs are relatively close in sequence to other miRNAs in the cluster. For instance the mature miRNA sequence of MP-56 has only two mismatches with mmu-mir-17, mmu-mir-20 and mmu-mir-106a. We observe a similar situation for another cluster on human chromosome X: hsa-mir-188, HN-11, HP-77, HN-12, and HN-13 (in transcription sense order). Whereas only HP-77 is a confirmed prediction and possesses a close homolog in mouse (MN-9), this cluster contains further three related miRNAs that have negative scores but that have been confirmed experimentally.
+###end p 42
+###begin p 43
+###xml 129 134 <span type="species:ncbi:9606">human</span>
+###xml 168 173 <span type="species:ncbi:10090">mouse</span>
+###xml 225 228 <span type="species:ncbi:10116">rat</span>
+3. Apart from the above mentioned miRNAs, we found a few other cases of clustered, and potentially co-transcribed miRNAs: two in human (chromosomes 16 and 17), four in mouse (chromosomes 3, 10, 11 and Un-random) and three in rat (chromosomes 9, 10 and 18).
+###end p 43
+###begin title 44
+Comparison with other prediction methods
+###end title 44
+###begin p 45
+###xml 245 247 245 247 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 248 250 248 250 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 251 253 251 253 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 814 816 814 816 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 855 856 855 856 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 1183 1190 1183 1190 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al. </italic>
+###xml 1198 1204 1198 1204 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al.</italic>
+###xml 918 923 <span type="species:ncbi:9606">human</span>
+###xml 928 933 <span type="species:ncbi:10090">mouse</span>
+###xml 937 942 <span type="species:ncbi:9606">human</span>
+###xml 947 950 <span type="species:ncbi:10116">rat</span>
+To evaluate the performance of our approach relatively to other large-scale miRNA prediction methods, we perform the following test. We take the (pre-)miRNA predictions sets provided by the most extensive predictions studies in the recent past [10,21,23]. Since these results have been published at different times and some of the predictions sets contain also known miRNAs, we set the Rfam6.0 release as the reference set of known miRNAs. The set of miRNAs used to perform sensitivity/specificity tests contains those that have been introduced in the most recent version of the miRNA repository, Rfam7.0 and that only became available while our manuscript was under revision, as well as those (pre-)miRNAs that are predicted by any of the four methods (including ours) and that are confirmed by the cloning data [19]. This set comprises 38 miRNAs. Table 1 shows that, when tested on miRNAs that are conserved between human and mouse or human and rat, our method has comparable performance to methods that make predictions from conserved genomic regions. Overall, we have somewhat higher sensitivity, at the expense of somewhat lower specificity compared to the methods of Berezikov et al. and Xie et al.. Interestingly, each of four methods is able to predict some (pre-)miRNAs that are not predicted by any of the other ones.
+###end p 45
+###begin p 46
+Sensitivity and specificity. This table shows a comparison of the performances of various methods when applied to the genomic loci considered in this work. The sensitivity was calculated by taking the union of the miRNAs predicted by any method but confirmed experimentally. This set contains 38 elements.
+###end p 46
+###begin title 47
+Discussion
+###end title 47
+###begin p 48
+###xml 45 55 45 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ab initio </italic>
+###xml 1348 1350 1348 1350 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+We have developed a computational method for ab initio prediction of precursor miRNAs that we applied here to the problem of identifying clustered, probably co-transcribed miRNAs. As explained in details in the "pre-miRNA prediction method" subsection and in the "Methods" section, our approach is based on a mechanistic model for the action of enzymes like Drosha or Dicer, and uses only the information contained in the input sequence and secondary structure. In doing so we neglect important aspects such as the fact that any stem loop that we consider a candidate pre-miRNA has to be be transcribed and accessible to all the processing enzymes responsible for ultimately producing a mature miRNA. This aspect is, in part, responsible for a relatively high number of false positives that we would obtain if we were to run the prediction method on an entire mammalian genome. But by applying the method to regions around loci of already known miRNAs, we believe that we circumvent the issue of whether the genomic regions that we analyze are transcribed and are accessible to all the processing enzymes. Our results (68 novel, experimentally confirmed cases for 260 predictions, or a 26% hit rate) show that this assumption was justified. This is also indicated by another recent study that identified 8 of our 68 predicted and confirmed miRNAs [23]. The given percentage is a lower bound for the performance of our method on these genomic regions, since it cannot be excluded that some of the predicted pre-miRNAs are not detected or are expressed in tissues or developmental stages other than the ones that have been used in the experiments. Furthermore, we did not filter out from our predictions those that fall inside repeat elements and may have higher likelihood of being false positives. Although this inclusion lead to a lower hit rate, we have seen above that this allowed us to discover a rich structure in the imprinted clusters.
+###end p 48
+###begin p 49
+Virtually all of precursors of the validated miRNAs have some homolog (albeit somewhat different at the level of the mature miRNA) in at least one other species, and a number of factors may contribute to this effect.
+###end p 49
+###begin p 50
+###xml 139 144 <span type="species:ncbi:9606">human</span>
+###xml 149 154 <span type="species:ncbi:10090">mouse</span>
+1. We have focused our search on regions that are already known to contain conserved miRNAs and, as can be observed from out comparison of human and mouse loci, miRNAs that are close to each other in the genome are frequently related in sequence.
+###end p 50
+###begin p 51
+2. We have used for validation data from all three species, and we have considered a predicted pre-miRNA to be confirmed even in cases in which the supporting small RNA cloning data came from another species.
+###end p 51
+###begin p 52
+###xml 16 21 <span type="species:ncbi:10090">mouse</span>
+###xml 26 29 <span type="species:ncbi:10116">rat</span>
+###xml 115 120 <span type="species:ncbi:10090">mouse</span>
+###xml 133 136 <span type="species:ncbi:10116">rat</span>
+3. Finally, the mouse and rat genomes are quite close to each other and we therefore expect that almost all of the mouse miRNAs have rat homologs, and vice versa.
+###end p 52
+###begin p 53
+###xml 45 50 <span type="species:ncbi:10090">mouse</span>
+###xml 55 58 <span type="species:ncbi:10116">rat</span>
+###xml 145 150 <span type="species:ncbi:9606">human</span>
+Note however that 17 out of the 46 confirmed mouse and rat miRNAs appear to be rodent-specific (i.e. 37%), and one confirmed miRNA appears to be human specific (HP-31). These miRNAs would be difficult to discover using other methods either due to lack of cross-species conservation or because the genomes that are sharing the miRNA are too close.
+###end p 53
+###begin p 54
+###xml 140 142 140 142 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 411 413 411 413 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 414 416 414 416 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 417 419 417 419 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 654 655 654 655 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 657 658 657 658 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 664 665 664 665 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 471 476 <span type="species:ncbi:9606">human</span>
+###xml 492 497 <span type="species:ncbi:10090">mouse</span>
+###xml 516 519 <span type="species:ncbi:10116">rat</span>
+Although our "ab initio" approach to pre-miRNA discovery was initially designed and successfully applied to detect species-specific miRNAs [17], we find that it retains its value when applied to a situation where cross-species conservation plays a important role. In fact, we were able to discover conserved miRNAs that were missed by three methods that use cross-species comparisons to make their predictions [10,15,21]. Concretely, in the large imprinted clusters from human chromosome 14, mouse chromosome 12 and rat chromosome 6, almost half (48%) of the miRNAs that we predicted and were confirmed experimentally are novel (see the Additional files 1, 2, and 3).
+###end p 54
+###begin p 55
+It would be, of course, very instructive to understand what factors contribute to the different results obtained by different prediction methods. Although this is not the topic of our current study, we discuss some of these factors below. Generally, all these approaches, including ours, are based on a two-level strategy: first identify a relatively small set of candidates and then examine these candidates in detail to make predictions.
+###end p 55
+###begin p 56
+###xml 451 460 451 460 <italic xmlns:xlink="http://www.w3.org/1999/xlink">RNALfold </italic>
+###xml 461 463 461 463 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 1081 1083 1081 1083 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1143 1145 1143 1145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 1330 1332 1330 1332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+1. A fundamental difference between the first layer of our method and any cross-species-based analysis is the fact that we have tried to take into account mechanistic considerations rather than evolutionary conservation or statistical properties. That is, by first identifying "robust" stem loops (see "Methods") we not only pick up genomic regions which are likely to form suitable RNA secondary structure (which may be gotten using programs such as RNALfold [24]), but we also take into account the fact that the stem loop has to be present in the various stages of the miRNA biogenesis. This implies a dependency of the stem loop secondary structures that we identify on the flanking genomic regions, which should not compete too strongly for pairing with nucleotides within the miRNA precursor and thereby destroying its secondary structure. This mechanism naturally gives a basis to the observation that the functional RNAs, and in particular miRNA precursors, have thermodynamically more stable structures than randomized sequences with the same (di-)nucleotide composition [25] (this property has been used to predict precursor miRNAs [10], see next paragraph). The same property, namely robustness of functional RNA secondary structure elements with respect to varying sequence context, has been described in RNA viruses [26].
+###end p 56
+###begin p 57
+###xml 679 680 679 680 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 682 683 682 683 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 685 686 685 686 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 692 693 692 693 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T5">5</xref>
+###xml 931 933 931 933 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 1378 1380 1378 1380 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+2. The second layer of the approach consists in scoring the candidate regions. In our case, these regions are already predicted to form stem loop secondary structures. Our choice of implementing a support vector machine (SVM, see "Methods") to distinguish between "good" and "bad" precursor miRNA candidates has several advantages. First it also includes information about what a miRNA precursor should not be, unlike the MiRscan scoring scheme which is only based on positive examples. Additionally, our procedure enables us to use the positive and negative examples to compute the weights with which the various features in our model should contribute to the score (see Tables 2, 3, 4, and 5). This detailed description of the sequence composition and structural features of the miRNA precursors enables our classifier to perform better than classifiers based simply on the thermodynamic stability of miRNA precursor stem loops [25]: on our training data, the SVM has at least 3-fold lower false positive rate compared to a classifier based on the RANDfold algorithm for any given rate of false negative predictions (data not shown). Additionally, the weights assigned by the SVM for individual features give us a deeper understanding of miRNA processing than procedures that only use statistics of secondary structure stability of pre-miRNAs relative to randomized variants [10].
+###end p 57
+###begin p 58
+SVM features to describe stem loops, part 1. These quantities are calculated over the entire stem loop structure. The weights are normalized with respect to the first feature, which turns out also to be the one with smallest value.
+###end p 58
+###begin p 59
+SVM features to describe stem loops, part 2. These quantities are calculated over the longest symmetrical region of the stem loop, i.e. the longest region without any asymmetrical loop.
+###end p 59
+###begin p 60
+###xml 204 206 200 202 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l </italic>
+SVM features to describe stem loops, part 3. These quantities are calculated over the longest region in which the difference between the 5' and 3' components of asymmetrical loops is not larger than Deltal (we will call this "relaxed symmetry region").
+###end p 60
+###begin p 61
+###xml 134 135 134 135 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l</italic>
+###xml 135 137 135 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 135 137 135 137 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+SVM features to describe stem loops, part 4. These quantities are calculated over all windows of length corresponding to miRNA length lm that we could place on the candidate stem loop.
+###end p 61
+###begin p 62
+###xml 215 222 215 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al. </italic>
+###xml 240 242 240 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 395 408 395 408 <italic xmlns:xlink="http://www.w3.org/1999/xlink">fugu rubripes</italic>
+###xml 448 454 448 454 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al.</italic>
+###xml 553 555 553 555 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 115 120 <span type="species:ncbi:9606">human</span>
+###xml 121 126 <span type="species:ncbi:10090">mouse</span>
+###xml 127 130 <span type="species:ncbi:10116">rat</span>
+###xml 395 408 <span type="species:ncbi:31033">fugu rubripes</span>
+###xml 729 734 <span type="species:ncbi:10090">mouse</span>
+###xml 739 742 <span type="species:ncbi:10116">rat</span>
+Adding our confirmed predictions (around 25 per species) to the already known miRNAs from Rfam6.0 (227/232/188 for human/mouse/rat), we have reached the upper bound on the number of miRNAs that was estimated by Lim et al. to be around 255 [13]. It is now important to realize that this estimate was based on an assumption of miRNA conservation over an evolutionary distance up to the pufferfish fugu rubripes. The more recent estimate of Berezikov et al., with less stringent assumptions about conservation lies in the range of about a thousand miRNAs [10]. From the present work we have learned that these methods have missed some conserved miRNAs. Moreover, some miRNAs are only represented in closely-related species (such as mouse and rat) and there are also families of closely related miRNAs that differ in precise composition across species. All these considerations lead us to conclude that the miRNA discovery is still not completed, and moreover, that hundreds of miRNAs are yet awaiting experimental confirmation.
+###end p 62
+###begin p 63
+###xml 354 356 354 356 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+Although the hypothesis that miRNA loci tend to occur in clusters which are probably co-transcribed has been useful in the discovery of novel miRNAs, there are interesting open questions about the expression of the co-transcribed miRNAs. In particular, not all of the known examples of co-transcribed miRNAs show strongly correlated expression patterns [27]. This indicates that yet unknown processing factors lead to differential expression of the clustered miRNAs by either making the processing enzymes having different efficiencies on different templates or by directing transcription from alternative transcription start sites.
+###end p 63
+###begin title 64
+Conclusion
+###end title 64
+###begin p 65
+###xml 967 969 967 969 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 417 422 <span type="species:ncbi:9606">human</span>
+###xml 424 429 <span type="species:ncbi:10090">mouse</span>
+###xml 434 437 <span type="species:ncbi:10116">rat</span>
+###xml 721 726 <span type="species:ncbi:9606">human</span>
+###xml 734 739 <span type="species:ncbi:10090">mouse</span>
+###xml 749 752 <span type="species:ncbi:10116">rat</span>
+We have developed a computational method to estimate the pre-miRNA content and to predict the location of precursor miRNAs in genomic sequences. This method can be used to guide experiments to find both miRNAs that are evolutionarily conserved as well as species-specific miRNAs such as those known now to exist in viruses. Here we applied our method to the discovery of clustered, probably co-transcribed, miRNAs in human, mouse and rat. We have shown that our method successfully identifies evolutionarily conserved miRNAs that have been missed by various other methods that are based on cross-species comparisons. Most of the novel miRNAs that we discovered reside in a conserved imprinted locus from chromosome 14 in human, 12 in mouse and 6 in rat and on chromosome X (in all species). In these regions we found species-specific patterns of miRNA duplication and diversification. The web interface to our prediction method can be accessed on the world-wide-web [28].
+###end p 65
+###begin title 66
+Methods
+###end title 66
+###begin title 67
+Extraction of genomic regions with robust secondary structures
+###end title 67
+###begin p 68
+###xml 164 166 164 166 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L </italic>
+###xml 252 254 248 250 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L </italic>
+###xml 388 396 384 392 <italic xmlns:xlink="http://www.w3.org/1999/xlink">RNAfold </italic>
+###xml 427 429 423 425 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 619 621 615 617 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r </italic>
+###xml 648 649 644 645 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 651 652 647 648 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+We determine genomic regions with context-independent stem loop secondary structures (shortly "robust" secondary structures) as follows. We move a window of length L across the entire input RNA sequence in a stepwise manner, shifting by an amount DeltaL at each step. For each window position we compute the minimal free-energy secondary structure of the corresponding sequence using the RNAfold program of the Vienna package [29]. We store the nucleotide pairs of this structure into a table with all the pairs that occurred in at least one structure, and at the end, we determine the preservation rate ("robustness") r for every nucleotide pair (i, j) in the table. This is defined as:
+###end p 68
+###begin p 69
+
+###end p 69
+###begin p 70
+###xml 36 37 36 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 37 40 37 40 <sub xmlns:xlink="http://www.w3.org/1999/xlink">min</sub>
+###xml 134 136 134 136 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r </italic>
+###xml 140 141 138 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 141 145 139 143 <sub xmlns:xlink="http://www.w3.org/1999/xlink">min </sub>
+###xml 260 262 258 260 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 358 360 356 358 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 365 367 363 365 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 386 387 384 385 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 389 390 387 388 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 528 529 526 527 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 531 532 529 530 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 599 600 597 598 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 602 603 600 601 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 631 633 629 631 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r </italic>
+###xml 749 751 747 749 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 756 758 754 756 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 828 829 826 827 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 933 934 931 932 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 934 937 932 935 <sub xmlns:xlink="http://www.w3.org/1999/xlink">min</sub>
+###xml 969 970 967 968 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 970 974 968 972 <sub xmlns:xlink="http://www.w3.org/1999/xlink">min </sub>
+###xml 1149 1151 1147 1149 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L </italic>
+###xml 1160 1161 1154 1155 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+###xml 1163 1165 1157 1159 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L </italic>
+###xml 1386 1388 1376 1378 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L </italic>
+###xml 1636 1637 1626 1627 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+###xml 1643 1644 1629 1630 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+Choosing a minimal robustness value rmin, we reconstruct the secondary structure elements (including stem loops) that occur with rate r >/= rmin using the following property of the nearest-neighbor energy model used in the the secondary structure calculation [30]. Given two different sequences containing both the subsequence corresponding to the interval [i - 1, j + 1], if the pair (i, j) is present in the minimal free-energy structures of the two sequences, then the secondary structure pairing pattern of the subsequence [i, j] is exactly the same for the two sequences. Therefore, if a pair (i, j) appears with a robustness r in the table, then all pairs in the table belonging to the common minimal free energy structure of the subsequence [i + 1, j - 1] in overlapping windows will appear with a robustness of at least r. We use this property to reconstruct the secondary structure elements preserved with a minimal rate of rmin. In our implementation we take rmin = 0.9, and keep only the genomic regions where a single stem of at least 15 nucleotides is present in the robust secondary structure. Finally, we fix the windowing parameters L and DeltaL. L should correspond to the length of known miRNA precursors, which can vary between hundreds and thousands of nucleotides for the primary transcripts and between 50 and 70 nucleotides for pre-miRNAs. The constraint on DeltaL is set such as to allow us to collect sufficient data to make a statistically meaningful estimation of structure robustness. To fulfill all these requirements while keeping the calculation time within reasonable limits, we use two combinations of (L,DeltaL) values, namely (500,25) and (1000,50), and then take the intersection of the sets of predicted regions with robust secondary structures.
+###end p 70
+###begin p 71
+###xml 94 96 94 96 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 181 186 <span type="species:ncbi:9606">human</span>
+###xml 187 192 <span type="species:ncbi:10090">mouse</span>
+###xml 193 196 <span type="species:ncbi:10116">rat</span>
+Application of the above procedure to genomic regions of 20 kb around the Rfam6.0 miRNA loci [18] shows that 89%/88%/89% (203/205/166 out of 227/232/186) of the known precursors of human/mouse/rat miRNAs overlap with a robust stem loop. This cross-check shows that the secondary structure "robustness" criteria is very appropriate to make a first selection of candidate miRNA precursor stem loops.
+###end p 71
+###begin title 72
+Classification of stem loops using a support vector machine
+###end title 72
+###begin p 73
+###xml 1368 1370 1368 1370 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 1882 1890 1882 1890 <italic xmlns:xlink="http://www.w3.org/1999/xlink">RNAfold </italic>
+###xml 1956 1958 1956 1958 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 218 223 <span type="species:ncbi:9606">human</span>
+###xml 845 850 <span type="species:ncbi:9606">human</span>
+###xml 1130 1135 <span type="species:ncbi:9606">human</span>
+###xml 1324 1329 <span type="species:ncbi:9606">human</span>
+In order to construct a support vector machine (SVM) classifier for the candidate stem loops, we need a set positive and a set of negative examples of miRNA precursors. As positive examples, we use the complete set of human pre-miRNAs in the Rfam repository. As negative examples we use random subsequences isolated from tRNA, rRNA and mRNA genes. In cases where the input sequence was too short to enable us to perform the robust stem identification as described above (e.g. in the case of the short tRNA genes), we pad the input sequence with random sequence using the mono-nucleotide frequencies of the input sequence. To get a good sampling of the space of sequences that the transcription and miRNA processing machinery may encounter in the cell, we add to the set of negative examples genomic regions isolated from random positions in the human genome, as well as the genomic regions from various viruses. Given that the fraction of genome encoding miRNA genes is quite small, it is highly unlikely that the sequences that we have chosen this way contain miRNA precursors. We have a total of 178 positive examples (i.e. the human precursor miRNAs from Rfam4.0) and 5395 negative examples. Thus the fraction of positives is the training set is of the order of a few percent, similar to what we think is the case in the human genome. Analyzing the known examples [18], we and others find that miRNA precursors generally assume simple hairpin structures (except some member of the let-7 family), longer than about 50 nucleotides. The fraction of paired nucleotides in the stem is relatively high, and the internal loops, if present, tend to be symmetrical. The hairpin loop appears to be relatively short, of at most 20 nucleotides. The nucleotide composition in the stem is generally balanced, as is the number of A-U, G-C and G-U pairs. Based on such considerations we use the RNAfold program to calculate the minimal free energy secondary structure [29] and then we describe each stem loop (positive/negative example or candidate pre-miRNA) in terms of the following sets of features:
+###end p 73
+###begin p 74
+###xml 85 86 85 86 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+1. Statistics computed over the entire hairpin structure: 16 features given in Table 2;
+###end p 74
+###begin p 75
+###xml 155 156 155 156 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+2. Statistics computed over the longest symmetrical region of the stem, i.e. the longest region without any asymmetrical loops: 10 features given in Table 3;
+###end p 75
+###begin p 76
+###xml 150 152 146 148 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l </italic>
+###xml 230 231 226 227 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+3. Statistics computed over the longest region in which the difference between the 5' and 3' components of asymmetrical loops is not larger than Deltal (this region is called "relaxed symmetry region"): 11 features given in Table 4.
+###end p 76
+###begin p 77
+###xml 87 88 87 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l</italic>
+###xml 88 90 88 90 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 88 90 88 90 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 219 220 219 220 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T5">5</xref>
+4. Statistics computed over all windows of length corresponding to mature miRNA length lm that we could place on the candidate stem loop, in order to zoom onto the region of the mature miRNAs: 3 features given in Table 5.
+###end p 77
+###begin p 78
+###xml 100 102 96 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l </italic>
+###xml 182 183 178 179 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l</italic>
+###xml 183 184 179 180 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 183 184 179 180 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m</italic></sub>
+Note that there are only two parameters in these computations: the maximally allowed asymmetry Deltal in a region with "relaxed symmetry", and the assumed length of the mature miRNA lm. We choose these parameters so as to minimize the number of misclassified examples in our training set. This minimum occurs at the values 4 and 20, respectively.
+###end p 78
+###begin p 79
+###xml 86 88 86 88 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 412 413 412 413 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+###xml 1032 1034 1032 1034 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+For the SVM, we use the "SVMlight" implementation of Joachims and a quadratic kernel [31]. This implementation allows us to choose an additional cost for penalizing misclassified positive relative to negative examples. We chose this value such as to get a reasonable recovery rate of known pre-miRNAs, while keeping a low false positive rate. The distributions of scores of the training sets are shown in Figure 4. In short, the model that we have constructed recovers 71% of the positive pre-miRNA examples with robust stems, with a false positive rate of 3%. The features to which the SVM has assigned the largest positive weights are the stem length, the length of the longest symmetrical region, number of A-U and number of G-C base pairs in the "relaxed symmetry" region. The features with the largest negative weights are the free energy of folding, the number of nucleotides in symmetrical and asymmetrical loops in the "relaxed symmetry" region, and the average size of asymmetrical loops. These conform to prior knowledge [13].
+###end p 79
+###begin p 80
+###xml 0 36 0 36 <bold xmlns:xlink="http://www.w3.org/1999/xlink">SVM training set score distributions</bold>
+SVM training set score distributions. Normalized distributions of the SVM scores for the positive and negative stem loop examples used for the SVM training. The good separation between the two sets indicates that the SVM performs well in recognizing the miRNA precursor specific features.
+###end p 80
+###begin title 81
+Estimation of the pre-miRNA content of a sequence
+###end title 81
+###begin p 82
+The number of pre-miRNA predictions obtained from the SVM classifier depends on the value of the score threshold, which is somewhat arbitrary. We show here that our approach can provide an estimate of the pre-miRNA content of a sequence which is independent of this threshold.
+###end p 82
+###begin p 83
+###xml 291 293 291 293 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 361 363 361 363 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s </italic>
+###xml 495 496 495 496 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 496 497 496 497 <sup xmlns:xlink="http://www.w3.org/1999/xlink">+</sup>
+###xml 522 523 522 523 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 523 524 523 524 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-</sup>
+###xml 587 588 587 588 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 588 589 588 589 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C</italic>
+###xml 588 589 588 589 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>C</italic></sub>
+###xml 607 608 607 608 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 609 610 609 610 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 694 696 694 696 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s </italic>
+###xml 806 807 806 807 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 808 809 808 809 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+According to the assumptions made previously, the features that we use to decide whether a candidate stem loop is a miRNA precursor are contained in RNA sequence and secondary structures only, and are combined into a score using the SVM model. If this assumption holds, then the probability p that a robust stem loop contains a miRNA is a function of the score s only, and we can compute the overall pre-miRNA content of a sequence based on the distributions of scores for the set of positives (S+), the set of negatives (S-), and the set of candidate stems in a given genomic sequence (SC). We expect that p(s) has a step-like monotonic behavior, being close to 0 for large negative values of s and becoming asymptotically close to 1 for large positive scores. In order to concretely specify the function p(s), we first choose a suitable parametric functional expression such as
+###end p 83
+###begin p 84
+
+###end p 84
+###begin p 85
+###xml 28 30 28 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a </italic>
+###xml 34 36 34 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink">b </italic>
+and then fix its parameters a and b by maximizing the likelihood of the training set, defined as
+###end p 85
+###begin p 86
+
+###end p 86
+###begin p 87
+###xml 50 52 50 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 54 55 54 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 55 57 55 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C </italic>
+###xml 55 57 55 57 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>C </italic></sub>
+###xml 118 120 118 120 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E </italic>
+###xml 240 241 238 239 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 242 243 240 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 243 244 241 242 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 243 244 241 242 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 293 295 289 291 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E </italic>
+###xml 314 316 306 308 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E </italic>
+If we now make the assumption that all candidates i ∊ SC are independent from another, the number of miRNA precursors E is given by a sum of independent Bernoulli distributions, each of them being characterized by its own probability 0 </= p(si) </= 1. As a consequence, the expected value of E and its error DeltaE are given by
+###end p 87
+###begin p 88
+
+###end p 88
+###begin p 89
+###xml 91 93 91 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+We can also calculate the probability that a given genome encodes any given integer number m of miRNAs precursors. Defining a generating function as
+###end p 89
+###begin p 90
+
+###end p 90
+###begin p 91
+###xml 53 55 53 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+the expression for the probability of having exactly m miRNAs is found to be
+###end p 91
+###begin p 92
+
+###end p 92
+###begin p 93
+###xml 34 35 34 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 36 37 36 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+The quantiles of the distribution P(m) are used to estimate the minimal number of expected miRNA precursors. Define the quantity
+###end p 93
+###begin p 94
+
+###end p 94
+###begin p 95
+###xml 8 10 8 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 43 44 43 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 45 46 45 46 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 63 65 61 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 177 178 175 176 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 241 243 239 241 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+then if n is the largest integer such that Q(n) >/= 0.99, then n is the number of pre-miRNAs that we estimate to be encoded in the considered genome with 99% confidence. Figure 5 shows an illustration of these distributions for two viruses [17].
+###end p 95
+###begin p 96
+###xml 0 52 0 52 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Estimation of the pre-miRNA content for HHV8 and HCV</bold>
+###xml 78 79 78 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 80 81 80 81 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 118 120 118 120 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 160 161 160 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Q</italic>
+###xml 162 163 162 163 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 184 186 184 186 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 416 417 412 413 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 418 419 414 415 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 40 44 <span type="species:ncbi:37296?0.6348314606741573">HHV8</span>
+###xml 49 52 <span type="species:ncbi:11103?0.9633797444211329|species:ncbi:11096?0.008773602899103566">HCV</span>
+###xml 307 311 <span type="species:ncbi:37296?0.6348314606741573">HHV8</span>
+###xml 332 335 <span type="species:ncbi:11103?0.9633797444211329|species:ncbi:11096?0.008773602899103566">HCV</span>
+Estimation of the pre-miRNA content for HHV8 and HCV. Plot of the probability P(m) of a given virus to encode exactly m pre-miRNAs (Equation 6) and probability Q(m) to encode at least m pre-miRNAs (Equation 7). Equation 4 allows to calculate the corresponding number of expected pre-miRNAs, 5.8 +/- 1.8 for HHV8 and 0.5 +/- 0.7 for HCV. These values correspond to the mean and standard deviation of the distribution P(m) shown on the figure.
+###end p 96
+###begin p 97
+We perform a cross-check for the above approach by applying it to the full training set of the SVM, merging the positive and negative stems loop into one single set. The expected number of pre-miRNAs from Equation 4 is 157.2 +/- 6.3. The number of pre-miRNAs present with 99% confidence in the training set is 143. These numbers are in total agreement with the sensitivity of the SVM, according to which 0.7 = 155 of the positives should be correctly classified.
+###end p 97
+###begin title 98
+Authors' contributions
+###end title 98
+###begin p 99
+###xml 256 262 <span type="species:ncbi:9606">people</span>
+AS and MZ performed the bioinformatic work. NP helped in setting up the web server. PL, AA, SP, MJB, and TT provided the cloning data. EvN developed the probabilistic pre-miRNA content estimation method. MZ supervised the collaboration between the various people.
+###end p 99
+###begin title 100
+Supplementary Material
+###end title 100
+###begin title 101
+Additional File 1
+###end title 101
+###begin p 102
+###xml 0 22 0 22 <bold xmlns:xlink="http://www.w3.org/1999/xlink">All predictions, human</bold>
+###xml 895 902 895 902 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al. </italic>
+###xml 903 905 903 905 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 917 924 917 924 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al. </italic>
+###xml 925 927 925 927 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 938 945 938 945 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al. </italic>
+###xml 946 948 946 948 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 1111 1117 1111 1117 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al.</italic>
+###xml 1199 1201 1199 1201 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 17 22 <span type="species:ncbi:9606">human</span>
+###xml 161 166 <span type="species:ncbi:9606">human</span>
+###xml 505 510 <span type="species:ncbi:9606">human</span>
+###xml 670 675 <span type="species:ncbi:9606">human</span>
+###xml 677 682 <span type="species:ncbi:10090">mouse</span>
+###xml 688 691 <span type="species:ncbi:10116">rat</span>
+###xml 1150 1155 <span type="species:ncbi:9606">human</span>
+All predictions, human. The table contains exhaustive information about all the predicted miRNA precursors that have been assumed to co-transcribed with a known human miRNA present in the Rfam6.0 set. The latter may be the one given in the column "closest miRNA", characterized by the smallest genomic distance to the prediction and a common transcription sense. A row has a color background when it contains a prediction that has been confirmed by cloning. The genomic coordinates are given for the hg17 human genome assembly. In the columns about cloning and cross-species conservation the letters "h", "m", and "r" mean the corresponding property being satisfied for human, mouse, and rat, respectively. The last column show (not yet confirmed) pre-miRNA predictions obtained using methods based on cross-species conservation. The first letters "B", "L" and "X" indicate results by Berezikov et al. [10], Legendre et al. [15], and Xie et al. [21], respectively. The other letters are the identifiers given by these authors to the corresponding predictions. We also indicate the recent predictions by Altuvia et al., labeled by an "A", who studied human miRNA clusters using a different approach [23].
+###end p 102
+###begin p 103
+Click here for file
+###end p 103
+###begin title 104
+Additional File 2
+###end title 104
+###begin p 105
+###xml 0 22 0 22 <bold xmlns:xlink="http://www.w3.org/1999/xlink">All predictions, mouse</bold>
+###xml 40 57 40 57 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional file 1</xref>
+###xml 17 22 <span type="species:ncbi:10090">mouse</span>
+###xml 71 76 <span type="species:ncbi:10090">mouse</span>
+All predictions, mouse. The same as the Additional file 1, but for the mouse predictions. The genome assembly use for the coordinates is mm5.
+###end p 105
+###begin p 106
+Click here for file
+###end p 106
+###begin title 107
+Additional File 3
+###end title 107
+###begin p 108
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink">All predictions, rat</bold>
+###xml 38 55 38 55 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">Additional file 1</xref>
+###xml 17 20 <span type="species:ncbi:10116">rat</span>
+###xml 69 72 <span type="species:ncbi:10116">rat</span>
+All predictions, rat. The same as the Additional file 1, but for the rat predictions. The genome assembly used for the coordinates is rn3.
+###end p 108
+###begin p 109
+Click here for file
+###end p 109
+###begin title 110
+Additional File 4
+###end title 110
+###begin p 111
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink">All confirmed, human</bold>
+###xml 352 354 352 354 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 508 509 508 509 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">7</xref>
+###xml 511 512 511 512 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+###xml 518 519 518 519 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S9">9</xref>
+###xml 15 20 <span type="species:ncbi:9606">human</span>
+###xml 58 63 <span type="species:ncbi:9606">human</span>
+###xml 257 262 <span type="species:ncbi:9606">human</span>
+###xml 264 269 <span type="species:ncbi:10090">mouse</span>
+###xml 275 278 <span type="species:ncbi:10116">rat</span>
+All confirmed, human. Details of the confirmed miRNAs for human. The cloning frequency indicates the number of distinct small RNA cloned sequences found in the comprehensive cloning set that match our predicted pre-miRNA, "h", "m", and "r" corresponding to human, mouse, and rat, respectively. The secondary structure uses the text display from Mfold [32]. The last column gives the best homologs (within at most 5 mismatches) found in our confirmed predictions, in the false negative sets (Additional files 7, 8, and 9) and in Rfam7.1 (latest release at the time of publication). Notice MP-61 with good cloning evidence but an unusual position in the secondary structure.
+###end p 111
+###begin p 112
+Click here for file
+###end p 112
+###begin title 113
+Additional File 5
+###end title 113
+###begin p 114
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink">All confirmed, mouse</bold>
+###xml 34 51 34 51 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">Additional file 4</xref>
+###xml 15 20 <span type="species:ncbi:10090">mouse</span>
+###xml 61 66 <span type="species:ncbi:10090">mouse</span>
+All confirmed, mouse. Same as the Additional file 4, but for mouse. Notice that the case MP-28 is identical to MP-61.
+###end p 114
+###begin p 115
+Click here for file
+###end p 115
+###begin title 116
+Additional File 6
+###end title 116
+###begin p 117
+###xml 0 18 0 18 <bold xmlns:xlink="http://www.w3.org/1999/xlink">All confirmed, rat</bold>
+###xml 32 49 32 49 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">Additional file 4</xref>
+###xml 15 18 <span type="species:ncbi:10116">rat</span>
+###xml 59 62 <span type="species:ncbi:10116">rat</span>
+All confirmed, rat. Same as the Additional file 4, but for rat. RP-66 is identical to HP-61 and MP-28.
+###end p 117
+###begin p 118
+Click here for file
+###end p 118
+###begin title 119
+Additional File 7
+###end title 119
+###begin p 120
+###xml 0 22 0 22 <bold xmlns:xlink="http://www.w3.org/1999/xlink">False negatives, human</bold>
+###xml 208 209 208 209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">4</xref>
+###xml 211 212 211 212 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">5</xref>
+###xml 218 219 218 219 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">6</xref>
+###xml 300 301 300 301 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 303 304 303 304 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 310 311 310 311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 17 22 <span type="species:ncbi:9606">human</span>
+###xml 51 56 <span type="species:ncbi:9606">human</span>
+False negatives, human. Set of false negatives for human, i.e. stem loop candidates with a negative SVM score but which have a cloning evidence. The layout is identical to the table from the Additional files 4, 5, and 6. The Additional column "Other predictions" is filled as in the additional files 1, 2, and 3.
+###end p 120
+###begin p 121
+Click here for file
+###end p 121
+###begin title 122
+Additional File 8
+###end title 122
+###begin p 123
+###xml 0 22 0 22 <bold xmlns:xlink="http://www.w3.org/1999/xlink">False negatives, mouse</bold>
+###xml 73 90 73 90 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">Additional file 7</xref>
+###xml 17 22 <span type="species:ncbi:10090">mouse</span>
+###xml 51 56 <span type="species:ncbi:10090">mouse</span>
+False negatives, mouse. Set of false negatives for mouse, similar to the Additional file 7.
+###end p 123
+###begin p 124
+Click here for file
+###end p 124
+###begin title 125
+Additional File 9
+###end title 125
+###begin p 126
+###xml 0 19 0 19 <bold xmlns:xlink="http://www.w3.org/1999/xlink">False negative, rat</bold>
+###xml 68 85 68 85 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">Additional file 7</xref>
+###xml 16 19 <span type="species:ncbi:10116">rat</span>
+###xml 48 51 <span type="species:ncbi:10116">rat</span>
+False negative, rat. Set of false negatives for rat, similar to the Additional file 7. Notice the unusual position of RN-4 in the secondary structure.
+###end p 126
+###begin p 127
+Click here for file
+###end p 127
+###begin title 128
+Additional File 10
+###end title 128
+###begin p 129
+###xml 17 18 17 18 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 20 21 20 21 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 23 24 23 24 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 26 27 26 27 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">4</xref>
+###xml 29 30 29 30 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">5</xref>
+###xml 32 33 32 33 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">6</xref>
+###xml 35 36 35 36 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">7</xref>
+###xml 38 39 38 39 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+###xml 41 42 41 42 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S9">9</xref>
+###xml 42 56 42 56 <bold xmlns:xlink="http://www.w3.org/1999/xlink">in text format</bold>
+###xml 127 128 127 128 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 130 131 130 131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 133 134 133 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 136 137 136 137 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S4">4</xref>
+###xml 139 140 139 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S5">5</xref>
+###xml 142 143 142 143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S6">6</xref>
+###xml 145 146 145 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S7">7</xref>
+###xml 148 149 148 149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S8">8</xref>
+###xml 151 152 151 152 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S9">9</xref>
+Additional files 1, 2, 3, 4, 5, 6, 7, 8, 9in text format. This archive contains the text file versions of the Additional files 1, 2, 3, 4, 5, 6, 7, 8, 9 as TAB-separated lists. They contain additionally the explicit genomic sequences of all the predictions.
+###end p 129
+###begin p 130
+Click here for file
+###end p 130
+###begin title 131
+Acknowledgements
+###end title 131
+###begin p 132
+AS was supported by the grant 205321-105945 from the Swiss National Science Foundation (to MZ). PL was supported by Dr. Mildred Scheel Stiftung fur Krebsforschung of the Deutsche Krebshilfe. AA was supported by the FRAXA Research Foundation postdoctoral fellowship. SP was supported by the Lehman Brothers Foundation Fellowship through the Leukemia & Lymphoma Society. This research was also supported by the grant P01-GM073047-01 from the NIH (to TT).
+###end p 132
+###begin article-title 133
+MicroRNAs: genomics, biogenesis, mechanism, and function
+###end article-title 133
+###begin article-title 134
+MicroRNAs: small RNAs with a big role in gene regulation
+###end article-title 134
+###begin article-title 135
+The functions of animal microRNAs
+###end article-title 135
+###begin article-title 136
+MicroRNA genes are transcribed by RNA polymerase II
+###end article-title 136
+###begin article-title 137
+The nuclear RNase III Drosha initiates microRNA processing
+###end article-title 137
+###begin article-title 138
+Nuclear export of microRNA precursors
+###end article-title 138
+###begin article-title 139
+A cellular function for the RNA-interference enzyme Dicer in the maturation of the let-7 small temporal RNA
+###end article-title 139
+###begin article-title 140
+Structural features of microRNA precursors and their relevance to miRNA biogenesis and small interfering RNA/short hairpin RNA design
+###end article-title 140
+###begin article-title 141
+Vertebrate microRNA genes
+###end article-title 141
+###begin article-title 142
+###xml 59 64 <span type="species:ncbi:9606">human</span>
+Phylogenetic shadowing and computational identification of human microRNA genes
+###end article-title 142
+###begin article-title 143
+Identification of mammalian microRNA host genes and transcription units
+###end article-title 143
+###begin article-title 144
+Microarray profiling of microRNAs reveals frequent coexpression with neighboring miRNAs and host genes
+###end article-title 144
+###begin article-title 145
+###xml 17 39 <span type="species:ncbi:6239">Caenorhabditis elegans</span>
+The microRNAs of Caenorhabditis elegans
+###end article-title 145
+###begin article-title 146
+###xml 32 42 <span type="species:ncbi:7227">Drosophila</span>
+Computational identification of Drosophila microRNA genes
+###end article-title 146
+###begin article-title 147
+Profile-based detection of microRNA precursors in animal genomes
+###end article-title 147
+###begin article-title 148
+Identification of virus-encoded microRNAs
+###end article-title 148
+###begin article-title 149
+Identification of microRNAs of the herpesvirus family
+###end article-title 149
+###begin article-title 150
+The microRNA Registry
+###end article-title 150
+###begin article-title 151
+Comprehensive set of cloned small RNAs
+###end article-title 151
+###begin article-title 152
+###xml 47 52 <span type="species:ncbi:10090">mouse</span>
+A large imprinted microRNA gene cluster at the mouse Dlk1-Gtl2 domain
+###end article-title 152
+###begin article-title 153
+###xml 45 50 <span type="species:ncbi:9606">human</span>
+Systematic discovery of regulatory motifs in human promoters and 3' UTRs by comparison of several mammals
+###end article-title 153
+###begin article-title 154
+Molecular evolution of a microRNA cluster
+###end article-title 154
+###begin article-title 155
+###xml 40 45 <span type="species:ncbi:9606">human</span>
+Clustering and conservation patterns of human microRNAs
+###end article-title 155
+###begin article-title 156
+Prediction of locally stable RNA secondary structures for genome-wide surveys
+###end article-title 156
+###begin article-title 157
+Evidence that microRNA precursors, unlike other non-coding RNAs, have lower folding free energies than random sequences
+###end article-title 157
+###begin article-title 158
+Viral RNA and evolved mutational robustness
+###end article-title 158
+###begin article-title 159
+###xml 114 120 <span type="species:ncbi:10090">murine</span>
+###xml 125 130 <span type="species:ncbi:9606">human</span>
+Expression profiling of mammalian microRNAs uncovers a subset of brain-expressed microRNAs with possible roles in murine and human neuronal differentiation
+###end article-title 159
+###begin article-title 160
+Regulatory RNA Gene Discovery
+###end article-title 160
+###begin article-title 161
+Fast Folding and Comparison of RNA Secondary Structures
+###end article-title 161
+###begin article-title 162
+Optimal computer folding of large RNA sequences using thermodynamics and auxiliary information
+###end article-title 162
+###begin article-title 163
+Making large-Scale SVM Learning Practical
+###end article-title 163
+###begin article-title 164
+Mfold web server for nucleic acid folding and hybridization prediction
+###end article-title 164
+

@@ -1,0 +1,210 @@
+###begin article-title 0
+BOMP: a program to predict integral beta-barrel outer membrane proteins encoded within genomes of Gram-negative bacteria
+###end article-title 0
+###begin p 1
+###xml 89 105 89 105 <email xmlns:xlink="http://www.w3.org/1999/xlink">flikka@ii.uib.no</email>
+To whom correspondence should be addressed. Tel: +47 55584032; Fax: +47 55584199; Email: flikka@ii.uib.no
+###end p 1
+###begin p 2
+The authors wish it to be known that, in their opinion, the first two authors should be regarded as joint First Authors
+###end p 2
+###begin p 3
+The online version of this article has been published under an open access model. Users are entitled to use, reproduce, disseminate, or display the open access version of this article provided that: the original authorship is properly and fully attributed; the Journal and Oxford University Press are attributed as the original place of publication with the correct citation details given; if an article is subsequently reproduced or disseminated not in its entirety but only in part or as a derivative work this must be clearly indicated.
+###end p 3
+###begin p 4
+(c) 2004, the authors
+###end p 4
+###begin p 5
+###xml 779 795 761 777 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 821 843 803 825 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella typhimurium</italic>
+###xml 902 908 884 890 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 1065 1066 1044 1045 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 779 795 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 821 843 <span type="species:ncbi:90371">Salmonella typhimurium</span>
+###xml 902 908 <span type="species:ncbi:562">E.coli</span>
+This work describes the development of a program that predicts whether or not a polypeptide sequence from a Gram-negative bacterium is an integral beta-barrel outer membrane protein. The program, called the beta-barrel Outer Membrane protein Predictor (BOMP), is based on two separate components to recognize integral beta-barrel proteins. The first component is a C-terminal pattern typical of many integral beta-barrel proteins. The second component calculates an integral beta-barrel score of the sequence based on the extent to which the sequence contains stretches of amino acids typical of transmembrane beta-strands. The precision of the predictions was found to be 80% with a recall of 88% when tested on the proteins with SwissProt annotated subcellular localization in Escherichia coli K 12 (788 sequences) and Salmonella typhimurium (366 sequences). When tested on the predicted proteome of E.coli, BOMP found 103 of a total of 4346 polypeptide sequences to be possible integral beta-barrel proteins. Of these, 36 were found by BLAST to lack similarity (E-value score < 1e-10) to proteins with annotated subcellular localization in SwissProt. BOMP predicted the content of integral beta-barrels per predicted proteome of 10 different bacteria to range from 1.8 to 3%. BOMP is available at .
+###end p 5
+###begin title 6
+INTRODUCTION
+###end title 6
+###begin p 7
+###xml 121 122 121 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c1">1</xref>
+###xml 576 577 568 569 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c2">2</xref>
+###xml 674 675 666 667 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c3">3</xref>
+###xml 690 691 682 683 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c4">4</xref>
+###xml 732 733 724 725 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c5">5</xref>
+###xml 923 924 906 907 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c6">6</xref>
+###xml 1157 1158 1140 1141 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c7">7</xref>
+###xml 1362 1363 1342 1343 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c8">8</xref>
+###xml 1829 1830 1803 1804 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c7">7</xref>
+###xml 1947 1948 1918 1919 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c9">9</xref>
+###xml 1949 1951 1920 1922 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c11">11</xref>
+###xml 2085 2087 2056 2058 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c12">12</xref>
+###xml 2241 2243 2209 2211 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c13">13</xref>
+###xml 2780 2796 2739 2755 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 2806 2828 2765 2787 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Salmonella typhimurium</italic>
+###xml 2894 2896 2853 2855 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c14">14</xref>
+###xml 3026 3032 2982 2988 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 2780 2796 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 2806 2828 <span type="species:ncbi:90371">Salmonella typhimurium</span>
+###xml 3026 3032 <span type="species:ncbi:562">E.coli</span>
+A Gram-negative cell envelope is typically comprised of two membranes, the cytoplasmic (CM) and the outer membrane (OM) (1). Both membranes contain integral membrane proteins that generally are involved in the transport of various molecular compounds across the membranes. Nevertheless, the integral membrane proteins of the CM and OM differ greatly in structure. Integral membrane proteins of the CM consist largely of alpha-structures, where the membrane spanning regions are hydrophobic alpha-helical stretches that typically consist of 15-25 mostly non-polar amino acids (2). Several computer programs are available for the prediction of this type of membrane proteins (3), with TMHMM (4) reported to have the best performance (5). The integral OM proteins (OMPs) generally consist of beta-structures, and form monomeric, dimeric or trimeric transmembrane (TM) beta-barrels containing between 8 and 22 TM beta-strands (6). The function of these proteins in the cell is mainly passive nutrient intake and active ion transport, but they can also serve as membrane anchors and defence against attack proteins, and a few have been characterized as enzymes (7). The integral beta-barrel proteins of the OM have proven more difficult to predict than the integral CM proteins, mainly due to much shorter TM stretches of amino acids with highly variable properties (8). In general, the amino acids in the TM beta-strands alternate between being polar and non-polar, with non-polar residues facing the lipid bilayer and the protein interfaces, and the polar residues pointing into the interior of the barrel. Residues pointing inwards in the barrel can also be non-polar, obstructing the regular alternation between polar and non-polar residues, making this feature less suitable to use when predicting integral beta-barrel proteins (7). Recent publications have described different approaches to recognize beta-barrel OMPs from polypeptide sequences (9-11), but none of the programs has been made available for public use. The only program currently available for such a task is PSORT () (12), which has a rather low accuracy, whereas the new and improved PSORT B does not discriminate between integral beta-barrel proteins and OM lipoproteins (13). In this article, we describe the development of a program named 'The beta-barrel Outer Membrane protein Predictor' (BOMP), which predicts whether or not a polypeptide sequence from a Gram-negative bacterium is an integral beta-barrel OMP. BOMP can scan the entire collection of predicted polypeptide sequences encoded within a bacterial genome, and generates a list in which all the predicted beta-barrel proteins are categorized according to reliability of the prediction. The performance of BOMP was tested on the polypeptides from Escherichia coli K 12 and Salmonella typhimurium with annotated subcellular localization in SwissProt release 42 (14), as both these organisms contain high numbers of well-annotated integral beta-barrel proteins. The entire predicted proteome of E.coli was also analyzed by BOMP in order to identify possible new beta-barrel OMPs not previously annotated as such and without homologues with known subcellular localization.
+###end p 7
+###begin title 8
+PROGRAM COMPONENTS
+###end title 8
+###begin p 9
+The program combines two independent methods for identifying the possible integral OMPs, and a filtering mechanism to remove false positives. In addition, we have added an optional BLAST function that is not part of the prediction. This function will find polypeptide sequences that have high similarity to proteins with annotated subcellular localization in SwissProt, and either support or contradict the prediction results.
+###end p 9
+###begin title 10
+C-terminal pattern
+###end title 10
+###begin p 11
+###xml 237 238 234 235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkh351tb1">1</xref>
+###xml 392 394 386 388 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c30">30</xref>
+###xml 903 909 897 903 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 995 996 986 987 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c8">8</xref>
+###xml 1034 1039 1025 1026 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#8743;</sup>
+###xml 1058 1063 1045 1046 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#8743;</sup>
+###xml 1082 1087 1065 1066 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#8743;</sup>
+###xml 1106 1111 1085 1086 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#8743;</sup>
+###xml 1130 1135 1105 1106 <sup xmlns:xlink="http://www.w3.org/1999/xlink">&#8743;</sup>
+###xml 903 909 <span type="species:ncbi:562">E.coli</span>
+The first method to recognize integral beta-barrel proteins relies on a pattern extracted from the last 10 amino acids in the C-terminal end of 12 integral OMPs with resolved crystal structure and less than 70% conserved residues (Table 1). The last TM beta-strand of these sequences was at the far C-terminal end, with an aromatic amino acid, most often phenylalanine, in the last position (30). Therefore, the pattern extracted from these sequences had an aromatic residue as the last position. In the positions pointing inwards in the barrel, all amino acids except cysteine were allowed. In the positions pointing towards the membrane, the amino acids YFWKLHVITMAD were included in the pattern. In addition, the pattern had to match at the far C-terminal end of a sequence with a minimal length of 110 amino acids in order to give a valid hit. This is a relatively safe length criterion, as OmpX of E.coli with 171 amino acids are considered to be a very short integral beta-barrel protein (8). The resulting pattern was .{100,} [wedgeC] [YFWKLHVITMAD] [wedgeC] [YFWKLHVITMAD] [wedgeC] [YFWKLHVITMAD] [wedgeC] [YFWKLHVITMAD] [wedgeC] [FYW].
+###end p 11
+###begin title 12
+Integral beta-barrel score
+###end title 12
+###begin p 13
+###xml 76 78 76 78 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c10">10</xref>
+###xml 221 222 218 219 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkh351tb1">1</xref>
+###xml 678 680 675 677 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c10">10</xref>
+The second method is based on the data and algorithm given by W. C. Wimley (10) in which he identified the membrane interacting surfaces of 15 nonredundant integral beta-barrel OMPs with resolved crystal structure (Table 1). From this information, he calculated the abundance of each amino acid in the external and internal positions of the membrane spanning segments, relative to the genomic abundance. We utilized this normalized amino acid distribution to score a 10-residue sliding window by taking the maximum of two scores: the scores obtained when summarizing the amino acids in the window starting with either an internal or external amino acid, as described by Wimley (10). In order to obtain a total sequence score (integral beta-barrel score) from the score of each window, we used the average of the eight highest-scoring non-overlapping windows. We observed that the integral beta-barrel proteins in general had less low-scoring windows than other protein types. The average of the 12 lowest scoring non-overlapping windows was therefore added to the integral beta-barrel score. Several different numbers of high- and low-scoring windows to be included in the integral beta-barrel score were tested, but the figures used above were found to give the best predictive power in this program component. Proteins with integral beta-barrel score above an empirically found threshold were considered to be possible beta-barrel OMPs. In addition, we defined a high integral beta-barrel score limit which included very few false positives. This high scoring limit was used in the categorization of the predicted beta-barrel OMPs, which indicates the likelihood of the prediction being correct.
+###end p 13
+###begin title 14
+Amino acid distribution filter
+###end title 14
+###begin p 15
+###xml 1591 1593 1585 1587 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c31">31</xref>
+###xml 1958 1959 1952 1953 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh351f1">1</xref>
+###xml 2170 2171 2164 2165 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 2202 2203 2196 2197 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 2209 2211 2203 2205 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c33">33</xref>
+###xml 2294 2295 2288 2289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh351f1">1</xref>
+In order to limit the number of wrongly predicted integral OMPs (false positives), we developed a final filtering procedure. The proteins that have the C-terminal pattern or a significant integral beta-barrel score are compared to a reference set of proteins by considering the relative abundances of two amino acids. The reference set was collected from SwissProt release 42, where all Gram-negative bacterial proteins with subcellular localization 'Integral membrane protein. outer membrane' or 'Outer membrane.' were considered to be true integral OMPs. Polypeptide sequences annotated with a subcellular localization not related to the OM were also added, to constitute a potential false positive group. This set was reduced so that all proteins were ensured to have less than 40% sequence identity to each other, leading to a reduced reference set containing 1231 sequences, of which 110 have OM as localization (available at ). This sequence collection was further reduced to include only the proteins that were predicted to be integral OMPs by the C-terminal pattern or the integral beta-barrel score. This is the final reference set used in the filtering process, containing both real integral OMPs and some proteins with other localization (available at ). When searching for a good discriminator between the true positives and the false positives, we considered the relative abundances of all single amino acids, all pairs of amino acids (di-peptides) and a number of different groups of amino acids (hydrophobic, hydrophilic, charged etc.). By using principal component analysis (31) we were able to visualize the discriminative power of different subgroups of features, and then identify candidate subgroups of features to use as discriminators. We chose to use the relative abundance of Asparagine and Isoleucine as they gave the best separation between true and false positives in the reduced reference set containing 1231 sequences. In Figure 1, the proteins of the final reference set are shown in a plot with relative abundance values on the coordinate axis. When a protein is run through the filter, we compare it to the final reference set by using a k-nearest-neighbour method with k = 5 (33) to determine if the candidate is a true integral OMP. This is depicted in Figure 1, where the circle contains a candidate integral OMP and the five closest neighbours in the final reference set.
+###end p 15
+###begin title 16
+BLAST
+###end title 16
+###begin p 17
+###xml 605 606 605 606 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 755 757 755 757 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c13">13</xref>
+As a supplement to the prediction methods outlined above, we added the possibility to include an automated BLAST search to be performed on the input sequences. We made a database containing the 10 618 Gram-negative polypeptide sequences in SwissProt release 42 with given subcellular localization, or those annotated with similarity to sequences with known localization (available at ). Sequences with probable, possible or putative localization were excluded from the database. The input sequence is used to search against this database using BLAST in order to find the highest-scoring alignment with an E-value above 1e-10 (this value can be modified by the user, but 1e-10 is set as default) and a length of between 80% and 120% of the input sequence (13). The localization of the best database hit will either support or contradict the result from the prediction part of BOMP, and provide additional information about the input sequence to the user.
+###end p 17
+###begin title 18
+Dividing the predicted sequences into categories
+###end title 18
+###begin p 19
+###xml 190 191 187 188 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkh351tb2">2</xref>
+The sequences predicted to be integral beta-barrel proteins are divided into five categories in order to give the user additional information about the reliability of the predictions (Table 2). The categories are named 1-5 in the output, and the probability of being a beta-barrel protein increases with higher category numbers. If a sequence is not found by the predictions, but BLAST detects a possible homologue with localization in the OM, this sequence will appear in the output as category 0. If a polypeptide sequence is predicted to be an integral beta-barrel protein in category 1-5, and the best BLAST hit has localization other than (integral) OM, a conflict will be reported in the output as a star beside the category number.
+###end p 19
+###begin title 20
+EVALUATION OF PERFORMANCE
+###end title 20
+###begin p 21
+###xml 92 98 92 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 103 116 103 116 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S.typhimurium</italic>
+###xml 511 517 508 514 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 522 535 519 532 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S.typhimurium</italic>
+###xml 1063 1063 1060 1060 <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="gkh351equ1.gif"/>
+###xml 92 98 <span type="species:ncbi:562">E.coli</span>
+###xml 103 116 <span type="species:ncbi:90371">S.typhimurium</span>
+###xml 511 517 <span type="species:ncbi:562">E.coli</span>
+###xml 522 535 <span type="species:ncbi:90371">S.typhimurium</span>
+In order to evaluate the performance of BOMP, we extracted all the polypeptide sequences of E.coli and S.typhimurium with known subcellular localization annotated in SwissProt release 42, excluding those with possible, probable or putative localization. All proteins with subcellular localization 'Integral membrane protein. outer membrane' or 'Outer membrane.', including those annotated with similarity to such proteins, were considered as integral beta-barrel OMPs. The two protein collections obtained from E.coli and S.typhimurium were separately run through BOMP after removing all the sequences with more than 40% sequence identity to any sequence in the test set under consideration from the reference set used in the filtering process. The accuracy was measured to an average of 88% recall [true hits/(true hits + false negatives)], and 80% precision [true hits/(true hits + false positives)]. Matthews correlation coefficient (MCC) is another measure of performance, which accounts for both over- and under-prediction. MCC is represented by the formula
+###end p 21
+###begin title 22
+RESULTS
+###end title 22
+###begin p 23
+###xml 32 38 32 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 329 335 323 329 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 972 978 957 963 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 1048 1053 1033 1038 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 1056 1057 1041 1042 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c9">9</xref>
+###xml 1192 1198 1177 1183 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 1570 1571 1552 1553 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c9">9</xref>
+###xml 32 38 <span type="species:ncbi:562">E.coli</span>
+###xml 329 335 <span type="species:ncbi:562">E.coli</span>
+###xml 972 978 <span type="species:ncbi:562">E.coli</span>
+###xml 1192 1198 <span type="species:ncbi:562">E.coli</span>
+The whole predicted proteome of E.coli () was analysed using BOMP, predicting 91 integral beta-barrel proteins. In addition, 12 sequences not predicted to be integral beta-barrel proteins were found to have similarity to proteins localized in the outer membrane when the additional BLAST function was used. Of these 103 possible E.coli integral beta-barrel proteins found by BOMP, 67 were either previously annotated with (integral) OM as the subcellular localization in SwissProt or found to have similarity to such proteins by BLAST. Seven of the predicted proteins were found to possibly have localization other than OM, but might not be false positives since the best BLAST hits of five of them were annotated with the localizations membrane-associated, secreted or cell wall in SwissProt. The remaining 36 predicted beta-barrel proteins were not found to have similar sequences in our BLAST database, and could be previously undiscovered integral beta-barrel OMPs in E.coli. Eleven of the 36 proteins were also predicted to be OMPs by Casadio et al. (9) using their Hunter program (not publicly available). However, none of these sequences was predicted as an OMP by PSORT-B, as all the E.coli sequences predicted as OMPs by this program had similarity to sequences with OM localization in their BLAST database. BOMP found that the predicted proteomes of 10 different Gram-negative bacteria contained between 1.8% and 3% beta-integral barrel proteins (). These results are in line with the 1.5-2.4% OMPs per genome predicted from nine different bacteria by Hunter (9).
+###end p 23
+###begin title 24
+DISCUSSION
+###end title 24
+###begin p 25
+###xml 365 366 362 363 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c3">3</xref>
+###xml 530 532 524 526 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c34">34</xref>
+###xml 533 535 527 529 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c35">35</xref>
+###xml 895 901 886 892 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 937 960 928 951 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Helicobacter pylori J99</italic>
+###xml 962 975 953 966 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S.typhimurium</italic>
+###xml 977 999 968 990 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Haemophilus influenzae</italic>
+###xml 1001 1024 992 1015 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Fusobacterium nucleatum</italic>
+###xml 1026 1046 1017 1037 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli O157:H7 Sakai</italic>
+###xml 1051 1073 1042 1064 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Xanthomonas campestris</italic>
+###xml 1498 1499 1486 1487 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c9">9</xref>
+###xml 1526 1528 1511 1513 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c11">11</xref>
+###xml 1574 1576 1559 1561 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c10">10</xref>
+###xml 2067 2069 2037 2039 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c10">10</xref>
+###xml 2323 2329 2290 2296 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E.coli</italic>
+###xml 895 901 <span type="species:ncbi:562">E.coli</span>
+###xml 937 960 <span type="species:ncbi:85963">Helicobacter pylori J99</span>
+###xml 962 975 <span type="species:ncbi:90371">S.typhimurium</span>
+###xml 977 999 <span type="species:ncbi:727">Haemophilus influenzae</span>
+###xml 1001 1024 <span type="species:ncbi:851">Fusobacterium nucleatum</span>
+###xml 1026 1040 <span type="species:ncbi:83334">E.coli O157:H7</span>
+###xml 1051 1073 <span type="species:ncbi:339">Xanthomonas campestris</span>
+###xml 2323 2329 <span type="species:ncbi:562">E.coli</span>
+In this article, we describe the development of the first publicly available program that predicts with good accuracy the integral beta-barrel OM proteins from a collection of polypeptide sequences from Gram-negative bacteria. The development of a reliable program to perform this task has previously proven to be a bottleneck in the area of TM protein prediction (3). The most common way to identify integral beta-barrel proteins from predicted proteomes has so far been the use of annotation information in addition to PSORT I (34,35). PSORT I, with a precision of 65.3% and recall of 54.5% in the prediction of all types of OMPs, was recently replaced by a new and improved version, PSORT B, with a reported recall of 90.3% and precision of 98.8%. PSORT B does not, however, separate the integral beta-barrel proteins from the lipoproteins. When examining all the PSORT B-predicted OMPs from E.coli and six other precomputed genomes (Helicobacter pylori J99, S.typhimurium, Haemophilus influenzae, Fusobacterium nucleatum, E.coli O157:H7 Sakai and Xanthomonas campestris), we found that all the predicted OMPs were recognized by the PSORT B BLAST module. No additional sequences without known homologues were predicted by the other program modules. This indicates that PSORT B will probably have little chance of identifying novel OMPs without already-known homologues. At least three other programs for integral beta-barrel prediction have been developed over the last couple of years, Hunter (9), the beta-barrel finder (11) and a simple algorithm developed by Wimley (10). Hunter is mainly based on signal sequence prediction, and a predictor of topography to recognize all-beta-membrane proteins, whereas the beta-barrel finder is based on secondary structure predictions together with hydropathy and amphipathicity information. Wimley developed a simple algorithm to calculate the beta-barrel score of sequences based on the relative abundance of amino acids in the TM beta-strands of 15 different integral beta-barrel proteins with known crystal structures (10). Unfortunately, none of these programs has been available for performance testing, and Hunter is the only one to report its accuracy, with a recall of 82.4% and a precision of 90.3% for the prediction of well-annotated integral beta-barrel proteins in E.coli. This is slightly poorer recall, but higher precision, than BOMP. Unlike Hunter, BOMP is not based on signal sequence prediction, giving BOMP an advantage when it comes to predicting integral beta-barrel proteins from translated open reading frames since in some cases they can have been given the wrong start site, which might lead to difficulties in signal sequence prediction.
+###end p 25
+###begin p 26
+From the discussion outlined above, it is obvious that BOMP will close a gap in the collection of currently available prediction tools for TM proteins. This program will provide fast and reliable information for the experimental analysis of beta-barrel OMPs. When analysing a predicted proteome with BOMP, the resulting overview of the predicted integral beta-barrel OM subproteome will provide important information on how to approach the experimental proteomic work, and will speed up the experimental analysis of integral beta-barrel proteins in the laboratory. Due to the good prediction accuracy, several previously hypothetical annotated polypeptide sequences can now be given a likely localization, which will narrow down possible function(s) of these proteins. An overview of the predicted integral beta-barrel subproteome will also narrow down the number of proteins to be selected for experimental investigation with respect to identifying proteins that might serve as vaccine candidates in pathogenic bacteria. BOMP also opens up the possibility of comparing the predicted integral beta-barrel subproteome of two different strains of the same bacterium, in order to find differences that might explain pathogenesis of one of the strains.
+###end p 26
+###begin title 27
+Figures and Tables
+###end title 27
+###begin p 28
+###xml 380 382 380 382 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh351c32">32</xref>
+ Relative amino acid abundance values for the reference set. Dark spots are integral OMPs, and light spots are other proteins. The black spot inside the circle represents a protein whose five closest neighbours are inside the circle. Three are integral OMPs and two are other proteins, thus the unknown candidate is predicted to be an integral OMP. Figure created with J-Express (32).
+###end p 28
+###begin title 29
+Proteins used to generate the C-terminal amino acid pattern (the first 12), and the proteins used as a basis for the integral beta-barrel score calculation (all)
+###end title 29
+###begin title 30
+Dividing the predicted integral beta-barrel proteins into categories based on aprobability of correct prediction
+###end title 30
+###begin title 31
+Evaluation of the performance of BOMP
+###end title 31
+###begin p 32
+True positives (TP), false positives (FP) and false negatives (FN).
+###end p 32
+###begin title 33
+Measuring the performance of the individual components of BOMP
+###end title 33
+###begin p 34
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">a</sup>
+aThe performance of the filter is measured on the sequences predicted as integral OMPs by the Pattern and/or the Integral beta-barrel score.
+###end p 34
+###begin title 35
+ACKNOWLEDGEMENTS
+###end title 35
+###begin p 36
+We wish to thank Johan R. Lillehaug for critically reading through the manuscript, Bjarte Dysvik for help with graphics and Trond Hellem Bo for useful discussions on statistical topics. Lillehaug is at the Department of Molecular Biology, Dysvik and Bo are at the Department of Informatics, University of Bergen. This work was supported in part by grants from the Norwegian Research Council [SUP 140785/420 (GABI); FUGE/CBU-151899/ISO], and the Meltzer Foundation, University of Bergen.
+###end p 36
+###begin title 37
+REFERENCES
+###end title 37
+

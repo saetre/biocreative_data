@@ -1,0 +1,344 @@
+###begin article-title 0
+IDconverter and IDClight: Conversion and annotation of gene and protein IDs
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+Researchers involved in the annotation of large numbers of gene, clone or protein identifiers are usually required to perform a one-by-one conversion for each identifier. When the field of research is one such as microarray experiments, this number may be around 30,000.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+To help researchers map accession numbers and identifiers among clones, genes, proteins and chromosomal positions, we have designed and developed IDconverter and IDClight. They are two user-friendly, freely available web server applications that also provide additional functional information by mapping the identifiers on to pathways, Gene Ontology terms, and literature references. Both tools are high-throughput oriented and include identifiers for the most common genomic databases. These tools have been compared to other similar tools, showing that they are among the fastest and the most up-to-date.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+These tools provide a fast and intuitive way of enriching the information coming out of high-throughput experiments like microarrays. They can be valuable both to wet-lab researchers and to bioinformaticians.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 379 380 379 380 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+The databases that can help annotate our data are fast changing and rapidly increasing in number. This makes it more difficult to easily integrate this useful information to the output from the different types of high-throughput experiments and analyses of those experiments. But integrating the available data is crucial to gain further biological understanding of our results [1].
+###end p 9
+###begin p 10
+Output from microarray and other high-throughput experiments involves several thousands of gene, clone or protein identifiers. Comparing results from different experiments with different identifiers may require a non trivial and tedious conversion of IDs one by one. Also, collecting functional information for several thousand identifiers from different data sources may end up being too time consuming a task. Motivated by the necessity of researchers at our Institute to obtain this information in a reliable, up-to-date and easy manner, we developed IDconverter and IDClight, two complementary applications that retrieve data from the same source, but present it in different ways to cover different users' needs.
+###end p 10
+###begin p 11
+###xml 137 140 137 140 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p53</italic>
+Conversions between gene and protein identifiers may be one-to-one or one-to-many. For instance, a user working with a given gene (e.g., p53), and starting from its HUGO name (TP53), may be interested in knowing the corresponding Ensembl gene ID (ENSG00000141510), its UniGene cluster ID (Hs.408312), but also the cDNA clones from GenBank that map to it ([GenBank:], [GenBank:], [GenBank:], etc.), the KEGG pathways where it is involved (hsa04010, hsa04110, hsa04210, etc.) or whether any protein produced by this gene has been solved and its 3D structure is in the Protein Data Bank ([PDB:], [PDB:], [PDB:], etc.). With the tools here presented, all this information and more is readily available with a simple query through an intuitive user interface.
+###end p 11
+###begin p 12
+###xml 69 70 69 70 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 89 90 89 90 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 101 102 101 102 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 117 118 117 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 132 133 132 133 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 152 153 152 153 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 292 293 292 293 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 308 309 308 309 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+There are some tools available with similar objectives (Resourcerer [2], Onto-Translate [3], SOURCE [4], MatchMiner [5], GeneMerge [6], and AnnBuilder [7]) which provide mappings between some identifiers, but in general they lack a link between two of the most used databases: those at NCBI [8] and Ensembl [9]. In the Results section a comparison between some of these tools and the ones presented in this article is shown and discussed.
+###end p 12
+###begin p 13
+###xml 57 59 57 59 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+IDconverter and IDClight are integrated within Asterias [10], a new suite of tools for the analysis of genomic data. Output from all the applications on this suite can be enriched by adding a link to IDClight, provided that the user specifies the organism and type of identifier used. IDClight can also be linked from other external applications.
+###end p 13
+###begin title 14
+Implementation
+###end title 14
+###begin title 15
+Data
+###end title 15
+###begin p 16
+###xml 458 459 458 459 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 489 490 489 490 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 546 548 546 548 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 565 567 565 567 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 584 586 584 586 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 493 498 <span type="species:ncbi:9606">human</span>
+Both IDconverter and IDClight use data from a set of tables where, given our selection of databases, all possible conversions have already been pregenerated to ensure a quick answer to any query. This factor is specially important if we consider that some users need to convert the tens of thousands of gene IDs from a microarray experiment. Currently, the data in these pregenerated tables come from six different and publicly available databases: Ensembl [9], NCBI (UniGene and PubMed) [8], human chromosomal location from UCSC Genome Browser [11], KEGG pathway [12], and Reactome [13]. The UniGene database is only available in a plain text format, requiring its transformation into a MySQL database to pregenerate the tables.
+###end p 16
+###begin p 17
+###xml 10 11 10 11 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 338 343 <span type="species:ncbi:9606">Human</span>
+###xml 345 350 <span type="species:ncbi:10090">Mouse</span>
+###xml 355 358 <span type="species:ncbi:10116">Rat</span>
+In Figure 1 the different paths from and to all the different identifiers are shown. Except in those cases shown in the Figure, the shortest path between identifiers is always used, because it is the one that is likely to recover more information as the possibility of a missing identifier in the path is lower. The data is available for Human, Mouse and Rat, but more organisms could be easily added if they were interesting to the scientific community.
+###end p 17
+###begin p 18
+###xml 0 47 0 47 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Relationships between the different identifiers</bold>
+Relationships between the different identifiers. All relationships between identifiers that we have taken into account are displayed. The different identifiers are color coded according to which database they are taken from. The path taken from an identifier to another is always the shortest one. Red asterisk: To ensure that pregenerated information is as complete as possible, there are several paths to go from identifiers in the UniGene database to Ensembl Gene ID. The script first tries to map the Entrez Gene ID with an Ensembl Gene ID. If this fails, it tries with a UniGene Cluster ID, and finally with the HUGO name. Red diamond: Gene location is taken from either Ensembl or UCSC, or both, at user's wish.
+###end p 18
+###begin title 19
+Code
+###end title 19
+###begin p 20
+###xml 376 393 376 393 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">additional file 1</xref>
+IDconverter front end is coded in PHP and IDClight is written in Python and uses the Apache module mod_python. Both applications run on an Apache web server and the databases are stored in a MySQL database server. To speed up the net waiting time from both tools, tables that store all possible conversions for each type of input identifier are periodically pregenerated (See additional file 1: Database schema for a brief description of the schema of the database where the pregenerated data is stored). IDconverter and IDClight run on two load-balanced servers with 2 dual core AMD processors each.
+###end p 20
+###begin title 21
+Results
+###end title 21
+###begin title 22
+IDconverter
+###end title 22
+###begin p 23
+###xml 206 210 <span type="species:ncbi:55581">HUGO</span>
+IDconverter is the application that allows the user to map in batch mode multiple identifiers and select which output (types of identifiers and format) she prefers. The input identifiers can be gene names (HUGO), GenBank accessions, UniGene cluster IDs, Ensembl gene IDs, Clone IDs, Affymetrix IDs, RefSeq RNAs, RefSeq peptides, Entrez genes IDs, and SwissProt names.
+###end p 23
+###begin p 24
+Special attention was paid when designing a user friendly Graphical User Interface, suitable for biologists. This interface design makes the tool easy to understand and use, which results in greater user acceptance and facilitates the usage and incorporation in the workflow of a microarray laboratory.
+###end p 24
+###begin p 25
+###xml 366 368 366 368 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 759 760 759 760 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 467 472 <span type="species:ncbi:9606">human</span>
+There are 25 possible types of output identifiers and functional information that can be selected. The user can also select the format of the output information: an HTML table, a tab-delimited text file and an Excel spreadsheet file. If the HTML output is preferred, hyper links from each identifier to the original database are provided, as well as a link to iHOP [14], a gene network for navigating the literature. It must be noted that the chromosomal location of human genes is taken from two different sources: Ensembl and UCSC Genome Browser. The application allows the user to select the source of location information and can also complement one of the sources with the other one if information is missing. An example of the output is shown in Figure 2. IDconverter has been available for more than two years and it is currently receiving more than 100 requests per day.
+###end p 25
+###begin p 26
+###xml 0 36 0 36 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Snapshot of IDconverter and IDClight</bold>
+###xml 88 93 <span type="species:ncbi:9606">human</span>
+###xml 149 154 <span type="species:ncbi:10090">mouse</span>
+Snapshot of IDconverter and IDClight. On the left, IDconverter HTML output for a single human GenBank Accession. On the right, IDClight output for a mouse Ensembl gene.
+###end p 26
+###begin title 27
+IDClight
+###end title 27
+###begin p 28
+IDClight is a tool created as a light and fast web service to be used to enrich the output of other data analysis tools. It is designed to be easily linkable from any application as all the input information (ID, ID type and organism) is sent to the application as parameters in the URL. The same 10 identifiers that can be used with IDconverter are allowed as input in this application. All possible output identifiers and functional and bibliographic information available are then displayed, with the appropriate hyper links from each identifier.
+###end p 28
+###begin p 29
+###xml 204 206 204 206 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 271 272 271 272 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 348 350 348 350 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 147 153 <span type="species:ncbi:37334">Pomelo</span>
+###xml 305 310 <span type="species:ncbi:10090">mouse</span>
+We would like to stress that IDClight can be trivially linked from external applications, as it is being done by our tools SignS, Tnasas, GeneSrF, Pomelo II and ADaCGH, available from the Asterias suite [10]. As an example, the URL to IDClight for the snapshot in Figure 2, looking for information on the mouse Ensembl gene ENSMUSG00000003123, is [15].
+###end p 29
+###begin p 30
+IDClight was launched on January 2006 and has been performing an average of 800 conversions per day.
+###end p 30
+###begin title 31
+Comparison with other similar tools
+###end title 31
+###begin p 32
+###xml 163 164 163 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 175 176 175 176 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 199 200 199 200 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 365 366 365 366 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 556 557 556 557 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 691 692 691 692 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+Several of the tools with similar objectives that have been presented in the Background section have been compared to IDconverter. Those selected were MatchMiner [5], SOURCE [4], and Onto-Translate [3], because they present features most similar to the IDconverter ones. Other tools have not been so throughly reviewed in detail for different reasons: Resourcerer [2] is a useful tool provided that the user wants to use as input one of the commonly used microarrays, but it is not possible to use with a list of identifiers chosen by the user; GeneMerge [6] has not been considered in this comparison because its choice of input and output identifiers is very limited; finally, AnnBuilder [7] is a very interesting R package, but it is not an application in itself and requires installing R and Bioconductor.
+###end p 32
+###begin p 33
+###xml 9 10 9 10 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 160 161 160 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+In Table 1, we compare the general characteristics of MatchMiner, SOURCE, and Onto-Translate with those of the two applications presented here. Also, in Figure 3, the identifiers that, according to the applications tested, can be used as input and obtained as output are shown.
+###end p 33
+###begin p 34
+Comparison of conversion web applications
+###end p 34
+###begin p 35
+Input and output options for the different web applications compared. See Figure 3 for the description of the conversions performed by each application.
+###end p 35
+###begin p 36
+###xml 0 58 0 58 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Input and output possibilities for the four tools compared</bold>
+###xml 217 219 217 219 <sup xmlns:xlink="http://www.w3.org/1999/xlink">1 </sup>
+###xml 245 247 245 247 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 345 347 345 347 <sup xmlns:xlink="http://www.w3.org/1999/xlink">3 </sup>
+###xml 381 383 381 383 <sup xmlns:xlink="http://www.w3.org/1999/xlink">4 </sup>
+###xml 408 410 408 410 <sup xmlns:xlink="http://www.w3.org/1999/xlink">5 </sup>
+###xml 443 445 443 445 <sup xmlns:xlink="http://www.w3.org/1999/xlink">6 </sup>
+Input and output possibilities for the four tools compared. Description of the allowed input IDs and those IDs they can be converted to, for MatchMiner (M), SOURCE (S), Onto-Translate (O), and IDconverter (I). Notes: 1 M: cDNA, FISH-mapped BAG; 2 M: Cytogenetic location as input. Cytogenetic location from UCSC, transcription start and end bp; 3 S: Chromosome Location, Cytoband; 4 O: 18 Affymetrix arrays; 5 O: dbest gi, seq id, protein gi; 6 O: Agilent (5 arrays), Amersham (3), Clonetech(22), Operon (3), Perkin Elmer (5), Sigmagenosys (2), Superarray (86), Takara (6); I: Location from Ensembl and UCSC (start bp, end bp, chromosome and strand).
+###end p 36
+###begin p 37
+###xml 75 92 75 92 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">additional file 2</xref>
+###xml 389 393 <span type="species:ncbi:55581">HUGO</span>
+The testing procedure consisted in using several lists of identifiers (See additional file 2: Description of the test data), focusing on the time necessary for different conversions and the number of input identifiers with a corresponding output ID. Twelve different conversions have been tested for all the tools where it was possible; from four different inputs (Affymetrix HGU133A IDs, HUGO, Entrez Gene IDs, and RefSeq_RNAs) to three outputs (GenBank accessions, UniGene cluster IDs, and RefSeq_peptides). For some tools and specific conversions, the tests could not be performed successfully in any of the three rounds of testing (25th-30th August, 2006, 19th-23rd October, 2006, and 20th December, 2006) because either the application crashed or did not return any results in a reasonable time. In those cases, partial or approximated results are shown.
+###end p 37
+###begin p 38
+To ensure a fair testing process, the web servers in the U.S. (MatchMiner, SOURCE, and Onto-Translate) were tested from the authors' center in Spain; IDconverter was tested from the U.S.
+###end p 38
+###begin title 39
+Time performance
+###end title 39
+###begin p 40
+###xml 10 11 10 11 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+In Figure 4 the results of the time test are shown: for each conversion, a graph showing the relation between the time to perform a conversion and the number of IDs converted. For the conversions to UniGene cluster IDs, all the four tools perform similarly, but for the other conversions some differences exist. Several conclusions can be extracted from their performance:
+###end p 40
+###begin p 41
+###xml 0 32 0 32 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Analysis of the time performance</bold>
+Analysis of the time performance. Time (in seconds) vs. number of input IDs for the twelve tests performed with MatchMiner (black lines), SOURCE (green), Onto-Translate (blue), and IDconverter (red). Abbreviations: Affy: Affymetrix ID; GB: GenBank accession; UG: UniGene cluster; RS_pep: RefSeq_peptide; Entrez: Entrez Gene ID; RS_RNA: RefSeq_RNA.
+###end p 41
+###begin p 42
+###xml 210 214 <span type="species:ncbi:55581">HUGO</span>
+* IDconverter was usually among the fastest applications in every conversion. Few of the large conversions took more than a minute. Those that were slower correspond to conversions from a gene identifier (like HUGO or Entrez Gene ID) to a clone identifier (such as GenBank accession).
+###end p 42
+###begin p 43
+* SOURCE, for those 4 out of the 12 conversions tested that it is built to perform, was also among the fastest tools.
+###end p 43
+###begin p 44
+* MatchMiner performed quite well for conversions to UniGene cluster, but it was slow for those to GenBank accession or to RefSeq_peptide. In some of the later cases it even crashed as it was not capable of handling the large output files.
+###end p 44
+###begin p 45
+* Onto-Translate had a fast answer time for almost all conversions, except for the conversion of RefSeq_RNAs to GenBank accessions when, even if the allotted memory to the applet was increased to 256 Mb, it was not capable of returning results for large sets and for smaller ones it took several minutes.
+###end p 45
+###begin p 46
+###xml 263 264 263 264 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+It has to be taken into account that two of the tools here shown, IDconverter and SOURCE, allow the user to convert to multiple types of IDs on the same batch run. However the spectrum of conversions allowed for SOURCE is smaller than that of IDconverter (Figure 3).
+###end p 46
+###begin title 47
+Completeness
+###end title 47
+###begin p 48
+###xml 10 11 10 11 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+In Figure 5, the percentage of input IDs with at least a converted ID is displayed for the 12 conversions timed in the previous section. These percentages were calculated using the complete sets when possible. However, in those cases were some applications were not capable of handling these large sets (bars with diagonal lines), the percentages yielded by smaller sets were used as approximations. The case of MatchMiner and Affymetrix IDs as input is different, as this application does not allow the user the specify to which array the input data belong, so when entering probeset ids from HGU 133A results from another Affymetrix array may be obtained. For this reason the percentages for the conversions of Affymetrix IDs with MatchMiner were considered as upper boundaries of the actual percentages. It also has to be noted that not all input IDs have to have a corresponding ID using other types of identifiers. Thus the goal of 100% in these graphs may not be possible.
+###end p 48
+###begin p 49
+###xml 0 28 0 28 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Analysis of the completeness</bold>
+Analysis of the completeness. The percentage of input IDs that are converted to at least one ID is shown, for each type of input and output tested and the four applications: MatchMiner (black), SOURCE (green), Onto-Translate (blue), and IDconverter (red). Solid colors: Percentage is calculated after running the whole set through the application. Diagonal lines: The application was not able to convert the whole set, thus the percentage is taken from a smaller set. Horizontal lines: MatchMiner does not allow the user to specify to which Affymetrix array the input IDs belong, thus, given that the same probeset id can be present in different Affymetrix arrays, the percentage has to be considered an upper boundary.
+###end p 49
+###begin p 50
+###xml 12 13 12 13 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+From Figure 5, we can conclude that:
+###end p 50
+###begin p 51
+###xml 30 34 <span type="species:ncbi:55581">HUGO</span>
+* For those conversions using HUGO or Entrez Gene IDs as input, all four applications performed similarly, with values around 70-75%, except for the conversion Entrez Gene ID to GenBank accession or RefSeq_peptide, where Onto-Translate had a few more results and the conversion of Entrez Gene ID to RefSeq_peptide, where IDconverter had a few less.
+###end p 51
+###begin p 52
+* For the Affymetrix ID conversions, the results depended on the output identifier; for two of them Onto-Translate was the most complete one, for the other it was IDconverter. As stated above, the results for MatchMiner are only upper boundaries.
+###end p 52
+###begin p 53
+* For the conversions from RefSeq_RNA identifiers, MatchMiner performed best overall. Onto-Translate reached 100% with those conversions to RefSeq_peptide. IDconverter values were around 70% for GenBank accession and UniGene cluster and close to 97% for RefSeq_peptide.
+###end p 53
+###begin p 54
+On average and taking into account only those percentages evaluated with the complete lists, MatchMiner returned an ID for 84% of the input IDs in 8 successfully evaluated conversions, Onto-Translate for 81% (11 conversions), and SOURCE (4 conversions) and IDconverter (12 conversions) for 72%.
+###end p 54
+###begin title 55
+Conclusion
+###end title 55
+###begin p 56
+IDconverter and IDClight are a pair of tools that integrate some of the most used gene/clone/protein identifier conversions with several functional and bibliographic additional information. This is done in a easy-to-use, fast and up-to-date manner. Our commitment is to recreate the pregenerated tables every two months, following Ensembl update schedule, thus keeping all the conversions and additional information as updated as possible.
+###end p 56
+###begin title 57
+Availability and requirements
+###end title 57
+###begin p 58
+###xml 2 16 2 16 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Project name: </bold>
+* Project name: IDconverter and IDClight.
+###end p 58
+###begin p 59
+###xml 2 21 2 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Project home page: </bold>
+* Project home page:  (*) and  (dagger).
+###end p 59
+###begin p 60
+###xml 2 23 2 23 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Operating system(s): </bold>
+* Operating system(s): Web-based application (*,dagger).
+###end p 60
+###begin p 61
+###xml 2 24 2 24 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Programming language: </bold>
+* Programming language: Python (*,dagger) and PHP (*).
+###end p 61
+###begin p 62
+###xml 2 22 2 22 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Other requirements: </bold>
+* Other requirements: Web browser (*,dagger).
+###end p 62
+###begin p 63
+###xml 2 11 2 11 <bold xmlns:xlink="http://www.w3.org/1999/xlink">License: </bold>
+* License: None (*,dagger).
+###end p 63
+###begin p 64
+###xml 2 44 2 44 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Any restrictions to use by non-academics: </bold>
+* Any restrictions to use by non-academics: None (*,dagger).
+###end p 64
+###begin p 65
+Note: * - IDconverter; dagger - IDClight.
+###end p 65
+###begin title 66
+Authors' contributions
+###end title 66
+###begin p 67
+PY designed the first version of IDconverter, including data from Ensembl and UniGene databases. AA upgraded IDconverter, created IDClight, added PubMed and UCSC databases, designed the table pregeneration process, and wrote the manuscript. AC and AA added Reactome and KEGG to the available outputs. RD-U took part on the design of both applications. All authors read, made corrections and approved the final manuscript.
+###end p 67
+###begin title 68
+Supplementary Material
+###end title 68
+###begin title 69
+Additional File 1
+###end title 69
+###begin p 70
+Database schema showing the structure of the tables were the pregenerated data.
+###end p 70
+###begin p 71
+Click here for file
+###end p 71
+###begin title 72
+Additional File 2
+###end title 72
+###begin p 73
+Description of the lists of identifiers used for testing
+###end p 73
+###begin p 74
+Click here for file
+###end p 74
+###begin title 75
+Acknowledgements
+###end title 75
+###begin p 76
+We are grateful to the researchers at the Centro Nacional de Investigaciones Oncologicas and other users of these applications that have provided us with feedback information that helped find bugs and improve the applications' features. We thank Joaquin Dopazo for his involvement in the initial stages of IDconverter, Martti Tolvanen for extensively and carefully testing the data consistency, Iddo Friedberg for testing the time performance of IDconverter from La Jolla, CA, USA, and two anonymous reviewers for comments. Funding has been provided by Fundacion de Investigation Medica Mutua Madrilena and Project TIC2003-09331-C02-02 of the Spanish Ministry of Education and Science (MEC). RD-U is partially supported by the Ramon y Cajal programme of the Spanish MEC. Applications are running on a cluster of machines purchased with funds from the RTICCC from the Spanish FIS.
+###end p 76
+###begin article-title 77
+Integrative analysis of the cancer transcriptome
+###end article-title 77
+###begin article-title 78
+RESOURCERER: a database for annotating and linking microarray resources within and across species
+###end article-title 78
+###begin article-title 79
+Recent additions and improvements to the Onto-Tools
+###end article-title 79
+###begin article-title 80
+SOURCE: a unified genomic resource of functional annotations, ontologies, and gene expression data
+###end article-title 80
+###begin article-title 81
+MatchMiner: a tool for batch navigation among gene and gene product identifiers
+###end article-title 81
+###begin article-title 82
+GeneMerge-post-genomic analysis, data mining, and hypothesis testing
+###end article-title 82
+###begin article-title 83
+An extensible application for assembling annotation for genomic data
+###end article-title 83
+###begin article-title 84
+Database resources of the National Center for Biotechnology Information
+###end article-title 84
+###begin article-title 85
+Ensembl 2006
+###end article-title 85
+###begin article-title 86
+Asterias: a parallelized web-based suite for the analysis of expression and aCGH data
+###end article-title 86
+###begin article-title 87
+The UCSC Genome Browser Database: update 2006
+###end article-title 87
+###begin article-title 88
+From genomics to chemical genomics: new developments in KEGG
+###end article-title 88
+###begin article-title 89
+Reactome: a knowledgebase of biological pathways
+###end article-title 89
+###begin article-title 90
+A gene network for navigating the literature
+###end article-title 90
+###begin article-title 91
+IDClight example
+###end article-title 91
+

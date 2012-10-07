@@ -1,0 +1,473 @@
+###begin article-title 0
+RNAProfile: an algorithm for finding conserved secondary structure motifs in unaligned RNA sequences
+###end article-title 0
+###begin p 1
+###xml 95 119 95 119 <email xmlns:xlink="http://www.w3.org/1999/xlink">graziano.pesole@unimi.it</email>
+To whom correspondence should be addressed. Tel: +39 02 50314915; Fax: +39 02 50314912; Email: graziano.pesole@unimi.it
+###end p 1
+###begin p 2
+###xml 207 212 207 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink">trans</italic>
+###xml 245 248 245 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+The recent interest sparked due to the discovery of a variety of functions for non-coding RNA molecules has highlighted the need for suitable tools for the analysis and the comparison of RNA sequences. Many trans-acting non-coding RNA genes and cis-acting RNA regulatory elements present motifs, conserved both in structure and sequence, that can be hardly detected by primary sequence analysis alone. We present an algorithm that takes as input a set of unaligned RNA sequences expected to share a common motif, and outputs the regions that are most conserved throughout the sequences, according to a similarity measure that takes into account both the sequence of the regions and the secondary structure they can form according to base-pairing and thermodynamic rules. Only a single parameter is needed as input, which denotes the number of distinct hairpins the motif has to contain. No further constraints on the size, number and position of the single elements comprising the motif are required. The algorithm can be split into two parts: first, it extracts from each input sequence a set of candidate regions whose predicted optimal secondary structure contains the number of hairpins given as input. Then, the regions selected are compared with each other to find the groups of most similar ones, formed by a region taken from each sequence. To avoid exhaustive enumeration of the search space and to reduce the execution time, a greedy heuristic is introduced for this task. We present different experiments, which show that the algorithm is capable of characterizing and discovering known regulatory motifs in mRNA like the iron responsive element (IRE) and selenocysteine insertion sequence (SECIS) stem-loop structures. We also show how it can be applied to corrupted datasets in which a motif does not appear in all the input sequences, as well as to the discovery of more complex motifs in the non-coding RNA.
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin p 4
+###xml 334 335 334 335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c1">1</xref>
+###xml 336 337 336 337 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c7">7</xref>
+###xml 434 435 434 435 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c8">8</xref>
+###xml 436 437 436 437 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c9">9</xref>
+###xml 615 620 615 620 <italic xmlns:xlink="http://www.w3.org/1999/xlink">trans</italic>
+###xml 653 656 653 656 <italic xmlns:xlink="http://www.w3.org/1999/xlink">cis</italic>
+###xml 995 997 995 997 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c10">10</xref>
+###xml 998 1000 998 1000 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c11">11</xref>
+###xml 1156 1158 1156 1158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c12">12</xref>
+###xml 1159 1161 1159 1161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c14">14</xref>
+Recent researchs have discovered a number of different functions for RNA molecules, which have been promoted from mere mediators of the genetic information encoded in the DNA to key players in a variety of cellular processes. Several databases solely devoted to different kinds of non-coding RNA are now publicly available [e.g. see (1-7)], and search tools especially tailored for non-coding RNA have been proposed, among others in (8,9). These facts have in turn highlighted the need for suitable algorithms and tools for the analysis and the comparison of non-coding RNA sequences. In fact, the function of many trans-acting non-coding RNA genes and cis-acting RNA regulatory elements depends on the presence of motifs that are conserved both in structure and (more loosely) in sequence. Examples of these functional motifs are the secondary structure signals present in the untranslated regions (UTRs) of mRNA that are involved in the post-transcriptional regulation of the gene expression (10,11). Other classes of RNAs, such as rRNAs, tRNAs, microRNAs and other non-coding small RNAs, as well as viral mRNAs, contain motifs with regulatory activity (12-14).
+###end p 4
+###begin p 5
+###xml 576 578 576 578 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c15">15</xref>
+###xml 579 581 579 581 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c18">18</xref>
+###xml 736 738 736 738 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c19">19</xref>
+Many motifs of biological relevance can be described by using RNA secondary structure alone. Usually, in sequences sharing a functional motif similarity is limited to some parts of the sequences, like single hairpins, whereas rest of their overall structure is otherwise different, and methods for the prediction of consensus structures for two or more sequences cannot be applied. Moreover, although energy-based prediction algorithms can explore exhaustively the space of possible secondary structure conformations of a sequence picking one of the optimal (minimal) energy (15-18), RNA folding often involves intermediate states, and the study of RNA folding energy landscapes indicates that they present many different local minima (19). Thus, the actual structure of some functional RNA molecules does not correspond to the most thermodynamically stable one. If we just run a prediction algorithm and look for similar structural elements, we can miss a motif altogether, since it is not predicted in some (or most of the) sequences.
+###end p 5
+###begin p 6
+###xml 140 142 140 142 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c20">20</xref>
+###xml 143 145 143 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c21">21</xref>
+###xml 382 384 382 384 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c22">22</xref>
+###xml 549 551 549 551 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c23">23</xref>
+###xml 552 554 552 554 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c24">24</xref>
+###xml 635 636 635 636 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 637 638 637 638 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+###xml 638 639 638 639 <sup xmlns:xlink="http://www.w3.org/1999/xlink">4</sup>
+###xml 639 640 639 640 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 640 641 640 641 <sup xmlns:xlink="http://www.w3.org/1999/xlink">4</sup>
+###xml 647 648 647 648 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+###xml 662 663 662 663 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N</italic>
+###xml 870 872 870 872 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c25">25</xref>
+###xml 886 888 886 888 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c26">26</xref>
+###xml 904 906 904 906 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c27">27</xref>
+###xml 1357 1359 1357 1359 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c28">28</xref>
+###xml 1496 1498 1496 1498 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c29">29</xref>
+###xml 1727 1729 1727 1729 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c30">30</xref>
+One possible approach is to align the sequences, and predict a consensus secondary structure for the most conserved parts of the alignment (20,21). Clearly, methods of this kind fail in the absence of significant sequence similarity and reliable alignments. Another idea is to align the sequences and predict a common secondary structure simultaneously, either locally or globally (22). The main drawback of this kind of approach lies in the high time complexity, exponential in the number of input sequences. In the FOLDALIGN and SLASH algorithms (23,24), the complexity is reduced, with the introduction of some heuristics, to about O(L4N4) for L sequences of N nucleotides, but this kind of approach remains usable on small sets of short sequences. Finally, if one has some hint about the structure and/or the sequence of a motif, pattern matching tools like RNAmot (25), PatSearch (26) and RNAMotif (27) can be used, to locate regions in the sequences that can fold into a given structure. The problem is that without substantial information, using strict constraints for the design of a descriptor may lead to miss some occurrences of a motif, while looser parameters yield in turn a very large number of false positives. A method used for post-processing the results of matching algorithms in order to extract the most similar hits has been proposed (28), whereas an approach based on evolutionary computation aimed instead at the optimization of the descriptor parameters is presented in (29). These methods are computationally expensive on large datasets. All in all, it is hardly a surprise that since the earlier works in this field, the problem has been considered to be as hard as 'finding hairpins in a haystack' (30).
+###end p 6
+###begin title 7
+METHODS
+###end title 7
+###begin p 8
+The method we present can be split into two separate parts. Our aim is to reduce, to the minimum possible, information concerning the motif needed by the algorithm and at the same time to keep a feasible computational complexity. Given a set of related RNA sequences expected to share a conserved motif, the algorithm first extracts a set of candidate regions from each one by using a very simple heuristic, associating with each region a potential secondary structure. The algorithm needs only one input parameter, which denotes the number of single hairpins contained in the structure that has to be associated with the regions. A priori, no further constraints are required for the size and number of the different elements comprising the structure (loops, stacks, connecting elements and so on) or any threshold for the folding energy. In the second part, candidate regions whose secondary structure contains the number of hairpins given as input are kept, and are compared with one another to build the group of 'most similar' ones, taking at most one candidate from each sequence. Candidate regions from the same sequence may overlap one another. The idea is to evaluate groups of regions by aligning them, and to find the group of regions that builds the best multiple alignment. The algorithm evaluates the alignments according to a scoring function that takes into account simultaneously the similarity to the sequence of the regions aligned as well as the similarity to the secondary structure it associated with them at the first step. Because building and evaluating all possible alignments is computationally unfeasible, we introduce a greedy heuristic for this task. The second part of the algorithm, however, could also be used independently from the first, e.g. to post-process the output generated by other motif finding programs.
+###end p 8
+###begin title 9
+Selecting initial candidates
+###end title 9
+###begin p 10
+###xml 97 98 97 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 161 163 161 163 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c31">31</xref>
+###xml 424 425 424 425 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 438 439 438 439 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 440 441 440 441 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 714 715 714 715 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 716 717 716 717 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+It can be proved that the number of potential secondary structures that a RNA sequence of length n can form is exponential to the length of the sequence itself (31). Clearly, this is a number too large to be dealt with, even for short sequences. However, if we associate with each possible region of a sequence only one structure, this number becomes quadratic in the length of the sequence itself, since a string of length n has exactly n(n - 1)/2 substrings. Moreover, suppose that we are interested in stem-loop motifs. If we associate with each region the structure of minimal energy, and keep only those regions whose structure contains a single hairpin, the number is reduced further, and is estimated to be O(n). These considerations hold for any other type of secondary structure that comprises more than a single hairpin. Although perhaps not valid for each case, we expect this simple criterion to be reasonable for a large class of structural motifs, like regulatory signals in mRNA or in general conserved structure in the non-coding RNAs. In other words, we assume that a structural motif corresponds to a global-free energy optimum for the region forming it, and its formation has therefore to depend solely on local interactions among the nucleotides of the region and it is not the effect of the presence of other structures elsewhere in the sequence. This is also the reason why the algorithm processes every possible region instead of selecting a given region size and checking whether in some part it contains the structure required. Also, folding parameters used by energy-based RNA secondary prediction methods can be considered reliable enough when applied to small regions (i.e. a region folding into a structure with one or two hairpins usually ranges in size from 15 to 50 nt). Any available additional information concerning the motif (e.g. the number of its internal loops, the size of the hairpin loops, folding energy thresholds, sequence composition and so on) can be easily incorporated into the selection step so as to reduce further the number of initial candidates. For example, we might accept only hairpins whose loop has a given size (or is within a given size range) and/or that present a single internal loop or a bulge, and so on. Likewise, further constraints can be defined for more complex structures, e.g. disallowing multiloops accepting only series of hairpins (or vice versa).
+###end p 10
+###begin p 11
+###xml 32 33 32 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+###xml 278 279 278 279 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+###xml 426 427 426 427 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+Thus, given as input the number h of single hairpins that have to be contained in the secondary structure of the motif (and possible additional constraints), the algorithm selects from each input sequence the regions whose predicted optimal secondary structure contains exactly h hairpins. If this parameter is also not available, the algorithm can be simply iterated starting from a single hairpin, and increasing the number h at each run. In the absence of further constraints, the algorithm examines all the possible substrings of each input sequence. We also did not include any explicit energy threshold in the generation of the initial candidates. Although secondary structure motifs can be expected to be quite stable, deciding a priori a suitable threshold value is far from easy, and usually involves trying different values. Thus, we just chose to accept any region whose structure has energy lower than zero, i.e. lower than the unfolded state.
+###end p 11
+###begin title 12
+Finding similar regions
+###end title 12
+###begin title 13
+Finding motifs shared by nearly all the sequences
+###end title 13
+###begin p 14
+###xml 448 449 448 449 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 476 477 476 477 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 613 614 613 614 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 616 617 616 617 <sup xmlns:xlink="http://www.w3.org/1999/xlink">k</sup>
+###xml 615 617 615 617 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n<sup>k</sup></italic>
+###xml 682 683 682 683 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 705 706 705 706 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 836 838 836 838 <sup xmlns:xlink="http://www.w3.org/1999/xlink">11</sup>
+Once a set of candidate regions for each of the input sequences has been generated, if we assume that the motif appears in (nearly) all the sequences the problem arises for selecting one candidate for each sequence, in order to obtain a group of regions that, by considering their sequence and structure simultaneously, are similar enough to one another, and can be reasonably suspected to be instances of the same functional motif. Given a set of k input sequences of length n, however, an heuristic method has to be used to find an optimal solution, since finding the most similar group of candidates among the O(nk) possible solutions is computationally unfeasible for values of k > 3 or for values of n > 200-300 nt. For example, on a set of 10 sequences of length 200 with about 100 candidate regions for sequence, we have about 1011 possible region groups to evaluate. Therefore, we introduced a greedy heuristic to explore much more efficiently this large solution space.
+###end p 14
+###begin p 15
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 20 21 20 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink"><italic>S</italic></bold>
+###xml 25 26 25 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 26 27 26 27 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 29 30 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 30 31 30 31 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 45 46 37 38 <sub xmlns:xlink="http://www.w3.org/1999/xlink">k</sub>
+###xml 44 46 36 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S<sub>k</sub></italic>
+###xml 88 89 80 81 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 89 90 81 82 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 92 93 84 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 93 94 85 86 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 108 109 92 93 <sub xmlns:xlink="http://www.w3.org/1999/xlink">k</sub>
+###xml 107 109 91 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R<sub>k</sub></italic>
+###xml 259 260 243 244 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 260 261 244 245 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 266 267 250 251 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 267 268 251 252 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 414 415 398 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 416 417 400 401 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 581 582 565 566 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 681 682 665 666 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 682 683 666 667 <sub xmlns:xlink="http://www.w3.org/1999/xlink">3</sub>
+###xml 767 768 751 752 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 860 861 844 845 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 861 862 845 846 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+###xml 885 886 869 870 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+More in detail, let S = {S1, S2, em leader, Sk} be the set of input sequences, and let {R1, R2, em leader, Rk} be the set of candidate regions associated with each sequence. First, the algorithm computes all the pairwise alignments between the regions of set R1 and R2, by considering sequence and structure information at the same time. Each alignment is described with a profile, scored with a suitable function S(M) that reflects the degree of sequence and structure similarity between the regions comprising it (further details can be found in the Supplementary Material). The p highest scoring profiles are kept, whereas the others are discarded. Next, the regions taken from S3 are aligned with each of the profiles saved. Each profile is scored again, and the p best alignments are saved. Then, the algorithm proceeds to the regions taken from sequence S4 and so on. The number p of profiles saved at each step can be chosen arbitrarily beforehand. Clearly, the larger is this number, the larger is the number of candidate solutions that are evaluated, and the more accurate (and slower) is the algorithm.
+###end p 15
+###begin p 16
+###xml 44 45 44 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 44 45 44 45 <bold xmlns:xlink="http://www.w3.org/1999/xlink"><italic>S</italic></bold>
+###xml 49 50 49 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 50 51 50 51 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 65 66 57 58 <sub xmlns:xlink="http://www.w3.org/1999/xlink">k</sub>
+###xml 64 66 56 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S<sub>k</sub></italic>
+###xml 126 127 118 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+###xml 221 222 213 214 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f1">1</xref>
+Thus, given as input a set of RNA sequences S = {S1, em leader, Sk}, and a secondary structure template defined by the number h of hairpins contained in it, the steps of the algorithm can be summarized as follows (Figure 1):
+###end p 16
+###begin p 17
+###xml 19 20 19 20 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 18 20 18 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S<sub>i</sub></italic>
+###xml 61 62 61 62 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 60 62 60 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R<sub>i</sub></italic>
+###xml 99 100 99 100 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 98 100 98 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S<sub>i</sub></italic>
+###xml 160 161 160 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+For each sequence Si, generate the set of candidate regions Ri. A candidate region is a region of Si whose structure of minimal folding energy contains exactly h hairpins.
+###end p 17
+###begin p 18
+###xml 60 61 60 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 61 62 61 62 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 86 87 86 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 87 88 87 88 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 112 113 112 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 114 115 114 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+Compute all pairwise alignments of the candidate regions of R1 with the candidates of R2, and compute the score S(M) of each profile.
+###end p 18
+###begin p 19
+###xml 9 10 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+Save the p highest scoring profiles.
+###end p 19
+###begin p 20
+###xml 0 3 0 3 <bold xmlns:xlink="http://www.w3.org/1999/xlink">For</bold>
+###xml 9 10 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 15 16 14 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">3</italic>
+###xml 28 29 19 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 100 101 91 92 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 99 101 90 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R<sub>i</sub></italic>
+###xml 125 126 116 117 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 127 128 118 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 32 156 23 147 <p xmlns:xlink="http://www.w3.org/1999/xlink" textid="21">Align each profile saved at the previous step with every region of <italic>R<sub>i</sub></italic>, and compute the score <italic>S</italic>(<italic>M</italic>) of the resulting profiles.</p>
+###xml 32 156 23 147 <list-item xmlns:xlink="http://www.w3.org/1999/xlink"><p textid="21">Align each profile saved at the previous step with every region of <italic>R<sub>i</sub></italic>, and compute the score <italic>S</italic>(<italic>M</italic>) of the resulting profiles.</p></list-item>
+###xml 165 166 156 157 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 156 192 147 183 <p xmlns:xlink="http://www.w3.org/1999/xlink" textid="22">Save the <italic>p</italic> highest scoring profiles.</p>
+###xml 156 192 147 183 <list-item xmlns:xlink="http://www.w3.org/1999/xlink"><p textid="22">Save the <italic>p</italic> highest scoring profiles.</p></list-item>
+###xml 32 192 23 183 <list xmlns:xlink="http://www.w3.org/1999/xlink" list-type="alpha-lower"><list-item><p textid="21">Align each profile saved at the previous step with every region of <italic>R<sub>i</sub></italic>, and compute the score <italic>S</italic>(<italic>M</italic>) of the resulting profiles.</p></list-item><list-item><p textid="22">Save the <italic>p</italic> highest scoring profiles.</p></list-item></list>
+For each i in {3,em leader, k}: Align each profile saved at the previous step with every region of Ri, and compute the score S(M) of the resulting profiles.Save the p highest scoring profiles.
+###end p 20
+###begin p 21
+###xml 68 69 68 69 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 67 69 67 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R<sub>i</sub></italic>
+###xml 93 94 93 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 95 96 95 96 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+Align each profile saved at the previous step with every region of Ri, and compute the score S(M) of the resulting profiles.
+###end p 21
+###begin p 22
+###xml 9 10 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+Save the p highest scoring profiles.
+###end p 22
+###begin p 23
+###xml 0 7 0 7 <bold xmlns:xlink="http://www.w3.org/1999/xlink">End for</bold>
+End for
+###end p 23
+###begin p 24
+###xml 11 12 11 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+Output the p highest scoring profiles.
+###end p 24
+###begin p 25
+###xml 43 44 43 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 85 86 85 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 126 127 126 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 129 130 129 130 <sup xmlns:xlink="http://www.w3.org/1999/xlink">i</sup>
+###xml 128 130 128 130 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n<sup>i</sup></italic>
+The algorithm is greedy, i.e. at each step i (each sequence processed) only the best p profiles [instead of all the potential O(ni)] are kept, hoping that at the end one of them will lead to the optimal solution (under the score function used). Thus, the final alignments, as well as their scores, can depend on the order in which the sequences are processed, i.e. the risk is to discard in the initial steps profiles corresponding to the real motif, and save only those corresponding to similar enough regions that at the end led to lower scoring solutions. One way to overcome these potential problems is to randomize the choice of the sequence processed at each step. That is, two sequences are picked at random (instead of the first two) at the first step, and in the same manner in the following steps a sequence that has not been used in the previous iterations is chosen at random. Then, the algorithm can be run a few times (with very high probability of choosing the sequences in different order at each try), and the best result is obtained by the comparison of the results output at each run. Also, well-conserved motifs should appear very frequently in the results, regardless of the order in which the sequences are processed.
+###end p 25
+###begin p 26
+###xml 304 305 304 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+One or more sequences in the input dataset might not contain an occurrence of the motif. However, the algorithm still picks the 'best' region from them trying to fit it into the alignment. In order to be able to tell which of the reported instances actually correspond to a real motif instance, the best p profiles found at the end undergo further processing before the final output. More in detail, a fitness value is associated with each of the regions comprising a profile, reflecting how well the region fits the profile itself (see Supplementary Material). The idea is that random regions not corresponding to actual motif instances should have a much lower (largely lower than zero) fitness value than the real ones, so as to permit to distinguish and discard them. As we demonstrate in the experiments, a positive or close to zero fitness value means that the instance reported fits well in the profile describing the motif, whereas a negative value indicates that the corresponding region should be suspected to come from a sequence not containing an instance of the motif. Finally, the profiles reported are analyzed further so as to give an idea on the degree of conservation both in sequence and in structure, expressed as a percentage value.
+###end p 26
+###begin title 27
+Finding motifs shared by a few sequences
+###end title 27
+###begin p 28
+###xml 525 526 525 526 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 524 526 524 526 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S<sub>i</sub></italic>
+###xml 573 574 573 574 <sub xmlns:xlink="http://www.w3.org/1999/xlink">j</sub>
+###xml 572 574 572 574 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R<sub>j</sub></italic>
+###xml 610 611 610 611 <sub xmlns:xlink="http://www.w3.org/1999/xlink">j</sub>
+###xml 609 611 609 611 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S<sub>j</sub></italic>
+###xml 618 619 618 619 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 630 631 622 623 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 672 673 664 665 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1126 1127 1118 1119 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 1125 1127 1117 1119 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S<sub>i</sub></italic>
+###xml 1133 1134 1125 1126 <sub xmlns:xlink="http://www.w3.org/1999/xlink">j</sub>
+###xml 1132 1134 1124 1126 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S<sub>j</sub></italic>
+###xml 1195 1196 1187 1188 <sub xmlns:xlink="http://www.w3.org/1999/xlink">l</sub>
+###xml 1194 1196 1186 1188 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S<sub>l</sub></italic>
+###xml 1207 1208 1199 1200 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l</italic>
+###xml 1219 1220 1203 1204 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 1225 1226 1209 1210 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l</italic>
+###xml 1237 1238 1213 1214 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 1299 1300 1275 1276 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1596 1597 1572 1573 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 1613 1614 1589 1590 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 1787 1788 1763 1764 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 1849 1850 1825 1826 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 1868 1869 1844 1845 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 1877 1878 1853 1854 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 1895 1896 1871 1872 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+The algorithm we described works well in practice if a conserved motif appears in all (or a significant fraction of) the input sequences. In case only a small subset of the input shares the same motif, we can employ a slightly different method for the progressive construction of the profiles. The regions are selected from each sequence in the same manner. Then, the regions of each sequence are compared with all the regions that have been selected from the other sequences. In other words, regions selected from sequence Si are aligned with all the regions of the sets Rj selected from the other sequences Sj, with j not equal i. Also in this case, the highest scoring p profiles are saved. The difference is that, instead of saving the best alignment of regions coming from two sequences, the profiles saved correspond to the best pairwise alignments obtained by comparing all possible pairs of candidate regions. Then, at the second iteration each profile is aligned with all the candidate regions coming from the sequences that were not used to build it. That is, if profile M was built with two regions from sequences Si and Sj, then it is aligned with all the candidates from sequences Sl such that l not equal i and l not equal j. The result is a set of three-region alignments. Again, the p highest scoring profiles are kept, and at the following steps each profile is extended by aligning it to regions from sequences that had not been used at the previous steps. Also in this case, profiles can be extended until they contain exactly one region per sequence, or until they are formed q regions out of k input sequences. The algorithm can nevertheless output the best profiles obtained at each iteration (i.e. the best profiles comprised of two regions, three and so on up to q). This strategy is suitable for finding motifs appearing in q sequences out of k, where q is small (below k/2).
+###end p 28
+###begin p 29
+###xml 746 747 746 747 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 775 776 775 776 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 820 821 820 821 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 821 822 821 822 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 849 850 849 850 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 863 864 863 864 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 865 867 865 867 <italic xmlns:xlink="http://www.w3.org/1999/xlink">kn</italic>
+###xml 867 868 867 868 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 948 949 948 949 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 950 951 950 951 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 951 952 951 952 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 952 953 952 953 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 953 954 953 954 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+The advantage of this method is that, potentially, it is capable of finding motifs appearing in a small subset (of any size) of the input sequences. That is, if a motif is shared only by two sequences, then the corresponding regions should build the best alignment among the pairwise ones. The main drawback is that it is more prone to fall into local optima. If, for example, the input contains two nearly identical sequences, then the best pairwise alignments will turn out to be built from regions coming from these two sequences, and the profiles generated from them will influence the results of the successive iterations. Also, this approach is more expensive from the computational point of view. Although in the original algorithm, given k input sequences containing n regions the algorithm has to perform about n2 alignments in each of the k iterations [O(kn2) in all], in this case the number of alignments to be performed rises to about O(k2n2), with an increase in the execution time at each iteration roughly proportional to the number of input sequences. On the other hand, in this case the algorithm has to be run only once, since the results no longer depend on the order in which the sequences are processed. Thus, when little or no information are available concerning the actual number of sequences that could contain the motif, the best choice is to run the algorithm either in 'full' mode (looking for motifs comprised of regions taken from all the sequences), and then choosing the second strategy with a low threshold value for the number of regions (up to one-half of the sequences).
+###end p 29
+###begin p 30
+The second strategy can also be seen as a simple clustering method. In other words, given a set of candidate regions, the most similar pairs are merged into a cluster, represented by the alignment profile, and at the following iterations each cluster is expanded by adding to it one region. Although using the algorithm to process whole databases and genomes is not computationally feasible, it can be applied, e.g. in the post-processing of the results obtained from a genome-wide or database scan for regions fitting a motif descriptor (by saving each hit as a separate sequence), for which different programs can be used.
+###end p 30
+###begin title 31
+RESULTS
+###end title 31
+###begin p 32
+###xml 344 346 344 346 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c16">16</xref>
+###xml 347 349 347 349 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c17">17</xref>
+The algorithm has been implemented on a standard Pentium IV class desktop PC with 256 MB of RAM, running the Linux operating system. The routines for folding and free energy evaluation of the regions were taken from the RNAlib library, part of the Vienna RNA package publicly available at , and are based on the energy parameters described in (16,17).
+###end p 32
+###begin p 33
+###xml 649 650 649 650 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1436 1437 1436 1437 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+###xml 1500 1501 1500 1501 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+###xml 1569 1570 1569 1570 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+###xml 1727 1728 1727 1728 <italic xmlns:xlink="http://www.w3.org/1999/xlink">h</italic>
+There were many things to be verified in the experiments. First, to see whether the local optimum rule we introduced, to generate the starting set of candidates, is powerful enough to capture functional motifs, i.e. the latter actually correspond to a local minimum of the folding free energy. Second, we wanted to determine whether the greedy heuristic is capable of finding the highest scoring profile, and if the scores of profiles corresponding to conserved motifs are actually the highest, also including the possibility of having some sequences wrongly added to the datasets (not containing a motif instance). In all the experiments, the best p = 100 profiles were saved at each step (we kept this value as a default in every test). No explicit energy threshold was set for motif instances or any further constraint on the structure of the motifs. Moreover, the usual strategy for modeling and discovering motifs more complex than a single hairpin is either the prediction of a consensus secondary structure (in case the similarity covers most of the structure of the sequences considered), or to search for single hairpins first, and then combine them into more complex structures. Thus, we performed some tests also to determine whether the energy-based selection criterion applied to single hairpins works also in this case. In all the following experiments, we ran the algorithm on each dataset varying the number of hairpins h, starting from one. If the score of the best motif found with h + 1 hairpins remained stable (or was increased) when compared with h, we accepted the output of the last run as the motif, and proceeded by adding another hairpin. Otherwise, we stopped and reported the best motif found with h hairpins.
+###end p 33
+###begin title 34
+Iron responsive element (IRE)
+###end title 34
+###begin p 35
+###xml 154 156 154 156 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c24">24</xref>
+###xml 157 159 157 159 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c28">28</xref>
+###xml 160 162 160 162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c30">30</xref>
+###xml 320 322 320 322 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c32">32</xref>
+###xml 323 325 323 325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c33">33</xref>
+###xml 534 536 534 536 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c34">34</xref>
+###xml 740 741 740 741 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f2">2</xref>
+This is a typical benchmark used in the tests of methods for the discovery of conserved structural elements in RNA. Among others, it has been studied in (24,28-30). The IRE is a conserved hairpin structure located in the 5'-UTR or in the 3'-UTR of various mRNAs coding for proteins involved in cellular iron metabolism (32,33). The interaction of the IRE with regulatory proteins modulates the translation of the mRNA according to the amount of iron present in the cell. Two alternative IRE consensus structures have been discovered (34). Some IREs present an unpaired nucleotide (usually cytosine) along the stem, whereas in others the cytosine nucleotide and two additional bases seem to oppose one free 3' nucleotide, as shown in Figure 2. The lower stem are usually in the range 3-5 bp.
+###end p 35
+###begin p 36
+###xml 179 181 179 181 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c26">26</xref>
+###xml 230 231 230 231 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c7">7</xref>
+###xml 809 814 <span type="species:ncbi:9606">human</span>
+First of all, the IRE motif provides a good example for the feasibility of our criterion for the selection of initial candidates. A search performed with the PatSearch algorithm (26) on the Untranslated Sequence Database (UTRdb) (7) using either of the motif templates shown above reported 65 candidate motifs in 5'-UTRs and 86 in 3'-UTRs. Among these (see also Supplementary Material), 16 (47 in 3') had negative but not optimal energy associated with them and 9 (35 in 3') had positive energy. Thus, according to the selection criterion of the algorithm, 25 (82 in 3') non-optimal candidate IRE regions would be discarded a priori. The examination of the non-optimal candidates revealed that they had been located in the UTRs of mRNAs (or cDNAs) not annotated to be involved in iron metabolism, including a human ferritin pseudo-gene, thus very likely to be 'false positives'. On the other hand, >90% of the optimal structures were located in mRNAs of proteins experimentally known to contain the IRE.
+###end p 36
+###begin p 37
+###xml 535 536 523 524 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f3">3</xref>
+###xml 77 82 <span type="species:ncbi:9606">human</span>
+###xml 169 174 <span type="species:ncbi:10090">mouse</span>
+###xml 336 341 <span type="species:ncbi:9606">human</span>
+For the discovery test, we retrieved from GenBank the full mRNA sequences of human ferritin (light and heavy chain), and of aminolevulinate synthase 2, as well as their mouse homologs. To assess the performance and effectiveness of the algorithm also in the case of spurious sequence contamination, we added the mRNA sequences of three human ferritin pseudogenes to the dataset. Therefore, three sequences out of nine did not contain the IRE. The sequences ranged in size from approximately800-2000 nt. The results are shown in Figure 3. As we can see, the algorithm was capable of identifing the IRE in the correct sequences. Moreover, the motif instances reported in the pseudogenes have a much lower and negative fitness value, and thus can be reasonably suspected not to correspond to the functional motif.
+###end p 37
+###begin title 38
+Atypical IREs
+###end title 38
+###begin p 39
+###xml 388 397 <span type="species:ncbi:7227">fruit fly</span>
+Although usually the IRE has one of the two forms described in the previous section, experimental observation has discovered some exceptions to the rule. We used these examples to test the ability of the algorithm also in the presence of instances much less conserved in sequence and structure with respect to the canonical forms. We built our dataset with the 5'-UTR of ferritin mRNA of fruit fly, bull frog, starfish and crayfish, in order to have the least degree of similarity in IRE instances. We also added to the input set the 5'-UTR of eight plant ferritin mRNA sequences, lacking the IRE. In this case, only one-third of the sequences contained the motif. We ran the algorithm to find motifs shared by a few sequences, saving the best groups up to size six (half of the sequences).
+###end p 39
+###begin p 40
+###xml 7 8 7 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f4">4</xref>
+###xml 506 508 506 508 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c35">35</xref>
+###xml 532 541 <span type="species:ncbi:7227">fruit fly</span>
+Figure 4 shows the result. The highest scoring four-region group contains the four IREs. As we can see, the bottom helix differs in length in the various instances. Also, both the starfish and crayfish IREs have a base pair missing at the bottom of the topmost helix. Moreover, crayfish does not contain the unpaired cytosine at the canonical position of the internal loop, usually considered the hallmark of the IRE. However, it has been experimentally proved that this IRE keeps its functional activity (35). Instead the frog and fruit fly IREs have the canonical form with a single unpaired C. Although structurally very different, all the correct IRE instances have been picked by the algorithm. When further regions are added, the highest scoring groups of five and six regions again contain the same four IREs, plus two additional regions with very low fitness values, that can be reasonably suspected not to be functional IREs.
+###end p 40
+###begin title 41
+Selenocysteine insertion sequence (SECIS)
+###end title 41
+###begin p 42
+###xml 108 111 108 111 <bold xmlns:xlink="http://www.w3.org/1999/xlink">UGA</bold>
+###xml 156 158 156 158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c36">36</xref>
+###xml 169 172 169 172 <bold xmlns:xlink="http://www.w3.org/1999/xlink">UGA</bold>
+###xml 445 448 445 448 <bold xmlns:xlink="http://www.w3.org/1999/xlink">UGA</bold>
+###xml 559 561 559 561 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c37">37</xref>
+###xml 698 700 698 700 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c38">38</xref>
+###xml 710 711 710 711 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f5">5</xref>
+###xml 1394 1396 1394 1396 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c38">38</xref>
+###xml 1540 1542 1540 1542 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c39">39</xref>
+###xml 1543 1545 1543 1545 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c40">40</xref>
+###xml 1865 1867 1865 1867 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c41">41</xref>
+###xml 1868 1870 1868 1870 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c44">44</xref>
+Selenocysteine is the recently discovered 21st amino acid. The codon calling for this amino acid in mRNA is UGA, usually indicating the end of translation (36). To have UGA read as a selenocysteine codon instead of as a stop codon, and bound by the corresponding tRNA, mRNAs coding for proteins containing this amino acid (selenoproteins) present the SECIS element, a conserved stem-loop structure located in the 3'-UTR. The spacing between the UGA codon and the respective SECIS element determines whether the codon is actually translated as selenocysteine (37). Two forms of SECIS motif have been determined, respectively with long (12-14 nt, SECIS I) and short (3-6 nt) apical loops (SECIS II) (38) (Figure 5). SECIS I stems can be split into two parts, interspersed by an internal loop. The topmost helix contains non-canonical base pairings at the bottom, always with two G-A pairs. These non-canonical pairs are essential to mediate selenoprotein translation. In the second form, nucleotides forming the apical loop bind to one another, and as a result the upper helix is interrupted by another internal loop. Other than the non-canonical G-A pairs, SECIS hairpins present two or three consecutive unpaired adenine nucleotides, either in the apical loop (I) or inside an internal loop (II). Experimental evidence seems to support the fact that form II is found more often than the first (38). Moreover, recent discoveries have shown that in some cases the two unpaired adenines are replaced by two cytosines [selenoproteins M and O, (39,40)], making even harder the definition of a suitable unique descriptor for this motif, whose conservation seems to be mostly protein-specific. Several algorithms and programs have been developed for the discovery of potential SECIS elements in mRNA, and genome-wide scans have led to the discovery of new selenoproteins (41-44). Virtually all the methods rely on the presence of the non-canonical G-A pairs within a given distance range from an AA (or CC) dinucleotide.
+###end p 42
+###begin p 43
+###xml 651 652 651 652 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f6">6</xref>
+###xml 344 349 <span type="species:ncbi:9606">human</span>
+###xml 351 354 <span type="species:ncbi:9913">cow</span>
+###xml 356 361 <span type="species:ncbi:10090">mouse</span>
+###xml 363 366 <span type="species:ncbi:10116">rat</span>
+###xml 371 378 <span type="species:ncbi:9031">chicken</span>
+In our test, we did not include the possibility of non-canonical pairings in the generation of the initial candidates. Thus, the problem was whether the upper helix was conserved enough to be detected by the algorithm, and if it was possible to discriminate it against background spurious random motifs. We retrieved from GenBank the 3'-UTR of human, cow, mouse, rat and chicken mRNA sequences of the glutathione peroxidase 4 (GPX4). In addition, we added to the dataset the 3'-UTR of a glutathione peroxidase sequence reported not to contain the selenocysteine amino acid (thus, supposedly lacking the SECIS element). The results are shown in Figure 6. The algorithm was capable of detecting the upper part of the motif, just above the non-canonical pairs. As we can see, apart from the adenine nucleotides in the internal loop, there is very little conservation in unpaired nucleotides, differently from many other functional motifs, and the apical loop is variable in size. Moreover, the motif has been discovered without resorting to the non-canonical base pairings. By examining its fitness value, the non-selenocysteine sequence can be easily discriminated from the real instances of the SECIS motif.
+###end p 43
+###begin p 44
+###xml 354 356 354 356 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c39">39</xref>
+###xml 630 631 630 631 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f7">7</xref>
+###xml 273 276 <span type="species:ncbi:9606">man</span>
+###xml 281 286 <span type="species:ncbi:10090">mouse</span>
+###xml 565 570 <span type="species:ncbi:9606">human</span>
+###xml 575 580 <span type="species:ncbi:10090">mouse</span>
+Since the algorithm describes a motif with the alignment of a set of instances, a possible way to investigate new sequences suspected to contain a motif is to process them together with other sequences containing an instance of the motif itself. Selenoprotein M 3'-UTRs of man and mouse contain SECIS II elements whose AA dinucleotide is replaced by CC (39). Thus, if we just processed these sequences alone, we would have obtained a suspicious-looking motif that does not resemble the two known types of SECIS. We added to the GPX4 dataset the 3'-UTR sequences of human and mouse selenoprotein M. The results are shown in Figure 7. As we can see, the two instances reported for the new sequences contain two unpaired cytosines. If we inspect the fitness value associated with them, we can however see that they can be considered as instances of the motif, while the sequence not coding for a selenoprotein has an instance with a negative fitness value. Thus, despite the absence of the main hallmark of the SECIS II motif, the algorithm correctly identified them as possible new SECIS instances.
+###end p 44
+###begin title 45
+Finding composite motifs
+###end title 45
+###begin title 46
+Drosophila Nanos mRNA 3'-UTR
+###end title 46
+###begin p 47
+###xml 21 31 21 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+###xml 93 103 93 103 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+###xml 432 434 432 434 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c45">45</xref>
+###xml 496 519 496 519 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila melanogaster</italic>
+###xml 521 530 521 530 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D.virilis</italic>
+###xml 535 545 535 545 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D.simulans</italic>
+###xml 853 854 853 854 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f8">8</xref>
+###xml 496 519 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+###xml 521 530 <span type="species:ncbi:7244">D.virilis</span>
+###xml 535 545 <span type="species:ncbi:7240|species:ncbi:323382|species:ncbi:394305|species:ncbi:264136|species:ncbi:397685">D.simulans</span>
+The nanos protein in Drosophila is required for correct anterior/posterior patterning in the Drosophila embryo. Translation of the nanos mRNA is repressed in the bulk cytoplasm and activated in the posterior region. Repression is mediated by a translation control element (TCE) in the 3'-UTR of the mRNA. This element forms a Y-shaped structure, part of which is recognized by the Smaug protein leading to translational repression (45). In our experiment, we used the 3'-UTR of the nanos mRNA of Drosophila melanogaster, D.virilis and D.simulans, ranging in size from 200 to 400 nt and showing the least degree of similarity in their TCEs. In this case, the score of the best profile found remained stable in the two runs with one and two hairpins, and moreover, the best result of the first run was contained in the second. The latter, shown in Figure 8, had captured the two hairpins forming the Y structure.
+###end p 47
+###begin title 48
+RNase P RNA
+###end title 48
+###begin p 49
+###xml 605 607 605 607 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c46">46</xref>
+###xml 608 610 608 610 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c47">47</xref>
+###xml 986 988 986 988 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c48">48</xref>
+###xml 1161 1162 1161 1162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c2">2</xref>
+###xml 1203 1221 1203 1221 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Arxiozyma telluris</italic>
+###xml 1223 1246 1223 1246 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Pichia mississippiensis</italic>
+###xml 1251 1279 1251 1279 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Kluyveromyces thermotolerans</italic>
+###xml 1463 1464 1463 1464 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f9">9</xref>
+###xml 1085 1091 <span type="species:ncbi:4932">yeasts</span>
+###xml 1196 1202 <span type="species:ncbi:4932">yeasts</span>
+###xml 1203 1221 <span type="species:ncbi:36907">Arxiozyma telluris</span>
+###xml 1223 1246 <span type="species:ncbi:53607">Pichia mississippiensis</span>
+###xml 1251 1279 <span type="species:ncbi:381046">Kluyveromyces thermotolerans</span>
+###xml 1315 1318 <span type="species:ncbi:10116">rat</span>
+###xml 1323 1328 <span type="species:ncbi:9606">human</span>
+Ribonuclease P (RNase P) is a ubiquitous endoribonuclease, found in archaea, bacteria and eukaryotes as well as chloroplasts and mitochondria. Its best characterized activity is the generation of mature 5' ends of tRNAs by cleaving the 5'-leader elements of precursor-tRNAs. Cellular RNase Ps are ribonucleoproteins. RNA from bacterial RNase Ps retains its catalytic activity in the absence of the protein subunit, i.e. it is a ribozyme. Isolated eukaryotic and archaeal RNase P RNA has not been shown to retain its catalytic function, but is still essential for the catalytic activity of the holoenzyme (46,47). Despite the many shared characteristics of RNase Ps, the structural and functional organization of diverse species of RNase P differs significantly across phylogenetic domains. The secondary structure of RNAse P RNA has been determined mainly by phylogenetic-comparative approaches. Eukaryotic RNAs display great variability in sequence and content of structural elements (48), and it is very difficult to align and compare sequences from even closely related groups like yeasts or vertebrates. In our test, we retrieved from the RNase P database (2) the eukaryotic RNA sequences of yeasts Arxiozyma telluris, Pichia mississippiensis and Kluyveromyces thermotolerans, as well as the sequences of toad, rat and human, having an average identity of 40%. In this case, the score of the two hair-pins run was the highest. The results are shown in Figure 9.
+###end p 49
+###begin p 50
+###xml 107 109 107 109 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f10">10</xref>
+###xml 537 539 537 539 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c49">49</xref>
+###xml 690 691 690 691 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c2">2</xref>
+###xml 916 917 916 917 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c2">2</xref>
+###xml 1336 1338 1336 1338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c50">50</xref>
+###xml 509 514 <span type="species:ncbi:9606">human</span>
+The profile describes two adjacent stem-loop structures, corresponding to helices 8 and 9 (see also Figure 10) in each of the input sequences. These two helices have been reported to be part of the core secondary structure of RNase P RNA, conserved from bacteria throughout eukaryotes. Although no functional role has been as yet assigned to this structure, perhaps the formation of the two adjacent helices serves as a catalyst for the overall folding of the sequence. To test this hypothesis, we folded the human sequence using mFold (49), first with no constraints, then constrained by the presence of the motif identified by RNAProfile. The structure described in the RNase P database (2) contains six stem-loop structures. While in the unconstrained case mFold reported a structure of optimal energy containing only three hairpins, the constrained fold contained seven hairpins, matching the ones described in (2), plus a small one formed in a region left unpaired in the structure of the database (between helices 11 and 19). Thus, as we have seen in this case, motifs reported by RNAProfile could be used as a constraint for the prediction of a consensus secondary structure, very difficult for RNase P RNA and other kinds of non-coding RNA, because compensatory mutations can hardly be detected, except in very close relatives (50).
+###end p 50
+###begin title 51
+DISCUSSION
+###end title 51
+###begin p 52
+###xml 937 942 <span type="species:ncbi:9606">human</span>
+The comprehensive identification and characterization of all encoded RNAs, the molecules they interact with, and the molecular structure of functional complexes is of utmost importance for a comprehensive understanding of the biology of a cell. Indeed, the important role played by non-coding RNAs in fundamental cellular processes is becoming even clearer, opening new avenues for a deeper understanding of life. Differently from DNA, whose double-stranded structure implies that the genetic information is fully encoded in the primary sequence of nucleotides, RNAs have a much higher structural flexibility and consequently may play a variety of crucial cellular functions whose specificity relies on both sequence and structural properties. This fact makes their functional annotation harder, particularly when dealing with single molecules. Comparative approaches, now made possible by the steady progress in the characterization of human and other organism transcriptomes, are certainly the most promising computational approaches for the prediction and the characterization of functional RNA motifs. Hence, the need for versatile computational methods for 'comparative Rnomics', able to detect functional RNAs to be then subjected to the suitable experimental validation.
+###end p 52
+###begin p 53
+The novel method presented here for the discovery of conserved functional and structural motifs from a set of related RNA sequences is simple, computationally efficient and showed to be effective in several test cases under a variety of conditions with loose conservation of sequence and/or structure. It outperforms the few existing methods both in terms of computation time and of prediction accuracy. In fact, methods for this task usually require a high degree of similarity in sequence (to align the sequences beforehand) and/or in structure (to predict consensus secondary structures), or substantial information regarding the structure of the motif to be found, whereas RNAprofile just needs a single parameter denoting how many hairpins a motif should contain. Moreover, the algorithm can be applied in different modes, to detect motifs globally conserved in a set of sequences, or motifs appearing only in a small subset of them. In addition, while not suitable for database and genome scans, it can be used to cluster the hits obtained with any other matching method. As we have shown in the experimental tests, our method can identify conserved motifs in RNA, comprised of a single hairpin or more than one, without aligning the sequences, or requiring any prior knowledge about the structure and/or the degree of conservation of a motif. In the absence of sequence similarity, the algorithm can anyway report motifs highlighting structural similarity alone. The heuristics the method is based on are also efficient enough to deal with quite long sequences. The simple criterion for the selection of candidate regions has proved itself to be feasible, also for the description of motifs comprised of more than a single hairpin. Finally, the algorithm does not need any input parameter other than a number of hairpins, and in any case can be simply iterated trying different numbers and comparing the results of each run. The implementation of the algorithm also proved to be quite efficient, taking a few (<3) minutes for each run on the first IRE dataset (that anyway included very long sequences), and always a few seconds in every other test.
+###end p 53
+###begin title 54
+PROGRAM AVAILABILITY
+###end title 54
+###begin p 55
+RNAProfile has been implemented and tested under various Linux/Unix platforms, and is available free of charge from  (current version is 2.0). It includes the standard algorithm implemented in the two modes described in this paper, plus some additional features, like the possibility to post-process results obtained with different pattern matching algorithms and other methods for the generation of initial candidates and large-scale screening. Alternatively, the algorithm can be started with one or more initial profiles (that can be used as descriptors of known motifs), and regions taken from new sequences can be added to them so as to check whether the motif described by the profile appears in them.
+###end p 55
+###begin title 56
+SUPPLEMENTARY MATERIAL
+###end title 56
+###begin p 57
+Supplementary Material is available at NAR Online.
+###end p 57
+###begin title 58
+[Supplementary Material]
+###end title 58
+###begin title 59
+Figures and Tables
+###end title 59
+###begin p 60
+ Schematic diagram of the structure of the algorithm.
+###end p 60
+###begin p 61
+ The two canonical forms of the IRE.
+###end p 61
+###begin p 62
+ Highest scoring motif occurrences output by RNAProfile on the IRE dataset with their respective energy and fitness value. Note that the last three regions (reported in pseudogenes) have a much lower fitness value, thus very unlikely to be real IRE instances.
+###end p 62
+###begin p 63
+ The results on the atypical IRE dataset. The first four instances, corresponding to the IREs, were included in the highest-scoring profile of four regions (and also the best two and three regions groups contained IRE instances). In the following two iterations, the best profile still contained the same four regions, plus the two shown at the bottom of the figure, unlikely to be IRE instances given the low fitness value.
+###end p 63
+###begin p 64
+ Secondary structure models of SECIS stem-loop elements: type I (left) and type II (right).
+###end p 64
+###begin p 65
+ Highest scoring motif occurrences output by RNAProfile on the GPX4 dataset. The last region, with a significantly low fitness value, comes from a non-selenoprotein 3'-UTR.
+###end p 65
+###begin p 66
+ Highest scoring motif occurrences in the GPX4 sequences combined with the selenoprotein M dataset.
+###end p 66
+###begin p 67
+###xml 63 73 63 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+ Highest scoring motif occurrences output by RNAProfile on the Drosophila nanos dataset.
+###end p 67
+###begin p 68
+###xml 144 146 144 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh650f10">10</xref>
+ Highest scoring motif occurrences output by RNAProfile on the RNAse P RNA dataset, corresponding to consensus helices 8 and 9 (see also Figure 10).
+###end p 68
+###begin p 69
+###xml 67 68 67 68 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh650c4">4</xref>
+###xml 24 29 <span type="species:ncbi:9606">human</span>
+ Secondary structure of human RNase P RNA [structure adapted from (4)]. Numbered helices form the consensus secondary structure of the molecule, conserved (despite no sequence conservation) in bacteria throughout eukaryotes.
+###end p 69
+###begin title 70
+ACKNOWLEDGEMENTS
+###end title 70
+###begin p 71
+This work was supported by FIRB project 'Bioinformatica per la Genomica e la Proteomica' (Ministero dell'Istruzione e Ricerca Scientifica, Italy) and by Telethon.
+###end p 71
+###begin title 72
+REFERENCES
+###end title 72
+

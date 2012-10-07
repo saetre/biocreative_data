@@ -1,0 +1,554 @@
+###begin article-title 0
+###xml 45 61 45 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 45 61 <span type="species:ncbi:562">Escherichia coli</span>
+Ensemble Modeling for Aromatic Production in Escherichia coli
+###end article-title 0
+###begin p 1
+Conceived and designed the experiments: MLR JCL. Performed the experiments: MLR. Analyzed the data: MLR JCL. Wrote the paper: MLR JCL.
+###end p 1
+###begin p 2
+###xml 281 297 281 297 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 281 297 <span type="species:ncbi:562">Escherichia coli</span>
+Ensemble Modeling (EM) is a recently developed method for metabolic modeling, particularly for utilizing the effect of enzyme tuning data on the production of a specific compound to refine the model. This approach is used here to investigate the production of aromatic products in Escherichia coli. Instead of using dynamic metabolite data to fit a model, the EM approach uses phenotypic data (effects of enzyme overexpression or knockouts on the steady state production rate) to screen possible models. These data are routinely generated during strain design. An ensemble of models is constructed that all reach the same steady state and are based on the same mechanistic framework at the elementary reaction level. The behavior of the models spans the kinetics allowable by thermodynamics. Then by using existing data from the literature for the overexpression of genes coding for transketolase (Tkt), transaldolase (Tal), and phosphoenolpyruvate synthase (Pps) to screen the ensemble, we arrive at a set of models that properly describes the known enzyme overexpression phenotypes. This subset of models becomes more predictive as additional data are used to refine the models. The final ensemble of models demonstrates the characteristic of the cell that Tkt is the first rate controlling step, and correctly predicts that only after Tkt is overexpressed does an increase in Pps increase the production rate of aromatics. This work demonstrates that EM is able to capture the result of enzyme overexpression on aromatic producing bacteria by successfully utilizing routinely generated enzyme tuning data to guide model learning.
+###end p 2
+###begin title 3
+Introduction
+###end title 3
+###begin p 4
+###xml 463 466 463 466 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Alper1">[1]</xref>
+###xml 467 471 467 471 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Kell1">[10]</xref>
+The manipulation of the enzymatic reactions which make up metabolic networks is at the heart of metabolic engineering. However, due to the complex and highly-interconnected nature of these networks, it is sometimes not a trivial process to understand what the effect of an enzymatic perturbation will be, or vice versa, what enzymatic perturbations are necessary to yield a desired effect. Flux distribution is often controlled by multiple enzymes in the network [1]-[10], indirectly linked to the pathways of interest. Thus, it is desirable to develop mathematical models to describe, understand, and predict network behavior. Through the development of such models, one gains the ability to generate a set of testable hypotheses for system behavior.
+###end p 4
+###begin p 5
+In typical kinetic modeling, kinetic parameters are determined in order to best fit the time-dependent metabolite concentration data obtained from experiment, using a wide variety of kinetic rate expressions. However, these types of data are rare and are not commonly generated in a typical strain improvement process. On the other hand, enzyme overexpressions or knockouts are commonly used in strain development, and the effects of enzyme expression tuning on product formation or substrate consumption are the typical readouts. To our knowledge, such data are difficult to incorporate into modeling, particularly when the results are semi-quantitative, since the fold-changes of enzyme overexpression are rarely measured.
+###end p 5
+###begin p 6
+###xml 99 103 99 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Tran1">[11]</xref>
+###xml 104 108 104 108 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Contador1">[13]</xref>
+###xml 166 170 166 170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Tran1">[11]</xref>
+###xml 306 310 306 310 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Contador1">[13]</xref>
+###xml 384 388 384 388 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Rizk1">[12]</xref>
+###xml 1232 1236 1232 1236 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Wang1">[14]</xref>
+###xml 1238 1242 1238 1242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Wang2">[15]</xref>
+###xml 1412 1416 1412 1416 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Schellenberger1">[16]</xref>
+Recently, the Ensemble Modeling (EM) approach was developed for the modeling of metabolic networks [11]-[13]. The detailed EM framework has been previously published [11], but few biological examples were used as validation. EM has been used to study a real biological example for the production of lysine [13], and EM has been compared to other modeling methodologies in more detail [12]. In this approach, rather than focusing on the development of a kinetic model that fits the dynamic metabolite concentration data, we seek to utilize data that captures the effect of enzyme tuning on the steady state production flux to guide model development. This type of data is not typically utilized in modeling endeavors, and does not result in a change in the stoichiometry of the network. However, the effect that an enzyme's overexpression has on the system's steady state flux can unveil some knowledge regarding how control over the flux is distributed throughout the metabolic network, and can thus be used to aid in model development. EM is related to the insightful application of Metabolic Control Analysis (MCA) to metabolic systems with uncertain kinetic parameters in that a random sampling of kinetics was used for analysis [14], [15]. However, EM does not require the MCA relationships which are derived based on a linearized system. Other uses of sampling in metabolic analyses was reviewed previously [16].
+###end p 6
+###begin p 7
+###xml 335 338 335 338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-CornishBowden1">[6]</xref>
+###xml 340 344 340 344 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Cook1">[17]</xref>
+###xml 421 429 421 429 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1</bold>
+###xml 421 429 421 429 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g001"><bold>Figure 1</bold></xref>
+###xml 2174 2182 2174 2182 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 2</bold>
+###xml 2174 2182 2174 2182 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g002"><bold>Figure 2</bold></xref>
+In EM, initially, an ensemble of models that all reach the reference steady state in terms of flux distribution is constructed. These models span the space of kinetics allowable by thermodynamic constraints, and are based on elementary reactions, which are the most fundamental and general kinetic descriptions for enzymatic reactions [6], [17]. EM describes the kinetics using a set of elementary reactions, as shown in Figure 1, which can be transformed into a set of log-linear equations. This transformation requires mass-action kinetics for the reactions, which is not valid if enzyme concentrations are not explicitly considered. However, through the use of elementary reactions at the enzyme level, the log-linear transformation can be completed, while still preserving the intrinsic non-linear behavior in enzyme kinetics, thus preserving the true biological mechanism and benefiting from the mathematical tractability. This framework does not rely on a local linearization of the system, and one is free to perform and determine the effect of large perturbations on the network. In lieu of dynamic metabolite data, which can be difficult to obtain, the EM approach uses phenotypic data to screen possible models. Phenotypic data can include the effects of enzyme overexpressions or knockouts on the production rate of any products or byproducts. Such data are routinely generated in strain design efforts. Through this approach, one does not attempt to acquire detailed kinetic parameters that fit the time-dependent metabolite data, but rather capture phenotypes that are dependent on changes in the enzyme levels in the network. Also important is the ability of EM to be driven by the goal of, and ability to, learn from experimental results regarding the phenotypes obtained by enzyme perturbations. Rather than assessing the control properties of the system, or fitting dynamic metabolite concentrations, the focus of EM is to rely on existing experimental data to drive strain design. Through this knowledge feedback loop, we can further constrain our subset of models and thus refine our predictions of system behavior. The algorithm for EM is illustrated in Figure 2.
+###end p 7
+###begin title 8
+The elementary reaction mechanisms.
+###end title 8
+###begin p 9
+###xml 268 271 268 271 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fbr</sup>
+Mechanisms used for the variety of different metabolic reactions. Reactions modeled as 1 substrate to 1 product: HPr, EIIA, Pgi, Tpi, Gpm, Eno, Pgl, Rpe, Rpi, Pta, Ppc, Fum, Sdh, recycle reactions of ATP, NADH and NADPH. 2 substrate to 1 product reactions: EIIBC, AroGfbr. 1 substrate to 2 products: EI, Fba, Pfl. 2 substrates to 2 products: Pfk, Gap, Pgk, Zwf, Gnd, Tkt, Tal, Pyk, Pps, Ack, Mdh.
+###end p 9
+###begin title 10
+Algorithm for Ensemble Modeling.
+###end title 10
+###begin p 11
+The algorithm is illustrated on the left, while the steps are described in detail on the right.
+###end p 11
+###begin p 12
+###xml 88 104 88 104 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 316 320 316 320 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Berry1">[18]</xref>
+###xml 322 326 322 326 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik1">[19]</xref>
+###xml 430 434 430 434 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Bongaerts1">[20]</xref>
+###xml 498 502 498 502 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Ikeda1">[21]</xref>
+###xml 595 599 595 599 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Bongaerts1">[20]</xref>
+###xml 601 605 601 605 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 700 704 700 704 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Bongaerts1">[20]</xref>
+###xml 753 757 753 757 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Ikeda1">[21]</xref>
+###xml 861 865 861 865 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Bongaerts1">[20]</xref>
+###xml 924 928 924 928 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Ikeda1">[21]</xref>
+###xml 88 104 <span type="species:ncbi:562">Escherichia coli</span>
+In this work, we implement the EM approach to the production of aromatic amino acids in Escherichia coli. Aromatic compounds are of substantial industrial importance, with many uses and high rates of production, including the aromatic amino acids and other derived compounds such as indigo, quinic acid and catechol [18], [19]. L-Tryptophan is primarily used as a feed and food additive, and has other pharmaceutical applications [20]. The estimated production rate of L-Tryptophan is 500 ton/year [21]. L-Phenylalanine is primarily used for the production of the artificial sweetener aspartame [20], [22], and as a nutraceutical, a flavor enhancer, and an intermediate for pharmaceutical production [20], with an estimated production of 8,000 ton/year [21]. L-Tyrosine is used in the production of the anti-Parkinson's drug L-DOPA, and as a dietary supplement [20], and is produced at a smaller scale of about 120 ton/year [21].
+###end p 12
+###begin p 13
+###xml 3 10 3 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 391 395 391 395 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Bongaerts1">[20]</xref>
+###xml 477 481 477 481 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik1">[19]</xref>
+###xml 483 487 483 487 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 488 492 488 492 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Lu1">[27]</xref>
+###xml 3 10 <span type="species:ncbi:562">E. coli</span>
+In E. coli and many other organisms, the production of aromatic compounds begins with the condensation reaction between phosphoenolpyruvate (PEP) and erythrose-4-phosphate (E4P) to form 3-deoxy-D-arabinoheptulosonate-7-phosphate (DAHP). This reaction, catalyzed by DAHP synthase (AroG), is the committed step and the most tightly regulated reaction in the common aromatic amino acid pathway [20]. DAHP has often been used as an index for the capability of aromatics production [19], [22]-[27].
+###end p 13
+###begin p 14
+###xml 52 68 52 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 345 352 345 352 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 370 374 370 374 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik1">[19]</xref>
+###xml 376 380 376 380 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 444 451 444 451 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 816 820 816 820 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 872 876 872 876 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik1">[19]</xref>
+###xml 878 882 878 882 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Flores1">[25]</xref>
+###xml 1044 1051 1044 1051 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 1279 1283 1279 1283 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik1">[19]</xref>
+###xml 1285 1289 1285 1289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 52 68 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 345 352 <span type="species:ncbi:562">E. coli</span>
+###xml 444 451 <span type="species:ncbi:562">E. coli</span>
+###xml 1044 1051 <span type="species:ncbi:562">E. coli</span>
+We choose the production of aromatic amino acids in Escherichia coli as a system to demonstrate the applicability of EM because this system is an example of both kinetic and stoichiometric limitations that takes place in metabolic systems. Stoichiometric analysis shows that the theoretical yield of DAHP production from glucose in the wildtype E. coli is 43% (mol/mol) [19], [22]. This relatively low theoretical yield is due to the fact that E. coli cannot recycle pyruvate back to PEP during glycolytic growth. Thus, when PEP is converted to pyruvate during glucose transport via the phosphotransferase system (PTS), the pyruvate generated cannot be used in the aromatic synthesis, causing a decrease in yield. In order to increase the yield, either pyruvate has to be recycled back to PEP via PEP synthase (Pps) [22], or use a PEP-independent glucose transport system [19], [25]. Once pyruvate is recycled or a PEP-independent transport system is used, the theoretical yield increased to 86% (mol/mol). However, when Pps is overepressed in E. coli, there is no change in DAHP yield. On the other hand, overexpression of Tkt effectively increases the yield to close to 43%. Overexpression of both Pps and Tkt then increases the yield to 86%, approaching the theoretical limit [19], [22]. This example indicates that Tkt is the first limiting enzyme. Once this bottleneck is removed, then Pps can demonstrate its effect. This type of kinetic behavior cannot be captured using either stoichiometric models or a direct flux comparison between flux states.
+###end p 14
+###begin p 15
+###xml 63 69 63 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 63 69 <span type="species:ncbi:562">E.coli</span>
+Here we use EM to study the production of DAHP from glucose in E.coli, utilizing existing data from the literature to screen the ensemble of models. By using data that has been reported for the overexpression of transketolase (Tkt), transaldolase (Tal) and phosphoenolpyruvate synthase (Pps), we can screen the original ensemble of models to a subset that accurately describes the kinetic phenomena that is at work in this system. The final screened ensemble of models demonstrates the property that the E4P metabolite pool is initially limiting, and only after this limitation is lifted, does the PEP pool become important. Thus, we can correctly predict that only after Tkt is overexpressed does the overexpression of Pps play a role in an increased rate of DAHP production. This work thus demonstrates that EM is able to capture properties of metabolic networks in a real biological system through the utilization of enzyme tuning data to drive model development.
+###end p 15
+###begin title 16
+Results
+###end title 16
+###begin title 17
+The DAHP Metabolic Network
+###end title 17
+###begin p 18
+###xml 64 72 64 72 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 3</bold>
+###xml 64 72 64 72 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g003"><bold>Figure 3</bold></xref>
+###xml 328 332 328 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Tran1">[11]</xref>
+###xml 903 910 903 910 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 1</bold>
+###xml 903 910 903 910 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0006903-t001"><bold>Table 1</bold></xref>
+The metabolic network for the production of DAHP is depicted in Figure 3. This network includes the PTS for glucose uptake, glycolysis pathway, pentose phosphate pathway, Krebs cycle, the formate and acetate production pathways, and the pathway for the synthesis of DAHP. The PTS is modeled as a series of phosphorylation steps [11]. First, enzyme I (EI) uses PEP as the phosphoryl donor, thus converting PEP to pyruvate and phosphorylating histidine protein (HPr). Next, HPr phosphorylates enzyme IIA (EIIA), which in turn phoshorylates enzyme IIBC (EIIBC). Finally, in the last step, EIIBC transfers the phosphate to glucose, thus converting the glucose to glucose-6-phosphate (G6P). Further, phosphofructokinase (Pfk) is feedback inhibited by phosphoenolpyruvate (PEP). This network consists of 37 net reactions and 34 metabolites. The full list of abbreviations used in this network can be found in Table 1.
+###end p 18
+###begin title 19
+The metabolic network for the production of aromatic precursor 3-deoxy-D-arabino-heptulosonate-7-phosphate (DAHP).
+###end title 19
+###begin p 20
+###xml 156 159 156 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">pfk</italic>
+###xml 229 233 229 233 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">aroG</italic>
+Metabolites are denoted by capital letters, while enzyme abbreviations are in italics. The metabolite PEP feedback inhibits the enzyme phosphofructokinase (pfk). In the studied system, 2-dehydro-3-deoxyphosphoheptonate aldolase (aroG) had already been made feedback resistant, denoted by superscript "fbr".
+###end p 20
+###begin title 21
+Abbreviations for metabolites and enzymes.
+###end title 21
+###begin title 22
+Obtaining Steady State Fluxes
+###end title 22
+###begin p 23
+###xml 156 160 156 160 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik1">[19]</xref>
+###xml 994 1001 994 1001 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 2</bold>
+###xml 994 1001 994 1001 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0006903-t002"><bold>Table 2</bold></xref>
+For the production of DAHP, the external fluxes of the system (glucose uptake and the secretion of DAHP, succinate, acetate and formate) have been reported [19]. However, it can be seen that even when the external fluxes are determined, there is an additional degree of freedom at the metabolite glucose-6-phosphate (G6P), where the flux coming into the system is split between glycolysis (via Pgi) and the pentose phosphate pathway (via Zwf). To account for this additional degree of freedom in determining the steady state flux, we calculate the flux map for a variety of glycolysis:pentose phosphate pathway split ratios (25:75, 50:50, 75:25 and 95:5) and carry out the EM approach using each of these varying flux maps to examine the effect of the split ratio on the modeling results. In addition, recycle reactions are included to allow the cell to dispose of extra energy (ATP) or reducing power (NADH, NADPH). Each of the steady state fluxes for the various split ratios are reported in Table 2.
+###end p 23
+###begin title 24
+Net flux (mmol/g DCW/hr) of reference state for various glycolysis vs pentose pathway split ratios.
+###end title 24
+###begin title 25
+Construction of the Initial Ensemble
+###end title 25
+###begin p 26
+###xml 519 526 519 526 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 3</bold>
+###xml 519 526 519 526 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0006903-t003"><bold>Table 3</bold></xref>
+###xml 608 615 608 615 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 686 694 686 694 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1</bold>
+###xml 686 694 686 694 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g001"><bold>Figure 1</bold></xref>
+###xml 1115 1116 1115 1116 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+For each glycolysis:pentose pathway split ratio, an ensemble of 1500 models was constructed using Matlab (Mathworks, Natick, MA) on an Intel (Santa Clara, CA) Pentium 4 processor running Microsoft (Redmond, WA) Windows XP. The total computational time to develop and perturb each ensemble to obtain the overexpression phenotypes of interest was approximately 18 hours. In addition to the steady state fluxes, the other input into the algorithm is the standard Gibbs free energies for each reaction, which are listed in Table 3. The reactions are then broken down into their elementary steps, as described in Methods. The way that each reaction in the network is modeled is described in Figure 1. The reversibilities for each elementary step are sampled uniformly from zero to one, and the thermodynamic compliance of the reaction is checked using Eq. (13). If the reversibilities are determined to be outside the constraints imposed by thermodynamics, they are resampled. The enzyme fractions for each set of elementary reactions are uniformly sampled from zero to one, and each of the fractions relating to enzyme i are rescaled such that there sum is equal to one.
+###end p 26
+###begin title 27
+Overall reactions and free energies.
+###end title 27
+###begin title 28
+Perturbation and Screening of the Ensemble
+###end title 28
+###begin p 29
+###xml 625 629 625 629 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik1">[19]</xref>
+###xml 631 635 631 635 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 636 640 636 640 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Gosset1">[26]</xref>
+###xml 649 653 649 653 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Lu1">[27]</xref>
+###xml 930 934 930 934 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Lu1">[27]</xref>
+###xml 1024 1028 1024 1028 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik1">[19]</xref>
+###xml 1030 1034 1030 1034 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 1036 1040 1036 1040 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Gosset1">[26]</xref>
+###xml 1143 1147 1143 1147 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 1328 1332 1328 1332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 1334 1338 1334 1338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Gosset1">[26]</xref>
+###xml 1380 1387 1380 1387 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Table 4</bold>
+###xml 1380 1387 1380 1387 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0006903-t004"><bold>Table 4</bold></xref>
+In our system of interest for the production of DAHP, an important metabolic kinetic phenomenon is at work. The synthesis of DAHP draws from the pools of two metabolites, PEP and E4P, from different areas of the metabolic network. Thus, how these pools are balanced, a kinetic property, is the key to increased DAHP production. It has been demonstrated that the E4P metabolite pool is the limiting metabolite in DAHP synthesis, and that only after this limitation is lifted do perturbations in enzyme levels that increase the PEP pool size yield an increase in production. It has been reported that the overexpression of Tkt [19], [22]-[26] and Tal [27], which increase the E4P pool, lead to an increase in the DAHP production rate and yield from glucose. While the overexpression of both of these enzymes increased the production rate, it was found that overexpression of Tkt had a stronger effect than the overexpression of Tal [27]. Further, the overexpression of Tkt shows a negligible impact on the glucose uptake rate [19], [22], [26]. The overexpression of Pps alone, which would increase the PEP pool, had no effect on DAHP production [22]. However, when both Tkt and Pps were overexpressed simultaneously, the combined effect of these overexpressions was far greater than the single overexpression of either Tkt or Pps [22], [26]. All of the phenotypes are summarized in Table 4.
+###end p 29
+###begin title 30
+Summary of literature used for screening phenotypes.
+###end title 30
+###begin p 31
+After constructing the ensemble of models for each of the split ratios, each model was perturbed by overexpressing Tkt, Tal and Pps two-fold, one at a time. After perturbation of the ensemble, the models that did not match the literature phenotypes were screened out of the ensemble. For the phenotypes where overexpression led to an increase in DAHP production (Tkt and Tal), models that exhibited any increase in the DAHP production rate were kept. For the phenotype of Pps overexpression leading to no change in the DAHP rate, only models that did not exceed an increase or decrease of 10% of the maximum DAHP rate increase for that ensemble were kept. For the glucose uptake rate being unchanged with Tkt overexpression, only models that exhibited less than a 10% change in the glucose uptake rate were retained. To screen for Tkt overexpression increasing the DAHP rate more than Tal overexpression, only models where the DAHP rate when Tkt is overexpressed was greater than the DAHP rate when Tal was overexpressed were retained.
+###end p 31
+###begin p 32
+###xml 48 56 48 56 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 4</bold>
+###xml 48 56 48 56 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g004"><bold>Figure 4</bold></xref>
+###xml 855 868 855 868 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figs. 4C &amp; 4D</bold>
+###xml 855 868 855 868 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g004"><bold>Figs. 4C &amp; 4D</bold></xref>
+###xml 1048 1061 1048 1061 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figs. 4A &amp; 4B</bold>
+###xml 1048 1061 1048 1061 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g004"><bold>Figs. 4A &amp; 4B</bold></xref>
+The results of the screening are illustrated in Figure 4. In screening for the overexpression of Tkt leading to an increase in the DAHP production rate, 122, 90, 575 and 534 models were retained for the 25:75, 50:50, 75:25 and 95:5 split ratios, respectively. From this reduced subset of models, screening for those in which Tal overexpression also leads to an increase in the DAHP production, led to the retention of 70, 42, 525, and 512 models for the 25:75, 50:50, 75:25 and 95:5 split ratios, respectively. It should be noted that higher fractions of models are retained in each successive step. This result suggests that the ensemble becomes more and more predictive. Ideally, when the model is truly predictive, 100% of the ensemble will be retained between screening steps and the phenotypic screening will converge to the same ensemble of models. Figs. 4C & 4D illustrate this phenomenon. On the other hand, when no model is retained after screening, at least one of the underlying assumptions is invalid. This phenomenon is illustrated in Figs. 4A & 4B, where incorrect glycolysis:pentose pathway split ratios gave no acceptable model.
+###end p 32
+###begin title 33
+Results of screening for each of the reported literature phenotypes.
+###end title 33
+###begin p 34
+###xml 29 36 29 36 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pone-0006903-t004">Table 4</xref>
+Screening of phenotypes from Table 4, using each of the four glycolysis:pentose phosphate pathway split ratios. For the two fluxes with the highest proportion of the flux through the pentose-phosphate pathway (panels A&B), zero models in the ensemble were able to match all of the experimental phenotypes. For the two flux distributions with the highest flux through glycolysis (panels C&D), approximately one-tenth of the original ensemble matched each of the screening phenotypes. The size of each column represents the number of models remaining after the screening step indicated on the x-axis.
+###end p 34
+###begin p 35
+###xml 641 649 641 649 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 5</bold>
+###xml 641 649 641 649 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g005"><bold>Figure 5</bold></xref>
+While we are screening from the previously determined subset, each of the perturbations was done in parallel, not sequentially. The screening for the Tkt and Tal phenotypes could be done independently, and the models common to both screens could be retained. Further, the order in which the models are screened does not influence the final number of models that matches all phenotypes. When the phenotypes are observed relative to the same reference state (i.e. done in parallel), they can all be viewed independently, and the models retained after screening can be illustrated as the intersection between each phenotype, as demonstrated in Figure 5.
+###end p 35
+###begin title 36
+Illustration of screening the ensemble of models using different literature phenotypes.
+###end title 36
+###begin p 37
+###xml 470 471 470 471 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+Because the ensemble is being screened using the effect of different enzyme overexpressions on the same reference state, the final screened ensemble is independent of the path chosen, and can be represented by the intersection of the subsets screened by each phenotype. For demonstration, the results of screening for the reference flux with a glycolysis:pentose phosphate pathway split ratio of 75:25 are shown. The values indicate how many of the original ensemble of n = 1500 models match the given phenotype.
+###end p 37
+###begin p 38
+From the reduced subset matching the Tkt and Tal phenotypes, screening for Pps overexpression leading to no change in DAHP production results in 8, 0, 318 and 278 models matching the phenotype for each of the split ratios. Of these models, the number that exhibited the property that the glucose uptake rate did not change when Tkt was overexpressed reduced the size of the ensembles to 7, 0, 241 and 235 models, in order of increasing glycolytic flux.
+###end p 38
+###begin p 39
+###xml 290 303 290 303 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figs. 4C &amp; 4D</bold>
+###xml 290 303 290 303 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g004"><bold>Figs. 4C &amp; 4D</bold></xref>
+###xml 403 415 403 415 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Fig. 4A &amp; 4B</bold>
+###xml 403 415 403 415 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g004"><bold>Fig. 4A &amp; 4B</bold></xref>
+The final literature observation used for screening is that of an increase in DAHP production via Tkt overexpression being greater than the increase observed from Tal overexpression. This led to a final ensemble size of 171 and 195 models for the 75:25 and 95:5 split ratios, respectively (Figs. 4C & 4D). For the split ratios with a higher percentage of the flux through the pentose-phosphate pathway (Fig. 4A & 4B), zero of the models in the original ensemble remained after all of the screening steps. In fact, no models remained after just three screening steps when the flux was split 50:50 between glycolysis and the pentose pathway. This indicates that in the EM approach, just as in nature, the effect of enzyme overexpression is dependent on the reference flux distribution. Further, this demonstrates that in the true system, the reference steady state flux may indeed have the majority of the metabolic flux directed through glycolysis, which follows the experimental observation that the overexpression of Tkt is limiting, as the Tkt net flux only becomes negative (thus feeding, not draining, the E4P pool) when the split ratio is 60:40 or greater.
+###end p 39
+###begin title 40
+Prediction of Tkt/Pps Dual Overexpression
+###end title 40
+###begin p 41
+###xml 592 601 592 601 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 6A</bold>
+###xml 592 601 592 601 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g006"><bold>Figure 6A</bold></xref>
+To determine whether the screened ensemble of models becomes increasingly predictive, we test the behavior of the remaining models when both Tkt and Pps are simultaneously overexpressed two-fold. Indeed, even though these subsets of the original ensemble demonstrate that the sole overexpression of Pps has no effect on the DAHP steady state production rate, when Pps is overexpressed simultaneously with Tkt, 100% of the models for both the 75:25 and 95:5 split ratios yield an increase in the DAHP rate that is greater than the sum of the single overexpressions of Tkt and Pps, as shown in Figure 6A.
+###end p 41
+###begin title 42
+Dual overexpression kinetic phenomena for DAHP production.
+###end title 42
+###begin p 43
+A) Illustration of the prediction for the dual overexpression of Tkt and Pps for the split ratio of 95:5. 100% of the selected models exhibit the phenotype where when Tkt and Pps are simultaneously overexpressed, the combined effect is greater than the sum of the two individual overexpressions. B) The kinetic phenomenon in DAHP production illustrated. Pps overexpression does not increase DAHP production until Tkt is overexpressed. After removing this limitation, Pps overexpression has a dramatic effect on DAHP production, pushing yields near the theoretical limit of 86% mol DAHP/mol glucose.
+###end p 43
+###begin p 44
+###xml 185 189 185 189 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 360 364 360 364 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Flores1">[25]</xref>
+###xml 497 501 497 501 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">tktA</italic>
+###xml 526 530 526 530 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Patnaik2">[22]</xref>
+###xml 532 536 532 536 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Gosset1">[26]</xref>
+###xml 836 845 836 845 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 6B</bold>
+###xml 836 845 836 845 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g006"><bold>Figure 6B</bold></xref>
+Since PEP is used in glucose transport via the PTS to form pyruvate, most carbon is not used in aromatics biosynthesis, resulting in a low yield. This problem was identified previously [22] and two solutions were developed. The first is recycling pyruvate back to PEP via overexpression of Pps, and the second is the use of non-PTS genes for glucose transport [25]. Interestingly, relieving this stoichiometric limitation did not increase the yield of DAHP until transketolase (the product of the tktA gene) was overexpressed [22], [26]. Apparently, a kinetic limitation caused by Tkt is the first bottleneck for DAHP production. Such behavior cannot be predicted using either stoichiometric models or a direct flux comparison between flux states. However, the EM approach was able to reproduce this phenomenon, which is illustrated in Figure 6B.
+###end p 44
+###begin title 45
+Properties of Screened Models
+###end title 45
+###begin p 46
+###xml 566 570 566 570 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Massey1">[28]</xref>
+###xml 834 842 834 842 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 7</bold>
+###xml 834 842 834 842 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g007"><bold>Figure 7</bold></xref>
+For the final ensembles of 171 and 195 models for the split ratios of 75:25 and 95:5, respectively, the sampled parameters of these screened subsets were examined to determine what characteristics they exhibited that deviated from the original ensemble of models. The enzyme fractions of each free enzyme (enzyme not in a complex), and the net reversibilities of each overall reaction were examined to determine how their distributions for the screened models deviated from the original ensemble. For each parameter of interest, a two-sample Kolmogorov-Smirnov test [28] was conducted to determine if the distribution of that parameter within the screened models exhibited a significantly shifted distribution (with 95% confidence) when compared to the original ensemble of 1500 models. Examples of these distributions can be seen in Figure 7.
+###end p 46
+###begin title 47
+Analysis of parameters in screened models relative to original ensemble.
+###end title 47
+###begin p 48
+###xml 242 243 242 243 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+Parameter analysis for the glycolysis:pentose phosphate pathway split ratio of 95:5. A) The distribution of the enzyme fraction representing the free enzyme EI for the original ensemble (solid line) compared to the final screened ensemble of n = 195 models (dashed line). B) Hierarchical clustering by the sampled enzyme fractions indicates that the screened models (denoted by black bars) exist primarily in two distinct clusters. C) The distribution of enzyme fractions representing the free enzymes EI, Pyk & Ppc for each of the two clusters (dashed lines) relative to the original ensemble (solid line). Both clusters have distributions in EI that deviate significantly from the original ensemble. Only cluster 1 has a distribution for Pyk significantly different from the original ensemble, and only cluster 2 has a Ppc distribution that deviates from the original ensemble.
+###end p 48
+###begin p 49
+###xml 442 451 442 451 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 7A</bold>
+###xml 442 451 442 451 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g007"><bold>Figure 7A</bold></xref>
+For both flux states examined, it was found that three of the enzymes showed a significant deviation in their distributions relative to the original ensemble, and none of the reaction reversibilities exhibited a deviation. For both flux states, the free enzyme fractions of enzyme I (EI), pyruvate kinase (Pyk), and phosphoenolpyruvate carboxylase (Ppc) had a significantly different parameter distribution compared to the original ensemble. Figure 7A demonstrates the change in the distribution of the EI free enzyme fraction for the 95:5 split ratio. Each of these three identified enzymes share the metabolite phosphoenolpyruvate (PEP) as a reactant, which is also involved in the condensation reaction to form our desired product DAHP. Biologically, in the case of EI, the relatively low free enzyme fraction in the selected models indicates that glucose uptake is essentially saturated, and that a change in the concentrations of substrates of this reaction (such as an increase in the PEP concentration through overexpression of Pps) would have little effect on changing the system.
+###end p 49
+###begin p 50
+###xml 288 297 288 297 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 7B</bold>
+###xml 288 297 288 297 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g007"><bold>Figure 7B</bold></xref>
+###xml 608 615 608 615 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Fig. 7C</bold>
+###xml 608 615 608 615 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g007"><bold>Fig. 7C</bold></xref>
+After determining that these three parameters were significantly distributed in the screened models, a hierarchical clustering analysis was performed examining these three free enzyme fractions in the original ensemble of models for the 95:5 glycolysis:pentose pathway split, as shown in Figure 7B. The models which were eventually to be selected from this ensemble existed in primarily two distinct clusters. To determine the differences between the models within these two clusters, the distribution of the parameter values in each individual cluster was calculated, and compared to the original ensemble (Fig. 7C). While both clusters show a similar distribution for the EI free enzyme fraction, the two clusters demonstrate significant differences when the Pyk and Ppc free enzyme fractions are compared. The Pyk free enzyme fraction of cluster 1 deviates from both the original ensemble and cluster 2, as cluster 1 has a higher proportion of the Pyk enzyme in its free form. The Ppc free enzyme fraction for cluster 2 is higher than both the original ensemble and cluster 1. Each of these enzymes reacts to form a complex with PEP, and thus by having a higher fraction in the free enzyme form, would leave more PEP free, keeping this metabolite from becoming limiting, and allowing these models to match the experimental phenotype indicating that E4P, and not PEP, is the first limiting metabolite in DAHP synthesis. Thus, there exist two alternative routes to match the experimentally observed phenotypes. Relatively high free enzyme fractions of Pyk and Ppc seem to act as alternative methods to achieve the observed phenotypes. If the free enzyme fractions of Pyk and Ppc are too low, much of the PEP concentration will be trapped in complex with the enzyme, and the PEP pool will become limiting. Further, if these two reactions have low free enzyme fractions, they are essentially saturated, and thus when Pps is overexpressed, there would be an increase in the PEP pool that would necessarily lead to an increase in DAHP production, as there would be no other alternative pathways to consume the increase in PEP.
+###end p 50
+###begin title 51
+Spanning the Kinetic Space
+###end title 51
+###begin p 52
+###xml 586 594 586 594 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 8</bold>
+###xml 586 594 586 594 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g008"><bold>Figure 8</bold></xref>
+To determine if the construction of 1500 models in the original ensemble was enough to adequately cover the range of possible kinetics, and thus yield screening results which were reproducible, the ensemble construction and screening process for the 95:5 split ratio was repeated three times to see the variability in the screening results. From an initial ensemble of 1500 models for each of the three ensembles, both the final number of models retained after all screening steps, and the models retained after each individual step varied less than 10% from repeat to repeat, shown in Figure 8. The final ensemble of models for the 95:5 split ratio for each of the three repeats was 195, 207, and 212 models, indicating that the construction of 1500 models adequately covers the kinetic space.
+###end p 52
+###begin title 53
+Repeatability of Ensemble Modeling.
+###end title 53
+###begin p 54
+Three repeats of 1500 models in each ensemble for a 95:5 split ratio show very similar models retained after each screening step. Less than 10% variance in the number of models retained is observed at each screening step, with each ensemble selecting out 195, 212, and 207 models, respectively, after all screening.
+###end p 54
+###begin title 55
+Discussion
+###end title 55
+###begin p 56
+###xml 38 42 38 42 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Tran1">[11]</xref>
+###xml 108 115 108 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 108 115 <span type="species:ncbi:562">E. coli</span>
+In this work, we used the EM approach [11] to model the production of aromatic precursor DAHP production in E. coli. The difficulty in developing kinetic models for metabolic systems is well recognized, and is due to a lack of kinetic parameters. In this work, rather than attempting to construct a traditional kinetic model that matches dynamic metabolite concentration data and facing the issue of kinetic parameter identification, we focused on utilizing enzyme overexpression phenotype data, which are plentiful and relatively straightforward to acquire, to screen models. The EM approach is used to construct an ensemble of models for four different flux distributions, which are then screened using enzyme overexpression data from the literature. We show that in five screening steps, the ensembles can converge to a set of models which becomes predictive.
+###end p 56
+###begin p 57
+Since the entire flux map is not known, but only the external fluxes have been measured, a variety of split ratios were examined between glycolysis and the pentose phosphate pathway. The E4P metabolite pool is fed by transketolase (Tkt) "running backwards" from glycolysis, thus supporting the literature phenotypes only when the fraction of the carbon flux through glycolysis is above 60%. Interestingly, the EM approach was able to identify this property, as neither of the flux maps with less than a 60:40 split ratio were able to retain any models that matched each of the screening phenotypes. However, many models were retained for each of the two flux distributions with greater than a 60:40 split ratio. This indicates that a general idea of the flux distribution could be reverse engineered through the use of enzyme overexpression phenotypes and EM.
+###end p 57
+###begin p 58
+###xml 540 543 540 543 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">any</italic>
+###xml 632 635 632 635 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">all</italic>
+As one looks at the advantages and challenges of such an approach, it can be seen that for complicated networks with many pathways that lead to the external fluxes, there may be many degrees of freedom in determining the steady state flux, and thus the determination of the reference flux (the algorithm's primary input) may limit the possible systems to be studied. The iterative screening approach demonstrated here allows for the rapid collaboration and iteration between experiment and computation. As demonstrated for DAHP production, any enzyme overexpression phenotype can be used as a step in screening the ensemble, making all experimental data potentially useful, whether the data shows an increase in the production rate of interest, a decrease, or no change at all. While the predictive capabilities of the EM approach are primarily qualitative, this provides a tool to drive experimentation and to learn from the results. If a prediction is proven to be incorrect, this information can also be incorporated into the screening, allowing for the formation of an alternate hypothesis.
+###end p 58
+###begin p 59
+In using reported enzyme overexpression data for Tkt, Tal and Pps, it is demonstrated that the screened set of models exhibits the kinetic phenomena that is at work in the network, without the need for kinetic parameters. The final screened ensemble of models shows that Tkt is the first limiting step, and correctly predicts that only after this limitation is lifted does an increase in Pps increase the production rate of DAHP. This work thus demonstrates that EM is able to capture kinetic properties of metabolic networks by utilizing enzyme tuning data to refine and screen the ensemble.
+###end p 59
+###begin title 60
+Methods
+###end title 60
+###begin title 61
+Obtaining Steady State Fluxes
+###end title 61
+###begin p 62
+The first step in EM is to obtain the steady-state fluxes in the reference state of interest. The reference state is typically the base-line control strain before further metabolic engineering. In order to model a given steady state, the flux distribution of that state must first be determined. This flux distribution, or flux map, can be deduced via a variety of methods. Typically, the external fluxes of the system may be known, or easily measureable using GC or HPLC. In this case, the internal fluxes of the system can be estimated by a standard flux balance around each metabolite at the steady state:
+###end p 62
+###begin p 63
+###xml 79 80 79 80 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S</bold>
+###xml 88 89 88 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 92 93 92 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 130 131 130 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 148 149 148 149 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 169 170 169 170 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">v</bold>
+###xml 178 179 178 179 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 321 325 321 325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Antoniewicz1">[29]</xref>
+###xml 326 330 326 330 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Yang2">[33]</xref>
+This can be represented for the entire network in matrix form:where the matrix S is the m x n stoichiometric matrix consisting of m metabolites and n net reactions, and v is the n x 1 vector of net reaction rates. For more detailed analysis, the full flux map may be determined through the use of C13 isotopomer analysis [29]-[33], which involves feeding the cells a precisely labeled mix of glucose. However, such detailed analyses are not necessary in the first step.
+###end p 63
+###begin title 64
+Model Building Using Elementary Reactions
+###end title 64
+###begin p 65
+###xml 167 170 167 170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-CornishBowden1">[6]</xref>
+###xml 1190 1198 1190 1198 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1</bold>
+###xml 1190 1198 1190 1198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g001"><bold>Figure 1</bold></xref>
+###xml 1308 1312 1308 1312 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Tran1">[11]</xref>
+###xml 1675 1683 1675 1683 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 1</bold>
+###xml 1675 1683 1675 1683 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g001"><bold>Figure 1</bold></xref>
+At the molecular level, the basic elementary reactions (either bi-molecular or uni-molecular) that follow mass-action kinetics are the most fundamental kinetic events [6]. An elementary reaction is a chemical reaction in which one or more of the chemical species react directly to form products in a single reaction step and with a single transition state. These reactions follow mass action kinetics. Free enzymes and enzyme-substrate complexes are treated as separate chemical species as either reactants or products. The elementary reactions are the basis for deriving lumped enzyme kinetic rate laws such as Michaelis-Menten kinetics and more complicated allosteric regulation kinetics. Because of total enzyme conservation, the elementary reactions automatically give rise to a saturation behavior characteristic in biological reactions. Regulatory mechanisms are also broken down in terms of elementary reactions. In the EM approach, each enzymatic reaction is broken down into a series of elementary reactions, thus preserving the fundamental behavior we know to exist in metabolic networks. The mechanism that is used for the various metabolic reactions in this work is depicted in Figure 1, for various combinations of reactants and products. The PTS is modeled as a series of phosphorylation steps [11]. For modeling purposes, each of the phosphorylated enzymes is considered to be a substrate or reaction product, while each of the free enzymes is considered to be the enzyme that participates in the reaction. Thus, for the entire PTS, each enzyme drives a step of the reaction and is then regenerated in the subsequent phosphorylation step. Also demonstrated in Figure 1 is how regulatory steps can be easily included into the framework.
+###end p 65
+###begin p 66
+###xml 331 333 331 333 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i,</italic>
+###xml 369 370 369 370 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 413 414 413 414 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+The general form for the elementary reactions in an enzymatic reaction of one substrate to one product can be depicted as follows:where the rate of each individual elementary reaction, , follows the mass action principle:where  is the rate constant of the forward reaction of step 1 of the overall reaction catalyzed by the enzyme i, is the concentration of metabolite i, and  is the concentration of free enzyme i. To avoid quantifying the absolute concentrations of each metabolite and enzyme, we scale their concentrations by the corresponding concentration at the steady state, and Eq. (3) becomes:where  is the rescaled kinetic parameter defined as:withequal to the metabolite's concentration at steady state, and  the total concentration of the corresponding enzyme at the reference state. Note that the rate law in Eq. (4) has the log-linear form:
+###end p 66
+###begin p 67
+Each of the transport reactions out of the system are modeled with mass-action kinetics:
+###end p 67
+###begin p 68
+For the reference state, , and can be calculated from Eq. (6) after the uni-directional flux  and enzyme fraction  are determined. The uni-directional flux  is determined from the sampled reversibility (see next section), and the enzyme fraction  is sampled directly (see next section).
+###end p 68
+###begin title 69
+The Ensemble Modeling (EM) Sampling Algorithm
+###end title 69
+###begin p 70
+###xml 37 45 37 45 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Figure 2</bold>
+###xml 37 45 37 45 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pone-0006903-g002"><bold>Figure 2</bold></xref>
+###xml 419 423 419 423 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Henry1">[34]</xref>
+The EM methodology is illustrated in Figure 2. The inputs into the algorithm are the steady state flux distribution of the reference state and the Gibbs free energies of the reactions, which allow for the assignment of thermodynamic constraints on the system. The reference steady state fluxes are obtained as described above, while the range of Gibbs free energies are calculated from the standard Gibbs free energies [34] allowing for a one-hundred fold change in metabolite concentrations.
+###end p 70
+###begin p 71
+###xml 225 226 225 226 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 311 312 311 312 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</italic>
+###xml 325 326 325 326 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+In the first sampling step, the reversibilities for each elementary step  are sampled. These reversibilities can be related to the individual elementary reaction rates via the following:where  is the net flux of the reaction i at the reference steady state, and  and  are the forward and backward rates of step j in reaction i. The reversibilities range from 0 (for an irreversible step) to 1 (for a step at equilibrium). Thus, the forward and backward rates can be calculated from the reversibility and the steady state flux determined in the first step:
+###end p 71
+###begin p 72
+###xml 12 17 12 17 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i,net</sub>
+###xml 6 18 6 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sign(V<sub>i,net</sub>)</italic>
+###xml 203 204 203 204 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 202 204 202 204 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n<sub>i</sub></italic>
+###xml 258 259 258 259 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 305 306 305 306 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 537 541 537 541 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Henry1">[34]</xref>
+###xml 542 546 542 546 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Henry2">[36]</xref>
+where sign(Vi,net) represents the direction of the net flux (positive if forward and negative if backwards). The reversibilities are constrained by the Gibbs free energy of the overall reaction, :where ni represents the number of elementary steps for enzyme i. This requires that the net flux of reaction i be positive if , and negative if . This constraint is used to check if the reference steady-state is thermodynamically compliant. Since the exact values for the Gibb free energies are not known, but their ranges can be determined [34]-[36], Eq. (12) at the reference state becomes:
+###end p 72
+###begin p 73
+###xml 144 148 144 148 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Tran1">[11]</xref>
+This relationship between the reversibilities of the elementary steps, the net reaction, and the free energy bounds has been previously derived [11].
+###end p 73
+###begin p 74
+Next, the enzyme fractions are sampled. The enzyme fractions are the fractions of the total enzyme amount that exist as the free enzyme and as the various enzyme complexes at steady state, such that the sum of all the fractions are equal to one, conserving the total amount of each enzyme:
+###end p 74
+###begin p 75
+At the reference steady state  and Eq. (6) becomes:
+###end p 75
+###begin p 76
+Once this sampling of enzyme fractions is complete, the kinetic parameters for that model can be assigned. The kinetic parameters  can be easily computed from Eq. (15), as is determined from the sampling of reversibilities (Eqs. (10) and (11)), and  is directly sampled.
+###end p 76
+###begin title 77
+Establish the Ensemble of Models
+###end title 77
+###begin p 78
+Next the ordinary differential equations (ODEs) governing the system are solved at the reference state. The network can be described by a system of ODEs and solved numerically, where the metabolite concentrations and enzyme fractions, not the total enzyme concentrations, are the ODE variables:
+###end p 78
+###begin p 79
+With enzyme fraction initial conditions set such that:where the superscript "0" represents the initial condition of the enzyme fractions.
+###end p 79
+###begin p 80
+Different combinations of reversibilities represent different kinetic states. Each model is a function of the reversibilities and enzyme fractions:
+###end p 80
+###begin p 81
+Every model reaches the same steady state, and the reversibilities  (which represents the vector composed of the reversibilities for each elementary step) and enzyme fractions (which represents the vector composed of the enzyme fractions for each free enzyme and enzyme complex) are reassigned for each subsequent model. This allows for the formation of an ensemble of models that span the range of kinetics allowable by thermodynamics.
+###end p 81
+###begin title 82
+Screening of the Models by Perturbation
+###end title 82
+###begin p 83
+The entire ensemble can be perturbed to determine each individual model's response to the enzyme expression perturbation with which we would like to screen the ensemble. In order to perturb the concentration of an enzyme for an individual model in the ensemble, Eq. (4) is modified:
+###end p 83
+###begin p 84
+###xml 156 157 156 157 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 165 168 165 168 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i,r</sub>
+###xml 164 172 164 172 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E<sub>i,r</sub>&#8202;=&#8202;n</italic>
+###xml 225 226 225 226 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n</italic>
+###xml 304 308 304 308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pone.0006903-Kholodenko1">[37]</xref>
+The additional variable  represents the fold change in total enzyme concentration relative to the reference state. Each enzyme of interest is overexpressed n-fold (Ei,r = n) to determine its effect on production. Here we use n = 2. If the metabolic network contains any moiety conservation relationships [37], the initial conditions are set such that the sum of these metabolite remain unchanged. For example, the sum of cofactors and their intermediates in the new perturbed condition must be equal to those in reference steady state.
+###end p 84
+###begin title 85
+References
+###end title 85
+###begin article-title 86
+Tuning genetic control through promoter engineering.
+###end article-title 86
+###begin article-title 87
+The mathematics of metabolic control analysis revisited.
+###end article-title 87
+###begin article-title 88
+Metabolic flux control analysis of branch points: an improved approach to obtain flux control coefficients from large perturbation data.
+###end article-title 88
+###begin article-title 89
+###xml 39 46 <span type="species:ncbi:562">E. coli</span>
+Construction of lycopene-overproducing E. coli strains by combining systematic and combinatorial gene knockout targets.
+###end article-title 89
+###begin article-title 90
+###xml 50 66 <span type="species:ncbi:562">Escherichia coli</span>
+Control of gluconeogenic growth by pps and pck in Escherichia coli.
+###end article-title 90
+###begin article-title 91
+Fundamentals of enzyme kinetics.
+###end article-title 91
+###begin article-title 92
+###xml 72 88 <span type="species:ncbi:562">Escherichia coli</span>
+Precursor balancing for metabolic engineering of lycopene production in Escherichia coli.
+###end article-title 92
+###begin article-title 93
+Advances in metabolic control analysis.
+###end article-title 93
+###begin article-title 94
+The control of flux.
+###end article-title 94
+###begin article-title 95
+Metabolic control theory: its role in microbiology and biotechnology.
+###end article-title 95
+###begin article-title 96
+Ensemble modeling of metabolic networks.
+###end article-title 96
+###begin article-title 97
+Ensemble modeling and related mathematical modeling of metabolic networks.
+###end article-title 97
+###begin article-title 98
+###xml 63 79 <span type="species:ncbi:562">Escherichia coli</span>
+Ensemble modeling for strain development of L-lysine-producing Escherichia coli.
+###end article-title 98
+###begin article-title 99
+Metabolic control analysis under uncertainty: framework development and case studies.
+###end article-title 99
+###begin article-title 100
+###xml 56 61 <span type="species:ncbi:4932">yeast</span>
+Metabolic engineering under uncertainty-II: analysis of yeast metabolism.
+###end article-title 100
+###begin article-title 101
+Use of randomized sampling for analysis of metabolic networks.
+###end article-title 101
+###begin article-title 102
+Enzyme kinetics and mechanism: Garland Science.
+###end article-title 102
+###begin article-title 103
+###xml 46 62 <span type="species:ncbi:562">Escherichia coli</span>
+Improving production of aromatic compounds in Escherichia coli by metabolic engineering.
+###end article-title 103
+###begin article-title 104
+###xml 51 67 <span type="species:ncbi:562">Escherichia coli</span>
+Pathway engineering for production of aromatics in Escherichia coli: Confirmation of stoichiometric analysis by independent modulation of AroG, TktA, and Pps activities.
+###end article-title 104
+###begin article-title 105
+Metabolic engineering for microbial production of aromatic amino acids and derived compounds.
+###end article-title 105
+###begin article-title 106
+Amino acid production processes.
+###end article-title 106
+###begin article-title 107
+###xml 15 31 <span type="species:ncbi:562">Escherichia coli</span>
+Engineering of Escherichia coli central metabolism for aromatic metabolite production with near theoretical yield.
+###end article-title 107
+###begin article-title 108
+###xml 100 116 <span type="species:ncbi:562">Escherichia coli</span>
+Determination of 3-deoxy-D-arabino-heptulosonate 7-phosphate productivity and yield from glucose in Escherichia coli devoid of the glucose phosphotransferase transport system.
+###end article-title 108
+###begin article-title 109
+Biocatalytic synthesis of aromatics from D-Glucose: the role of transketolase.
+###end article-title 109
+###begin article-title 110
+###xml 64 80 <span type="species:ncbi:562">Escherichia coli</span>
+Pathway engineering for the production of aromatic compounds in Escherichia coli.
+###end article-title 110
+###begin article-title 111
+###xml 89 105 <span type="species:ncbi:562">Escherichia coli</span>
+A direct comparison of approaches for increasing carbon flow to aromatic biosynthesis in Escherichia coli.
+###end article-title 111
+###begin article-title 112
+Metabolic engineering and control analysis for production of aromatics: role of transaldolase.
+###end article-title 112
+###begin article-title 113
+The Kolmogorov-Smirnov test for goodness of fit.
+###end article-title 113
+###begin article-title 114
+Determination of confidence intervals of metabolic fluxes estimated from stable isotope measurements.
+###end article-title 114
+###begin article-title 115
+###xml 63 70 <span type="species:ncbi:3847">soybean</span>
+Quantification of compartmented metabolic fluxes in developing soybean embryos by employing biosynthetically directed fractional (13)C labeling, two-dimensional [(13)C, (1)H] nuclear magnetic resonance, and comprehensive isotopomer balancing.
+###end article-title 115
+###begin article-title 116
+Improvements in metabolic flux analysis using carbon bond labeling experiments: bondomer balancing and Boolean function mapping.
+###end article-title 116
+###begin article-title 117
+Theoretical aspects of 13C metabolic flux analysis with sole quantification of carbon dioxide labeling.
+###end article-title 117
+###begin article-title 118
+Metabolic network simulation using logical loop algorithm and Jacobian matrix.
+###end article-title 118
+###begin article-title 119
+###xml 39 55 <span type="species:ncbi:562">Escherichia coli</span>
+Genome-scale thermodynamic analysis of Escherichia coli metabolism.
+###end article-title 119
+###begin article-title 120
+Thermodynamics of enzyme-catalyzed reactions-a database for quantitative biochemistry.
+###end article-title 120
+###begin article-title 121
+Thermodynamics-based metabolic flux analysis.
+###end article-title 121
+###begin article-title 122
+Metabolic design: how to engineer a living cell to desired metabolite concentrations and fluxes.
+###end article-title 122
+###begin p 123
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing Interests: </bold>
+Competing Interests: The authors have declared that no competing interests exist.
+###end p 123
+###begin p 124
+###xml 0 9 0 9 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding: </bold>
+Funding: The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript. This work is supported in part by the DOE (DE-FG02-07ER64490), NIGMS (R01GM076143) and the UCLA-DOE Institute for Genomics and Proteomics.
+###end p 124
+

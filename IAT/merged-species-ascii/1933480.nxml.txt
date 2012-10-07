@@ -1,0 +1,799 @@
+###begin article-title 0
+Chemotaxis Receptor Complexes: From Signaling to Assembly
+###end article-title 0
+###begin p 1
+Complexes of chemoreceptors in the bacterial cytoplasmic membrane allow for the sensing of ligands with remarkable sensitivity. Despite the excellent characterization of the chemotaxis signaling network, very little is known about what controls receptor complex size. Here we use in vitro signaling data to model the distribution of complex sizes. In particular, we model Tar receptors in membranes as an ensemble of different sized oligomer complexes, i.e., receptor dimers, dimers of dimers, and trimers of dimers, where the relative free energies, including receptor modification, ligand binding, and interaction with the kinase CheA determine the size distribution. Our model compares favorably with a variety of signaling data, including dose-response curves of receptor activity and the dependence of activity on receptor density in the membrane. We propose that the kinetics of complex assembly can be measured in vitro from the temporal response to a perturbation of the complex free energies, e.g., by addition of ligand.
+###end p 1
+###begin title 2
+Author Summary
+###end title 2
+###begin title 3
+
+###end title 3
+###begin p 4
+Chemotaxis allows bacteria to sense and swim toward nutrients and away from toxins. The remarkable sensing properties of the chemotaxis network, such as high sensitivity to small changes in the chemical environment, are thought to originate from receptor complexes in the membrane, which act as antennas to magnify weak signals. To adapt to persistent stimulation, receptors are covalently modified. While the individual protein components of the chemotaxis network are well characterized, making the system well suited for quantitative and computational analysis, direct experimental visualization of receptors and receptor complexes is difficult within the current limits of fluorescence and electron microscopy. To address questions such as how large are complexes and why do they assemble, we analyze in vitro signaling data using a previously developed model of signaling by receptor complexes. Based on the data, we propose a statistical physics model for the distribution of complex sizes in the membrane. Within this model, complex size depends on the receptor free energy with contributions from receptor modification level, ligand binding, receptor-receptor coupling, and binding to accessory proteins. Our model results compare favorably with a variety of different signaling data, and suggest new experiments to measure the kinetics of assembly of receptor complexes.
+###end p 4
+###begin title 5
+Introduction
+###end title 5
+###begin p 6
+###xml 387 388 375 376 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b001">1</xref>
+###xml 437 438 425 426 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b002">2</xref>
+###xml 439 440 427 428 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b003">3</xref>
+###xml 500 501 488 489 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b001">1</xref>
+###xml 660 661 648 649 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b004">4</xref>
+###xml 662 663 650 651 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b005">5</xref>
+###xml 772 773 760 761 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b001">1</xref>
+###xml 798 799 786 787 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b006">6</xref>
+###xml 864 865 852 853 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b006">6</xref>
+###xml 866 868 854 856 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b010">10</xref>
+###xml 1007 1009 995 997 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b011">11</xref>
+###xml 1010 1012 998 1000 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b012">12</xref>
+###xml 1356 1357 1344 1345 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+###xml 1451 1453 1439 1441 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 1454 1456 1442 1444 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+The chemotaxis network allows bacteria to sense and swim toward attractants (nutrients such as amino acids and sugars) and away from repellents. For this purpose, cells are equipped with approximately10,000 chemoreceptors, forming large arrays at one or both cell poles. The chemotaxis network has remarkable properties, including signal integration by multiple types of chemoreceptors [1], precise adaptation to persistent stimulation [2,3], and high sensitivity to changes in ligand concentration [1] over several orders of magnitude of background concentrations. These signaling properties are thought to originate from strongly coupled receptor complexes [4,5]. Specifically, in vivo fluorescence resonance energy transfer (FRET) measurements of receptor sensitivity [1] and Hill coefficients [6] indicate coupled complexes of up to 10-20 receptor homodimers [6-10]. Despite the importance of complex size to signaling, little is known about what controls receptor complex size (for recent reviews see [11,12]). In vivo observation of complex size and dynamics, e.g., by fluorescence recovery after photobleaching (FRAP), is currently not practical because of limited spatial resolution. However, the close relation between complex size and the sensitivity and cooperativity of signaling means that receptor activity can be used to probe complex size [8]. To demonstrate the potential of this approach, we analyze in vitro receptor-activity data [13-15] and present a simple biophysical model for the energetics of complex assembly.
+###end p 6
+###begin p 7
+###xml 55 57 55 57 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 136 152 136 152 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 136 152 <span type="species:ncbi:562">Escherichia coli</span>
+Here we mainly focus on data from Bornhorst and Falke [13], whose in vitro receptor-activity assay employed a chemotaxis null strain of Escherichia coli overexpressing one of the five receptor types, the high-abundance receptor Tar. The Tar receptor specifically binds aspartate and its nonmetabolizable analogue methyl-aspartate (MeAsp). The cytoplasmic membranes were isolated, and incubated with purified CheW, CheA, and CheY proteins. In vivo, CheW enhances complex formation and mediates binding to the kinase, CheA. Active CheA autophosphorylates using ATP and transfers the phosphate to the response regulator, CheY. Phosphorylated CheY diffuses to the flagellar motor and induces clockwise rotation and cell tumbling. In vitro, CheA kinase activity was measured by assaying the rate of phosphorylation of CheY using radiolabeled ATP. CheA activity is inhibited by an increase of attractant concentration. For the assay, receptors were genetically engineered to have either a glutamate (E) or a glutamine (Q) at each of four specific modification sites in the cytoplasmic domain. In vivo, these four modification sites are used for adaptation, with the enzyme CheR methylating glutamates to increase the kinase activity, and the enzyme CheB demethylating methylated glutamates to decrease the kinase activity. In chemotaxis, a Q is functionally similar to a methylated E. For instance, Tar{QQQQ} is highly active at zero attractant concentration, while Tar{EEEE} is generally inactive.
+###end p 7
+###begin p 8
+###xml 0 8 0 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 84 86 84 86 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 337 338 337 338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b006">6</xref>
+###xml 339 340 339 340 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+###xml 414 415 414 415 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</sub>
+###xml 413 415 413 415 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n<sub>H</sub></italic>
+###xml 498 500 486 488 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b016">16</xref>
+###xml 533 535 521 523 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b017">17</xref>
+###xml 536 538 524 526 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b018">18</xref>
+###xml 722 724 710 712 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b019">19</xref>
+###xml 725 727 713 715 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b020">20</xref>
+###xml 866 874 854 862 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 1050 1058 1038 1046 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 1163 1165 1151 1153 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b021">21</xref>
+Figure 1 shows experimental in vitro dose-response curves from Bornhorst and Falke [13], i.e., CheA activity versus stimulation by different amounts of attractant, for Tar receptors in defined modification states. Hill coefficients are smaller (and sensitivities are lower) than typical for in vivo studies of cells overexpressing Tars [6,8], indicating smaller in vitro clusters. The in vitro Hill coefficients (nH approximately 2-3) are in line with expectations from partial crystal structures [16] and cross-linking experiments [17,18] indicating that receptors oligomerize into mixed trimers of homodimers as the smallest unit of complexes. In vivo, larger complexes possibly form with a hexagonal lattice structure [19,20]. Modeling in vitro data using receptor complexes of a single fixed size (e.g., trimers of dimers) does not describe the data well (inset Figure 1). Here we examine a model in which the receptor modification state determines the amount of trimers of dimers, yielding a significantly better fit to the data (solid lines in Figure 1) and suggesting that receptor modification may vary complex size, possibly along with other parameters [21].
+###end p 8
+###begin title 9
+In Vitro Dose-Response Curves and Fits from Models
+###end title 9
+###begin p 10
+###xml 267 269 267 269 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 783 784 783 784 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">D</sub>
+###xml 782 784 782 784 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>D</sub></italic>
+###xml 784 787 784 787 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sup>
+###xml 803 804 803 804 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">D</sub>
+###xml 802 804 802 804 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>D</sub></italic>
+###xml 804 806 804 806 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sup>
+###xml 832 833 832 833 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+Activity of CheA complexed to Tar receptors of defined modification state (QQQQ, QEQQ, QEQE, QEEE) for different MeAsp attractant concentrations. Data (mean and standard deviation of three measurements) are taken from in vitro activity assays of Bornhorst and Falke [13]. All measurements used the same total amount of receptor. Least-squares fits: solid curves, simple model of signaling by trimers of dimers, where the amplitude of each curve (e.g., QQQQ) is an independent fitting parameter; dashed curves, equilibrium-assembly model of an ensemble of single dimers, dimers of dimers, trimers of dimers, and CheA-bound trimers of dimers, where only CheA-bound trimers of dimers can signal. Inset: all receptors assumed to form trimers of dimers. The MeAsp dissociation constants KDoff = 0.02 mM and KDon = 0.5 mM are taken from [8].
+###end p 10
+###begin p 11
+###xml 89 91 89 91 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 109 111 109 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b014">14</xref>
+###xml 130 132 130 132 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+###xml 397 399 397 399 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b022">22</xref>
+In this paper, we analyze in detail the in vitro activity data from Bornhorst and Falke [13], Shrout et al. [14], and Lai et al. [15]. We model homodimers of Tar receptors in membranes as an ensemble of different species, including single dimers, dimers of dimers, trimers of dimers, and the signaling complex formed by the kinase CheA bound to trimers of dimers, in line with recent experiments [22]. The relative free energies of these species determine their equilibrium distribution, accounting for the different amounts of actively signaling trimers of dimers indicated by the data. We further propose that the kinetics of receptor-cluster assembly can be measured experimentally by perturbing the receptor free energies, e.g., through addition of ligand.
+###end p 11
+###begin title 12
+Results
+###end title 12
+###begin p 13
+###xml 41 49 41 49 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 270 272 270 272 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 587 589 587 589 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b023">23</xref>
+###xml 632 634 632 634 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b024">24</xref>
+###xml 673 674 673 674 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 691 692 691 692 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b006">6</xref>
+###xml 693 695 693 695 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b010">10</xref>
+The experimental dose-response curves in Figure 1 for Tar receptors in different modification states were obtained from in vitro reaction mixtures which always contained the same total amounts of receptor, adapter protein CheW, kinase CheA, and response regulator CheY [13]. Addition of MeAsp inhibits the kinase activity, while the number of Qs per receptor increases the kinase activity. Previously, similar dose-response curves from living cells, obtained by in vivo fluorescence resonance energy transfer (FRET), were successfully modeled using the Monod-Wyman-Changeux (MWC) model [23] of strongly coupled two-state receptors [24], and revealed complex sizes of order N = 10 receptors [6-10]. Here we employ the same MWC model to estimate the size of receptor complexes in the in vitro assays of Bornhorst and Falke.
+###end p 13
+###begin p 14
+###xml 198 208 198 208 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e001">Equation 1</xref>
+###xml 325 326 325 326 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 528 529 518 519 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 572 573 562 563 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 624 625 614 615 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 675 676 665 666 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 1002 1003 992 993 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1001 1003 991 993 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 1020 1021 998 999 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 1051 1052 1029 1030 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</sub>
+###xml 1050 1052 1028 1030 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n<sub>H</sub></italic>
+###xml 1230 1231 1196 1197 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</sub>
+###xml 1229 1231 1195 1197 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n<sub>H</sub></italic>
+###xml 1246 1247 1200 1201 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 1255 1256 1209 1210 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 1301 1302 1255 1256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+###xml 1309 1316 1263 1270 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 1374 1382 1328 1336 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 1459 1460 1413 1414 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1459 1460 1413 1414 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 1541 1542 1483 1484 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</sub>
+###xml 1540 1542 1482 1484 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n<sub>H</sub></italic>
+###xml 1672 1673 1602 1603 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+###xml 1728 1736 1658 1666 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+In the MWC model, the receptor complex activity is simply the probability for the complex to be on, which is fully determined by the free-energy difference between on and off states of the complex (Equation 1). For a homogenous complex of Tar receptors, this free-energy difference is the product of the number of receptors, N, in the complex and the free-energy difference between on and off states of a single Tar receptor. The free-energy difference of a single receptor has two contributions. One contribution, Deltaepsilon(m), depends on receptor modification level, m, and ranges from positive for fully demethylated (m = 0) receptors to negative for fully methylated (m = 8) receptors. The other contribution arises from attractant binding and depends on the ligand dissociation constants  and  of the on and off states, respectively. If the activity is low in the absence of ligand (e.g., for demethylated receptors), the inhibition constant (ligand concentration at half maximal activity) is Ki approximately  /N and the Hill coefficient is nH approximately 1. In contrast, if the activity is high in the absence of ligand (e.g., for highly methylated receptors), the inhibition constant is  and the Hill coefficient is nH approximately N, where N is the number of receptors in the complex ([8], see Methods). Inspection of the experimental dose-response curves in Figure 1 shows that the inhibition constant of the low-activity QEEE curve is about Ki approximately 0.01 mM MeAsp and that Hill coefficients of the other curves are nH approximately 2-3. Hence, based on the MWC model and the previously determined value  = 0.02 mM for Tar receptors binding MeAsp [8], the signaling complexes responsible for the data in Figure 1 are likely to be trimers of dimers.
+###end p 14
+###begin p 15
+###xml 28 29 28 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 80 81 75 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 120 121 115 116 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 123 134 118 129 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e001">Equations 1</xref>
+###xml 139 140 134 135 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e002">2</xref>
+###xml 243 244 234 235 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</sub>
+###xml 238 244 233 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#945;<sub>m</sub></italic>
+###xml 262 270 253 261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 308 309 294 295 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 449 450 435 436 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 568 576 554 562 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 789 791 775 777 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b021">21</xref>
+Indeed, the MWC model using N = 3 for trimers of dimers and a different Deltain(m) for each receptor modification state m (Equations 1 and 2) fits the shapes of the in vitro curves well, while allowing each curve to have a free amplitude alpham (solid curves in Figure 1). However, in the MWC model, Deltain(m) is also supposed to determine the relative amplitudes of the curves. Although amplitudes still depend systematically on the number of Qs (m), the relative amplitudes from the MWC model are substantially different and do not describe the data well (inset in Figure 1). Hence, each dose-response curve is well described by the MWC model for trimers of dimers, but the MWC model does not describe the relative amplitudes correctly. (Use of a two-state model without cooperativity [21] or use of an alternative MWC model with a methylation-dependent  to fit experimental amplitudes both produce lower than observed Hill coefficients.) The discrepancy in amplitudes raises the following question-given that all experiments use the same total amount of receptor, why should the amplitudes systematically differ from the MWC model predictions for different receptor-modification states?
+###end p 15
+###begin p 16
+###xml 90 92 90 92 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b022">22</xref>
+###xml 251 259 251 259 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+According to recent in vitro experiments, only receptors in trimers of dimers can signal [22]. Therefore, the presence of some receptors as (inactive) single dimers and dimers of dimers could account naturally for the different amplitudes observed in Figure 1. We therefore suggest that in the in vitro assays not all receptors form trimers of dimers, some also partition into single dimers and dimers of dimers, with the fraction in trimers of dimers depending on the receptor-modification state. In fact, such a partition is required by thermodynamic equilibrium, with entropy favoring single dimers and dimers of dimers over trimers of dimers. In the following, we formulate an equilibrium model to predict the amounts and activities of trimers of dimers as a function of receptor-modification state. For this purpose, we include CheA binding to trimers of dimers only, leading to an equilibrium between free trimers of dimers, without signaling capability, and CheA-bound trimers of dimers, the signaling complex. (For simplicity, we assume that CheW is present at saturation.)
+###end p 16
+###begin p 17
+###xml 229 237 229 237 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g002">Figure 2</xref>
+###xml 545 546 545 546 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 546 548 546 548 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 583 584 583 584 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 584 587 584 587 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 628 630 628 629 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#956;</italic>
+###xml 715 726 714 725 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e003">Equations 3</xref>
+###xml 727 729 726 728 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e010">10</xref>
+###xml 971 982 970 981 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e011">Equation 11</xref>
+###xml 1231 1242 1230 1241 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e014">Equation 14</xref>
+###xml 1246 1253 1245 1252 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+In our model for Tar receptors in membranes, we consider single dimers, dimers of dimers, trimers of dimers, and CheA-bound trimers of dimers. These different species can either be active (on) or inactive (off) as illustrated in Figure 2, but only active CheA-bound trimers of dimers can signal. The relative free energies of the various species determine their equilibrium distribution. To compare the free energies of the different species, we introduce homodimer-homodimer coupling energies, which can be different between active homodimers (Jon) and between inactive homodimers (Joff). We also include a chemical potential, mu, to adjust the receptor density. The resulting free-energy expressions are given in Equations 3-10. To facilitate calculations, we treat the membrane as a lattice where each site can be either empty, or occupied by a single dimers, a dimer of dimers, a trimer of dimers, or a CheA-bound trimer of dimers, yielding the partition function in Equation 11. To model the in vitro experiments, in which the same total amount of receptor was used for each assay, we multiply the probability that a given CheA-bound trimer of dimers is active by the fraction of receptors in CheA-bound trimer of dimers (cf. Equation 14 in Methods).
+###end p 17
+###begin title 18
+Schematic of Membrane-Bound Chemoreceptor Complexes
+###end title 18
+###begin p 19
+Membrane contains equilibrated mixture of active (black) and inactive (white) single dimers, dimers of dimers, trimers of dimers, and CheA-bound trimers of dimers, where CheA is shown in yellow. Only CheA-bound trimers of dimers can signal. Red and green lines indicate interactions among active and inactive receptors, respectively.
+###end p 19
+###begin p 20
+###xml 49 57 49 57 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 143 151 143 151 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 489 490 489 490 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 496 507 496 507 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e013">Equation 13</xref>
+###xml 511 518 511 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 591 592 591 592 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 592 594 592 594 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 596 597 596 597 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 597 600 597 600 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 604 605 603 604 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</sub>
+###xml 604 605 603 604 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>A</sub></italic>
+###xml 607 609 606 607 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#956;</italic>
+###xml 615 620 613 614 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#945;</italic>
+###xml 764 765 748 749 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 765 767 749 751 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 770 771 754 755 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 771 774 755 758 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 811 813 795 796 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#956;</italic>
+###xml 819 820 802 803 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 820 822 803 805 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 825 826 808 809 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 826 829 809 812 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+This equilibrium-assembly model (dashed lines in Figure 1) describes the data as well as the ad hoc model with free amplitudes (solid lines in Figure 1). Specifically, the equilibrium-assembly model accounts for the systematic dependence of the dose-response curve amplitudes on receptor modification state. Since for each curve we assume a fixed fraction of CheA-bound trimers of dimers, set by the incubation conditions, the shape of each curve is still determined by the MWC model with N = 3 (Equation 13 in Methods). While the equilibrium-assembly model requires seven parameters,  ,  , Jon, Joff, inA, mu, and alpha, plus an offset energy, Deltain, for each receptor-modification state, some of these parameters are nearly redundant. For example, Deltain and Jon - Joff play nearly equivalent roles, as do mu and (Jon + Joff)/2, differing only in their effects on the ratio of dimers of dimers and trimers of dimers. Therefore, our parameter choices represent only one consistent set of values.
+###end p 20
+###begin p 21
+###xml 36 38 36 38 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 144 145 144 145 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 143 145 143 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 147 155 147 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g003">Figure 3</xref>
+###xml 331 332 331 332 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 330 332 330 332 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 432 440 432 440 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g003">Figure 3</xref>
+###xml 522 523 522 523 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 521 523 521 523 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 727 735 727 735 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 800 801 800 801 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 799 801 799 801 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 880 881 880 881 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 879 881 879 881 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 1030 1035 1025 1026 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#945;</italic>
+###xml 1060 1068 1051 1059 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g003">Figure 3</xref>
+###xml 1400 1408 1391 1399 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g003">Figure 3</xref>
+###xml 1575 1576 1566 1567 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1574 1576 1565 1567 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 1621 1622 1612 1613 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 1620 1622 1611 1613 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 1964 1965 1945 1946 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 1965 1967 1946 1948 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 1970 1971 1951 1952 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 1971 1974 1952 1955 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+In their data, Bornhorst and Falke [13] observed a strong correlation between the activity in the absence of MeAsp and the inhibition constant Ki. Figure 3A shows this correlated data for all possible modification states except EEEE, for which the measured activity was zero. The observed functional relation between activity and Ki supports our suggestion that not all receptors form CheA-bound trimer of dimers. To illustrate, in Figure 3A we have plotted, as a dotted curve, the expected relation between activity and Ki if all receptors did form CheA-bound trimers of dimers. The curve has a noticeably different shape from the experimental data. In contrast, the equilibrium-assembly model, with the same parameters as in Figure 1, is able to capture the observed relation between activity and Ki (dashed curve). In either case, the one-to-one relation between activity and Ki follows because both quantities depend uniquely on the receptor offset energy Deltain. For ease of comparison, we used the same amplitude parameter alpha = 10 for both curves in Figure 3A. This means that the ratio of the two curves gives the fraction of receptors in CheA-bound trimers of dimers in the equilibrium-assembly model, because only those receptors in CheA-bound trimer of dimers contribute to the activity. The actual fraction of receptors in CheA-bound trimers of dimers (and in all trimers) is shown in Figure 3B, both for the equilibrium-assembly model and, by inference, for the in vitro data. Why does the fraction of receptors in CheA-bound trimers of dimers increase with Ki? Within the model, the inhibition constant Ki increases as the offset energy Deltain decreases; this behavior follows because decreasing Deltain favors the active state of receptors, and therefore more attractant is required to inactivate them. The same shift of receptors toward higher activity causes the fraction of receptors in CheA-bound trimers of dimers to increase, both because Jon < Joff implies a stronger tendency of active receptors to form trimers of dimers, and simply because increasing the total concentration of active receptors increases their equilibrium partition into trimers of dimers.
+###end p 21
+###begin title 22
+Kinase Active Receptors Are in CheA-Bound Trimers of Dimers
+###end title 22
+###begin p 23
+###xml 61 62 61 62 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 60 62 60 62 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 327 329 327 329 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 493 498 493 494 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#945;</italic>
+###xml 556 561 552 553 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#945;</italic>
+###xml 567 575 559 567 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+(A) CheA kinase activity at zero MeAsp concentration versus Ki, defined as the MeAsp concentration required to reduce activity by one-half, for Tar receptors in different modification states. Data (mean and standard deviation of three measurements) are taken from in vitro activity assays and Hill fits of Bornhorst and Falke [13]. All measurements used the same total amount of receptor. Dotted curve, all receptors assumed to form CheA-bound trimers of dimers (A:TDs), with maximal activity alpha = 10. Dashed curve, equilibrium-assembly model with same alpha (cf. Figure 1, dashed curves).
+###end p 23
+###begin p 24
+###xml 245 246 244 245 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</sub>
+###xml 245 246 244 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>A</sub></italic>
+###xml 257 258 255 256 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</sub>
+###xml 257 258 255 256 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>A</sub></italic>
+###xml 294 301 292 299 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 338 339 336 337 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">D</sub>
+###xml 337 339 335 337 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>D</sub></italic>
+###xml 339 342 337 340 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sup>
+###xml 358 359 356 357 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">D</sub>
+###xml 357 359 355 357 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>D</sub></italic>
+###xml 359 361 357 359 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sup>
+###xml 387 388 385 386 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+(B) Left axis, fraction of receptors in A:TDs, i.e., ratio of data or dashed curve to the dotted curve in (A). Right axis, fraction of receptors in all trimers (TDs and A:TDs), equal to the fraction of receptors in A:TDs multiplied by 1 + exp(inA), where inA is the binding energy of CheA (see Methods). The MeAsp dissociation constants KDoff = 0.02 mM and KDon = 0.5 mM are taken from [8].
+###end p 24
+###begin p 25
+###xml 149 151 149 151 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b014">14</xref>
+###xml 169 171 169 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+###xml 256 263 256 263 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 666 674 666 674 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g004">Figure 4</xref>
+###xml 860 868 860 868 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 921 929 921 929 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g002">Figure 2</xref>
+###xml 949 951 949 951 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b014">14</xref>
+###xml 1036 1038 1036 1038 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b025">25</xref>
+###xml 1444 1452 1444 1452 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g004">Figure 4</xref>
+###xml 256 263 <span type="species:ncbi:562">E. coli</span>
+Our suggestion that not all receptors form trimers of dimers or CheA-bound trimers of dimers is given further experimental support by Shrout et al. [14] and Lai et al. [15] who used a receptor-activity assay similar to that of Bornhorst and Falke but with E. coli Tar receptors. Shrout et al. measured the kinase activity for different modification states of cytoplasmic Tar-receptor fragments at zero attractant concentration. While the measured activities depended strongly on modification state, the same activities normalized by the amount of bound CheA were almost independent of modification state. We find the same behavior in our equilibrium-assembly model. Figure 4 shows the calculated activity and activity per CheA (activity divided by the fraction of receptors in CheA-bound trimers of dimers) for four different receptor-modification states (cf. Figure 1). We observe qualitative agreement with the data in Figure 2A of Shrout et al. [14], although their receptor fragments tend to be more active than complete receptors [25]. In the equilibrium-assembly model, if the CheA-bound trimers of dimers were always fully active (on), the normalized activities would be completely independent of the modification state. However, for receptors with few Qs, the CheA-bound trimers of dimers are not fully active even at zero attractant concentration, resulting in the weak modification-level dependence of the normalized activity seen in Figure 4B.
+###end p 25
+###begin title 26
+Kinase Activity per Receptor-Bound CheA
+###end title 26
+###begin p 27
+###xml 145 153 145 153 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+(A) CheA kinase activity at zero attractant concentration for four different receptor modification states within the equilibrium-assembly model (Figure 1, dashed curves).
+###end p 27
+###begin p 28
+###xml 139 147 139 147 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g003">Figure 3</xref>
+(B) Kinase activity per receptor-bound CheA, i.e., activity from (A) divided by fraction of receptors in CheA-bound trimers of dimers (cf. Figure 3B).
+###end p 28
+###begin p 29
+###xml 277 279 277 279 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+###xml 435 443 435 443 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g005">Figure 5</xref>
+###xml 933 941 933 941 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g005">Figure 5</xref>
+###xml 989 997 989 997 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 1102 1104 1102 1104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+###xml 1144 1155 1144 1155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e015">Equation 15</xref>
+If an equilibrium exists among single dimers, dimers of dimers, trimers of dimers, and CheA-bound trimers of dimers, one would expect changes in the receptor density to affect the distribution of different sized receptor clusters. Consistent with this expectation, Lai et al. [15] reported the activity per Tar{QEQE} receptor, in the absence of attractant, as a function of the receptor fraction of total membrane protein. As shown in Figure 5, they observed an increase in and saturation of the activity per receptor with increasing receptor fraction. We interpret their data to mean that at low receptor fractions (densities), it is thermodynamically unfavorable for receptors to come together and form trimers of dimers (or even dimers of dimers), and consequently single dimers, which lack signaling capability, predominate. This density-dependent activity per receptor is captured by our equilibrium-assembly model, as shown in Figure 5 (solid lines), using the same parameters as in Figure 1. The calculated activity is scaled by an overall factor to convert to the activity scale of Lai et al. [15], and the calculated receptor density (Equation 15) is also rescaled. Within the equilibrium-assembly model, the kinase activity per receptor increases with receptor density entirely because of the increasing fraction of receptors in CheA-bound trimers of dimers expected from thermodynamics.
+###end p 29
+###begin title 30
+Kinase Activity versus Receptor Fraction of Total Membrane Protein
+###end title 30
+###begin p 31
+###xml 140 142 140 142 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+###xml 334 342 334 342 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 438 440 438 440 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+The data for Tar{QEQE} receptors (mean and standard deviation of three measurements) are taken from in vitro activity assays of Lai et al. [15]. All measurements used the same amount of receptor. Solid curves for receptors in different modification states were calculated with parameters obtained from the equilibrium-assembly model (Figure 1, dashed curves). Calculated activities are scaled by 0.9 to convert to activity of Lai et al. [15], and receptor density is scaled by 5.3 to convert to receptor as a fraction of total protein.
+###end p 31
+###begin p 32
+###xml 60 62 60 62 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 195 196 190 191 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 195 196 190 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 196 204 191 199 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">=1,2,3,4</sub>
+###xml 386 387 371 372 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 385 387 370 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 389 391 374 376 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 467 474 452 459 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 546 547 526 527 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 546 547 526 527 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 583 591 563 571 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g006">Figure 6</xref>
+###xml 791 792 771 772 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</sub>
+###xml 790 793 770 773 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k<sub>B</sub>T</italic>
+###xml 859 860 839 840 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</sub>
+###xml 858 861 838 841 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k<sub>B</sub>T</italic>
+###xml 889 896 869 876 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+The large amount of in vitro data from Bornhorst and Falke [13] can be used to test an additional hypothesis. Specifically, do the offset energies from each of the four modification sites Deltaini=1,2,3,4 contribute additively to give the total offset energy Deltain? The total offset energy Deltain for each of the 15 modification states can be obtained from the inhibition constants Ki [13] based on our model that only CheA-bound trimers of dimers can signal (see Methods). This value can be compared with the additive model, where the Deltaini are treated as fitting parameters. Figure 6 shows that the additive model for the total offset energy is indeed a reasonably good approximation. Interestingly, modification sites 1 to 3 make a similar contribution (approximately -0.5 to -0.6 kBT ) while site 4 makes a smaller contribution (approximately -0.3 kBT) to the offset energy (see Methods). This may have to do with the fact that, relative to the CheA binding site, modification sites 1 to 3 are nearby on the N-terminal side of the receptor and modification site 4 is on the C-terminal side of the receptor.
+###end p 32
+###begin title 33
+Additivity of Offset Energies from Four Modification Sites
+###end title 33
+###begin p 34
+###xml 241 243 236 238 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 299 300 289 290 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 298 300 288 290 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 313 320 303 310 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 444 445 424 425 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 444 445 424 425 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i</sub></italic>
+###xml 460 461 438 439 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 486 493 464 471 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+###xml 519 520 495 496 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 597 598 571 572 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 648 649 620 621 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 655 662 627 634 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Methods</xref>
+Test of additivity of the contributions of the four modification sites to the total offset energy Deltain, based on the in vitro data for 15 receptor modification states (all possible combinations of Es and Qs, except EEEE) from Table I of [13]. Horizontal axis, Deltain obtained from experimental Ki values (see Methods); vertical axis, Deltain determined from the sum of the offset energies from the four individual modification sites Deltaini treated as chi2 fitting parameters (see Methods). Inset, histogram of chi2 values after minimization for 1,000 randomized permutations of the data; chi2 = 0.67 of the unrandomized data is the lowest chi2 (see Methods).
+###end p 34
+###begin title 35
+Discussion
+###end title 35
+###begin p 36
+###xml 26 33 26 33 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 172 174 172 174 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b019">19</xref>
+###xml 175 177 175 177 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b020">20</xref>
+###xml 201 203 201 203 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b026">26</xref>
+###xml 204 206 204 206 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b028">28</xref>
+###xml 409 411 409 411 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b011">11</xref>
+###xml 412 414 412 414 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b012">12</xref>
+###xml 517 518 517 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+###xml 677 679 677 679 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 680 682 680 682 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+###xml 1315 1317 1310 1312 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b021">21</xref>
+###xml 26 33 <span type="species:ncbi:562">E. coli</span>
+The chemotaxis network of E. coli exhibits remarkable sensing and signaling properties that rely on receptor complexes. Despite recent high resolution electron microscopy [19,20], fluorescence images [26-28], and in vivo fluorescence recovery after photobleaching (FRAP) measurements of protein dynamics (V. Sourjik, personal correspondence), very little is known about what determines receptor-complex size [11,12]. Interestingly, because complex size and signaling sensitivity or cooperativity are closely related [8], receptor kinase activity can be used to probe complex size. Starting from in vitro dose-response data of the activity of Tar receptors in native membranes [13-15], we presented a simple biophysical model for the energetics of complex assembly that can account for these and other data. An essential feature of the model is that not all receptors form signaling complexes, i.e., kinase CheA-bound trimers of dimers. Our model for receptor complexes is based on an MWC model, with constants  and  , in which receptor modification state affects complex size only through the offset energy Deltain (which depends additively on contributions from the four modification sites). At this stage, we cannot rule out alternative models, e.g., in which modification state affects other parameters as well [21].
+###end p 36
+###begin p 37
+###xml 181 189 181 189 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g002">Figure 2</xref>
+###xml 477 479 477 479 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b022">22</xref>
+###xml 695 704 695 704 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figures 1</xref>
+###xml 706 707 706 707 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g003">3</xref>
+###xml 709 710 709 710 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g004">4</xref>
+###xml 712 713 712 713 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g005">5</xref>
+###xml 877 878 877 878 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 876 878 876 878 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 884 892 884 892 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g003">Figure 3</xref>
+###xml 1073 1075 1073 1075 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b025">25</xref>
+In our model, Tar receptors form an ensemble of different species, including single dimers, dimers of dimers, trimers of dimers, and CheA-bound trimers of dimers, as illustrated in Figure 2. The different species can either be active (on) or inactive (off), but only active CheA-bound trimers of dimers can phosphorylate CheY. This is in line with recent in vitro experiments where trimers of dimers were found to signal, but single dimers and dimers of dimers did not signal [22]. The relative free energies of the various species determine their equilibrium distribution, leading naturally to the observed variation in the signaling activity of receptors in different modification states (cf. Figures 1, 3, 4, 5). We find that the fraction of receptors in trimers of dimers and CheA-bound trimers of dimers increases with the number of Qs at the modification sites (or with Ki, see Figure 3B). Within this picture, the "superactivity" of certain mutant receptors can be attributed to more efficient complex formation rather than enhanced CheA binding or kinase velocity [25].
+###end p 37
+###begin p 38
+###xml 521 532 521 532 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e014">Equation 14</xref>
+###xml 672 673 672 673 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 863 864 863 864 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">o</sub>
+###xml 912 920 912 920 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g007">Figure 7</xref>
+###xml 1018 1020 1018 1020 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+###xml 1319 1327 1319 1327 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g007">Figure 7</xref>
+Our free-energy model assumes that complex assembly/disassembly is slow compared with changes in signaling. For instance, if attractant is added together with ATP to initiate the activity measurement, the ensemble of clusters is assumed to stay frozen, i.e., the ratio of {single dimers}:{dimers of dimers}:{trimers of dimers}:{CheA-bound trimers of dimers} is assumed to be unaffected by the addition of attractant, even though the kinase activity is immediately affected. This separation of time scales is reflected in Equation 14, where the fraction of receptors in CheA-bound trimers of dimers (first factor) is evaluated at the incubation attractant concentration ([L0] = 0), while the activity (second factor) is evaluated in the presence of the added attractant ([L]). To model the case where attractant is added during incubation, one only needs to set [Lo] = [L]. In this case, shown by solid curves in Figure 7, inhibition occurs at lower attractant concentrations, in agreement with the data of Lai et al. [15] for Tar{QEQE} incubated in the presence of MeAsp (solid symbols). In the model, the inhibition at lower attractant concentrations can be traced to the loss of trimers of dimers in favor of single dimers and dimers of dimers in the new equilibrium produced by incubation with attractant (see inset Figure 7). Incubation with attractant is exactly the opposite of adding Qs in terms of receptor free energies, and therefore favors smaller rather than larger complex sizes.
+###end p 38
+###begin title 39
+From Signaling to Assembly Kinetics
+###end title 39
+###begin p 40
+###xml 213 221 213 221 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 486 488 486 488 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+###xml 631 633 631 633 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+Difference between the equilibrium partition of receptors incubated without MeAsp (dashed curves) or with MeAsp (solid curves), using the equilibrium-assembly model. Dashed curves and data (open symbols) are from Figure 1. Experimentally, the kinetics of complex assembly can be obtained from the ratio of relaxation from the dashed curves to the solid curves following addition of MeAsp (arrows). Also shown is data for Tar{QEQE} receptors from in vitro activity assays of Lai et al. [15] (solid squares), based on addition of MeAsp during incubation, but using different protein concentrations compared with Bornhorst and Falke [13]. Inset. fraction of receptors in CheA-bound trimers of dimers (CheA:TDs).
+###end p 40
+###begin p 41
+###xml 28 36 28 36 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g007">Figure 7</xref>
+The dose-response curves in Figure 7 for incubation without attractant (dashed curves) and with attractant (solid curves) are easily distinguishable, which suggests a way to measure the kinetics of complex assembly. During the period after the addition of attractant, as the clusters re-equilibrate, the dashed curves must evolve toward the solid curves. The rate of evolution can be quantified by measuring the kinase activity at specific times following the addition of attractant. In this way, information can be obtained about the kinetics of assembly and disassembly of receptor complexes. Our equilibrium-assembly model, augmented by kinetic rate constants, provides an appropriate theoretical framework for planning and interpreting kinetic experiments of this type.
+###end p 41
+###begin p 42
+###xml 214 216 214 216 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+###xml 341 349 341 349 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g005">Figure 5</xref>
+###xml 366 368 366 368 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b014">14</xref>
+###xml 1168 1170 1168 1170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b025">25</xref>
+###xml 1430 1432 1430 1432 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b029">29</xref>
+There are previously published models for chemoreceptor complex assembly. These models, however, do not consider the effects of ligand binding, and hence cannot address dose-response data. Furthermore, Lai et al. [15] assume all receptors form trimers of dimers, hence their model cannot explain the activity versus receptor density data in Figure 5. Shrout et al. [14] assume that CheA binding directly depends on the receptor modification state. While this assumption can explain the increase of activity with modification level, it violates the conventional view of precise adaptation based on the two-state receptor model, where receptors are either on (active) or off (inactive). Precise adaptation occurs because receptor modification responds exclusively to receptor activity so as to exactly balance the effects of ligand binding. If CheA binding depended directly on receptor modification level, this would increase kinase activity at higher attractant concentrations and, hence, interfere with precise adaptation. In contrast, in our model, CheA binds to trimers of dimers irrespective of modification level or activity. The recent model by Asinas and Weis [25] considers the competitive assembly of wild-type and activity-mutant receptors. The authors come to a similar conclusion to ours, i.e., that receptor activity determines cluster assembly and, consequently, CheA recruitment and activity (see also Li and Weis [29]).
+###end p 42
+###begin p 43
+###xml 200 201 200 201 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b006">6</xref>
+###xml 202 204 202 204 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b010">10</xref>
+###xml 214 221 214 221 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 326 328 326 328 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b028">28</xref>
+###xml 329 331 329 331 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b030">30</xref>
+###xml 332 334 332 334 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b031">31</xref>
+###xml 839 841 839 841 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b032">32</xref>
+###xml 875 877 875 877 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b033">33</xref>
+###xml 992 994 992 994 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b034">34</xref>
+###xml 1032 1034 1032 1034 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b035">35</xref>
+###xml 1035 1037 1035 1037 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b037">37</xref>
+###xml 214 221 <span type="species:ncbi:562">E. coli</span>
+An approach similar to ours may allow measurement of the kinetics of receptor complexes in living cells. Complex sizes of 10-20 receptors or more have been inferred from in vivo dose-response curves [6-10] and, in E. coli cells lacking an adaptation system, polar clustering appears to depend on receptor-modification level ([28,30,31]; V. Sourjik, personal correspondence). This suggests that dose-response curves can be used to measure the real-time evolution of in vivo cluster sizes in response to perturbations of receptor free energy, e.g., addition of attractant or repellent. It is not clear why in vivo complexes are significantly larger than the trimers of dimers seen in vitro and why receptors localize predominately at the cell poles. It is known that receptors are inserted into the membrane by the Sec translocon machinery [32] in large cell-spanning spirals [33]. Once inserted into the membrane, receptors may localize at the cell poles due to the higher membrane curvature [34] and/or different lipid composition [35-37] at the poles. A means to probe receptor-assembly kinetics may help reveal what determines complex size in vivo.
+###end p 43
+###begin p 44
+###xml 49 50 49 50 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+###xml 51 53 51 53 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b010">10</xref>
+###xml 316 317 306 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 317 319 307 309 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 322 323 312 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 323 326 313 316 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 560 561 545 546 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 561 563 546 548 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 566 567 551 552 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 567 570 552 555 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 1378 1380 1363 1365 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b029">29</xref>
+###xml 1452 1454 1437 1439 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b015">15</xref>
+Compared with previous modeling of in vivo data [8-10], the offset energies, Deltain, obtained from in vitro data are much larger. This can be traced to the fact that we explicitly include homodimer-homodimer interactions, which lead to an effective offset energy for each receptor in a trimer of dimer of Deltain + Jon - Joff, close to estimated in vivo values. However, in a large in vivo complex, if each receptor participates in six homodimer-homodimer interactions, as on a hexagonal lattice, the effective offset energy per receptor would be Deltain + 3(Jon - Joff), which is much more negative than the estimated in vivo values. One possible resolution might be that, in an in vivo cluster, homodimers in different trimers of dimers are coupled together more weakly than homodimers within a trimer of dimers. However, the coupling between trimers of dimers must still be strong enough to cause clusters of 10-20 receptors to switch on and off together. An important open question is what mediates the interactions among receptor homodimers in trimers of dimers, or between trimers of dimers? One way to address this question may be to measure in vitro or in vivo dose-response curves of mutant receptors specifically engineered to interrupt or strengthen homodimer-homodimer interfaces. Possible insight can be gained from the observation of large in vitro Tsr clusters [29], pointing toward a difference between Tsr:Tsr and Tar:Tar interfaces [15].
+###end p 44
+###begin p 45
+###xml 57 64 57 64 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 323 325 323 325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b038">38</xref>
+###xml 326 328 326 328 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b039">39</xref>
+###xml 345 347 345 347 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b040">40</xref>
+###xml 57 64 <span type="species:ncbi:562">E. coli</span>
+We expect that a better understanding of the assembly of E. coli chemoreceptor complexes may provide insights into the oligomerization of other membrane proteins, including bacterial outer membrane proteins such as porins (e.g., LamB). For other membrane-bound receptors that form complexes, including ryanodine receptors [38,39] and rhodopsin [40], we hope that analysis of complex size and assembly kinetics based on dose-response curves may also prove feasible.
+###end p 45
+###begin title 46
+Methods
+###end title 46
+###begin title 47
+Review of in vitro activity assay.
+###end title 47
+###begin p 48
+###xml 49 51 49 51 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 147 169 147 169 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Salmonella typhimurium</named-content>
+###xml 350 357 350 357 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 147 169 <span type="species:ncbi:90371">Salmonella typhimurium</span>
+###xml 350 357 <span type="species:ncbi:562">E. coli</span>
+We mainly model the data of Bornhorst and Falke [13], who used an in vitro activity assay to study chemotaxis signaling. Briefly, Tar receptors of Salmonella typhimurium were engineered to be in a particular modification state, e.g., QQQQ, QEQQ, QEQE, or QEEE, where Q is approximately equivalent to a methylated E. Using a chemotaxis null strain of E. coli, the Tar receptor was overexpressed from a plasmid. Cytoplasmic membranes were isolated in which Tar receptors constituted approximately 5%-10% of total membrane protein. Reaction mixtures of the same total amount of Tar and purified CheA, CheW, and CheY were prepared and incubated for 45 min to allow for complex formation in native membranes. Signaling was initiated by adding radiolabeled ATP. The activity of CheA was measured by assaying the rate of phosphorylation of CheY and normalized to QEQE (wild-type). Quantified attractant (MeAsp) was added with the ATP.
+###end p 48
+###begin title 49
+Monod-Wyman-Changeux model.
+###end title 49
+###begin p 50
+###xml 18 19 18 19 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b006">6</xref>
+###xml 20 21 20 21 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+###xml 22 24 22 24 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b023">23</xref>
+###xml 61 63 61 63 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b024">24</xref>
+###xml 64 66 64 66 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b041">41</xref>
+###xml 197 198 197 198 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 237 240 237 240 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N f</italic>
+###xml 240 242 240 242 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sup>
+###xml 244 247 244 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N f</italic>
+###xml 247 250 247 250 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sup>
+###xml 256 257 256 257 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">f</italic>
+###xml 257 259 257 259 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sup>
+###xml 261 262 261 262 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">f</italic>
+###xml 262 265 262 265 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sup>
+In the MWC model [6,8,23], two-state receptors (homodimers) [24,41] form complexes with all receptors in a complex either on or off together. At equilibrium, the probability that an MWC cluster of N Tar receptors will be active is where N fon (N foff) and fon (foff) are the free energies of the complex as a whole and an individual receptor to be on (off), respectively. The individual receptor free-energy difference is given by
+###end p 50
+###begin p 51
+###xml 47 48 47 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 83 84 83 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 206 207 198 199 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 268 269 260 261 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</sub>
+###xml 267 270 259 262 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k<sub>B</sub>T</italic>
+Here, [L] is the ligand (MeAsp) concentration, m is the number of Qs per receptor (m = 0,em leader,8), and  and  are the ligand dissociation constants in the on and off states, assumed to be independent of m. All energies are expressed in units of the thermal energy kBT.
+###end p 51
+###begin p 52
+###xml 88 89 83 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 196 197 191 192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+###xml 361 362 351 352 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 360 362 350 352 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 378 379 356 357 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 395 396 373 374 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+###xml 475 477 449 450 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8712;</italic>
+###xml 582 583 555 556 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 581 583 554 556 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 609 611 566 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8712;</italic>
+###xml 665 666 621 622 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">H</sub>
+###xml 664 682 620 626 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n<sub>H</sub> &#8776; N</italic>
+###xml 836 837 780 781 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">N</italic>
+In our model, Qs or methylated Es favor the on state of a receptor by lowering Deltain (m), while attractant binding favors the off state, i.e.,  <  . Importantly, the model exhibits two regimes [8]. In regime I, where Deltain > 0 (e.g., for Tar{EEEE}), receptors have a low activity and an inhibition constant (ligand concentration at half maximal activity), Ki approximately /N, indicating an N times higher sensitivity than for a single receptor. In regime II, where Deltain < 0 (e.g., for Tar{QQQQ}), receptors are highly active, and turn off at large attractant concentration Ki approximately  exp(|Deltain|) with high cooperativity, i.e., a Hill coefficient nH approximately N. The possible MWC complexes considered here are the single receptor dimer, the dimer of dimers, and the trimer of dimers, corresponding to complex sizes N = 1, 2, and 3, respectively.
+###end p 52
+###begin title 53
+Equilibrium-assembly model.
+###end title 53
+###begin p 54
+###xml 199 207 199 207 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g002">Figure 2</xref>
+###xml 379 381 379 381 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b022">22</xref>
+###xml 566 567 566 567 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 567 569 567 569 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 627 628 627 628 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 628 631 628 631 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 1063 1065 1063 1064 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#956;</italic>
+###xml 1106 1110 1105 1107 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#961;,</italic>
+###xml 1149 1150 1145 1146 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</sub>
+###xml 1147 1150 1144 1146 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8712;<sub>A</sub></italic>
+We use statistical mechanics to predict the partitioning of receptors into active and inactive single dimers, dimers of dimers, trimers of dimers, and CheA-bound trimers of dimers, as illustrated in Figure 2. Since CheA-bound trimers of dimers are the signaling complex, only trimers of dimers can signal, not single dimers and dimers of dimers, in line with recent experiments [22]. To compare the energies of the different-sized complexes, we generalized the MWC model to include homodimer-homodimer interactions. The interaction energy between active homodimers (Jon) and the interaction energy between inactive homodimers (Joff) can be different. These homodimer-homodimer interactions may originate from interactions of the periplasmic or cytoplasmic domains of the receptors, possibly mediated by the adapter protein CheW. Specifically, single dimers, dimers of dimers, and trimers of dimers (as well as CheA-bound trimers of dimers) have zero, one, and three homodimer-homodimer interactions, respectively. We also introduce a receptor chemical potential, mu, which determines the receptor density, rho, in the membrane, and a free energy, inA, for the binding of the kinase CheA to trimers of dimers (assuming for simplicity an equilibrium between bound CheAs and free CheAs at some invariant concentration). The resulting complex free energies for a single dimer (SD), a dimer of dimers (DD), a trimer of dimers (TD), and a CheA-bound trimer of dimers (A:TD) are given by
+###end p 54
+###begin p 55
+To regularize our calculations, we treat the membrane as a lattice where each lattice site can be either empty, or occupied by a single dimer, a dimer of dimers, a trimer of dimers, or a CheA-bound trimer of dimers, determined by their relative free energies. The equilibrium partition function of a single lattice site is given by
+###end p 55
+###begin p 56
+The probability that a site is occupied by species s (= SD, DD, TD, or A:TD) is given by
+###end p 56
+###begin p 57
+###xml 103 113 103 113 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e001">Equation 1</xref>
+###xml 138 139 138 139 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 139 141 139 141 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 144 145 144 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 145 148 145 148 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+The probability that a particular CheA-bound trimer of dimers is active is given by the MWC model (cf. Equation 1), now also depending on Jon - Joff,
+###end p 57
+###begin p 58
+###xml 214 219 214 215 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#945;</italic>
+###xml 426 427 422 423 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 528 529 524 525 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+To compare with experiments on a per receptor basis, the probability that each CheA-bound trimer of dimers is active needs to be multiplied by the fraction of receptors in CheA-bound trimers of dimers, i.e., where alpha is an overall amplitude parameter, and can be interpreted as the maximal possible activity, which would be achieved if all receptors were in active CheA-bound trimers of dimers. The ligand concentrations [L0] and [L] indicate that the ensemble of species can equilibrate at one ligand concentration, e.g., [L0] = 0, while signaling can be measured at another concentration, [L].
+###end p 58
+###begin p 59
+###xml 29 32 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#961;</italic>
+###xml 96 98 94 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#956;</italic>
+###xml 175 177 172 173 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#956;</italic>
+###xml 212 213 208 209 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 217 219 213 214 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#956;</sup>
+###xml 216 219 212 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">e<sup>&#956;</sup></italic>
+###xml 363 364 358 359 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">F</italic>
+###xml 408 410 403 404 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#956;</italic>
+###xml 426 437 420 431 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e014">Equation 14</xref>
+###xml 216 219 <span type="species:ncbi:8790">emu</span>
+Assuming a constant density, rho, of receptors in the membrane, we find the chemical potential, mu, that yields this density. The definition of the density, can be solved for mu by solving the cubic equation for x = emu and choosing the largest real root. The coefficients are given by where  indicates that the chemical potential is removed from the free energy F, i.e.,  . The resulting chemical potential mu can be used in Equation 14 to calculated the activity.
+###end p 59
+###begin p 60
+###xml 32 33 32 33 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b008">8</xref>
+###xml 36 47 36 47 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e014">Equation 14</xref>
+###xml 96 101 96 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#945;</italic>
+###xml 175 176 166 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 182 183 173 174 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 183 185 174 176 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 188 189 179 180 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 189 192 180 183 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 295 298 286 287 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#961;</italic>
+###xml 299 301 288 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#956;</italic>
+###xml 304 305 292 293 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 305 307 293 295 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 311 312 299 300 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 312 315 300 303 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 323 324 310 311 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</sub>
+###xml 323 324 310 311 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>A</sub></italic>
+###xml 335 340 322 323 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#945;</italic>
+###xml 512 513 495 496 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</sub>
+###xml 511 514 494 497 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k<sub>B</sub>T</italic>
+###xml 557 565 540 548 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+###xml 662 663 624 625 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">A</sub>
+###xml 662 663 624 625 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>A</sub></italic>
+###xml 673 674 635 636 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 674 676 636 638 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 689 690 651 652 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 690 692 652 654 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 695 696 657 658 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 696 699 658 661 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 721 722 683 684 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</sub>
+###xml 720 723 682 685 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k<sub>B</sub>T</italic>
+###xml 729 732 691 692 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#961;</italic>
+###xml 804 805 764 765 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 805 807 765 767 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 810 811 770 771 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 811 814 771 774 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 862 870 822 830 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g001">Figure 1</xref>
+Given  = 0.5 mM and  = 0.02 mM [8], Equation 14 for the activity depends on amplitude parameter alpha and five additional parameters: the second factor ( ) depends on Deltain(m) and Jon - Joff, and the first factor (fraction of receptors in CheA-bound trimers of dimers) depends additionally on rho(mu), Jon or Joff, and inA. We chose alpha = 10, somewhat above the activity 5.5 observed for superactive receptor mutants, to constrain the other energy parameters to be of reasonable size, i.e., on the order of kBT. Fitting the four dose-response curves in Figure 1 provides Deltain(QEEE) = 3.1, Deltain(QEQE) = 2.6, Deltain (QEQQ) = 2.2, Deltain(QQQQ) = 1.8, inA = -1.32, Jon = 0.01, and Jon - Joff = -3.39 in units of kBT, and rho = 0.045 receptors per site. For comparison, constraining the values to Jon = Joff leads to a fit as poor as that in the inset to Figure 1.
+###end p 60
+###begin title 61
+Additivity of offset energies.
+###end title 61
+###begin p 62
+###xml 156 158 151 153 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i,</sub>
+###xml 155 158 150 153 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i,</sub></italic>
+###xml 231 233 226 228 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0030150-b013">13</xref>
+###xml 277 288 267 278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="pcbi-0030150-e013">Equation 13</xref>
+###xml 349 350 339 340 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 350 352 340 342 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">on</sub>
+###xml 355 356 345 346 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">J</italic>
+###xml 356 359 346 349 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">off</sub>
+###xml 524 541 509 518 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i = 1,&#8230;,4</sub>
+###xml 524 541 509 518 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i = 1,&#8230;,4</sub></italic>
+###xml 622 623 599 600 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</italic>
+###xml 643 660 615 624 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i = 0,&#8230;,4</sub>
+###xml 643 660 615 624 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>i = 0,&#8230;,4</sub></italic>
+###xml 725 726 689 690 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 771 772 730 731 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 881 882 835 836 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">0</sub>
+###xml 899 900 848 849 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 918 919 862 863 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 937 938 876 877 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">3</sub>
+###xml 954 961 889 890 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#603;</italic>
+###xml 1222 1223 1130 1131 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">B</sub>
+###xml 1221 1224 1129 1132 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k<sub>B</sub>T</italic>
+We test whether modifications of the four receptor sites contribute additively to the total offset energy Deltain. From the measured inhibition constants, Ki, of 15 different receptor modification states (QEEE, etc., except EEEE) [13], the total Deltain can be calculated from Equation 13, assuming only CheA-bound trimers of dimers can signal with Jon - Joff = -3.39 from the previous paragraph. These values for the total offset energies can be compared with the corresponding values within an additive model where Deltaini = 1,em leader,4 is the contribution to the total offset energy from the presence of a Q at site i. The values Deltaini = 0,em leader,4 are treated as fitting parameters obtained from minimizing With M indexing the 15 modification states. Deltain0 allows a fully unmodified receptor EEEE to have a nonzero offset energy. The best fit parameters are Deltain0 = 3.738, Deltain1 = -0.603, Deltain2 = -0.504, Deltain3 = -0.589, Deltaepsilonin = -0.289. The resulting total offset energies, Deltain(QEEE) = 3.135, Deltain(QEQE) = 2.546, Deltain(QEQQ) = 2.257, and Deltain (QQQQ) = 1.753, compare well with the values from the previous paragraph. All energies are given in units of the thermal energy, kBT.
+###end p 62
+###begin p 63
+###xml 118 119 118 119 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">i</sub>
+###xml 117 119 117 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K<sub>i</sub></italic>
+###xml 192 195 192 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#967;</italic>
+###xml 195 196 193 194 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 312 320 310 318 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g006">Figure 6</xref>
+###xml 338 341 336 337 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#967;</italic>
+###xml 341 342 337 338 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sup>
+###xml 501 509 497 505 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0030150-g006">Figure 6</xref>
+To further test whether the additivity assumption is valid, we permutated the data, i.e., randomly reassigned all 15 Ki values to the 15 different receptor modification states, and calculated chi2 values after minimization. One thousand such permuted calculations were used to plot the histogram in the inset in Figure 6. Remarkably, the chi2 fit to the original data is smaller than all fits to the permutated datasets, indicating that the linearity assumption is meaningful and that the good fit in Figure 6 has not occurred by chance.
+###end p 63
+###begin title 64
+Supporting Information
+###end title 64
+###begin title 65
+Accession Numbers
+###end title 65
+###begin p 66
+###xml 78 85 78 85 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 78 85 <span type="species:ncbi:562">E. coli</span>
+The primary protein accession numbers from the Swiss-Prot databank () for the E. coli proteins mentioned in the text are: Tar MCP2 ECOLI (P07017), Tsr MCP1 ECOLI (P02942), CheW O157 CHEW ECO57 (P0A966), CheA CHEA ECOLI (P07363), and CheY O157 CHEY ECOLI (P0AE67).
+###end p 66
+###begin p 67
+###xml 237 242 <span type="species:ncbi:9606">Human</span>
+The authors thank Joshua Bornhorst, Ranjan Mukhopadhyay, Tom Shimizu, and Monica Skoge for valuable suggestions. RGE thanks Run-Zhi Lai from the Manson lab for providing data for Figures 5 and 7. RGE and NSW acknowledge funding from the Human Frontier Science Program (HFSP).
+###end p 67
+###begin title 68
+Abbreviations
+###end title 68
+###begin p 69
+glutamate
+###end p 69
+###begin p 70
+methyl-aspartate
+###end p 70
+###begin p 71
+Monod-Wyman-Changeux model
+###end p 71
+###begin p 72
+glutamine
+###end p 72
+###begin title 73
+References
+###end title 73
+###begin article-title 74
+Receptor sensitivity in bacterial chemotaxis
+###end article-title 74
+###begin article-title 75
+###xml 14 30 14 30 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 14 30 <span type="species:ncbi:562">Escherichia coli</span>
+Chemotaxis in Escherichia coli analyzed by three-dimensional tracking
+###end article-title 75
+###begin article-title 76
+Robustness in bacterial chemotaxis
+###end article-title 76
+###begin article-title 77
+Receptor clustering as a cellular mechanism to control sensitivity
+###end article-title 77
+###begin article-title 78
+Heightened sensitivity of a lattice of membrane receptors
+###end article-title 78
+###begin article-title 79
+Functional interactions between receptors in bacterial chemotaxis
+###end article-title 79
+###begin article-title 80
+An allosteric model for heterogeneous receptor complexes: Understanding bacterial chemotaxis responses to multiple stimuli
+###end article-title 80
+###begin article-title 81
+###xml 16 32 16 32 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 16 32 <span type="species:ncbi:562">Escherichia coli</span>
+Chemosensing in Escherichia coli: Two regimes of two-state receptors
+###end article-title 81
+###begin article-title 82
+Receptor-receptor coupling in bacterial chemotaxis: Evidence for strongly coupled clusters
+###end article-title 82
+###begin article-title 83
+Precise adaptation in bacterial chemotaxis through "assistance neighborhoods."
+###end article-title 83
+###begin article-title 84
+###xml 51 67 51 67 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 51 67 <span type="species:ncbi:562">Escherichia coli</span>
+Determinants of chemoreceptor cluster formation in Escherichia coli
+###end article-title 84
+###begin article-title 85
+Spatial organization of the bacterial chemotaxis system
+###end article-title 85
+###begin article-title 86
+Evidence that both ligand binding and covalent adaptation drive a two-state equilibrium in the aspartate receptor signaling complex
+###end article-title 86
+###begin article-title 87
+Template-directed assembly of receptor signaling complexes
+###end article-title 87
+###begin article-title 88
+Cooperative signaling among bacterial chemoreceptors
+###end article-title 88
+###begin article-title 89
+Four-helical-bundle structure of the cytoplasmic domain of a serine chemotaxis receptor
+###end article-title 89
+###begin article-title 90
+###xml 56 72 56 72 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 56 72 <span type="species:ncbi:562">Escherichia coli</span>
+Collaborative signaling by mixed chemoreceptor teams in Escherichia coli
+###end article-title 90
+###begin article-title 91
+Crosslinking snapshots of bacterial chemoreceptor squads
+###end article-title 91
+###begin article-title 92
+###xml 60 67 60 67 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 60 67 <span type="species:ncbi:562">E. coli</span>
+TEM analysis of chemoreceptor arrays in native membranes of E. coli
+###end article-title 92
+###begin article-title 93
+###xml 24 40 24 40 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 24 40 <span type="species:ncbi:562">Escherichia coli</span>
+Direct visualization of Escherichia coli chemotaxis receptor arrays using cryo-electron microscopy
+###end article-title 93
+###begin article-title 94
+Quantitative analysis of aspartate receptor signaling complex reveals that the homogeneous two-state model is inadequate: Development of a heterogeneous two-state model
+###end article-title 94
+###begin article-title 95
+Nanodiscs separate chemoreceptor oligomeric states and reveal their signaling properties
+###end article-title 95
+###begin article-title 96
+On the nature of allosteric transitions: A plausible model
+###end article-title 96
+###begin article-title 97
+Two-state model for bacterial chemoreceptor proteins. The role of multiple methylation
+###end article-title 97
+###begin article-title 98
+Competitive and cooperative interactions in receptor signaling complexes
+###end article-title 98
+###begin article-title 99
+###xml 51 67 51 67 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 51 67 <span type="species:ncbi:562">Escherichia coli</span>
+Polar location of the chemoreceptor complex in the Escherichia coli cell
+###end article-title 99
+###begin article-title 100
+Evolutionary conservation of methyl-accepting chemotaxis protein location in Bacteria and Archaea
+###end article-title 100
+###begin article-title 101
+###xml 96 112 96 112 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 96 112 <span type="species:ncbi:562">Escherichia coli</span>
+Effect of chemoreceptor modification on assembly and activity of the receptor-kinase complex in Escherichia coli
+###end article-title 101
+###begin article-title 102
+###xml 99 115 99 115 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 99 115 <span type="species:ncbi:562">Escherichia coli</span>
+Covalent modification regulates ligand binding to receptor complexes in the chemosensory system of Escherichia coli
+###end article-title 102
+###begin article-title 103
+###xml 110 126 110 126 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 110 126 <span type="species:ncbi:562">Escherichia coli</span>
+Clustering requires modified methyl-accepting sites in low-abundance but not high-abundance chemoreceptors of Escherichia coli
+###end article-title 103
+###begin article-title 104
+Stabilization of polar localization of a chemoreceptor via its covalent modifications and its communication with a different chemoreceptor
+###end article-title 104
+###begin article-title 105
+###xml 35 51 35 51 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 35 51 <span type="species:ncbi:562">Escherichia coli</span>
+The Tsr chemosensory transducer of Escherichia coli assembles into the cytoplasmic membrane via a SecA-dependent process
+###end article-title 105
+###begin article-title 106
+Helical distribution of the bacterial chemoreceptor via colocalization with the Sec protein translocation machinery
+###end article-title 106
+###begin article-title 107
+The MreB and Min cytoskeletal-like systems play independent roles in prokaryotic polar differentiation
+###end article-title 107
+###begin article-title 108
+Diversity and versatility of lipid-protein interactions revealed by molecular genetic approaches
+###end article-title 108
+###begin article-title 109
+###xml 23 40 23 40 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bacillus subtilis</named-content>
+###xml 23 40 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Cardiolipin domains in Bacillus subtilis marburg membranes
+###end article-title 109
+###begin article-title 110
+A curvature-mediated mechanism for localization of lipids to bacterial poles
+###end article-title 110
+###begin article-title 111
+Shape, size, and distribution of Ca(2+) release units and couplons in skeletal and cardiac muscles
+###end article-title 111
+###begin article-title 112
+Intrinsic lattice formation by the ryanodine receptor calcium-release channel
+###end article-title 112
+###begin article-title 113
+Atomic-force microscopy: Rhodopsin dimers in native disc membranes
+###end article-title 113
+###begin article-title 114
+Physical responses of bacterial chemoreceptors
+###end article-title 114
+###begin p 115
+A previous version of this article appeared as an Early Online Release on June 15, 2007 (doi:).
+###end p 115
+###begin p 116
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Author contributions.</bold>
+Author contributions. RGE, JJF, and NSW analyzed the data. RGE and NSW conceived and designed the model. RGE performed the model calculations. RGE, JJF, and NSW wrote the paper.
+###end p 116
+###begin p 117
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding.</bold>
+Funding. The authors received no specific funding for this study.
+###end p 117
+###begin p 118
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing interests.</bold>
+Competing interests. The authors have declared that no competing interests exist.
+###end p 118
+

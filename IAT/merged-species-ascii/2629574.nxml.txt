@@ -1,0 +1,567 @@
+###begin article-title 0
+Interpretation of Genetic Association Studies: Markers with Replicated Highly Significant Odds Ratios May Be Poor Classifiers
+###end article-title 0
+###begin p 1
+###xml 794 797 794 797 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CFH</italic>
+###xml 799 808 799 808 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LOC387715</italic>
+###xml 814 816 814 816 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C2</italic>
+###xml 871 872 871 872 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 885 888 885 888 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;13</sup>
+###xml 892 895 892 895 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;13</sup>
+###xml 903 905 903 905 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;3</sup>
+###xml 256 264 <span type="species:ncbi:9606">patients</span>
+Recent successful discoveries of potentially causal single nucleotide polymorphisms (SNPs) for complex diseases hold great promise, and commercialization of genomics in personalized medicine has already begun. The hope is that genetic testing will benefit patients and their families, and encourage positive lifestyle changes and guide clinical decisions. However, for many complex diseases, it is arguable whether the era of genomics in personalized medicine is here yet. We focus on the clinical validity of genetic testing with an emphasis on two popular statistical methods for evaluating markers. The two methods, logistic regression and receiver operating characteristic (ROC) curve analysis, are applied to our age-related macular degeneration dataset. By using an additive model of the CFH, LOC387715, and C2 variants, the odds ratios are 2.9, 3.4, and 0.4, with p-values of 10-13, 10-13, and 10-3, respectively. The area under the ROC curve (AUC) is 0.79, but assuming prevalences of 15%, 5.5%, and 1.5% (which are realistic for age groups 80 y, 65 y, and 40 y and older, respectively), only 30%, 12%, and 3% of the group classified as high risk are cases. Additionally, we present examples for four other diseases for which strongly associated variants have been discovered. In type 2 diabetes, our classification model of 12 SNPs has an AUC of only 0.64, and two SNPs achieve an AUC of only 0.56 for prostate cancer. Nine SNPs were not sufficient to improve the discrimination power over that of nongenetic predictors for risk of cardiovascular events. Finally, in Crohn's disease, a model of five SNPs, one with a quite low odds ratio of 0.26, has an AUC of only 0.66. Our analyses and examples show that strong association, although very valuable for establishing etiological hypotheses, does not guarantee effective discrimination between cases and controls. The scientific community should be cautious to avoid overstating the value of association findings in terms of personalized medicine before their time.
+###end p 1
+###begin title 2
+Introduction
+###end title 2
+###begin p 3
+###xml 726 729 726 729 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Mitka1">[1]</xref>
+###xml 759 762 759 762 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Feero1">[2]</xref>
+###xml 763 766 763 766 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Goetz1">[3]</xref>
+###xml 1085 1088 1085 1088 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Calefato1">[4]</xref>
+###xml 1089 1092 1089 1092 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-JulianReynier1">[5]</xref>
+###xml 681 687 <span type="species:ncbi:9606">people</span>
+Recent successes in the discoveries of potentially causal single nucleotide polymorphisms (SNPs) for complex diseases hold great promise, and commercialization of genomics in personalized medicine has already begun. A number of companies now offer, for relatively modest fees, personalized genomics services that provide individualized disease-risk estimates based on genome-wide SNP genotyping. Most companies offering such profiling make it clear that they are not a clinical service and that their calculations are not intended for diagnostic or prognostic purposes. They typically advise their clients to consult their health care provider for more information. In most cases, people would turn to their general physician [1]. However, as noted by others [2],[3], few doctors currently have enough genetics training to actually make sense of the risk calculations now commercially offered. Many physicians seem to feel the same way. In surveys in five European countries, physicians ranked the disciplines in which they felt they needed more training to overcome future challenges [4],[5]. In all countries, the top ranked area was "genetics of common disease," and ranked second was "approaching genetic risk assessment in clinical practice."
+###end p 3
+###begin p 4
+###xml 245 248 245 248 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Pepe1">[6]</xref>
+Not only are risk results likely to be often poorly understood by the tested individuals and their physicians, but also these results are often based on risk models, such as logistic regression models, that may not be good classification models [6]. Therefore, the disclaimer made by the companies that their services are not intended as medical advice cannot be overemphasized. Current knowledge of the role of most genes in complex diseases is at the group level of correlations of disease status with SNPs. Most of these SNPs were discovered via genetic association studies aimed at finding variants correlated with disease risk. It is hoped that these discoveries will provide insights into the pathogenesis and etiology, and ultimately lead to developments of new treatments or preventive therapies. Assuming these SNPs will also be effective classifiers, they are now being used in individual-level risk estimation, classification, and clinical decision-making. However, for many complex diseases, such as the ones discussed here (age-related macular degeneration [AMD], type II diabetes, inflammatory bowel disease [Crohn's disease], and cardiovascular disease), it is arguable whether the era of genomics in personalized medicine is here yet. In this article, we discuss and explore how useful highly associated SNPs might be for individual-level risk estimation and prediction. Our focus will be on the classification accuracy of genetic testing, with an emphasis on two popular statistical methods for evaluating biomarkers. We give realistic real-data examples that illustrate that, currently, the genetic information is of limited value for personalized medicine. We also discuss and apply risk-based and classification-based analysis approaches to our AMD data.
+###end p 4
+###begin title 5
+Two Statistical Methods
+###end title 5
+###begin p 6
+###xml 378 379 378 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 2016 2019 2016 2019 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Janssens1">[7]</xref>
+###xml 2425 2430 2425 2430 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s10a">Box 1</xref>
+###xml 2674 2677 2674 2677 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Dunai1">[8]</xref>
+###xml 2678 2682 2678 2682 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Jakobsdottir1">[10]</xref>
+###xml 2269 2272 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+There are two basic statistical approaches for evaluating markers. The risk-based approach models the risk as a function of marker(s), often with adjustment for covariates, and is commonly applied in genetic studies. In case-control studies, this is done with logistic regression, and the markers with the strongest effect on disease risk are those associated with the smallest p-values and most extreme odds ratios (ORs). The other method, the classification-based approach, evaluates markers based on how well they can discriminate between cases and controls. The performance is evaluated by various measures, such as the proportion of positive test results among cases or the true positive fraction (TPF, or sensitivity) and the proportion of positive test results among controls or the false positive fraction (FPF, or 1-specificity). A perfect classifier will assign a positive test result to everyone with the condition (TPF = sensitivity = 1) and a negative test result to everyone without the condition (FPF = 0, specificity = 1). Often more than one possible grouping into cases and controls is possible based on a classifier. The receiver operating characteristic (ROC) curve is a plot of all (FPF, TPF) pairs for each possible grouping. The area under the ROC curve (AUC) is a popular measure of the discrimination power of a classifier. It is the probability that given two random individuals, one who will develop the disease and the other who will not, the classifier will assign the former a positive test result and the latter a negative result. Theoretically, the AUC can take values between 0 and 1, but the practical lower bound is 0.5; a perfect classifier has an AUC of 1. Classifiers with an AUC significantly greater than 0.5 have at least some ability to discriminate between cases and controls. However, for screening of individuals with an increased risk of disease, it is suggested that the AUC be >0.75, and for presymptomatic diagnosis of the general population, the AUC should be >0.99 [7]. When prognosis is the goal, one typically also evaluates the classification model by two additional measures: (1) the proportion of individuals who will develop the disease among those with a positive test result, or the positive predictive value (PPV), and (2) the proportion of individuals who will not develop the disease among those with negative test result, or the negative predictive value (NPV) (Box 1). We note in passing that there are other methods that model classification performance and have been applied in genetic studies, including, for example, genetic algorithms, generalized multifactor dimensionality reduction, and random forests [8]-[10]. However, to keep our discussion focused, we do not discuss these other methods here.
+###end p 6
+###begin title 7
+Box 1. Classification performance measures-definitions
+###end title 7
+###begin p 8
+###xml 152 153 152 153 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 125 131 <span type="species:ncbi:9606">person</span>
+TPF = probability that a diagnostic test (e.g., a marker or a risk model) classifies an individual as a case given that this person is truly affected = P(test positive | affected)
+###end p 8
+###begin p 9
+###xml 135 136 135 136 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 91 97 <span type="species:ncbi:9606">person</span>
+FPF = probability that a diagnostic test classifies an individual as a case given that the person is actually unaffected (a control) = P(test positive | unaffected).
+###end p 9
+###begin p 10
+###xml 72 73 72 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 0 3 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 25 31 <span type="species:ncbi:9606">person</span>
+PPV = probability that a person who tests positive is actually a case = P(affected | test positive)
+###end p 10
+###begin p 11
+###xml 75 76 75 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P</italic>
+###xml 25 31 <span type="species:ncbi:9606">person</span>
+NPV = probability that a person who tests negative is actually a control = P(unaffected | test negative)
+###end p 11
+###begin p 12
+###xml 375 378 375 378 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Pepe1">[6]</xref>
+###xml 514 518 514 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Cook1">[11]</xref>
+###xml 520 525 520 525 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s11a">Box 2</xref>
+Although the risk-based (logistic regression) and classification-based (ROC theory) methods do not yield contradictory results in terms of directionality, they can and often will differ in terms of size or importance. For example, a marker strongly related to risk may very well be a poor classifier; and vice versa, a good classifier may only be weakly associated with risk [6]. Furthermore, neither method directly measures calibration, which is how well the predicted risks agree with the underlying true risks [11] (Box 2).
+###end p 12
+###begin title 13
+Box 2. Association versus classification versus risk prediction and calibration
+###end title 13
+###begin p 14
+###xml 24 25 24 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+Strong association (low p-value) does not guarantee effective discrimination between cases and controls (classification). Excellent classification (high AUC) does not guarantee good prediction of actual risk. A model that accurately predicts risk is well calibrated.
+###end p 14
+###begin p 15
+In a diagnostic setting in which discrimination between cases and controls is most important, it only matters that the cases have higher estimated risk, accurate or not, than the controls. However, when prognosis or risk stratification is the goal, both discrimination and calibration are important. We then need a model that both discriminates well between future cases and those who will remain controls, and also accurately estimates the exact risk of developing disease in the future.
+###end p 15
+###begin title 16
+The Odds Ratio, Classification, Calibration, and Prediction
+###end title 16
+###begin p 17
+###xml 311 314 311 314 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Pepe1">[6]</xref>
+###xml 465 469 465 469 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Cook1">[11]</xref>
+The OR is widely used to evaluate markers, and it is assumed the markers associated with the most extreme OR are effective predictors. However, as we mentioned above, a marker strongly related to risk may very well be a poor classifier, and vice versa, a good classifier may only be weakly associated with risk [6]. In addition, a marker associated with risk may be well or poorly calibrated, that is, the predicted risk may agree well or poorly with the true risk [11].
+###end p 17
+###begin p 18
+###xml 190 198 190 198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g001">Figure 1</xref>
+###xml 760 768 760 768 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g001">Figure 1</xref>
+For a strongly associated marker to be effective in classification, the associated OR must be of an extreme magnitude rarely (if ever) seen in genetic association studies. As illustrated in Figure 1, if one wants to be able to detect 80% of cases with a binary marker, such as the presence or absence of a risk allele, with ORs of 1.5, 10, or 50, then about 73%, 29%, and 7% of the controls would be mislabeled as cases, and the AUC achieved by the binary marker would be 0.54, 0.76, and 0.86, respectively. Even a huge OR of 50 does not guarantee that a marker will have acceptable prediction accuracy; for example, the TPF may be unacceptably low (TPF = 55%, FPF = 2.4%, and AUC = 0.76) or the FPF unacceptably high (TPF = 97.6%, FPF = 45%, and AUC = 0.76) (Figure 1).
+###end p 18
+###begin title 19
+Accuracy curves for binary markers.
+###end title 19
+###begin p 20
+The curves of accuracy points (FPF, TPF pair) for binary markers with ORs 1.5, 10, and 50 are plotted. The black diamonds and horizontal dotted line highlight the points (FPF, TPF) = (FPF, 80%) on the accuracy curves. The ORs are marked on the curves.
+###end p 20
+###begin p 21
+###xml 151 159 151 159 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g002">Figure 2</xref>
+###xml 164 171 164 171 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-1000337-t001">Table 1</xref>
+###xml 177 185 177 185 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g002">Figure 2</xref>
+###xml 288 289 288 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 289 291 289 291 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ca</sub>
+###xml 592 593 592 593 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 593 595 593 595 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">co</sub>
+###xml 817 824 817 824 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-1000337-t001">Table 1</xref>
+###xml 968 969 968 969 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 969 971 969 971 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ca</sub>
+###xml 983 984 983 984 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 984 986 984 986 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">co</sub>
+###xml 996 1003 996 1003 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-1000337-t001">Table 1</xref>
+Let us examine the achievable AUC as a function of risk allele frequency under an additive genetic model in which the genotypes are coded 0, 1, and 2 (Figure 2 and Table 1). In Figure 2, we have plotted the AUC for fixed values of the OR, as a function of risk allele frequency in cases (pca) under the assumption of Hardy-Weinberg equilibrium in both cases and controls. We clearly see that markers with a reasonably high OR of 3 have a maximum possible AUC of less than 0.70, and markers with an OR of 5 do not even reach an AUC of 0.80. For each OR, the risk allele frequency in controls (pco) corresponding to the maximum possible AUC is given on the plot, and not surprisingly, to reach the maximum possible AUC for each OR, the risk allele frequency difference between cases and controls has to be quite large (Table 1). For example, to reach an AUC of 0.80 using a marker with an OR of 10, the allele frequencies in cases and controls would be quite different (pca = 0.49 and pco = 0.09) (Table 1).
+###end p 21
+###begin title 22
+AUC for additive risk models of SNP markers as function of risk allele frequency in cases.
+###end title 22
+###begin p 23
+###xml 360 361 360 361 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 361 363 361 363 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ca</sub>
+###xml 373 374 373 374 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 374 376 374 376 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ca</sub>
+###xml 429 436 429 436 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-1000337-t001">Table 1</xref>
+The AUC is estimated for all risk allele frequencies in controls assuming additive ORs 1.5, 3, 5, 10, and 50 (the ORs are marked on the curves). The numbers in gray are the risk allele frequencies in controls corresponding to the maximum AUC for each OR. The dotted horizontal line in gray marks an AUC of 0.7 and 0.8. The black diamonds highlight the points (pca, AUC) = (pca, 0.80) for markers with additive ORs 10 and 50 (see Table 1).
+###end p 23
+###begin title 24
+###xml 39 40 39 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 40 42 40 42 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ca</sub>
+###xml 58 59 58 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 59 61 59 61 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">co</sub>
+AUC, Risk Allele Frequencies in Cases (pca) and Controls (pco) for Specific ORs in an Additive Model (Genotypes Coded 0-1-2 According to Number of Risk Alleles).
+###end title 24
+###begin p 25
+NP, not possible.
+###end p 25
+###begin title 26
+The Odds Ratio, Relative Risk, and Risk
+###end title 26
+###begin p 27
+###xml 293 297 293 297 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Davies1">[12]</xref>
+###xml 298 302 298 302 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Deeks1">[13]</xref>
+###xml 424 430 <span type="species:ncbi:9606">people</span>
+In retrospective studies, the relative risk or risk ratio (RR) cannot be estimated unless the prevalence is known, and therefore, the OR is used as a proxy. Theoretically, the OR will give a good approximation for the RR if the prevalence is low, but otherwise it tends to overestimate the RR [12],[13]. RRs, which are the ratio of two risks (probabilities), are correctly interpreted as an estimate of how much more likely people sharing the same genotype combination are to develop the condition of interest when compared to a group without this genotype combination. The numerator of the RR is the risk of the condition given the genotype combination of interest, but clearly, the RR (or the OR) itself is not an estimate of individual-level risk and certainly not a diagnostic test or classifier.
+###end p 27
+###begin p 28
+###xml 617 621 617 621 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Woloshin1">[14]</xref>
+###xml 89 95 <span type="species:ncbi:9606">person</span>
+###xml 268 274 <span type="species:ncbi:9606">people</span>
+###xml 326 331 <span type="species:ncbi:9606">women</span>
+###xml 374 379 <span type="species:ncbi:9606">women</span>
+###xml 546 551 <span type="species:ncbi:9606">women</span>
+###xml 601 606 <span type="species:ncbi:9606">woman</span>
+Statisticians should easily understand this relationship between OR, RR, and risk, but a person not trained in statistics (or science in general) may not make the same distinction as easily. Numerous studies in the genetic counseling literature have investigated what people make of risk estimates. For example, in a study of women's perceived risk of breast cancer, 98% of women overestimated their risk of dying from breast cancer in 10 y by half to 8-fold when asked to quantify risk as a number out of 1,000. Interestingly, only 10% of those women thought they were at higher risk than an average woman their age [14].
+###end p 28
+###begin title 29
+Clinical Validity and Utility of Predictive Genetic Testing
+###end title 29
+###begin p 30
+###xml 421 429 421 429 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g001">Figure 1</xref>
+###xml 106 112 <span type="species:ncbi:9606">people</span>
+The clinical validity is measured by the discrimination ability of the marker, or its ability to classify people as cases or controls. The AUC, though imperfect, is a popular and easily interpretable measure of classification accuracy. It can be interpreted as the probability that predicted risk is higher for a case than a control. Various TPF and FPF pairs and various values of the AUC can correspond to the same OR (Figure 1). Thus, the OR by itself cannot give a meaningful indication of the probability of being correctly classified as case (TPF) or of the probability of being wrongly classified as a case (FPF), and alone its value is essentially useless to the individual.
+###end p 30
+###begin p 31
+###xml 773 779 <span type="species:ncbi:9606">person</span>
+The clinical utility of predictive genetic profiling for complex diseases rests on at least two conditions: (1) preventive means with high efficacy in the general population are available, and (2) these preventive means will also be effective in the genetically high-risk cohorts. Additionally, it is worth noting that for many complex diseases, known preventive lifestyle changes are broadly beneficial: weight loss, smoking cessation, blood pressure control, regular exercise, diets enriched with fruits and vegetables, etc., so to many individuals, it might be wasteful to spend $1,000 to find out they are genetically at increased risk for some condition only to have their doctor tell them all they can do is to lose weight and stop smoking. On the other hand, if the person is more likely to make lifestyle changes and stick to them, then the benefits can be great, both for the individual and the population as whole. Of course, the flip side is what the actions will be if the genetic test suggests lower than average risk for one or more specific conditions.
+###end p 31
+###begin title 32
+Reclassification
+###end title 32
+###begin p 33
+###xml 408 412 408 412 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Cook1">[11]</xref>
+###xml 413 417 413 417 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Pencina1">[15]</xref>
+###xml 742 746 742 746 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Cook1">[11]</xref>
+###xml 255 261 <span type="species:ncbi:9606">person</span>
+###xml 1112 1118 <span type="species:ncbi:9606">person</span>
+The AUC attempts to measure the ability of a model to discriminate between cases and controls for a set of cutoff values that separate the two groups. However, on an individual basis, we also want the model to provide the best possible estimation of that person's risk. One way to compare the accuracy of individual-level risk estimates of different risk models is to use the reclassification table approach [11],[15]. In this approach, one measures how often subjects are estimated to be in different risk strata when different risk models are applied and whether the reclassification more accurately stratifies individuals into higher or lower risk strata. A marker that has a modest or no effect on the AUC can improve risk classification [11]. For example, suppose we are comparing two risk models that differ regarding a single individual's membership in the 20%-30% risk stratum versus the 10%-20% risk stratum. If both models achieve the best discrimination by classifying everyone below the 40% risk threshold as controls and everyone above as cases, then the TPF and FPF will not be altered due to this person's reclassification, but one model is more accurate than the other in terms of the true value of the individual's risk estimate.
+###end p 33
+###begin title 34
+Examples
+###end title 34
+###begin p 35
+###xml 190 191 190 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+We now provide several examples, from the literature as well as from our own data, illustrating that although a set of SNPs can be strongly associated with disease risk with extremely small p-values, that same set of SNPs may not necessarily have high discrimination ability or may not dramatically improve the discrimination ability of a classification model constructed using "conventional" nongenetic risk factors without the SNPs.
+###end p 35
+###begin title 36
+Risk of Cardiovascular Events
+###end title 36
+###begin p 37
+###xml 171 175 171 175 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Kathiresan1">[16]</xref>
+###xml 691 692 691 692 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 712 715 712 715 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;29</sup>
+###xml 750 751 750 751 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 761 763 761 763 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;6</sup>
+###xml 765 772 765 772 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+###xml 789 796 789 796 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+In a recent replication study of nine SNPs associated with levels of either low-density lipoprotein (LDL) or high-density lipoprotein (HDL) cholesterol, Kathiresan et al. [16] created a genotype score on the basis of the total number of unfavorable alleles at these risk SNPs, and investigated the classification accuracy of the genotype score and the effect on reclassification beyond standard risk factors for cardiovascular events. The authors found that accounting for the effect of the nine SNPs did not improve the classification accuracy of their model. The ROC curves with and without the genotype score lined up almost perfectly, and both had an AUC of 0.80 despite the SNPs having p-values as low as 10-29, with six out of nine SNPs having p-values<10-6 (Text S1 and Table S1 in Text S1). Adding the genotype score to the model did, however, modestly improve the reclassification. Unfortunately for this dataset, the classification accuracy of the genotype score alone was not estimated. Nevertheless, these data provide an example of highly associated variants that do not markedly improve the discrimination ability of a model, yet at the same time, they give hope that genetic variants may become valuable prognostic tools.
+###end p 37
+###begin title 38
+Risk of Type 2 Diabetes
+###end title 38
+###begin p 39
+###xml 28 32 28 32 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Scott1">[17]</xref>
+###xml 33 37 33 37 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Weedon1">[19]</xref>
+###xml 43 44 43 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 64 67 64 67 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;34</sup>
+###xml 69 76 69 76 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+###xml 93 100 93 100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+###xml 285 289 285 289 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Lu1">[20]</xref>
+###xml 291 298 291 298 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+###xml 350 354 350 354 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Lu1">[20]</xref>
+In type 2 diabetes, 12 SNPs [17]-[19] with p-values as low as 10-34 (Text S1 and Table S2 in Text S1) reach an AUC of 0.64, suggesting only fair discrimination power. We arrived at this AUC of 0.64 using only published allele frequencies; we did this using the method of Lu and Elston [20] (Text S1, Estimating the AUC from meta-data). Lu and Elston [20] also applied their method to a model of the same 12 SNPs and four additional environmental factors, and got a slightly improved AUC of 0.67.
+###end p 39
+###begin title 40
+Risk of Prostate Cancer
+###end title 40
+###begin p 41
+###xml 110 114 110 114 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Yeager1">[21]</xref>
+###xml 172 176 172 176 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Lu1">[20]</xref>
+###xml 279 280 279 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 293 296 293 296 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;13</sup>
+###xml 303 306 303 306 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;14</sup>
+###xml 381 388 381 388 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+###xml 405 412 405 412 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+A genetic classification model of two prostate cancer risk SNPs in low linkage disequilibrium with each other [21] has an AUC of 0.56, based on the method of Lu and Elston [20]. An AUC of this magnitude suggests that the model has a very poor discrimination power. The SNPs have p-values of 10-13 and 10-14, but the genotype-specific ORs are not extreme and range from 1.3 to 2.2 (Text S1 and Table S3 in Text S1).
+###end p 41
+###begin title 42
+Risk of Inflammatory Bowel Disease
+###end title 42
+###begin p 43
+###xml 76 80 76 80 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Cummings1">[22]</xref>
+###xml 81 85 81 85 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Rioux1">[26]</xref>
+###xml 271 272 271 272 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 293 295 293 295 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;7</sup>
+###xml 301 304 301 304 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;14</sup>
+###xml 437 441 425 429 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Lu1">[20]</xref>
+###xml 465 472 453 460 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+###xml 489 496 477 484 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+A genetic classification model of five well-replicated genetic associations [22]-[26] in inflammatory bowel disease (Crohn's disease) has an AUC of only 0.66. This suggests only fair discrimination power for Crohn's disease despite the variants being highly significant (p-values range from 10-7 to 10-14) and one SNP having quite an extreme OR of 0.26 (approximately1/4). Again, the method of Lu and Elston was used to estimate the AUC [20]. For more details, see Text S1 and Table S4 in Text S1.
+###end p 43
+###begin title 44
+Risk of Age-Related Macular Degeneration
+###end title 44
+###begin p 45
+###xml 38 42 38 42 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Jakobsdottir1">[10]</xref>
+###xml 50 53 50 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CFH</italic>
+###xml 55 64 55 64 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LOC387715</italic>
+###xml 70 72 70 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C2</italic>
+###xml 226 233 226 233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+###xml 236 244 236 244 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g003">Figure 3</xref>
+###xml 348 351 348 351 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CFH</italic>
+###xml 353 362 353 362 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LOC387715</italic>
+###xml 368 370 368 370 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C2</italic>
+###xml 401 404 401 404 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CFH</italic>
+###xml 409 418 409 418 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LOC387715</italic>
+###xml 803 810 803 810 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-1000337-t002">Table 2</xref>
+###xml 813 820 813 820 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-1000337-t002">Table 2</xref>
+###xml 913 916 913 916 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CHF</italic>
+###xml 921 930 921 930 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LOC387715</italic>
+###xml 961 962 961 962 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</italic>
+###xml 982 985 982 985 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;13</sup>
+Using our previous published AMD data [10] on the CFH, LOC387715, and C2 variants, we plotted the ROC curves and estimated the AUC and positive predictive values of one-, two-, and three-factor models (detailed methods are in Text S1). Figure 3 displays the ROC curves for the null model and for five genetic risk models: the three-factor model of CFH, LOC387715, and C2 SNPs, the two-factor model of CFH and LOC387715, and all of the one-factor models. We see that to correctly identify about 74% of the cases using the three-factor model, we would wrongly classify 31% of the controls, and for the TPF to be around 80%, the FPF needs to be unacceptably high (>40%). The AUC for the three-factor model is quite high, 0.79, and significantly different from 0.5 (95% confidence interval [CI] 0.74-0.83) (Table 2). Table 2 also gives the results of logistic regression analysis: the ORs for additive inheritance of CHF and LOC387715 risk alleles are about 3 with p-values of around 10-13.
+###end p 45
+###begin title 46
+ROC curves for AMD classification models.
+###end title 46
+###begin p 47
+###xml 109 112 109 112 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CFH</italic>
+###xml 114 123 114 123 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LOC387715</italic>
+###xml 129 131 129 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C2</italic>
+The black diamond highlights the point (FPF, TPF) = (31%, 74%) on the ROC curve of the three-factor model of CFH, LOC387715, and C2. The gray line for reference gives the "chance" classification rule: the farther the ROC curve is from the chance line, the better the classification rule.
+###end p 47
+###begin title 48
+Results of Logistic Regression and ROC Analysis.
+###end title 48
+###begin p 49
+The OR for each variant is for an additive model in which the genotypes are coded 0-1-2.
+###end p 49
+###begin p 50
+###xml 95 99 95 99 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Zhou1">[48]</xref>
+The confidence intervals (CIs) for the AUC are asymptotic and derived using DeLong's estimator [48] for the variance.
+###end p 50
+###begin p 51
+###xml 179 183 179 183 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Pepe2">[27]</xref>
+###xml 209 217 209 217 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g004">Figure 4</xref>
+###xml 761 769 761 769 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g004">Figure 4</xref>
+###xml 888 896 888 896 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g004">Figure 4</xref>
+###xml 1261 1265 1261 1265 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Friedman1">[28]</xref>
+###xml 1300 1307 1300 1307 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pgen.1000337.s001">Text S1</xref>
+###xml 2145 2149 2145 2149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Young1">[29]</xref>
+###xml 1715 1718 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+We also plotted the integrated predictiveness and classification plot, which combines information from both the risk- and classification-based analysis approaches discussed above [27]. In the integrated plot (Figure 4), there are two aligned plots: in the top plot, ordered individual risks are plotted as function of the risk percentile, and in the bottom plot, the TPF and FPF are plotted as a function of the risk percentile such that at each point, the TPF and FPF are calculated for the risk threshold equal to the risk associated with the corresponding risk percentile. If we now look at the integrated predictiveness and classification plot for the three-factor model, we see that the TPF and FPF pair 74% and 31% corresponds to the 35% risk percentile (Figure 4, bottom panel), which then corresponds to choosing an AMD risk of 4% as the cutoff point for classifying individuals (Figure 4, top panel). Those with risk greater than 4% are assumed to be at high risk and are classified as cases, and those with lower risk are classified as controls. To illustrate this, suppose we have a population of size 1,000 and a prevalence of 5.5% (which is the prevalence of advanced AMD in the U.S. in white individuals 65 y or older according to Friedman et al. [28] and the U.S. 2000 census data-see Text S1 for further details). If the prevalence is 5.5%, there would be 55 cases in our population. Of those 55 cases, 74%, or 41, would be correctly considered to be at high risk of AMD, and 31%, or 293, of the true 945 controls would be wrongly assumed to be at high risk. Therefore, out of the 334 (41+293) individuals in the high-risk group, 88% should actually be in the low-risk group, or in other words, the PPV would be only 12% (i.e., 100%-88%). When designing a clinical trial to test preventive therapies in high-risk cohorts based on genotyping alone, it may or may not be cost effective to have 12% (instead of 5.5%) of the study cohort as true cases. However, as a clinical test, it may be considered unethical to needlessly alarm 88% of the high-risk cohort, especially when limited treatment and preventive options are available [29].
+###end p 51
+###begin title 52
+Integrated predictiveness and classification plot for the three-factor model.
+###end title 52
+###begin p 53
+The light-gray lines show how the plots are used in the examples given in the text: the dashed lines are for the first example with TPF = 74%, FPF = 31%, risk percentile = 35%, and AMD risk threshold = 4%; and the dotted lines are for the second example with AMD risk threshold = 25%, risk percentile = 85%, TPF = 17%, and FPF = 5%. On the top panel, the risks for cases are marked with a dot in black while the risks for controls are marked with a vertical line segment in dark-gray.
+###end p 53
+###begin p 54
+###xml 342 350 342 350 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g004">Figure 4</xref>
+###xml 477 485 477 485 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pgen-1000337-g004">Figure 4</xref>
+###xml 937 940 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+To lower the proportion of controls in the high-risk cohort, a more stringent threshold for calling someone high risk, say 25%, can be used instead of the 4% threshold used above. However, using this higher risk threshold only lowers the proportion of controls in the high-risk group from 88% to 84%, as can be seen in this manner: the plot (Figure 4, top panel) shows that the risk threshold of 25% corresponds to the 85% risk percentile. Looking at the classification curve (Figure 4, bottom panel), we see that the 85% risk percentile corresponds to a TPF of 17% and FPF of 5%. Again, to put these numbers in perspective, let us again assume we have a population of size 1,000. Nine (17%) out of 55 true cases would then be correctly classified as high risk, and 47 (5%) out of 945 controls would be incorrectly classified as high risk. Therefore 84% (47/56 = 47/(9+47)) of those classified as "high risk" would actually be controls (PPV = 100%-84% = 16%).
+###end p 54
+###begin p 55
+When applied to case-control data, the integrated predictiveness and classification plot depends on the assumed prevalence of the disease, which may not be known with precision or may, as in the case of AMD, depend strongly on age. Note that as the prevalence changes, the bottom plot does not change, only the top plot does: although it still will look essentially the same, the risks will be more spread out between 0 and 1 as the prevalence gets higher and less spread out otherwise.
+###end p 55
+###begin p 56
+###xml 172 179 172 179 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-1000337-t003">Table 3</xref>
+###xml 371 378 371 378 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-1000337-t003">Table 3</xref>
+###xml 482 485 482 485 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CFH</italic>
+###xml 487 496 487 496 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LOC387715</italic>
+###xml 502 504 502 504 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">C2</italic>
+###xml 703 710 703 710 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pgen-1000337-t003">Table 3</xref>
+###xml 198 201 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 320 323 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+Second, it is worth noting how the results of our AMD example change if different values for the prevalence are used. The prevalence of AMD is highly age-dependent, and in Table 3, we calculate the PPV using prevalence estimates for different age groups. If the prevalence increases, the results are less disappointing (PPV increases) but are even worse if it decreases (Table 3). Clearly, the ability to discriminate between current cases and controls, based on genotype data from CFH, LOC387715, and C2 alone, changes with age. A crude estimate of the lifetime risk at age 80 y, given a genetically high-risk score based on the three variants, is 30% compared to 15% baseline lifetime risk at age 80 (Table 3).
+###end p 56
+###begin title 57
+Positive Predictive Values (PPVs) for Different Values of the Prevalence.
+###end title 57
+###begin p 58
+The risk threshold corresponds to TPF = 74% and FPF = 31% (as in the first example in the text).
+###end p 58
+###begin p 59
+###xml 0 3 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+PPV = proportion of cases in the high-risk group.
+###end p 59
+###begin p 60
+###xml 2 5 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+1-PPV = proportion of controls in the high-risk group.
+###end p 60
+###begin title 61
+Discussion of the AMD Example
+###end title 61
+###begin p 62
+###xml 881 885 881 885 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Janes1">[30]</xref>
+###xml 1624 1628 1624 1628 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Moskowitz1">[31]</xref>
+###xml 1629 1633 1629 1633 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Pepe3">[32]</xref>
+If the primary goal of genetic diagnostic tests for AMD were to identify those who are at high risk before they show irreversible degenerative changes to maximize the effectiveness of long-term preventive strategies, then we would want to test individuals 40-55 y old (or younger) to predict whether they will develop AMD before age 80 y. Our case-control data presented here do not fully measure the ability of genetic data to predict future disease status (prognosis) for several reasons: (1) AMD prevalence increases with age, (2) females have higher prevalence in all age groups compared to males, (3) females live longer, (4) the FPF derived from case-control data is overestimated because some controls will develop AMD as the cohort ages, (5) the case/control counts are unbalanced, so our sample may not be optimal for estimating the classification accuracy of the markers [30], and (6) the estimates of the ORs, and estimates from most other AMD case-control studies, are based on the comparison of extreme phenotypes: a group of individuals with advanced AMD are contrasted with a control group of individuals with no or very minimal clinical findings. Therefore, they very likely overestimate the RR and the discrimination power for individuals with intermediate clinical findings. Even accounting for all these issues in an optimistic manner, the overall conclusions of our analysis are unlikely to change dramatically. Proper analyses of longitudinal cohort data using survival analysis techniques could lead to a more precise assessment of the potential value of genetic data in predicting lifetime AMD status [31],[32].
+###end p 62
+###begin p 63
+###xml 120 124 120 124 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Edwards1">[33]</xref>
+###xml 125 129 125 129 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Rivera1">[38]</xref>
+The major achievements that have been made in understanding the genetics of AMD are well known, and the AMD discoveries [33]-[38] are widely mentioned as the first "proof" that genome-wide association analysis works (although the majority of the AMD studies were not genome-wide association studies, but rather targeted searches following up regions of linkage). The results have been so exciting that perhaps all of us who study AMD are guilty of overstating our results. Here are just a few examples:
+###end p 63
+###begin p 64
+###xml 224 228 224 228 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Swaroop1">[39]</xref>
+"Nevertheless, with all the genetic findings, it may soon be possible to provide pre-symptomatic diagnosis with reasonable accuracy, leading to better disease management strategies for high-risk individuals."-Swaroop et al. [39]
+###end p 64
+###begin p 65
+###xml 302 306 302 306 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Conley1">[40]</xref>
+"The continued support for these genes in ARM susceptibility will hopefully bring us closer to being able to utilize the information in these genes to identify at risk individuals and provide a rational basis for future clinical trials to test preventive therapies in high-risk cohorts."-Conley et al. [40]
+###end p 65
+###begin p 66
+###xml 349 353 349 353 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Maller1">[41]</xref>
+"Expressed another way, these genotypes apparently identify individuals whose lifetime risk of AMD ranges from less than 1% to more than 50%; however, longitudinal studies are needed to define the true risk attributable to these loci and the ways in which these might interact with the known environmental and lifestyle risk factors."-Maller et al. [41]
+###end p 66
+###begin p 67
+###xml 244 248 244 248 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Ross1">[42]</xref>
+###xml 269 273 269 273 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Maller1">[41]</xref>
+All these statements are scientifically valid, they are carefully worded, and it is clear the investigators are talking about "potential," "future," and "hope." Nevertheless, they can and have been overinterpreted. For example, a recent review [42] cites Maller et al. [41] and states:
+###end p 67
+###begin p 68
+###xml 30 33 30 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CFH</italic>
+###xml 39 58 39 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">PLEKHA1/ARMS2/HtrA1</italic>
+"SNPs in complement factor H (CFH) and PLEKHA1/ARMS2/HtrA1 capture a substantial fraction of AMD risk and permit the identification of individuals at high risk of developing AMD."
+###end p 68
+###begin p 69
+###xml 5 20 5 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Nature Genetics</italic>
+###xml 112 116 112 116 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-1">[43]</xref>
+###xml 616 619 616 619 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CFH</italic>
+###xml 793 796 793 796 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Gold1">[9]</xref>
+###xml 798 802 798 802 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Dinu1">[44]</xref>
+###xml 803 807 803 807 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Yates1">[46]</xref>
+Even Nature Genetics appears to also overstate the potential impact of AMD genetics. In the December 2007 issue [43], the editors discuss the new hype about personalized genomics and ask: "With the possible exception of age-related macular degeneration, how much can we say with confidence about the spectrum of risk?" However, as we have shown here, we cannot yet make an exception for AMD. We should, however, not let this discourage us. The discoveries of the AMD risk genes are truly amazing, and they should of course encourage and guide future research. In fact, the discovery of the likely involvement of the CFH gene gave firmer footing to the hypothesis that the abnormal function of complement pathway can cause AMD and has resulted in discoveries of other AMD genes in this pathway [9], [44]-[46].
+###end p 69
+###begin title 70
+Conclusions
+###end title 70
+###begin p 71
+Genetic association studies have identified many susceptibility variants for complex diseases and, in many cases, added to the understanding of the etiology of the diseases. However, as we discuss here using real data and theoretical examples, strong association does not necessarily guarantee good classification or discrimination ability. Before using association results for classification and risk estimation purposes, we need to establish their effectiveness formally using appropriate measures and, ideally, appropriate study designs. Additionally, when evaluating the improvement in the predictive value by adding a marker to a prediction model, we may need to use additional measures besides the AUC, such as reclassification tables.
+###end p 71
+###begin p 72
+###xml 979 982 979 982 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Janssens1">[7]</xref>
+###xml 983 987 983 987 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Janssens2">[47]</xref>
+In our examples, we saw that the addition of nine highly significant risk SNPs to the risk model could not improve the discrimination power for cardiovascular events beyond standard risk factors. For type 2 diabetes, the classification rule based on 12 SNPs gave an AUC of only 0.64, a value that is well below the guidelines of 0.75 and 0.99 cutoffs for screening and prognosis purposes, respectively. For Crohn's disease, a classification model based on five SNPs gave an AUC of only 0.66, and for prostate cancer, a model of two SNPs achieves an AUC of only 0.56. Both values are well below the 0.75 and 0.99 cutoffs. For AMD, the AUC of a model with three SNPs was 0.80, but the proportion of positive test results among affected individuals was only 30%, 12%, and 3%, depending on assumed prevalence (15%, 5.5%, and 1.5%, respectively). The results of these four examples, although somewhat disappointing, are not surprising given the theoretical results of Janssens et al. [7],[47] that indicate that achieving a high AUC requires a much larger number of genetic variants than we have to date. For example, Janssens et al. demonstrated that for genetic profiling, on average 80 common variants with ORs of 1.25 each were needed to develop a model useful for identification of high-risk individuals (AUC>0.80).
+###end p 72
+###begin p 73
+###xml 393 396 393 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CFH</italic>
+###xml 407 411 407 411 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Edwards1">[33]</xref>
+###xml 412 416 412 416 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Haines1">[35]</xref>
+###xml 417 421 417 421 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Klein1">[37]</xref>
+###xml 552 555 552 555 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Gold1">[9]</xref>
+###xml 557 561 557 561 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Dinu1">[44]</xref>
+###xml 562 566 562 566 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pgen.1000337-Yates1">[46]</xref>
+Even though our examples illustrate that highly associated SNPs may not be effective as classifiers, it should not be concluded that the association findings are not important nor that association studies are not valuable. In many cases, the association discoveries have and will continue to result in new etiological hypotheses previously not considered. For example, in the case of AMD, the CFH discovery [33]-[35],[37] resulted in a new focus on the complement pathway and subsequent identification of additional novel disease genes in that pathway [9], [44]-[46]. The scientific community should be very cautious to avoid overhyping association findings in terms of their "personalized medicine" value before their time, lest we lose the goodwill and support of the general public.
+###end p 73
+###begin title 74
+Supporting Information
+###end title 74
+###begin p 75
+Supporting text and tables.
+###end p 75
+###begin p 76
+(0.08 MB PDF)
+###end p 76
+###begin p 77
+Click here for additional data file.
+###end p 77
+###begin p 78
+###xml 44 56 <span type="species:ncbi:9606">participants</span>
+We want to especially acknowledge the study participants and their families for participating in this study. Ms. Tammy Mah-Frazier played an invaluable role in the coordination of the clinical research portion of this work.
+###end p 78
+###begin title 79
+References
+###end title 79
+###begin article-title 80
+Genetics research already touching your practice.
+###end article-title 80
+###begin article-title 81
+Genetics of common disease: a primary care priority aligned with a teachable moment?
+###end article-title 81
+###begin article-title 82
+23AndMe will decode your DNA for $1000. Welcome to the age of genomics.
+###end article-title 82
+###begin article-title 83
+Assessing educational priorities in genetics for general practitioners and specialists in five countries: factor structure of the Genetic-Educational Priorities (Gen-EP) scale.
+###end article-title 83
+###begin article-title 84
+Genetics in clinical practice: general practitioners' educational priorities in European countries.
+###end article-title 84
+###begin article-title 85
+Limitations of the odds ratio in gauging the performance of a diagnostic, prognostic, or screening marker.
+###end article-title 85
+###begin article-title 86
+The impact of genotype frequencies on the clinical validity of genomic profiling for predicting common chronic diseases.
+###end article-title 86
+###begin article-title 87
+Published genetic variants in retinopathy of prematurity: random forest analysis suggests a negligible contribution to risk and severity.
+###end article-title 87
+###begin article-title 88
+Variation in factor B (BF) and complement component 2 (C2) genes is associated with age-related macular degeneration.
+###end article-title 88
+###begin article-title 89
+C2 and CFB genes in age-related maculopathy and joint action with CFH and LOC387715 genes.
+###end article-title 89
+###begin article-title 90
+Use and misuse of the receiver operating characteristic curve in risk prediction.
+###end article-title 90
+###begin article-title 91
+When can odds ratios mislead?
+###end article-title 91
+###begin article-title 92
+When can odds ratios mislead? Odds ratios should be used only in case-control studies and logistic regression analyses.
+###end article-title 92
+###begin article-title 93
+###xml 0 5 <span type="species:ncbi:9606">Women</span>
+Women's perceptions of breast cancer risk: how you ask matters.
+###end article-title 93
+###begin article-title 94
+Evaluating the added predictive ability of a new marker: from area under the ROC curve to reclassification and beyond.
+###end article-title 94
+###begin article-title 95
+Polymorphisms associated with cholesterol and risk of cardiovascular events.
+###end article-title 95
+###begin article-title 96
+A genome-wide association study of type 2 diabetes in Finns detects multiple susceptibility variants.
+###end article-title 96
+###begin article-title 97
+A genome-wide association study identifies novel risk loci for type 2 diabetes.
+###end article-title 97
+###begin article-title 98
+Combining information from common type 2 diabetes risk polymorphisms improves disease prediction.
+###end article-title 98
+###begin article-title 99
+Using the optimal receiver operating characteristic curve to design a predictive genetic test, exemplified with type 2 diabetes.
+###end article-title 99
+###begin article-title 100
+Genome-wide association study of prostate cancer identifies a second risk locus at 8q24.
+###end article-title 100
+###begin article-title 101
+Contribution of the novel inflammatory bowel disease gene IL23R to disease susceptibility and phenotype.
+###end article-title 101
+###begin article-title 102
+Confirmation of the role of ATG16L1 as a Crohn's disease susceptibility gene.
+###end article-title 102
+###begin article-title 103
+A genome-wide association study identifies IL23R as an inflammatory bowel disease gene.
+###end article-title 103
+###begin article-title 104
+Sequence variants in the autophagy gene IRGM and multiple other replicating loci contribute to Crohn's disease susceptibility.
+###end article-title 104
+###begin article-title 105
+Genome-wide association study identifies new susceptibility loci for Crohn disease and implicates autophagy in disease pathogenesis.
+###end article-title 105
+###begin article-title 106
+Integrating the predictiveness of a marker with its performance as a classifier.
+###end article-title 106
+###begin article-title 107
+Prevalence of age-related macular degeneration in the United States.
+###end article-title 107
+###begin article-title 108
+The optimal ratio of cases to controls for estimating the classification accuracy of a biomarker.
+###end article-title 108
+###begin article-title 109
+Quantifying and comparing the accuracy of binary biomarkers when predicting a failure time outcome.
+###end article-title 109
+###begin article-title 110
+Evaluating the ROC performance of markers for future events.
+###end article-title 110
+###begin article-title 111
+Complement factor H polymorphism and age-related macular degeneration.
+###end article-title 111
+###begin article-title 112
+A common haplotype in the complement regulatory gene factor H (HF1/CFH) predisposes individuals to age-related macular degeneration.
+###end article-title 112
+###begin article-title 113
+Complement factor H variant increases the risk of age-related macular degeneration.
+###end article-title 113
+###begin article-title 114
+Susceptibility genes for age-related maculopathy on chromosome 10q26.
+###end article-title 114
+###begin article-title 115
+Complement factor H polymorphism in age-related macular degeneration.
+###end article-title 115
+###begin article-title 116
+Hypothetical LOC387715 is a second major susceptibility gene for age-related macular degeneration, contributing independently of complement factor H to disease risk.
+###end article-title 116
+###begin article-title 117
+Genetic susceptibility to age-related macular degeneration: a paradigm for dissecting complex disease traits.
+###end article-title 117
+###begin article-title 118
+CFH, ELOVL4, PLEKHA1 and LOC387715 genes and susceptibility to age-related maculopathy: AREDS and CHS cohorts and meta-analyses.
+###end article-title 118
+###begin article-title 119
+Common variation in three genes, including a noncoding variant in CFH, strongly influences risk of age-related macular degeneration.
+###end article-title 119
+###begin article-title 120
+Genetic markers and biomarkers for age-related macular degeneration.
+###end article-title 120
+###begin article-title 121
+Risky business.
+###end article-title 121
+###begin article-title 122
+Evidence for association between multiple complement pathway genes and AMD.
+###end article-title 122
+###begin article-title 123
+Variation in complement factor 3 is associated with risk of age-related macular degeneration.
+###end article-title 123
+###begin article-title 124
+Complement C3 variant and the risk of age-related macular degeneration.
+###end article-title 124
+###begin article-title 125
+Predictive testing for complex diseases using multiple genes: fact or fiction?
+###end article-title 125
+###begin p 126
+###xml 98 113 98 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">LOC387715/ARMS2</italic>
+The authors are listed as the inventors in a patent filed by the University of Pittsburgh for the LOC387715/ARMS2 locus.
+###end p 126
+###begin p 127
+This work was supported by NEI grant R01EY009859, The Steinbach Foundation, New York, Research to Prevent Blindness, New York, The Eye and Ear Foundation of Pittsburgh, the American Health Assistance Foundation, Clarksburg, Maryland, and the Jules Stein Eye Institute, Los Angeles, California (all to MBG). The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.
+###end p 127
+

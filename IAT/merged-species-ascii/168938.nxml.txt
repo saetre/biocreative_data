@@ -1,0 +1,222 @@
+###begin article-title 0
+MAK, a computational tool kit for automated MITE analysis
+###end article-title 0
+###begin p 1
+###xml 91 108 91 108 <email xmlns:xlink="http://www.w3.org/1999/xlink">tim@idmb.tamu.edu</email>
+To whom correspondence should be addressed. Tel: +1 9798457750; Fax: +1 9798624098; Email: tim@idmb.tamu.edu
+###end p 1
+###begin p 2
+Miniature inverted repeat transposable elements (MITEs) are ubiquitous and numerous in higher eukaryotic genomes. Analysis of MITE families is laborious and time consuming, especially when multiple MITE families are involved in the study. Based on the structural characteristics of MITEs and genetic principles for transposable elements (TEs), we have developed a computational tool kit named MITE analysis kit (MAK) to automate the processes (). In addition to its ability to routinely retrieve family member sequences and to report the positions of these elements relative to the closest neighboring genes, MAK is a powerful tool for revealing anchor elements that link MITE families to known transposable element families. Implementation of the MAK is described, as are genetic principles and algorithms used in its derivation. Test runs of the programs for several MITE families yielded anchor sequences that retain TIRs and coding regions reminiscent of transposases. These anchor sequences are consistent with previously reported putative autonomous elements for these MITE families. Furthermore, analysis of two MITE families with no known links to any transposon family revealed two novel transposon families, namely Math and Kid, belonging to the IS5/Harbinger/PIF superfamily.
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin p 4
+###xml 559 560 559 560 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c1">1</xref>
+###xml 561 563 561 563 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c27">27</xref>
+###xml 950 958 950 958 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in trans</italic>
+###xml 1153 1155 1153 1155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c20">20</xref>
+###xml 1156 1158 1156 1158 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c23">23</xref>
+###xml 1159 1161 1159 1161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c24">24</xref>
+###xml 1162 1164 1162 1164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c28">28</xref>
+Higher eukaryotic genomes are rich in transposable elements. Two distinct types of transposable elements have been identified in higher eukaryotes: type I elements (retrotransposable elements) use a copy-paste approach to transpose, yielding a large copy number; type II elements (DNA elements) use a cut-paste-repair approach to transpose. However, numerous families of highly repetitive (hundreds or thousands), short (100-500 bp), elements that do not seem to belong to either type of element have been reported in plants and animals over the past decade (1-27). Because these families typically bear terminal inverted repeats (TIRs) and have target site duplications (TSDs) in their flanking sequences, they were given a collective name of miniature inverted repeat transposable elements (MITEs). Since MITEs apparently do not encode proteins, perhaps because of their small size, their amplification requires the involvement of factors supplied in trans. Although several MITE families are thought to be related to ancestral elements that bear similar TIRs and subterminal regions and are (or were) capable of coding for transposase-like proteins (20,23,24,28), the majority of MITE families lack such links. Since different MITE families may be derived from different founder elements, a link to the ancestral element needs to be established for each individual MITE family.
+###end p 4
+###begin p 5
+###xml 1304 1313 1304 1313 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in silico</italic>
+The analysis of a MITE family usually involves retrieving and aligning members in a given family, searching for its origin (or putative ancestor element) and studying its association with genes in a genome. These analysis steps are laborious, especially when multiple MITE families are involved in the analysis. To retrieve members of a family from the databases or to check the association of members with genes in a genome, a BLASTN is usually carried out, each high scoring pair (HSP) of the BLAST results is manually checked, and the desired sequence or positional information is then extracted from various accessions. This process is time-consuming and error prone because: (i) the copy number for MITE families is usually large; (ii) for purposes of alignment it is necessary to reverse the sequences of those hits that are on the complementary strand of the sequence; and (iii) for unfinished genomes, cited positions of elements in high-throughput sequences are subject to change until the genome is completely sequenced. Even for the announced genomes, updates are released frequently and, hence, the copy number, positions and annotation is subject to change. To search for the putative anchor element (that retains both TIRs and coding regions reminiscent of a transposase) for a MITE family in silico, a BLASTN is carried out and long elements containing similarity to both ends of the MITE are checked and are then used to do BLASTX. BLASTX is used to screen for similarity to known transposases. This process is also time-consuming because, in addition to the difficulties mentioned above, complications arise from the facts that: (i) the anchor element usually does not share internal sequence similarity to the query MITE element, thus the identification of long elements requires manual inspection and recording of the short BLAST HSPs; (ii) BLASTX searches usually take longer than BLASTN searches; and (iii) long sequences dramatically delay results from BLASTX.
+###end p 5
+###begin p 6
+###xml 458 460 458 460 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c24">24</xref>
+###xml 461 463 461 463 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c29">29</xref>
+Here, we describe the MITE analysis kit (MAK), a collection of programs designed to automate MITE analysis (). Given the sequence of a MITE element, MAK can retrieve and orient sequences of other members of the family, identify genes closest to the MITE elements, and can predict the anchor element for the MITE family. Using MAK, we have identified two novel TE families named Math and Kid and provided evidence that they belong to the recently identified (24,29) IS5/Harbinger/PIF superfamily.
+###end p 6
+###begin title 7
+MATERIALS AND METHODS
+###end title 7
+###begin title 8
+Programming language and modules
+###end title 8
+###begin p 9
+###xml 49 51 49 51 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c30">30</xref>
+###xml 468 470 468 470 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c31">31</xref>
+###xml 565 567 565 567 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c32">32</xref>
+Practical extraction and report language (Perl) (30) was used to write the programs for MAK. Transformation of sequence formats was carried out with Bioperl modules Bio::Seq and Bio::SeqIO. The module Bio::Tools::Run::RemoteBLAST was used to do remote BLAST searches and the modules Bio::Search and Bio::SearchIO were used to parse the BLAST search results. Bio::DB::GenBank was used to retrieve MITE elements and their flanking sequences. The Bio::SeqFeature module (31) was used to identify genes closest to the MITEs. Common gateway interface (CGI) programming (32) was used to set up the MAK web-based query service ().
+###end p 9
+###begin title 10
+Computing resources
+###end title 10
+###begin p 11
+###xml 74 76 74 76 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c33">33</xref>
+Database searches were executed in the queuing system for BLAST (QBLAST) (33) at NCBI using a Uniform Resource Locator (URL) standardized application program interface (API) (). MAK was tested extensively with a UNIX system on a 48-processor SGI Origin 3800 (k2) supercomputer at the Texas A&M University supercomputing facility (). It was also tested using either Linux or Win32 systems on a PC with 2 GB RAM at the Texas A&M University Institute of Developmental and Molecular Biology (IDMB). Manual BLAST was carried out at the NCBI BLAST website () to confirm the results from MAK. AlignX in the VNTI7 package (InforMax, Bethesda, MD) was used for the alignments of DNA and protein sequences.
+###end p 11
+###begin title 12
+Data sets
+###end title 12
+###begin p 13
+###xml 238 239 238 239 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c6">6</xref>
+###xml 240 242 240 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c11">11</xref>
+###xml 250 252 250 252 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c20">20</xref>
+###xml 261 263 261 263 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c24">24</xref>
+###xml 276 278 276 278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c23">23</xref>
+###xml 450 452 450 452 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c11">11</xref>
+###xml 600 601 600 601 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg531tb1">1</xref>
+Two sets of MITE sequences were used for this study. The families in the first group have reported links to known transposons and were used to test MAK anchor element prediction function. This group includes the families Emigrant/MathE2 (6,11), Tc8 (20), mPIF (24) and MDM-2 (23). The families in the second group did not have any reported link to a known transposon family at the time our study was carried out. This group includes families MathE1 (11) and Kiddo. The sequence of the dataset is supplied as Supplementary Material 1 and the information about the MITE families is summarized in Table 1.
+###end p 13
+###begin title 14
+RESULTS
+###end title 14
+###begin title 15
+Genetic principles and program pipelines
+###end title 15
+###begin title 16
+Member retriever.
+###end title 16
+###begin p 17
+###xml 1142 1143 1142 1143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f1">1</xref>
+###xml 1337 1338 1337 1338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f1">1</xref>
+MITEs in a family share DNA sequence similarities that are readily detectable using BLAST searches. To illustrate the TIR conservation and relationship among members, an alignment is needed. Sequences of the members can be retrieved from BLAST search results. Since a BLAST hit can be on the top or bottom strand, all of the hit sequences to be used for alignment need to be in the same orientation; therefore, in MAK, the hits on the bottom (minus) strand are reversed. Since sequences adjacent to the TSDs of MITEs are often of interest to researchers, the program was designed to allow the retrieval of flanking sequences. In the Member retriever program, BLASTN searches are initiated against NCBI 'nt' and 'htgs' databases using a given MITE sequence. The search results are automatically retrieved and the HSPs are parsed. If the query sequence part in an HSP is the full query MITE length, the hit sequence in the HSP is retrieved as a complete element. If the hit part is in an opposite orientation (minus strand), the reverse sequence of the hit part is retrieved. Then, flanking sequences of user defined length are retrieved (Fig. 1A). In addition, long elements that do not show strong similarity along the total length of the query but do at both terminal regions can also be retrieved using the Long element function (Fig. 1B).
+###end p 17
+###begin title 18
+Anchor.
+###end title 18
+###begin p 19
+###xml 192 194 192 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c20">20</xref>
+###xml 195 197 195 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c23">23</xref>
+###xml 198 200 198 200 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c24">24</xref>
+###xml 201 203 201 203 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c28">28</xref>
+###xml 2019 2020 2019 2020 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f1">1</xref>
+MITEs are likely to be derived from various autonomous or receptor transposons. Recently, MDM-2, mPIF, Tc8 and Emigrant/MathE2 have been identified to be the derivatives of known transposons (20,23,24,28). The most conserved parts of a DNA transposon family lie in the TIRs because they represent the major transposase recognition sites. Since MITEs are usually so abbreviated that they retain no trace of the transposase coding region, identification of the original transposon relies heavily on their TIRs or subterminal regions. Since the elements from which MITEs are directly derived may not necessarily be the autonomous elements responsible for their transposition, we have denoted these elements as MITE anchors. While anchor elements may not necessarily be the ancestors of the anchored elements, an evolutionary relationship is likely to exist between the anchor elements and the anchored elements. In the automated anchor finding process, a BLASTN is carried out at very low stringency (with high E_value, lowest word size, high hitlist_size, low gapcosts and a specified organism) for shortest hits possible. All HSPs that match either end of the query sequence are checked for their orientation. If two HSPs matching the two ends of the query sequence in the proper orientation are identified from one accession number, the sequence between the HSPs (including the HSP regions) is retrieved if they are 100 bp longer than query sequence but do not exceed a total of the specified anchor size limit. A TIR tolerance is the maximal number of differences between the hits and the query outer ends. If a non-zero TIR tolerance is selected, matching to the query ends is less stringent. These long elements are possible ancestors or their 'uncles or cousins'. To determine if these elements have the potential to encode a transposase, a BLASTX is carried out for each of these elements and the hits that contain the word 'transposon', 'transposase' or 'transposable element' in their titles are retrieved (Fig. 1C). False predictions usually result from transposon nesting events and thus can be identified with BLASTN searches. If only the predicted transposase-like regions inside the predicted element are repetitive at the DNA sequence level, such entries are discarded. Since the long element retrieval process is based on matching with the terminal regions of the query, a nesting event involving two identical transposons with symmetric terminals will produce all the four possibilities if all of them are in the specified size range. Two of the desired elements can be easily identified through a BLASTN search.
+###end p 19
+###begin title 20
+Associator.
+###end title 20
+###begin p 21
+###xml 162 164 162 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c34">34</xref>
+###xml 472 473 472 473 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f1">1</xref>
+Because of their short size, MITE families are potentially less disruptive than classic transposons and they may even contribute beneficially to gene regulation (34). Nevertheless, their large copy numbers suggest that they are potentially disruptive and very few MITEs have been found in coding sequences. It is often desirable to know how closely members in a family are associated with genes and which genes have closest proximity to MITE elements. In Associator (Fig. 1D), a BLASTN is carried out and the accessions and positions of significant hits with lengths longer than one fourth of the query are recorded. For each of these significant hits, the name and position of the annotated gene that has the closest proximity to the center of a given MITE element is retrieved. The results for all the significant hits can be exported as a table.
+###end p 21
+###begin title 22
+Implementation of MAK
+###end title 22
+###begin p 23
+MAK runs on UNIX, Linux and Win32 platforms on which Perl 5.6.1 () and Bioperl 1.0.2 releases () are installed. The web-based software () starts with the input of user name, email address, sequence file name and sequence(s). Then the desired function (Member retriever, Long elements, Associator or Anchor) needs to be selected. The parameters to run Member retriever include the length of sequence flanking the MITE members, the organism in which the MITE family is present and the terminal inverted repeat (TIR) tolerance. For Long element and Anchor functions, a size limit can be selected from 2000, 5000, 10 000 or 20 000 bp. All the retrieved long elements are at least 100 bp longer than the query sequences. Chosen E_value and organism parameters apply for all MAK functions. Upon initiation of the program, the user will be notified of the status of the process. The results will be sent to the specified email. While the format for the input sequence is flexible if the analysis is for a single MITE family, FASTA format is highly recommended if the analysis involves multiple MITE families. The MAK program can also be run as a queue job on a supercomputer in which multiple functions of MAK can be used to analyze several MITE families simultaneously.
+###end p 23
+###begin p 24
+###xml 34 35 34 35 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg531tb1">1</xref>
+###xml 220 221 220 221 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f2">2</xref>
+###xml 611 613 611 613 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c20">20</xref>
+###xml 614 616 614 616 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c23">23</xref>
+###xml 617 619 617 619 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c24">24</xref>
+###xml 620 622 620 622 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c28">28</xref>
+###xml 631 632 631 632 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkg531tb1">1</xref>
+When the dataset for MITEs (Table 1) was used to run MAK, updated information for these MITE families was obtained. The retrieved members of these MITE families are given as Supplementary Material 2. The chart in Figure 2 demonstrates the distance of MITEs (in completed genomes) from MathE1, MathE2 and Tc8 relative to their closest genes. The output from MAK Associator is provided as Supplementary Material 3. When the dataset for MITEs with known relationships was used to run Anchor function, anchor elements for Emigrant/MathE2, Tc8, mPIF, MDM2 predicted by the MAK were consistent with previous reports (20,23,24,28) (Table 1 and Supplementary Material 4).
+###end p 24
+###begin title 25
+Anchoring MathE1 and Kiddo MITE families
+###end title 25
+###begin p 26
+###xml 73 84 73 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Arabidopsis</italic>
+###xml 1543 1544 1543 1544 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f3">3</xref>
+###xml 73 84 <span type="species:ncbi:3702">Arabidopsis</span>
+When the MathE1 family was used to run the Anchor function of MAK in the Arabidopsis genome, two identical long elements (AC007123, from 6918 to 2690; AF007271, from 16 996 to 21 224) with identical TIRs to the MathE1 element on accession AB010073 were identified. They were predicted to be a transposase gene. The sequence of these two long elements comes from an overlap region of accessions AC007123 and AF007271 on chromosome 5. Thus they represent only one element, which we named as A-MathE1 (anchor of MathE1). It shares 77% sequence identity to one terminus of MathE1 in 35 bp and 80% sequence identity to the other terminus of MathE1 in 82 bp. It has identical 12 bp TIRs to those of MathE1 elements. Interestingly, the internal sequences of MathE1 elements seem to be derived from 29 blocks of 10-30 bp on AC007123 with very little divergence (>90% identity in each block). BLAST searches with the long element sequences resulted in truncated or disarmed elements with minimal damages to the TIRs. An additional long element (AB025602, from 7658 to 11 849) showed an overall 98% DNA sequence identity to A-MathE1. Since the element on AB025602 is situated on a different locus of chromosome 5 from A-MathE1 on AC007123 and they share no flanking sequence similarity, it apparently results from a transposition event. The 6 bp missing from the TIR at the 5' end were found to be present on the 3' end flanking sequence. These long elements and MITE family MathE1 converge into one transposable element family we have named Math (Fig. 3A). This family showed a TSD exclusively of 'TTA' and has a TIR of 13 bp.
+###end p 26
+###begin p 27
+###xml 23 25 23 25 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c22">22</xref>
+###xml 630 645 630 645 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Sorghum bicolor</italic>
+###xml 998 999 950 951 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f3">3</xref>
+###xml 1497 1498 1425 1426 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f3">3</xref>
+###xml 77 81 <span type="species:ncbi:4530">rice</span>
+###xml 630 645 <span type="species:ncbi:4558">Sorghum bicolor</span>
+###xml 1570 1574 <span type="species:ncbi:4530">rice</span>
+When the Kiddo family (22) was used to run the Anchor function of MAK in the rice genome, three long elements with typical TE characteristics were predicted to be transposase genes or pseudogenes. They are within AP004087 (gi:15281366) from 74 902 to 78 476 on chromosome 2, AC118347 (gi:20153328) from 20 719 to 17 088 on chromosome 11 and AP005461 (gi:21624013) from 78 912 to 82 646 on chromosome 6. These elements showed an overall sequence identity of >92%. When the long element of Kiddo on AP004087 was used to do a BLAST search, an additional complete element was found on AF114171 (gi:4680196) from 39 268 to 43 050 from Sorghum bicolor chromosome F. It has an overall sequence identity of 66% to that of AC118347. We name the long element on AC118347 as A-Kiddo (anchor of Kiddo). The internal DNA sequences of these four long elements are highly conserved in two regions (from approximately800 to approximately2050 bp and from approximately2100 to approximately3200 bp on AC118347; Fig. 3B). Additionally, 16 complete (i.e. having TIRs at both ends) elements with sizes ranging from 714 to 2538 bp were identified. Like the long elements, they have a consensus TSD of TAA and show high (>85%) similarity in approximately250 and approximately110 bp terminal regions, but their internal sequences do not show similarity to known transposases. They form an intermediate group (KiddoE) between Kiddo and A-Kiddo. Together, these elements represent a novel transposable element family (Fig. 3B), which we named Kid. These have not previously been annotated in the rice genome.
+###end p 27
+###begin title 28
+Math and Kid belong to IS5/Harbinger/PIF superfamily
+###end title 28
+###begin p 29
+###xml 477 478 477 478 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f4">4</xref>
+###xml 579 580 579 580 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f4">4</xref>
+###xml 866 867 866 867 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkg531f4">4</xref>
+###xml 964 966 964 966 <italic xmlns:xlink="http://www.w3.org/1999/xlink">At</italic>
+###xml 973 975 973 975 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c24">24</xref>
+###xml 371 376 <span type="species:ncbi:4577|species:ncbi:381124">maize</span>
+The anchor elements of A-MathE1 and A-KiddoE do not share significant DNA sequence similarity with each other. Their internal sequences do not contain repetitive sequences as revealed by BLASTN searches. However, as predicted by MAK, both of them share strong similarity to putative transposase-like proteins. One of the BLASTX hits was from the putative transposase for maize PIFa elements (AF412282). The predicted gene structure for A-MathE1 and A-KiddoE is shown in Figure 4A and their putative translated products were aligned with putative PIFa protein, as shown in Figure 4B. PIFa shares a similarity of 46 and 50% in a region of 834 bp (808-1642) and 912 bp (2044-2956) to the putative A-MathE1 and A-KiddoE proteins, respectively. In addition, they have the same TSD size, and the TIR sequences of these two elements are very similar to those of PIFa (Fig. 4C). Indeed, the A-MathE1 element on AF007271 was proposed to be a IS5/Harbinger/PIF member named At-PIF2 (24). These pieces of evidence strongly suggest that the TE families Math and Kid belong to the IS5/Harbinger/PIF superfamily.
+###end p 29
+###begin title 30
+DISCUSSION
+###end title 30
+###begin title 31
+Advantages and limitations of the computing approach
+###end title 31
+###begin p 32
+Using the automated processes in the MAK, we have successfully run a set of MITE families overnight. The output files are in standard format (e.g. FASTA) and thus can be used directly for downstream processes such as alignments (using VNTI, PILEUP, ClustalW, etc.) and making tables. As noted in the Introduction, conventional MITE analysis is laborious and needs to be repeated each time the database is updated. Clearly, new analyses are appropriate as databases are updated, but this is relatively easy using MAK. However, since the process is partly dependent on remote BLAST analysis on the NCBI QBLAST server, the program may encounter internal server errors and hence be terminated (if this occurs, an error message will be generated). To lower the chance of encountering an internal server error at NCBI, we usually avoid running the program at peak times (usually daytime on workdays). In the program, we allow the retrieval of request ID (RID) for five times with an interval of 100 s before the process is allowed to die. Another alternative is to run stand-alone BLAST on a local system, but this approach requires downloading a huge database from NCBI. For the Associator function output, modest manual inspection to remove duplicate entries is necessary because BLAST searches will yield two HSPs at the same DNA locus if the MITE has a typical inverted repeat structure. Further improvement of the program to remove such entries is underway.
+###end p 32
+###begin title 33
+Misannotation of PIF-like elements in GenBank
+###end title 33
+###begin p 34
+###xml 82 88 82 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink">En/spm</italic>
+###xml 218 224 218 224 <italic xmlns:xlink="http://www.w3.org/1999/xlink">En/spm</italic>
+###xml 438 444 438 444 <italic xmlns:xlink="http://www.w3.org/1999/xlink">En/spm</italic>
+###xml 487 493 487 493 <italic xmlns:xlink="http://www.w3.org/1999/xlink">En/spm</italic>
+###xml 523 525 523 525 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c35">35</xref>
+###xml 537 540 537 540 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Tam</italic>
+###xml 564 581 564 581 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Antirrhinum majus</italic>
+###xml 583 585 583 585 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c36">36</xref>
+###xml 586 588 586 588 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c37">37</xref>
+###xml 628 631 628 631 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Tgm</italic>
+###xml 644 646 644 646 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c38">38</xref>
+###xml 647 649 647 649 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkg531c39">39</xref>
+###xml 853 858 853 858 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PIFa.</italic>
+###xml 959 963 959 963 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PIFa</italic>
+###xml 968 974 968 974 <italic xmlns:xlink="http://www.w3.org/1999/xlink">En/spm</italic>
+###xml 516 521 <span type="species:ncbi:4577|species:ncbi:381124">maize</span>
+###xml 564 581 <span type="species:ncbi:4151">Antirrhinum majus</span>
+###xml 635 642 <span type="species:ncbi:3847">soybean</span>
+When we used A-MathE1 and A-Kiddo elements to do BLASTX, several hits were titled En/spm-like transposon protein (accessions: NM_148036, NM_104832, NM_128220, NM_148535, AP003450, AB016878, AP000606, NM_148229). These En/spm-like hits were further analyzed using PSI-BLAST and iterations were carried out until no more new hits were found. Unfortunately, we were unable to find detectable peptide sequence similarity between any of these En/spm-like transposon proteins and the putative En/spm proteins TNPD-TNPA in maize (35), putative Tam1 proteins TNP1-TNP2 in Antirrhinum majus (36,37) or the putative open reading frame of Tgm in soybean (38,39). On the contrary, all of these hits showed strong similarity to PIFa putative transposase protein (AF412282). Together with the fact that A-MathE1 and A-Kiddo showed similar TIR sequence to that of the PIFa. We believe that these elements were misannotated in the database although it is still possible that PIFa and En/spm superfamiles are remotely related because they both have 3 bp TSDs and approximately13 bp TIRs.
+###end p 34
+###begin title 35
+SUPPLEMENTARY MATERIAL
+###end title 35
+###begin p 36
+Supplementary Material is available at NAR Online.
+###end p 36
+###begin title 37
+[Supplementary Material]
+###end title 37
+###begin title 38
+Figures and Tables
+###end title 38
+###begin p 39
+ Diagram of pipelines for MAK.
+###end p 39
+###begin p 40
+###xml 537 538 537 538 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 651 652 651 652 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+ Distance of members in MITE families MathE1, MathE2 and Tc8 to their closest genes. The names and positions of the genes closest to the MITEs retrieved with MAK are sorted ascendingly with Microsoft Excel. The distance of a MITE inside a coding sequence (CDS) to the gene is considered 0 and the distance of a MITE at the 5' end of a CDS to the CDS is changed into a negative value. The sorted elements are numbered consecutively, starting from 1. The distance values of MITEs to a CDS are plotted against their numbering. Each unit of x-axis on the chart represents a MITE element and the distance of that MITE to a CDS is shown as the value on the y-axis.
+###end p 40
+###begin p 41
+###xml 43 44 43 44 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 55 56 55 56 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+ Schematic presentation of TE family Math (A) and Kid (B). Anchor elements are aligned with similar long elements and corresponding MITE families. Vertical lines in internal regions of long elements (long gray bars) indicate dissimilar regions and vertical lines connected by dotted lines in MITE elements indicate similar sequence blocks on MITEs to the anchor elements. Dotted lines indicate deletion regions (blank regions). The elements are drawn to scale. The triangles at the ends represent TIRs. The accession number on the left of the elements indicate the accession on which the elements are located and the positions for these elements on the accessions are described in Results.
+###end p 41
+###begin p 42
+###xml 51 52 51 52 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 598 599 598 599 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+###xml 762 763 762 763 <bold xmlns:xlink="http://www.w3.org/1999/xlink">C</bold>
+###xml 345 350 <span type="species:ncbi:4577|species:ncbi:381124">maize</span>
+ Putative gene structure for A-MathE1 and A-Kiddo (A). Dotted regions indicate putative coding exons. Exons showing similarity to putative PIFa transposase are indicated in densely dotted regions. Bridged regions indicate putative introns. Sequence alignment between A-MathE1 putative translation product (from 808-1642 on the DNA sequence) and maize PIFa putative transposase (from 70 to 296 on AF412282 protein sequence) (upper panel), and sequence alignment between A-Kiddo putative translation product (2044-2956 on the DNA sequence) and PIFa putative transposase (from 18 to 296 on AF412282) (B). Letters in black indicate identical residues and letters in gray indicate similar residues. Alignment of left TIRs and right TIRs from PIFa, MathE1 and KiddoE (C). Dotted lines denote omitted internal sequences.
+###end p 42
+###begin title 43
+Summary of information about MITE families used in this study
+###end title 43
+###begin title 44
+ACKNOWLEDGEMENTS
+###end title 44
+###begin p 45
+We thank Charlie Harris at IDMB and David Reed at the Biology Department of Texas A&M University, and Hao Yu and Hemanth Sundaram at the Supercomputing Facility at Texas A&M University for exceptional help with computing techniques. We also thank Jason Stajich and the biperl community for advice on bioperl modules and Tom Bureau for help in obtaining the Tc8 sequences. Supported in part by NSF grant MCB-0110477.
+###end p 45
+###begin title 46
+REFERENCES
+###end title 46
+

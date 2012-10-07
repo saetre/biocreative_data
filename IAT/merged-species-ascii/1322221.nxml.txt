@@ -1,0 +1,663 @@
+###begin article-title 0
+Computational modeling reveals molecular details of epidermal growth factor binding
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+###xml 616 624 616 624 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo </italic>
+The ErbB family of receptors are dysregulated in a number of cancers, and the signaling pathway of this receptor family is a critical target for several anti-cancer drugs. Therefore a detailed understanding of the mechanisms of receptor activation is critical. However, despite a plethora of biochemical studies and recent single particle tracking experiments, the early molecular mechanisms involving epidermal growth factor (EGF) binding and EGF receptor (EGFR) dimerization are not as well understood. Herein, we describe a spatially distributed Monte Carlo based simulation framework to enable the simulation of in vivo receptor diffusion and dimerization.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+Our simulation results are in agreement with the data from single particle tracking and biochemical experiments on EGFR. Furthermore, the simulations reveal that the sequence of receptor-receptor and ligand-receptor reaction events depends on the ligand concentration, receptor density and receptor mobility.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+Our computer simulations reveal the mechanism of EGF binding on EGFR. Overall, we show that spatial simulation of receptor dynamics can be used to gain a mechanistic understanding of receptor activation which may in turn enable improved cancer treatments in the future.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 387 388 387 388 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 760 761 760 761 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 762 763 762 763 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 91 96 <span type="species:ncbi:9606">women</span>
+Amplification of genes for the ErbB family of receptors is associated with poor outcome in women's cancers, including breast, ovarian and endometrial cancer. Under non-pathological conditions, epidermal growth factor (EGF) receptor (EGFR) or ErbB1 is activated by ligand-induced receptor dimerization, resulting in autophosphorylation and phosphorylation of various cellular substrates [1]. However, while it is clear that overexpression is a factor leading to ligand-independent signaling via these receptors, the mechanism by which functional dimerization and activation occurs is unknown. Since EGF binding represents the initial step for activating EGFR, considerable work has been devoted to elucidating the mechanisms of ligand binding and dimerization [1-7]. However, molecular details of ligand-induced receptor dimerization are not as well understood.
+###end p 9
+###begin p 10
+###xml 11 20 11 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vitro </italic>
+###xml 84 85 84 85 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 191 192 191 192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 329 330 329 330 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 391 393 391 393 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 467 469 467 469 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 498 499 498 499 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 547 549 547 549 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+Apart from in vitro biochemical experiments to study mechanisms of EGFR activation [1], recent developments in microscopy have made it possible to visualize protein dynamics in living cells [8]. The current imaging methods either have a high spatial resolution, such as electron microscopy experiments using immunogold labeling [9] and covalent linking to chemical conjugates like ferritin [10], or high temporal resolution, such as fluorescence confocal microscopy [11], single particle tracking [5] and more recently quantum dots based ligands [12]. However, with the currently available imaging technologies, combined high temporal and spatial resolution (of multiple receptors) has not been achieved.
+###end p 10
+###begin p 11
+###xml 135 136 135 136 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 137 139 137 139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 140 142 140 142 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 203 204 203 204 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 205 207 205 207 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 387 389 387 389 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+Computational efforts devoted to understanding the extracellular mechanisms leading to EGFR activation are mostly equilibrium studies [7,13-15] or continuum reaction-diffusion models; see references in [3,16]. Continuum partial differential equation based models have also been used to represent signaling processes in the plasma membrane assuming a continuum distribution of receptors [17].
+###end p 11
+###begin p 12
+###xml 190 192 190 192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 344 346 344 346 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 450 452 450 452 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 453 455 453 455 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 579 581 579 581 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 582 584 582 584 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 585 587 585 587 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+While such studies have provided useful insights, they are not ideally suited for describing cell surface heterogeneities, such as microdomains and anomalous diffusion of surface receptors [18], which are important to capture the spatiotemporal receptor dynamics, and lack spatial correlations, known to arise from bimolecular reaction events [19], such as dimerization. Monte Carlo (MC) techniques have proven powerful for systems biology modeling [20-22]. In the past, spatial MC approaches have provided mechanistic understanding in other biological systems; see for example [20,23-33].
+###end p 12
+###begin p 13
+In this study, we have used a spatial MC framework which not only enables a realistic representation of the plasma membrane, but also facilitates integration of different types of biological data produced from biochemical and microscopy studies to gain insight into the mechanistic details of the underlying biological process. We have developed a general kinetic, lattice MC modeling framework to model the ligand (EGF) binding and dimerization of the EGFR. We compare our simulation results with single particle tracking experiments and analyzed the dominant mechanism of ligand binding and dimerization.
+###end p 13
+###begin title 14
+Results
+###end title 14
+###begin title 15
+Comparison of stochastic and deterministic models
+###end title 15
+###begin p 16
+###xml 59 60 59 60 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 65 66 65 66 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 662 664 661 663 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 703 707 702 706 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3(a)</xref>
+###xml 1050 1055 1049 1054 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+Microscopic events modeled in this work are shown in Figs. 1 and 2. In order to test the MC algorithm and explore possible differences between stochastic and deterministic models, we have performed a number of simulations for various parameters. Results from the hybrid null-event MC algorithm were compared with an ordinary differential equations (ODEs) model with a set of parameters for which the process is reaction limited, i.e., diffusion is fast compared to reaction, in order to test the validity of the MC algorithm. Specifically, we simulated a dimerization reaction in the absence of ligand considering a high receptor number density of 11,000 per mum2 and assuming no dimers initially. Fig. 3(a) compares the concentration trajectories of dimerized EGFR. This comparison confirms that the hybrid null-event MC algorithm captures the time scales of the system resulting in the correct transient concentration profile. Additional validation carried out under diffusion control has again demonstrated the accuracy of our MC method (Mayawala et al., in preparation).
+###end p 16
+###begin p 17
+Schematic of simulated microscopic events. Each receptor can diffuse to an empty neighboring site, react with a neighboring receptor to form a dimer, and bind ligand. All events are reversible.
+###end p 17
+###begin p 18
+Reactions events considered in our model as given in [14].
+###end p 18
+###begin p 19
+###xml 164 165 163 164 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 177 181 176 180 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-14 </sup>
+###xml 182 183 181 182 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 186 188 185 187 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1</sup>
+###xml 320 321 318 319 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 337 341 335 339 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-15 </sup>
+###xml 342 343 340 341 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 346 348 344 346 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1</sup>
+Comparison of hybrid null-event MC and ODE models in terms of (a) dimerized EGFR in the absence of ligand at a high receptor density and diffusivity (11,000 per mum2, D = 2 x 10-14 m2sec-1) and assuming no initial dimers, and (b) EGF bound EGFR in the presence of ligand (160 nM) at low receptor density (125 per per mum2) and D = 2 x 10-15 m2sec-1. The reactions on the figure indicate the dominant processes responsible for the concentration trajectories. Error bars indicate 2 standard deviations obtained from 10 independent MC simulations.
+###end p 19
+###begin p 20
+###xml 13 17 13 17 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3(b)</xref>
+###xml 185 187 184 186 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 218 222 217 221 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-15 </sup>
+###xml 223 224 222 223 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 225 227 224 226 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1</sup>
+Next in Fig. 3(b) we compared the MC and ODE concentration profiles of EGF bound EGFR monomer in the presence of ligand (160 nM), with a receptor number density of 125 receptors per mum2 and a low diffusivity of 2 x 10-15 m2s-1. The low values of receptor density and diffusivity result in a diffusion controlled case. Corresponding to these parameters, the receptor dimerization rate in the spatial MC model was slower compared to that of the ODE model. The diffusion limited dimerization of EGF bound EGFR monomer leads to a higher concentration of unbound receptor in the spatial MC model than in the ODE model. Thus, spatiotemporal MC simulations are required to capture the transient concentration profiles of the signaling species under diffusion limited conditions. Overall, low receptor densities and low diffusivities may render the system diffusion limited. Under such conditions, well-mixed simulations do not provide accurate dynamics. Use of spatial MC bypasses the question whether the system is diffusion or reaction limited. In a forthcoming communication, we will address quantitatively the conditions for which spatial MC simulations are needed.
+###end p 20
+###begin p 21
+###xml 336 338 336 338 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 339 341 339 341 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 496 498 496 498 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+Partial differential equations (PDEs) have traditionally been used to model diffusion-reaction processes when spatial effects become important. However, accurate representation of receptor-receptor reactions typically requires MC simulation due to the spatial inhomogeneous distribution of receptors stemming from spatial correlations [19,28]. Aside from spatial correlations, realistic representation of the plasma membrane microdomains and anomalous diffusion make MC simulation indispensable [18]. Due to these limitations, PDE models have not been employed here.
+###end p 21
+###begin title 22
+Comparison of hybrid null-event MC simulations with single particle tracking experiments
+###end title 22
+###begin p 23
+###xml 109 114 109 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 117 118 117 118 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 686 690 686 690 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4(a)</xref>
+###xml 914 918 914 918 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4(b)</xref>
+The dynamics of the ligand binding events were compared with the single particle tracking experiment of Sako et al. [5] at an EGF concentration of 0.16 nM in the 0-60 sec time interval. To compare simulation results with experimental data, EGF was assumed to be associated with Cy3 dye. A dimerized receptor with two EGF molecules was taken to fluoresce twice as intensely as a receptor (single or dimerized) bound to one EGF molecule. The predicted initial increase of low intensity spots (monomers plus dimers having one EGF bound) followed by a slower increase in high intensity spots (dimers with 2 molecules of EGF) is qualitatively consistent with the experimental data (see Fig. 4(a)). The initial increase in the low intensity signal was due to the rapid binding of EGF on predimerized EGFR. Furthermore, the increase in the total density of Cy3-EGF spots (total bound EGF on all receptors), shown in Fig. 4(b), is also consistent with experimental data.
+###end p 23
+###begin p 24
+###xml 247 252 247 252 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 361 362 360 361 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 391 395 390 394 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-14 </sup>
+###xml 396 397 395 396 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 400 402 399 401 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1</sup>
+###xml 587 592 586 591 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+(a) Evolution of intensity of dimerized receptors with two ligands (high intensity spots) and of monomer plus dimerized receptors with a single ligand bound (low intensity spots) along with the data of single particle tracking experiments by Sako et al. over time intervals of 20 sec. The simulations were performed for a receptor number density of 5500 per mum2, a diffusivity of D = 2 x 10-14 m2sec-1, and 18% dimers initially. The simulation intensity has been normalized with the experimental data. (b) Comparison of predicted density of Cy3-EGF spots with experimental data of Sako et al. The densities are normalized with the value at 60 sec. Good agreement of simulations with experimental data is found. In both panels, error bars indicate 2 standard deviations obtained from 10 independent MC simulations.
+###end p 24
+###begin p 25
+###xml 114 115 114 115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 122 127 122 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 130 131 130 131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 548 553 548 553 <italic xmlns:xlink="http://www.w3.org/1999/xlink">et al</italic>
+###xml 556 557 556 557 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 699 700 699 700 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+The possible sequences of events leading to the formation of EGF bound dimerized EGFR at 60 sec are shown in Fig. 5. Sako et al. [5] suggested sequence 1 as being dominant. However, the experimental study alone cannot unambiguously determine the sequence due to its limited spatial resolution and the fact that only ligand bound receptors can be tracked. Our simulations showed that 95-100% of the receptors follow sequence 1, 0-4.9% sequence 2, and the remaining receptors follow sequence 3. Our results are consistent with the hypothesis of Sako et al. [5]. This comparison serves as a model validation step. Small adjustments (20-30%) in the equilibrium and kinetic parameters tabulated in Table 1, which are well within the margins of error, lead to nearly proportional changes in intensity, i.e., no dramatic differences in the simulation profiles are seen (see appendix for details).
+###end p 25
+###begin p 26
+Sequence of reactions resulting in dimerized receptors with both receptors bound to ligand for simulations of Fig. 4. All reactions are reversible.
+###end p 26
+###begin p 27
+Kinetic (reaction events given in Fig. 2) and transport (monomer and dimer diffusion) parameters used in hybrid null-event MC model (factors of 1/2 and 1/4 discussed in the Methods section have to be considered).
+###end p 27
+###begin title 28
+Effect of ligand concentration on signaling reaction mechanism in A-431 cells (high receptor density)
+###end title 28
+###begin p 29
+###xml 38 39 38 39 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 473 477 473 477 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6(a)</xref>
+Single particle tracking experiments [5] are typically limited to low ligand concentrations. High concentration of ligand would lead to fluorescence of a large number of EGFRs making it impossible to visualize individual particles. However, simulations can be used to elucidate the influence of extracellular EGF concentration on EGFR dimerization. Our simulations indicated that the relative contributions of sequences 1-3 at 60 sec change with ligand concentration (Fig. 6(a)). At low ligand concentration, sequence 1 dominates, whereas at higher ligand concentration, a significant fraction of dimers form via sequence 2. Furthermore, sequence 3 also occurs to appreciable extent at high concentration of EGF. At low ligand concentration, most of the ligand gets bound to dimerized receptors, which have a higher ligand affinity; however, the extent to which free EGFR dimerization can occur is limited. At higher ligand concentration, when a significant fraction of ligand is attached to monomers, the coupling between ligand attached monomer and free or ligand attached monomer gives rise to dimers. The relative contribution of the sequences also changes with time. Specifically, initial ligand binding occurs on predimerized receptors, and hence, the relative contribution of sequence 1 is higher at short times. At longer times, after binding of ligand on monomers, sequences 2 and 3 start contributing. With an increase in ligand concentration, the contributions of sequences 2 and 3 increase at a faster rate. The contribution of sequence 3 is higher at longer times after accumulation of ligand bound monomers. As a final note, the time needed to reach equilibrium substantially decreases as the concentration of ligand increases (not shown), e.g., to a total of a few sec at 160 nM. As a result, high ligand concentrations may challenge single particle tracking experiments also in terms of temporal resolution.
+###end p 29
+###begin p 30
+###xml 157 159 156 158 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 173 177 172 176 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-14 </sup>
+###xml 178 179 177 178 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 182 184 181 183 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1</sup>
+###xml 240 242 238 240 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 256 260 254 258 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-14 </sup>
+###xml 261 262 259 260 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 265 267 263 265 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1</sup>
+###xml 327 329 324 326 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 343 347 340 344 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-15 </sup>
+###xml 348 349 345 346 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 352 354 349 351 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1</sup>
+Contributions of the different reaction mechanisms at 60 sec for different concentrations of EGF with (a) a receptor number density of 5500 receptors per mum2 and D = 2 x 10-14 m2sec-1, (b) a receptor number density of 125 receptors per mum2 and D = 2 x 10-14 m2sec-1, and (c) a receptor number density of 125 receptors per mum2 and D = 2 x 10-15 m2sec-1.
+###end p 30
+###begin p 31
+###xml 101 103 101 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 773 775 773 775 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+Support for the suggested mechanisms also comes from biochemical studies. The experimental study of [34] reported that at low doses of EGF, inhibition of high affinity binding by mAb108 can kill almost 50-100% of EGF binding, indicating that most of the early binding takes place by sequence 1 at low EGF concentration. However, this inhibition is overcome at higher concentration (~20-50 times) of EGF, which is indicative of substantial formation of EGF bound dimerized EGFR via sequence 2, consistent with the results of our simulations. A larger scale simulation with variable receptor densities in different regions of the plasma membrane will be developed in the future for quantitative comparison with such biochemical experiments. A recent equilibrium based study [13] has shown that such spatial heterogeneities have strong influence on the amount of EGF binding on EGFR, motivating a more detailed analysis of EGFR on the plasma membrane.
+###end p 31
+###begin title 32
+Effect of ligand concentration and receptor mobility on signaling reaction mechanism in cells with normal receptor density
+###end title 32
+###begin p 33
+###xml 209 213 209 213 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6(b)</xref>
+###xml 263 264 262 263 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+Two important factors influencing ligand binding and dimerization are the receptor density and receptor mobility. The receptor density can significantly influence the mechanism of EGF binding as shown in Fig. 6(b). At lower receptor density (125 receptors per mum2) sequence 1 occurs to a much lower extent as compared to the A-431 cells. For this lower receptor density, at lower EGF concentration sequence 2 is dominant, whereas at higher EGF concentrations, sequence 3 is dominant. Sequence 1 is not important at low receptor density, because of the low amount of EGF free dimers (negligible at the low receptor density considered in this work).
+###end p 33
+###begin p 34
+###xml 52 56 52 56 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-14 </sup>
+###xml 57 58 57 58 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 70 74 70 74 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-15 </sup>
+###xml 75 76 75 76 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 191 195 191 195 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6(b)</xref>
+###xml 200 204 200 204 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6(c)</xref>
+A tenfold decrease in receptor mobility (from 2 x 10-14 m2/s to 2 x 10-15 m2/s) leads to a very small increase in the extent of sequence 3, at the expense of sequences 1 and 2 (compare Figs. 6(b) and 6(c)). This small increase is observed only at low EGF concentration. At higher EGF concentration this increase is even smaller. Sequence 3 occurs to a larger extent at slower diffusion because dimerization is slowing down and so more monomers associate with ligand. At higher EGF concentration, this effect is not as prominent because EGF binding is faster leading to more EGF bound EGFRs, thereby increased dimerization occurs among EGF bound monomer EGFRs even with a higher receptor diffusivity.
+###end p 34
+###begin p 35
+###xml 137 139 137 139 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 140 142 140 142 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 143 145 143 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 415 417 415 417 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 682 686 682 686 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-15 </sup>
+###xml 687 688 687 688 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 700 704 700 704 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-14 </sup>
+###xml 705 706 705 706 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 846 848 845 847 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 887 891 886 890 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-14 </sup>
+###xml 892 893 891 892 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 905 909 904 908 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-13 </sup>
+###xml 910 911 909 910 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+Several studies have indicated inhomogeneities in the plasma membrane and excellent reviews have been published on this topic including [18,35-38]. These studies have suggested localization of receptors within small regions, called microdomains, in the plasma membrane. An implication of the containment of receptors in the microdomains is the observation of lower macroscopic diffusivity as has been discussed in [39]. As a result, the microscopic diffusivity can potentially be at least 1-2 orders of magnitude faster than the diffusivity reported in literature. Therefore, we have also studied the effect of a higher diffusivity. In contrast to decreasing diffusivity from 2 x 10-15 m2/s to 2 x 10-14 m2/s mentioned above, larger changes are observed at high ligand concentration (e.g., 1600 nM) and a receptor density of 125 receptors per mum2 for a change in diffusivity from 2 x 10-14 m2/s to 2 x 10-13 m2/s. Specifically, the contribution of sequence 2 increases from ~15% to ~30% at the expense of sequence 3 which decreases from ~85% to ~70%. An increase in receptor diffusivity leads to an increased rate of dimerization between an occupied and a free receptor in comparison to ligand binding on a free receptor. Overall, a faster diffusivity can lead to an overall increase in the dimerization rate but this effect is not dramatic under our simulation conditions.
+###end p 35
+###begin title 36
+Discussion
+###end title 36
+###begin p 37
+###xml 186 187 186 187 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+Our simulation results suggest future single particle tracking experiments or related microscopy experiments. It may be difficult to perform the single particle tracking experiments of [5] at higher ligand concentration in A-431 cells due to the difficulty in visualization of single EGFR and possibly to the short time scales over which transients are over. However, such experiments can potentially be performed in cells with a lower average receptor density. On such cells, the increased contributions of sequences 2 and 3 should be observed to further validate our model. Possible discrepancies between experiments and model could provide new insights to enhance our current understanding of the underlying signaling processes.
+###end p 37
+###begin p 38
+###xml 344 345 344 345 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+The variation in receptor density and receptor mobility can stem from different cell types as well as different spatial features/locations in the plasma membrane (see Methods section for references). Future microscopy experiments should be designed to observe the reaction events and transients of low and high intensity spots, as reported by [5], in different domains of the plasma membrane in the same cell. Such data can then be used to estimate the local density of the receptors which in turn can help in understanding the receptor distribution in the plasma membrane.
+###end p 38
+###begin p 39
+###xml 675 677 675 677 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 783 785 783 785 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 786 788 786 788 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+This work shows the influence of receptor density and receptor mobility as a biophysical control of signaling processes over the inflexible thermodynamic and biochemical properties. A key suggestion from this work is that it is not adequate to treat the receptor-receptor interactions based only on their kinetic and thermodynamic parameters. Instead, their spatial properties, such as local receptor densities and local lateral mobility, can play significant roles in determining the intracellular signaling. Herein, we have used a simplistic representation of the plasma membrane. This model can be extended to include experimentally reported anomalous hop-like diffusion [18] and other spatial features, such as clathrin coated pits, lipid rafts, caveolae and other microdomains [35,40]. Such features not only facilitate an enhanced control at the level of plasma membrane but can also be important for the wide diversity of signaling outcomes from limited varieties of ligands and receptors.
+###end p 39
+###begin title 40
+Conclusion
+###end title 40
+###begin p 41
+###xml 314 322 314 322 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo </italic>
+###xml 357 358 357 358 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 359 361 359 361 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+We have developed a computational framework for studying cell surface receptor dynamics that can bridge biochemical data on one hand with various microscopy experiments on the other, which currently lack simultaneous high spatial and temporal resolution. This work provides an important step forward in the era of in vivo imaging based modeling approaches [8,41]. For example, in this work comparison of MC simulations with single particle tracking experiments reveals how the sequence of receptor-receptor and ligand-receptor reaction events depends on the ligand concentration, receptor density and receptor mobility. Our computer simulations reveal the underlying mechanism on the plasma membrane leading to dimerized and ligand (EGF) bound receptors.
+###end p 41
+###begin p 42
+###xml 73 75 73 75 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+Considering the interest in targeted antibodies for cancer therapeutics [42], a detailed understanding of the biochemical mechanisms involved in signal sensing at the plasma membrane is desired. Future advancements in medicine will ultimately also include the mathematical analysis and modeling of ErbB receptor diffusion, dimerization and clustering, which will increase our understanding of tumorigenesis and lead to medical advances, such as individualized therapy for heterogeneous cancers.
+###end p 42
+###begin title 43
+Methods
+###end title 43
+###begin title 44
+A hybrid null-event algorithm
+###end title 44
+###begin p 45
+###xml 528 529 528 529 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 534 535 534 535 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+A coarse, molecular level based computational framework that leaves atomistic details out, e.g., conformations and vibrations of proteins into potential energy surface minima, but still provides the sequence of molecular events at the receptor length scale was employed. Herein, we have utilized a kinetic, lattice MC method for simulating the EGFR dynamics. Microscopic events modeled include receptor dimerization and decomposition, ligand-receptor association and dissociation, and Brownian diffusion of receptors (see Figs. 1 and 2). Formation of high-mers that happens at longer times is not considered in this work.
+###end p 45
+###begin p 46
+###xml 209 211 209 211 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+###xml 248 250 248 250 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+The existence of multiple timescales in the system and low surface density of receptors make lattice MC simulations computationally prohibitive. We have devised a hybrid between the continuous time MC method [43] and the null-event MC method (see [44] for an overview of spatial MC algorithms) to increase the speed of the null-event algorithm but maintain its flexibility. In our hybrid null-event algorithm, only lattice sites filled with receptors were randomly selected, resulting in two to four orders of magnitude speedup, depending on receptor density, relative to a traditional null-event MC algorithm where all sites are randomly chosen. Additionally, operations that are often involved in a continuous time MC method, such as summation of transition probabilities and searches over the entire lattice, are avoided, resulting in further acceleration of simulations.
+###end p 46
+###begin p 47
+###xml 191 193 191 193 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+The spatial domain was represented using a two-dimensional square lattice that was initially randomly populated with a given density of receptors. Periodic boundary conditions were employed [45]. After initialization, an occupied site was randomly picked and one of the microscopic events is possibly selected to occur based on probabilities described below.
+###end p 47
+###begin title 48
+Transition probability of diffusion
+###end title 48
+###begin p 49
+The probability of diffusion per unit time in all four directions on a square lattice was calculated using random walk theory from the diffusivity
+###end p 49
+###begin p 50
+
+###end p 50
+###begin p 51
+###xml 6 8 6 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a </italic>
+###xml 214 216 214 216 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 224 228 224 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j is</italic>
+where a is the microscopic lattice pixel dimension (taken here to be 2 nm) and D is the corresponding diffusivity of a receptor or a dimer. The transition probability of diffusion per unit time in moving from site i to site j is
+###end p 51
+###begin p 52
+
+###end p 52
+###begin p 53
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 7 9 7 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 7 9 7 9 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 63 65 63 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 152 154 148 150 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 152 154 148 150 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 210 212 206 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 237 239 233 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+where Bi denotes the set of sites to which diffusion from site i can occur. In our model, this set includes all 4 first-nearest neighboring sites. sigmai is the occupancy (discrete) function that is 1, if site i is filled, or 0, if site i is empty (a single index indicating the site is herein used to simplify notation). According to Eq. (2), the transition probability of diffusion per unit time along any direction on the square lattice can be 0 or , depending on the occupancy of the first-nearest neighboring site in the corresponding direction.
+###end p 53
+###begin title 54
+Transition probability of reactions
+###end title 54
+###begin p 55
+###xml 107 108 107 108 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 303 304 303 304 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+The transition probability of a reaction was obtained in terms of the macroscopic reaction rate constants, k. For a first-order (e.g., the decomposition of an EGFR dimer) or pseudo-first order (e.g., the EGF binding onto a receptor because EGF is assumed at a constant concentration) reaction (see Fig. 2), one has
+###end p 55
+###begin p 56
+
+###end p 56
+###begin p 57
+###xml 57 58 57 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 205 207 205 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+where  is the transition probability of reaction at site i. For a bimolecular reaction on a square lattice (e.g., receptor-receptor dimerization), the transition probability per unit time at selected site i was modeled as:
+###end p 57
+###begin p 58
+
+###end p 58
+###begin p 59
+
+###end p 59
+###begin p 60
+###xml 69 71 69 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 75 76 75 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 95 97 95 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 117 119 117 119 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1</sup>
+###xml 122 124 122 124 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1</sup>
+###xml 148 149 148 149 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+Here the reacting species (A and B or A and A) occupy adjacent sites i and j, and the units of k are (molecules/site)-1sec-1. The factor of four in k/4 in Eq. (4) accounts for the fact that all four neighboring sites of site i were randomly chosen to search for the existence of species B. Similarly, the factor of 2 in Eq. 5 was due to the degeneracy of species participating in the homodimerization.
+###end p 60
+###begin title 61
+Event selection and time advancement
+###end title 61
+###begin p 62
+###xml 28 29 28 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 163 164 163 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 174 176 174 176 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+After an occupied site, say i, was selected, the transition probabilities per unit time of all possible events were computed. The probability for a certain event 'x' at site i was calculated as
+###end p 62
+###begin p 63
+
+###end p 63
+###begin p 64
+###xml 11 15 7 11 <sub xmlns:xlink="http://www.w3.org/1999/xlink">max </sub>
+###xml 176 178 172 174 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 210 211 206 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 337 338 329 330 <sup xmlns:xlink="http://www.w3.org/1999/xlink">d</sup>
+where Gammamax is a normalization constant to ensure that the selection probability of each event is always less than or equal to 1 and  is the transition probability of event x (reaction or diffusion) at site i, as defined above. The maximum values of transition probabilities per unit time of events described by Eqs. (2)-(4) are Gammad/4, k, k/4, and k/2, respectively. We defined the normalization constant as
+###end p 64
+###begin p 65
+
+###end p 65
+###begin p 66
+###xml 167 168 167 168 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+where multiplication by a factor of 4 accounts for the microscopic process in each of the four directions on the square lattice. For the reaction events given in Fig. 2
+###end p 66
+###begin p 67
+
+###end p 67
+###begin p 68
+###xml 21 23 21 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f </italic>
+###xml 27 29 27 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink">b </italic>
+###xml 98 100 98 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 153 154 153 154 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 173 174 173 174 <italic xmlns:xlink="http://www.w3.org/1999/xlink">r</italic>
+###xml 295 297 295 297 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 346 348 346 348 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 496 497 496 497 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 497 500 497 500 <italic xmlns:xlink="http://www.w3.org/1999/xlink">th </italic>
+###xml 497 500 497 500 <sup xmlns:xlink="http://www.w3.org/1999/xlink"><italic>th </italic></sup>
+###xml 735 737 735 737 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+where the subscripts f and b refer to the forward and backward reaction events, respectively, and i denotes the corresponding reaction according to Fig. 2. A random number 'r' was finally chosen from a uniform distribution between 0 and 1. The events were randomly ranked. The smallest value of m satisfying  criterion was chosen. If no value of m satisfied the above criterion, then no event was selected to occur (a null-event) and a new occupied site was again randomly picked. Otherwise, the mth event was selected, the populations on the lattice were updated accordingly to reflect the stoichiometry of the reaction or diffusion process, and the real time was advanced based on the most frequently selected event as suggested in [44]. In our simulations, real time was advanced based on the diffusion of receptors according to which the average time step after each successful diffusion event was calculated as
+###end p 68
+###begin p 69
+
+###end p 69
+###begin p 70
+The summation in the denominator was updated each time a successful event happens by subtracting the previous occupancy values affected by the selected event and adding the new ones. In this way, the summation was carried out only once (at the beginning of a simulation) over all occupied sites. Finally, a new site is picked randomly until the desired real time is reached.
+###end p 70
+###begin p 71
+###xml 113 115 113 115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+The hybrid null-event MC algorithm explained above was implemented (for details on the null-event algorithm see [44]) using Fortran 90. For each data point, 10 simulations with different seeds of the random number generator were used to collect statistics.
+###end p 71
+###begin title 72
+Simulation size and model parameters
+###end title 72
+###begin p 73
+###xml 174 176 174 176 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 193 195 192 194 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 212 214 211 213 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B46">46</xref>
+###xml 222 224 221 223 <sup xmlns:xlink="http://www.w3.org/1999/xlink">3 </sup>
+###xml 241 243 239 241 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 318 319 316 317 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 381 389 379 387 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in-vivo </italic>
+###xml 497 499 495 497 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 500 502 498 500 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B47">47</xref>
+###xml 503 505 501 503 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B48">48</xref>
+###xml 763 764 760 761 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 849 853 846 850 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-14 </sup>
+###xml 854 855 851 852 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 856 859 853 856 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1 </sup>
+###xml 860 862 857 859 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B49">49</xref>
+###xml 863 865 860 862 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B50">50</xref>
+###xml 934 936 931 933 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B49">49</xref>
+###xml 1001 1003 998 1000 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B51">51</xref>
+###xml 1021 1023 1018 1020 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B52">52</xref>
+###xml 1144 1148 1141 1145 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-15 </sup>
+###xml 1149 1150 1146 1147 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 1151 1153 1148 1150 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1</sup>
+###xml 246 251 <span type="species:ncbi:9606">human</span>
+In this work, the cell surface was represented using a 2-dimensional square lattice with each pixel being 2 nm x 2 nm in size. The number density of receptors ranges from ~102 receptors per mum2 on normal cells [46] to ~103 receptors per mum2 on human epithelioid carcinoma cells (A-431 cells) which overexpress EGFR [2]. However, the local density of receptors can be much higher in-vivo because of the localization of receptors in certain regions of the plasma membrane, such as in lipid rafts [35,47,48]. We simulated a low density (to represent normal cells) of 31 receptors on 500 nm x 500 nm mesh and a high density (to represent A-431 cells) of 55 receptors on 100 nm x 100 nm mesh, which are equivalent to receptor number densities of 125 and 5500 per mum2, respectively. The diffusivity of monomer EGFR has been reported to be around 2 x 10-14 m2s-1 [49,50]. Lower macroscopic diffusivities for EGFR have also been observed [49], which may be due to containment within cytoskeletal elements [51] or lipid rafts [52]. Based on these suggestions, the effect of a slower diffusivity is also analyzed by considering a diffusivity of 2 x 10-15 m2s-1. Simulations have been performed in the 0-60 sec time interval to capture the initial transients.
+###end p 73
+###begin p 74
+###xml 45 46 45 46 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 389 390 389 390 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 547 549 547 549 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+The model parameters are summarized in Table 1. We assumed two types of EGF binding on the cell surface: low affinity binding (on monomer EGFR) and high affinity binding (on dimerized EGFR). Experimental information suggests the existence of a high affinity (for receptor-ligand association) receptor population, most of which, if not all, is present in the form of dimers; see review by [1]. A recent equilibrium study has also shown that this interpretation is consistent with the experimentally reported concave-up shape of the Scatchard plot [13].
+###end p 74
+###begin p 75
+###xml 107 108 107 108 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 109 111 109 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B53">53</xref>
+###xml 112 114 112 114 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B56">56</xref>
+###xml 454 455 453 454 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 848 849 847 848 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 850 852 849 851 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B57">57</xref>
+Experimental studies have provided evidence of predimerized receptors on A-431 cells to different extents [9,53-56]. Consequently, a fraction (~82%) of receptors was initially placed at random locations as monomers and the remaining as dimers on simulated A-431 cells for comparison with single particle tracking data. Corresponding to the dimerization equilibrium constant for this data, we found that at the lower receptor number density of 125 per mum2, there is negligible number of dimers in the absence of ligand. The receptor dimerization constants vary with ligand occupancy. Several experimental studies have shown that dimerization between unbounded receptors occurs with lower affinity than that between one bounded and one unbounded receptor. Finally, dimerization between two ligand bounded receptors occurs with the highest affinity [6,57].
+###end p 75
+###begin title 76
+Appendix
+###end title 76
+###begin p 77
+###xml 70 71 70 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 71 72 71 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 71 72 71 72 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 74 108 74 108 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i = 1f, 4f, 5f, 6f, 1b, 4b, 5b, 6b</italic>
+###xml 338 339 338 339 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+A sensitivity analysis was performed in which each kinetic parameter (ki, i = 1f, 4f, 5f, 6f, 1b, 4b, 5b, 6b) was increased by 20%, and the change in the high intensity spots was observed at three different times (20, 40 and 60 sec) from the mean of 10 independent MC simulations. The normalized sensitivity coefficient, reported in Fig. 7, is defined as
+###end p 77
+###begin p 78
+Normalized sensitivity coefficients at 3 different times (20, 40 and 60 sec) calculated by introducing a 20% increase in the kinetic parameter indicated on the x-axis.
+###end p 78
+###begin p 79
+
+###end p 79
+###begin p 80
+###xml 57 59 57 59 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4a</xref>
+###xml 101 102 101 102 <sub xmlns:xlink="http://www.w3.org/1999/xlink">i</sub>
+###xml 109 111 109 111 <sub xmlns:xlink="http://www.w3.org/1999/xlink">o </sub>
+###xml 190 192 190 192 <sub xmlns:xlink="http://www.w3.org/1999/xlink">io</sub>
+###xml 314 316 314 316 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+where I is the % of high intensity spots (y axis in Fig. 4a) upon perturbing the kinetic parameter, ki, and Io is the nominal value corresponding to the original set of kinetic parameters, kio. Only 8 of the 12 kinetic parameters were independently perturbed because of the two equilibrium constrains reported in [14], i.e.,
+###end p 80
+###begin p 81
+
+###end p 81
+###begin p 82
+
+###end p 82
+###begin p 83
+###xml 119 120 119 120 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+The equilibrium relations determine the changes in the kinetic parameters of the dependent reactions 2 and 3 (see Fig. 2) upon perturbing those of the linearly independent reactions. A change in an equilibrium constant can be associated with a change in the forward, backward, or both rate constants. For simplicity a change in the rate constant of a forward (backward) linearly independent reaction is taken to cause a change in the forward (backward) rate constant of the linearly dependent reactions. Specifically, one has
+###end p 83
+###begin p 84
+
+###end p 84
+###begin p 85
+
+###end p 85
+###begin p 86
+
+###end p 86
+###begin p 87
+
+###end p 87
+###begin p 88
+###xml 17 18 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">o</italic>
+###xml 84 85 84 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 85 86 85 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 85 86 85 86 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+where subscript 'o' denotes the nominal value, and  is 1, if the kinetic parameter (ki) is not perturbed, and 1.2, if the parameter is increased by 20%.
+###end p 88
+###begin title 89
+Authors' contributions
+###end title 89
+###begin p 90
+KM carried out the simulations and drafted the manuscript. DGV and JSE edited the manuscript. All authors participated in the analysis of the data. All authors read and approved the final manuscript.
+###end p 90
+###begin title 91
+Acknowledgements
+###end title 91
+###begin p 92
+This work was supported by grants from the US Department of Energy (DE-FG02-05ER25702) and the National Science Foundation (CTS-0312117). KM thanks Abhijit Chatterjee for useful discussions.
+###end p 92
+###begin article-title 93
+Epidermal growth factor receptor: mechanisms of activation and signalling
+###end article-title 93
+###begin article-title 94
+Anomalous binding of epidermal growth factor to A431 cells is due to the effect of high receptor densities and a saturable endocytic system
+###end article-title 94
+###begin article-title 95
+Computational modeling of the EGF-receptor system: a paradigm for systems biology
+###end article-title 95
+###begin article-title 96
+Allosteric regulation of the epidermal growth factor receptor kinase
+###end article-title 96
+###begin article-title 97
+Single-molecule imaging of EGFR signalling on the surface of living cells
+###end article-title 97
+###begin article-title 98
+Two EGF molecules contribute additively to stabilization of the EGFR dimer
+###end article-title 98
+###begin article-title 99
+A structure-based model for ligand binding and dimerization of EGF receptors
+###end article-title 99
+###begin article-title 100
+Visualizing signals moving in cells
+###end article-title 100
+###begin article-title 101
+Direct visualization and quantitative-analysis of epidermal growth factor-induced receptor clustering
+###end article-title 101
+###begin article-title 102
+###xml 110 115 <span type="species:ncbi:9606">human</span>
+Direct visualization of the binding and internalization of a ferritin conjugate of epidermal growth factor in human carcinoma cells A-431
+###end article-title 102
+###begin article-title 103
+Quantitative Imaging of Lateral ErbB1 Receptor Signal Propagation in the Plasma Membrane
+###end article-title 103
+###begin article-title 104
+Quantum dot ligands provide new insights into erbB/HER receptor-mediated signal transduction
+###end article-title 104
+###begin article-title 105
+Heterogeneities in EGF receptor density at the cell surface can lead to concave up scatchard plot of EGF binding
+###end article-title 105
+###begin article-title 106
+Implications of epidermal growth factor (EGF) induced EGF receptor aggregation
+###end article-title 106
+###begin article-title 107
+A unified model of c-erbB receptor homo- and heterodimerisation
+###end article-title 107
+###begin article-title 108
+A unified model for signal transduction reactions in cellular membranes
+###end article-title 108
+###begin article-title 109
+Paradigm Shift of the Plasma Membrane Concept from the Two-Dimensional Continuum Fluid to the Partitioned Fluid: High-Speed Single-Molecule Tracking of Membrane Molecules
+###end article-title 109
+###begin article-title 110
+Kinetic phase transitions in an irreversible surface-reaction model
+###end article-title 110
+###begin article-title 111
+Computational Cell Biology: Spatiotemporal Simulation of Cellular Events
+###end article-title 111
+###begin article-title 112
+Space in systems biology of signaling pathways - towards intracellular molecular crowding in silico
+###end article-title 112
+###begin article-title 113
+Space as the final frontier in stochastic simulations of biological systems
+###end article-title 113
+###begin article-title 114
+Single-particle tracking: effects of corrals
+###end article-title 114
+###begin article-title 115
+Stochastic simulation of chemical reactions with spatial resolution and single molecule detail
+###end article-title 115
+###begin article-title 116
+Size and composition of membrane protein clusters predicted by Monte Carlo analysis
+###end article-title 116
+###begin article-title 117
+Binding and Diffusion of CheR Molecules Within a Cluster of Membrane Receptors
+###end article-title 117
+###begin article-title 118
+A Monte Carlo study of the dynamics of G-protein activation
+###end article-title 118
+###begin article-title 119
+Calculation of diffusion-limited kinetics for the reactions in collision coupling and receptor cross-linking
+###end article-title 119
+###begin article-title 120
+A Spatially Extended Stochastic Model of the Bacterial Chemotaxis Signalling Pathway
+###end article-title 120
+###begin article-title 121
+Monte Carlo simulation of neurotransmitter release using MCell, a general simulator of cellular physiological processes
+###end article-title 121
+###begin article-title 122
+Untangling Ligand Induced Activation and Desensitization of G-Protein-Coupled Receptors
+###end article-title 122
+###begin article-title 123
+An algebra of dimerization and its implications for G-protein coupled receptor signaling
+###end article-title 123
+###begin article-title 124
+A Spatial Focusing Model for G Protein Signals. Regulator Of G Protein Signaling (Rgs) Protein-Mediated Kinetic Scaffolding
+###end article-title 124
+###begin article-title 125
+High-affinity epidermal growth factor binding is specifically reduced by a monoclonal antibody, and appears necessary for early responses
+###end article-title 125
+###begin article-title 126
+Plasma membrane microdomains: organization, function and trafficking (Review)
+###end article-title 126
+###begin article-title 127
+Lipid rafts and plasma membrane microorganization: insights from Ras
+###end article-title 127
+###begin article-title 128
+Cell surface organization by the membrane skeleton
+###end article-title 128
+###begin article-title 129
+Dynamic, yet structured: The cell membrane three decades after the Singer-Nicolson model
+###end article-title 129
+###begin article-title 130
+Detection of Non-Brownian Diffusion in the Cell Membrane in Single Molecule Tracking
+###end article-title 130
+###begin article-title 131
+Clathrin- and non-clathrin-mediated endocytic regulation of cell signalling
+###end article-title 131
+###begin article-title 132
+Kinetic Modeling Approaches to In Vivo Imaging
+###end article-title 132
+###begin article-title 133
+The ErbB/HER receptor protein-tyrosine kinases and cancer
+###end article-title 133
+###begin article-title 134
+Exact stochastic simulation of coupled chemical reactions
+###end article-title 134
+###begin article-title 135
+Monte Carlo algorithms for complex surface reaction mechanisms: Efficiency and accuracy
+###end article-title 135
+###begin article-title 136
+Computer simulation studies of biological membranes: progress, promise and pitfalls
+###end article-title 136
+###begin article-title 137
+Overexpression of epidermal growth factor receptor in NIH-3T3- transfected cells slows its lateral diffusion and rate of endocytosis
+###end article-title 137
+###begin article-title 138
+Lipid rafts and signal transduction
+###end article-title 138
+###begin article-title 139
+Lipid rafts: bringing order to chaos
+###end article-title 139
+###begin article-title 140
+Confined lateral diffusion of membrane receptors as studied by single particle tracking (nanovid microscopy). Effects of calcium-induced differentiation in cultured epithelial cells
+###end article-title 140
+###begin article-title 141
+High affinity epidermal growth factor receptors on the surface of A431 cells have restricted lateral diffusion
+###end article-title 141
+###begin article-title 142
+Epidermal growth factor receptors associated to cytoskeletal elements of epidermoid carcinoma (A431) cells
+###end article-title 142
+###begin article-title 143
+Sphingolipid-Cholesterol Rafts Diffuse as Small Entities in the Plasma Membrane of Mammalian Cells
+###end article-title 143
+###begin article-title 144
+Preformed Oligomeric Epidermal Growth Factor Receptors Undergo an Ectodomain Structure Change during Signaling
+###end article-title 144
+###begin article-title 145
+Ligand-independent Dimer Formation of Epidermal Growth Factor Receptor (EGFR) Is a Step Separable from Ligand-induced EGFR Signaling
+###end article-title 145
+###begin article-title 146
+Activation of preformed EGF receptor dimers by ligand-induced rotation of the transmembrane domain1
+###end article-title 146
+###begin article-title 147
+Oligomerization of epidermal growth factor receptors on A431 cells studied by time-resolved fluorescence imaging microscopy. A stereochemical model for tyrosine kinase receptor activation
+###end article-title 147
+###begin article-title 148
+Activation of epidermal growth factor receptor by epidermal growth factor
+###end article-title 148
+###begin article-title 149
+The epidermal growth factor receptor as a multifunctional allosteric protein
+###end article-title 149
+###begin article-title 150
+Growth stimulation of A431 cells by epidermal growth factor: identification of high-affinity receptors for epidermal growth factor by an anti-receptor monoclonal antibody
+###end article-title 150
+###begin article-title 151
+Protein kinase C phosphorylation at Thr 654 of the unoccupied EGF receptor and EGF binding regulate functional receptor loss by independent mechanisms
+###end article-title 151
+###begin article-title 152
+Quantitative Analysis of HER2-mediated Effects on HER2 and Epidermal Growth Factor Receptor Endocytosis: Distribution Of Homo- And Heterodimers Depends On Relative Her2 Levels
+###end article-title 152
+

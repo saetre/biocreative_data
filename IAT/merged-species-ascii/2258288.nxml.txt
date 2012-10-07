@@ -1,0 +1,400 @@
+###begin article-title 0
+miRNAminer: A tool for homologous microRNA gene search
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+MicroRNAs (miRNAs), present in most metazoans, are small non-coding RNAs that control gene expression by negatively regulating translation through binding to the 3'UTR of mRNA transcripts. Previously, experimental and computational methods were used to construct miRNA gene repositories agreeing with careful submission guidelines.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+An algorithm we developed - miRNAminer - is used for homologous conserved miRNA gene search in several animal species. Given a search query, candidate homologs from different species are tested for their known miRNA properties, such as secondary structure, energy and alignment and conservation, in order to asses their fidelity. When applying miRNAminer on seven mammalian species we identified several hundreds of high-confidence homologous miRNAs increasing the total collection of (miRbase) miRNAs, in these species, by more than 50%. miRNAminer uses stringent criteria and exhibits high sensitivity and specificity.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+We present - miRNAminer - the first web-server for homologous miRNA gene search in animals. miRNAminer can be used to identify conserved homolog miRNA genes and can also be used prior to depositing miRNAs in public databases. miRNAminer is available at .
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 203 204 203 204 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 205 206 205 206 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 315 316 315 316 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 317 318 317 318 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 407 408 407 408 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 456 457 456 457 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 495 496 495 496 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 550 551 550 551 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 552 553 552 553 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 606 608 606 608 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+MicroRNAs (miRNAs) are short, ~22 nt non-coding RNAs that control gene expression. miRNAs bind to the 3'UTRs of their regulated mRNA transcripts to facilitate mRNA degradation or translation inhibition [1,2]. miRNAs are present in most metazoans and are thought to regulate a diverse range of biological processes [3,4]. miRNA genes' evolution is unique since they mostly emerge through duplication events [5]; exhibit most often unidirectional evolution [6]; are generally gained and not lost [7]; show several cases of rapid evolution in primates [8,9]; are rarely changed due to functional constraints [10]; and, show relatively rare evolutionary acquisition events (accounted by their relatively small numbers).
+###end p 9
+###begin p 10
+###xml 210 212 210 212 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 213 215 213 215 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 384 386 384 386 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 387 389 387 389 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 525 528 <span type="species:ncbi:9615">dog</span>
+###xml 537 547 <span type="species:ncbi:9598">chimpanzee</span>
+###xml 566 571 <span type="species:ncbi:9606">human</span>
+miRNA predictions based on computational methods, which followed initial extensive cloning efforts, are based on the secondary structure of the miRNA, its phylogenetic conservation and thermodynamic stability [11,12]. miRNA gene repositories are constantly expanding giving rise to more than 3500 reported miRNAs in more than 30 animal species (Sanger miRbase database, Version 10.0 [13,14]). However, it is apparent that even this comprehensive repository is far from completion, accounted by the very few miRNAs listed for dog (6) and chimpanzee (83), compared to human (533), to name two examples. Since these differences cannot be accounted merely by species-specific miRNAs, we saw the need for a computational tool for miRNA homologous searches.
+###end p 10
+###begin title 11
+Implementation
+###end title 11
+###begin p 12
+###xml 301 303 301 303 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 411 413 411 413 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+We present miRNAminer, a tool for automatic identification of homolog miRNAs based on a given user defined query miRNA. The tool exploits numerous characteristics of miRNAs: high conservation of precursor sequences, very high conservation of mature sequences (particularly in the seed region, nt 2-8 [15]), and hairpin secondary structure with high folding energy and base pairing. miRNAminer first uses BLAST [16] to select candidate matches and ranks them according to their e-values. Then it employs a series of rigorous filters to improve specificity.
+###end p 12
+###begin p 13
+###xml 517 519 517 519 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+An input query consists of a precursor miRNA, mature miRNA, a set of filter threshold values and the number of best-fitted results requested in the output. We designed miRNAminer's algorithm to maximize specificity of matches. This is because the designed application of miRNAminer is to identify homolog matches after a miRNA has been experimentally confirmed. We estimated the default values presented below so that each filter by itself selects 95% of known miRNAs in training genomes (criteria was also based on [17]).
+###end p 13
+###begin p 14
+###xml 59 61 59 61 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 344 346 344 346 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 569 571 569 571 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 1076 1078 1076 1078 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 1330 1331 1330 1331 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+miRNAminer's algorithm follows these steps: (i) Use BLAST [16] to find matches in target genomes (the whole precursor miRNA from the query is used); (ii) Filter with e-value threshold (default 0.05 per chromosome); (iii) Extend the match by adding flanking nucleotides (default 50) up- and down-stream from the match (Ensembl genome database; [18]). Examine all possible extensions of the match within threshold length (default min 70 nt, max 180 nt); (iv) Filter with RNA secondary folding energy threshold (default -25 kcal/mole; RNAfold with options "-p -d2 -noLP" [19]); (v) Filter with minimal base-pairing threshold (default 55% pairing; with 20 gap penalty and 0.5 extension penalty); (vi) Filter with requirement for hairpin-shape secondary structure; (vii) Filter with alignment of precursor sequences (default 56% identity); (viii) Filter with alignment of mature miRNA sequences (default 80% identity); (ix) Filter with maximum number of mismatches in mature miRNA sequences (default 3 nt); (x) Filter with conservation of seed (2-8 nt, required 100% conservation [15]); (xi) Filter with position of mature miRNA on the hairpin (max 4 nt overlap of mature sequence and hairpin loop). miRNAminer's output includes detailed analysis of the identified genomic region(s) that passed the selected threshold criteria (Figure 1). Currently, miRNAminer supports searches in 10 metazoan genomes. We will regularly add additional genomes upon their release. After the query is issued, results are usually available within a minute (though this depends on the number of results requested) and can either be viewed on the screen or requested to be sent by email.
+###end p 14
+###begin p 15
+###xml 0 29 0 29 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A sample output of miRNAminer</bold>
+A sample output of miRNAminer. Indicated are: search start and end times (rows 1 and 24, respectively) and the species and assembly searched (rows 2-3); whether a match (a miRNA homolog), or matches, that passed the input criteria were found (rows 4-5); information about the quality of the homolog miRNA match such as BLAST e-value, genomic location, sequence, RNA fold and energy, pairing, length and alignment with input sequence (rows 6-19). A hyperlink to the genomic locus of the miRNA homolog is also provided through Ensembl ContigView [18] or UCSC Genome Browser [43] (rows 20-23) and a copy of the users' input data (row 25).
+###end p 15
+###begin title 16
+Results
+###end title 16
+###begin p 17
+###xml 279 280 279 280 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 498 512 498 512 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P. troglodytes</italic>
+###xml 520 533 520 533 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C. familiaris</italic>
+###xml 544 553 544 553 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. taurus</italic>
+###xml 682 683 682 683 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 684 686 684 686 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 696 697 696 697 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 765 775 765 775 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. sapiens</italic>
+###xml 920 921 920 921 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 922 924 922 924 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 991 993 991 993 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 1042 1053 1042 1053 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H. sapiens </italic>
+###xml 101 106 <span type="species:ncbi:9606">human</span>
+###xml 108 118 <span type="species:ncbi:9598">chimpanzee</span>
+###xml 120 125 <span type="species:ncbi:10090">mouse</span>
+###xml 127 130 <span type="species:ncbi:10116">rat</span>
+###xml 132 135 <span type="species:ncbi:9615">dog</span>
+###xml 137 140 <span type="species:ncbi:9913">cow</span>
+###xml 498 512 <span type="species:ncbi:9598">P. troglodytes</span>
+###xml 515 518 <span type="species:ncbi:9615">dog</span>
+###xml 520 533 <span type="species:ncbi:9615">C. familiaris</span>
+###xml 539 542 <span type="species:ncbi:9913">cow</span>
+###xml 544 553 <span type="species:ncbi:9913">B. taurus</span>
+###xml 758 763 <span type="species:ncbi:9606">human</span>
+###xml 765 775 <span type="species:ncbi:9606">H. sapiens</span>
+###xml 828 833 <span type="species:ncbi:9606">human</span>
+###xml 884 889 <span type="species:ncbi:9606">human</span>
+###xml 954 959 <span type="species:ncbi:9606">human</span>
+###xml 1020 1025 <span type="species:ncbi:9606">human</span>
+###xml 1042 1052 <span type="species:ncbi:9606">H. sapiens</span>
+We used miRNAminer to perform a comprehensive homology search for miRNA precursors in seven species (human, chimpanzee, mouse, rat, dog, cow and opossum). For the search, we used all 2925 vertebrate miRNAs listed in the Sanger miRNA registry (release 9.0 of October 2006). Table 1 shows the summary information of miRNAs listed in the Sanger registry and of new, or non-registered, miRNAs identified by our method. We identified 790 non-miRbase registered miRNAs with major contributions to chimp (P. troglodytes), dog (C. familiaris) and cow (B. taurus), vastly increasing their known miRNA repertoire and possibly opening new research facets in these species (see Additional file 1[20]). Table 2 presents the miRNA candidates that our method identifies in human (H. sapiens). It is of interest that 22 new candidate miRNAs in human were identified, despite many previous exhaustive human miRNA identification studies [8,21], possibly due to recent non-human/primate miRNAs identification [22], updated assembly of the human genome (Ensembl H. sapiens genome release 42 used here was updated in October 2006), and the modification of search parameters as implemented in miRNAminer.
+###end p 17
+###begin p 18
+Known registered miRbase miRNAs and new candidates identified by miRNAminer.
+###end p 18
+###begin p 19
+The column 'miRNA registry 9.0' shows the number of miRNAs listed for the given species in the Sanger miRNA registry release 9.0. The column 'Newly identified' shows the number of miRNAs candidates identified by miRNAminer.
+###end p 19
+###begin p 20
+###xml 60 65 <span type="species:ncbi:9606">human</span>
+Candidate non-registered miRNAs identified by miRNAminer in human.
+###end p 20
+###begin p 21
+###xml 425 437 425 437 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Homo sapiens</italic>
+###xml 378 383 <span type="species:ncbi:10090">mouse</span>
+###xml 388 391 <span type="species:ncbi:10116">rat</span>
+###xml 425 437 <span type="species:ncbi:9606">Homo sapiens</span>
+The results are sorted according to e-values (based on BLAST search; [16]). Lengths refer to lengths of miRNA precursors. For each result, the table shows position, RNA fold quality and the identity ratio of the discovered miRNA candidates to the homolog in the original species. The existence of two occurrences for miR-322 and miR-543 (italicized) indicates that two origins (mouse and rat) of the same miRNA were found in Homo sapiens.
+###end p 21
+###begin p 22
+###xml 62 63 62 63 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 164 166 164 166 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 167 168 167 168 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 190 192 190 192 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 441 443 441 443 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 559 561 559 561 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 812 824 812 824 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M. musculus </italic>
+###xml 828 841 828 841 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R. norvegicus</italic>
+###xml 1005 1006 1005 1006 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 1211 1212 1211 1212 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 1310 1312 1310 1312 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2A</xref>
+###xml 1478 1480 1478 1480 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 1481 1483 1481 1483 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 1708 1709 1708 1709 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 1768 1770 1768 1770 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2C</xref>
+###xml 1898 1900 1898 1900 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 1901 1903 1901 1903 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 1994 1996 1994 1996 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 1997 1999 1997 1999 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 2128 2130 2128 2130 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 2131 2133 2131 2133 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 2134 2136 2134 2136 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 2149 2151 2149 2151 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 2211 2213 2211 2213 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 2214 2216 2214 2216 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 2636 2638 2636 2638 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2C</xref>
+###xml 2684 2685 2684 2685 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 2975 2977 2975 2977 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 3324 3326 3324 3326 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 3742 3744 3742 3744 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 41 46 <span type="species:ncbi:9606">human</span>
+###xml 721 726 <span type="species:ncbi:9606">human</span>
+###xml 812 823 <span type="species:ncbi:10090">M. musculus</span>
+###xml 828 841 <span type="species:ncbi:10116">R. norvegicus</span>
+###xml 882 887 <span type="species:ncbi:10090">mouse</span>
+###xml 892 895 <span type="species:ncbi:10116">rat</span>
+###xml 955 960 <span type="species:ncbi:9606">human</span>
+###xml 1016 1021 <span type="species:ncbi:10090">mouse</span>
+###xml 1256 1261 <span type="species:ncbi:9606">Human</span>
+###xml 1319 1324 <span type="species:ncbi:10090">mouse</span>
+###xml 1523 1528 <span type="species:ncbi:9606">human</span>
+###xml 1788 1793 <span type="species:ncbi:9606">human</span>
+###xml 2355 2360 <span type="species:ncbi:9606">human</span>
+###xml 2361 2366 <span type="species:ncbi:10090">mouse</span>
+###xml 2367 2370 <span type="species:ncbi:10116">rat</span>
+###xml 2457 2462 <span type="species:ncbi:9606">human</span>
+###xml 2908 2913 <span type="species:ncbi:9606">human</span>
+We compared our predicted miRNAs (in the human species; Table 2) to other prediction methods. We found that 18 and 36% of our miRNAs are contained within RNAmicro [23,5] and Berezikov 2005 [24] databases, respectively, out of almost 3000 and 1000 miRNAs in each set, respectively. The overlap is not extensive however even when miRNAs derived from algorithms using very similar search parameters are compared only about 50% overlap is seen [25]. One of our identified miRNAs, which is not reported by any other study, was recently identified experimentally ([26] present in miRbase version 10.0 and not 9.0) increasing confidence in our unique miRNAs. Notably, even though miRNAs from all species were used to search for human homologs, the candidate miRNAs discovered are homologs to genes in two species only, M. musculus and R. norvegicus, indicating better miRbase coverage for mouse and rat than for other species. Two examples of the non-registered human homolog miRNA genes are presented in Figure 2. miRbase mouse miR-764 sequence, which has no known registered homologs was used as input for miRNAminer search (with default parameters). The output reported a homolog (presumably hsa-miR-764; see Table 2), which is located in the second intron of Human serotonin receptor 2C (HTR2C; NM 000868; Figure 2A). The mouse miRNA homolog is located in an intron of the same gene (HTR2C; NM 008312) suggesting an evolutionary conserved co-expression of miRNA and its host gene [27-29]. Second in the list of non-registered human homolog miRNA genes (sorted according to BLAST e-values) is miR-763. This miRNA spans the longest complementary sequence out of the list, has the lowest RNA folding energy (Table 2) and shows high conservation between many species (Figure 2C). Interestingly, human miR-763 is harboured in an intron of the high mobility group AT-hook 2 oncogene (HMGA2; for review see [30,31]). Recent disrupted interplay between miRNAs and HMGA2 showed an increase in oncogenesis [32-34]. To regulate their targets, miRNAs bind to 'seed' regions in the 3'UTR, typically 6-7 nt long (nt 2 to nt 7 or 8 of the miRNA [15,35,36]; also see [37]). miR-763, possibly also co-expressed with its host gene [27-29], has a conserved binding site for its own harboured miRNA (nt 2 to 8 of the miRNA binds position 2192 in the 3'UTR which is conserved in human/mouse/rat). It is tempting to speculate a negative feedback regulatory role of newly identified human miR-763 and its oncogenic host when co-expressed in the same spatio-temporal context. To this end data from Expressed Sequence Tags (ESTs) supports this possibility (Figure 2C). Other identified miRNAs presented in Table 2 show high species conservation (for example, miR-670) or are located in exons (for example, miR-711) or exon-intron junctions (for example, miR-762). Interestingly, in a recent study involving deep sequencing, four of our human predicted miRNAs were confirmed (miR-760, 708, 543, and 665 [38], available in miRbase version 10.0). To conclusively confirm the presence of the identified candidates in the studied species, an experimental verification is required. However, the candidates identified by our method are close homologs to known miRNAs and as such are not required to meet as stringent criteria to be annotated as novel miRNAs [17]. In this study we looked at homolog genes which are genes related to each other by descent from a common ancestral DNA sequence. We do not segregate between orthologs, genes in different species that evolved from a common ancestral gene by speciation, and paralogs, genes separated by the event of genetic duplication. We cannot also rule out that similar miRNAs in different species have developed independently [39]. Our tool, which is based on evolutionary conservation, can only detect evolutionarily conserved miRNA genes. We are currently improving our algorithm to include multiple alignments of vertebrate miRNA sequences in order to better refine the boundaries of the miRNA precursor sequence.
+###end p 22
+###begin p 23
+###xml 0 89 0 89 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Two examples of a non-miRbase registered miRNA identified using our miRNAminer web-server</bold>
+###xml 95 100 <span type="species:ncbi:9606">Human</span>
+###xml 138 143 <span type="species:ncbi:10090">mouse</span>
+###xml 315 320 <span type="species:ncbi:9606">human</span>
+###xml 367 372 <span type="species:ncbi:10090">mouse</span>
+###xml 845 850 <span type="species:ncbi:9606">human</span>
+###xml 861 866 <span type="species:ncbi:10090">mouse</span>
+###xml 1011 1016 <span type="species:ncbi:9606">Human</span>
+###xml 1101 1106 <span type="species:ncbi:9606">human</span>
+###xml 1286 1291 <span type="species:ncbi:9606">human</span>
+###xml 1785 1790 <span type="species:ncbi:9606">human</span>
+###xml 1792 1797 <span type="species:ncbi:10090">mouse</span>
+###xml 1802 1805 <span type="species:ncbi:10116">rat</span>
+Two examples of a non-miRbase registered miRNA identified using our miRNAminer web-server. (A) Human miR-764 was identified using miRbase mouse miR-764 sequence as input (and default parameters) for miRNAminer search. The output reported a homolog (presumably hsa-miR-764), which is located in the second intron of human serotonin receptor 2C (HTR2C; NM 000868). The mouse miRNA homolog is located in an intron of the same gene (HTR2C; NM 008312) suggesting an evolutionary conserved co-expression of miRNA and its host gene [27-29]. High conservation is seen in this region (mountain-like graph derived from UCSC Genome Browser 17 species multiZ alignment; [43]). Black rectangles represent exons (shorter rectangles in C are UTRs), lines are introns and dark-grey rectangles are miRNA genes. (B) RNA secondary structure of both the identified human (top) and mouse (bottom) miR-764 exhibit similar thermodynamic stability (41.8/49.9 kcal/mol, respectively) and structures (mature miRNA region is underlined). Human miR-764 homolog was also identified by Berezikov [21]. (C) Non-registered (miRbase) human miR-763 is highly conserved among vertebrate species and can potentially bind its own host gene. On top; a schematic non-scaled representation of the HMGA2 transcript (NM 003483; human miR-763 is in dark-grey; conservation plot as shown in A). Expressed Sequence Tags (ESTs; light-grey bars) are evidence for the expression of this particular genomic region. ESTs from top to bottom: BM715067 (isolated from eye-related tissue); BJ997562 (isolated from wilms tumor tissue); BU39975 (isolated from eye-related tissue); AI935081 (tissue source unknown). On the right; the potential binding site of miR-763 in HMGA2 3'UTR (nt 2-8 of the miRNA; positions 2192-2198) is conserved to human, mouse and rat.
+###end p 23
+###begin p 24
+###xml 945 950 <span type="species:ncbi:9606">human</span>
+###xml 955 960 <span type="species:ncbi:10090">mouse</span>
+###xml 1124 1129 <span type="species:ncbi:9606">human</span>
+###xml 1142 1147 <span type="species:ncbi:10090">mouse</span>
+For searches with relaxed parameters (reduced stringency) we suggest initially performing the following modifications: (i) do not 'Require seed conservation in mature miRNA (nt 2-8)' (uncheck box); (ii) increase 'maximal number of gaps in miRNA precursor alignment' from 10 (default) to 15; (iii) decrease 'minimal mature miRNA identity' from 0.8 (default) to 0.7; (iv) decrease 'minimal base pairing percentage in miRNA precursor' from 55 (default) to 40; and (v) change 'minimal/maximal length of precursor sequence (nt)' from 70/180 (default) to 50/250. In order to view miRNAs which are other than the top candidate we suggest increasing the 'number of results to report' from 1 (default) to 5. The parameters (i-v) above are listed in the order that would output an increasing total number of identified miRNAs. For example, reducing mature miRNA identity from 0.8 (default) to 0.7 increases miRNAs from 22 to 24 (9%) and 31 to 36 (16%) in human and mouse, respectively. On the other hand, we found that changing the length of the miRNA precursor from 70-180 nt (default) to 50-250 nt, added only 1 additional miRNA in human and none in mouse. This, however, might change when run in combination with other modified parameters. Altogether each of the modified parameters listed above will result, independently, in an average miRNA increase of 11% when tested on seven mammalian species.
+###end p 24
+###begin p 25
+###xml 45 46 45 46 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 514 524 514 524 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C. elegans</italic>
+###xml 876 886 876 886 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C. elegans</italic>
+###xml 388 393 <span type="species:ncbi:10090">mouse</span>
+###xml 405 408 <span type="species:ncbi:10116">rat</span>
+###xml 424 429 <span type="species:ncbi:9606">human</span>
+###xml 514 524 <span type="species:ncbi:238774|species:ncbi:386067|species:ncbi:147878|species:ncbi:193182|species:ncbi:313250|species:ncbi:323266|species:ncbi:315362|species:ncbi:148887|species:ncbi:124036|species:ncbi:48798|species:ncbi:529401|species:ncbi:314391|species:ncbi:646318|species:ncbi:254962|species:ncbi:323047|species:ncbi:287681|species:ncbi:269614|species:ncbi:103475|species:ncbi:114942|species:ncbi:212608|species:ncbi:457136|species:ncbi:227469|species:ncbi:449387|species:ncbi:551876|species:ncbi:248142|species:ncbi:252961|species:ncbi:466267|species:ncbi:119832|species:ncbi:228196|species:ncbi:316080|species:ncbi:217897|species:ncbi:109099|species:ncbi:328850|species:ncbi:266263|species:ncbi:348465|species:ncbi:181251|species:ncbi:6239|species:ncbi:320029|species:ncbi:293163|species:ncbi:4853|species:ncbi:160529|species:ncbi:292745|species:ncbi:368875|species:ncbi:323318|species:ncbi:209968|species:ncbi:405608|species:ncbi:480533">C. elegans</span>
+###xml 876 886 <span type="species:ncbi:238774|species:ncbi:386067|species:ncbi:147878|species:ncbi:193182|species:ncbi:313250|species:ncbi:323266|species:ncbi:315362|species:ncbi:148887|species:ncbi:124036|species:ncbi:48798|species:ncbi:529401|species:ncbi:314391|species:ncbi:646318|species:ncbi:254962|species:ncbi:323047|species:ncbi:287681|species:ncbi:269614|species:ncbi:103475|species:ncbi:114942|species:ncbi:212608|species:ncbi:457136|species:ncbi:227469|species:ncbi:449387|species:ncbi:551876|species:ncbi:248142|species:ncbi:252961|species:ncbi:466267|species:ncbi:119832|species:ncbi:228196|species:ncbi:316080|species:ncbi:217897|species:ncbi:109099|species:ncbi:328850|species:ncbi:266263|species:ncbi:348465|species:ncbi:181251|species:ncbi:6239|species:ncbi:320029|species:ncbi:293163|species:ncbi:4853|species:ncbi:160529|species:ncbi:292745|species:ncbi:368875|species:ncbi:323318|species:ncbi:209968|species:ncbi:405608|species:ncbi:480533">C. elegans</span>
+We estimated miRNAminer's sensitivity (Table 3) and specificity. The sensitivity, on seven mammalian species, is 0.88. Sensitivity for a species is the portion of the species' miRNAs with known homologs that are detected by miRNAminer using miRNAs from all other species. We used only miRNAs which miRbase lists for more than one species. Sensitivity measures are higher in chimp (0.94), mouse (0.88) and rat (0.91) than in human (0.85). To estimate specificity, we used miRNAminer to search for miRNA homologs in C. elegans, which has a large evolutionary distance from the studied mammals. We treated as false positives all hits reported by miRNAminer that were not identified as homologs by previous studies. This conservative treatment may over-approximate the number of false positives. Using 1375 miRNAs from the seven studied mammalian species, miRNAminer detected, in C. elegans, two known homologs (let-7 and mir-124) and reported only five false positives.
+###end p 25
+###begin p 26
+Sensitivity of miRNAminer.
+###end p 26
+###begin p 27
+The second (third) column presents the number of miRNAs with homologs that miRNAminer detects (does not detect) in each species.
+###end p 27
+###begin title 28
+Conclusion
+###end title 28
+###begin p 29
+###xml 94 96 94 96 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 115 116 115 116 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 117 119 117 119 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 120 122 120 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 200 202 200 202 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+Several approaches to identify miRNA homologs have been previously described, both in plants [40], and in animals [5,41,42]. However, the only tool that is available as a web service, microHARVESTER [40], is targeted for plants. miRNAminer is the first available miRNA gene homolog search tool for animal genomes.
+###end p 29
+###begin title 30
+Authors' contributions
+###end title 30
+###begin p 31
+NS conceived the study. SA, AK and NS planned and designed the algorithm and web-server. SA and AK wrote the code. NS analyzed the output. SA, AK and NS wrote the paper. All authors read and approved the manuscript.
+###end p 31
+###begin title 32
+Availability and requirements
+###end title 32
+###begin p 33
+Project name: miRNAminer; Project home page: ; Operating system: Platform independent; Programming language: Java; License: Open source, see ; Code is available upon request. miRNAs identified using miRNAminer will be incorporated in next miRbase versions, see .
+###end p 33
+###begin title 34
+Supplementary Material
+###end title 34
+###begin title 35
+Additional file 1
+###end title 35
+###begin p 36
+###xml 0 29 0 29 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Non-miRbase registered miRNAs</bold>
+###xml 190 195 <span type="species:ncbi:9606">human</span>
+###xml 197 207 <span type="species:ncbi:9598">chimpanzee</span>
+###xml 209 214 <span type="species:ncbi:10090">mouse</span>
+###xml 216 219 <span type="species:ncbi:10116">rat</span>
+###xml 221 224 <span type="species:ncbi:9615">dog</span>
+###xml 226 229 <span type="species:ncbi:9913">cow</span>
+Non-miRbase registered miRNAs. A list of 790 miRNAs that were identified using miRNAminer. These miRNAs add more than 50% to the total count of miRNAs in the seven mammalian species tested: human, chimpanzee, mouse, rat, dog, cow and opossum, and are available at:
+###end p 36
+###begin p 37
+Click here for file
+###end p 37
+###begin article-title 38
+microRNA Functions
+###end article-title 38
+###begin article-title 39
+Gene regulation by microRNAs
+###end article-title 39
+###begin article-title 40
+The microRNA miR-196 acts upstream of Hoxb8 and Shh in limb development
+###end article-title 40
+###begin article-title 41
+Canalization of development by microRNAs
+###end article-title 41
+###begin article-title 42
+Hairpins in a Haystack: recognizing microRNA precursors in comparative genomics data
+###end article-title 42
+###begin article-title 43
+The phylogenetic distribution of metazoan microRNAs: insights into evolutionary complexity and constraint
+###end article-title 43
+###begin article-title 44
+The expansion of the metazoan microRNA repertoire
+###end article-title 44
+###begin article-title 45
+###xml 57 62 <span type="species:ncbi:9606">human</span>
+Identification of hundreds of conserved and nonconserved human microRNAs
+###end article-title 45
+###begin article-title 46
+###xml 26 31 <span type="species:ncbi:9606">human</span>
+###xml 36 46 <span type="species:ncbi:9598">chimpanzee</span>
+Diversity of microRNAs in human and chimpanzee brain
+###end article-title 46
+###begin article-title 47
+###xml 0 5 <span type="species:ncbi:9606">Human</span>
+Human polymorphism at microRNAs and microRNA target sites
+###end article-title 47
+###begin article-title 48
+###xml 32 42 <span type="species:ncbi:7227">Drosophila</span>
+Computational identification of Drosophila microRNA genes
+###end article-title 48
+###begin article-title 49
+Vertebrate microRNA genes
+###end article-title 49
+###begin article-title 50
+miRBase: microRNA sequences, targets and gene nomenclature
+###end article-title 50
+###begin article-title 51
+miRbase database contains all published miRNA sequences, genomic locations and associated annotation.
+###end article-title 51
+###begin article-title 52
+###xml 81 86 <span type="species:ncbi:9606">human</span>
+Conserved seed pairing, often flanked by adenosines, indicates that thousands of human genes are microRNA targets
+###end article-title 52
+###begin article-title 53
+NCBI BLAST
+###end article-title 53
+###begin article-title 54
+A uniform system for microRNA annotation
+###end article-title 54
+###begin article-title 55
+Ensembl database produces and maintains automatic annotations on selected eukaryotic genomes.
+###end article-title 55
+###begin article-title 56
+RNA secondary structure prediction of the RNAfold program
+###end article-title 56
+###begin article-title 57
+Supplementary Material
+###end article-title 57
+###begin article-title 58
+Many novel mammalian microRNA candidates identified by extensive cloning and RAKE analysis
+###end article-title 58
+###begin article-title 59
+###xml 39 44 <span type="species:ncbi:10090">mouse</span>
+The expression profile of microRNAs in mouse embryos
+###end article-title 59
+###begin article-title 60
+RNAmicro
+###end article-title 60
+###begin article-title 61
+###xml 59 64 <span type="species:ncbi:9606">human</span>
+Phylogenetic shadowing and computational identification of human microRNA genes
+###end article-title 61
+###begin article-title 62
+miRRim: A novel system to find conserved miRNAs with high sensitivity and specificity
+###end article-title 62
+###begin article-title 63
+The imprinted H19 noncoding RNA is a primary microRNA precursor
+###end article-title 63
+###begin article-title 64
+Microarray profiling of microRNAs reveals frequent coexpression with neighboring miRNAs and host genes
+###end article-title 64
+###begin article-title 65
+###xml 59 64 <span type="species:ncbi:9606">human</span>
+Characterization of microRNA expression profiles in normal human tissues
+###end article-title 65
+###begin article-title 66
+Identification of mammalian microRNA host genes and transcription units
+###end article-title 66
+###begin article-title 67
+Critical role of the HMGA2 gene in pituitary adenomas
+###end article-title 67
+###begin article-title 68
+Molecular biology of HMGA proteins: hubs of nuclear function
+###end article-title 68
+###begin article-title 69
+The tumor suppressor microRNA let-7 represses the HMGA2 oncogene
+###end article-title 69
+###begin article-title 70
+Disrupting the pairing between let-7 and Hmga2 enhances oncogenic transformation
+###end article-title 70
+###begin article-title 71
+Let-7 expression defines two differentiation stages of cancer
+###end article-title 71
+###begin article-title 72
+Principles of microRNA-target recognition
+###end article-title 72
+###begin article-title 73
+Combinatorial microRNA target predictions
+###end article-title 73
+###begin article-title 74
+Determinants of targeting by endogenous and exogenous microRNAs and siRNAs
+###end article-title 74
+###begin article-title 75
+A mammalian microRNA expression atlas based on small RNA library sequencing
+###end article-title 75
+###begin article-title 76
+A family of microRNAs present in plants and animals
+###end article-title 76
+###begin article-title 77
+Identification of plant microRNA homologs
+###end article-title 77
+###begin article-title 78
+MicroRNA identification based on sequence and structure alignment
+###end article-title 78
+###begin article-title 79
+###xml 4 9 <span type="species:ncbi:9606">human</span>
+###xml 14 19 <span type="species:ncbi:10090">mouse</span>
+New human and mouse microRNA genes found by homology search
+###end article-title 79
+###begin article-title 80
+UCSC genome browser contains the reference sequences and working draft assemblies for a large collection of genomes.
+###end article-title 80
+

@@ -1,0 +1,1761 @@
+###begin article-title 0
+Multiple non-collinear TF-map alignments of promoter regions
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+The analysis of the promoter sequence of genes with similar expression patterns is a basic tool to annotate common regulatory elements. Multiple sequence alignments are on the basis of most comparative approaches. The characterization of regulatory regions from co-expressed genes at the sequence level, however, does not yield satisfactory results in many occasions as promoter regions of genes sharing similar expression programs often do not show nucleotide sequence conservation.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 622 627 <span type="species:ncbi:9606">human</span>
+###xml 628 633 <span type="species:ncbi:10090">mouse</span>
+###xml 634 641 <span type="species:ncbi:9031">chicken</span>
+###xml 642 651 <span type="species:ncbi:7955">zebrafish</span>
+In a recent approach to circumvent this limitation, we proposed to align the maps of predicted transcription factors (referred as TF-maps) instead of the nucleotide sequence of two related promoters, taking into account the label of the corresponding factor and the position in the primary sequence. We have now extended the basic algorithm to permit multiple promoter comparisons using the progressive alignment paradigm. In addition, non-collinear conservation blocks might now be identified in the resulting alignments. We have optimized the parameters of the algorithm in a small, but well-characterized collection of human-mouse-chicken-zebrafish orthologous gene promoters.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+Results in this dataset indicate that TF-map alignments are able to detect high-level regulatory conservation at the promoter and the 3'UTR gene regions, which cannot be detected by the typical sequence alignments. Three particular examples are introduced here to illustrate the power of the multiple TF-map alignments to characterize conserved regulatory elements in absence of sequence similarity. We consider this kind of approach can be extremely useful in the future to annotate potential transcription factor binding sites on sets of co-regulated genes from high-throughput expression experiments.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+Sequence comparisons are one of the most important computational tools in molecular biology. Sequences are good symbolic representations of biological molecules that encode relevant information about their structure, function and history. From the analysis of functionally related sequences, biologically significant facts can be inferred. For instance, genomic sequence comparisons are performed in order to identify genes or regulatory sites across evolutionarily related genomes, as these functional elements tend to exhibit conservational patterns different from those observed in regions that are not functional.
+###end p 9
+###begin p 10
+###xml 159 161 159 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 236 237 236 237 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 238 239 238 239 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 272 274 272 274 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 310 311 310 311 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 312 313 312 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 313 314 313 314 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 313 314 313 314 <sup xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sup>
+###xml 316 317 316 317 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 498 499 498 499 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 500 501 500 501 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+In attempt to allow for multiple sequence comparisons, the basic dynamic programming recurrences introduced in the 1970s to align efficiently two sequences of n symbols in time proportional to the square of the length of the sequences [1,2], can be naturally extended for k sequences, with an exponential cost O(nk)[3]. As this cost is unaffordable in practice, many heuristics have appeared to provide acceptable solutions with a minor cost. The most popular of them is the progressive alignment [4,5].
+###end p 10
+###begin p 11
+###xml 50 51 50 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 52 53 52 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 53 54 53 54 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 54 55 54 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 55 56 55 56 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+This procedure is a greedy algorithm that runs in O(k2n2) time. In a first step, the progressive alignment performs all of the pairwise alignments to build an evolutionary tree. In a second step, an initial alignment is constructed from the two closest sequences, incorporating then the rest to the profile following the guide tree. Such a procedure does not guarantee to find the optimal solution in mathematical terms. However, the results are generally meaningful from the biological standpoint.
+###end p 11
+###begin p 12
+These comparisons at the sequence level have limitations however. Although similar sequences do tend to play similar biological functions, the opposite is not necessarily true. Often similar functions are encoded in higher order sequence elements that are not necessarily conserved at the sequence level. As a result, similar functions are frequently encoded by diverse sequences which are undetectable by conventional sequence alignment methods.
+###end p 12
+###begin p 13
+###xml 447 448 447 448 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 705 706 705 706 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 707 708 707 708 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+Gene promoter regions are a good example. The information that governs the RNA synthesis is mostly encoded in the gene promoter, a region normally 200 to 2000 nucleotides long upstream of the transcription start site of the gene (TSS). Transcription factors (TFs) bind to sequence specific motifs (the TF binding sites, TFBSs) within the promoters. TFBSs are 5-8 nucleotides long and one promoter region contains on the order of 10 to 50 of them [6]. Such motifs appear to be arranged in specific configurations that define the temporal and spatial transcriptional program of each gene. Genes presenting similar expression patterns are assumed to share similar configurations of TFBSs in their promoters [7,8].
+###end p 13
+###begin p 14
+However, TFBSs associated to the same TF show often little sequence conservation. Therefore, promoter regions of genes with similar expression pattern may not be similar at the sequence level.
+###end p 14
+###begin p 15
+###xml 20 21 20 21 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+In a previous work [9], we showed that pairwise alignments between sequences of labels representing TFs binding to sites predicted in promoter regions (TF-maps) could often uncover high-level common regulatory patterns which could not be found by typical nucleotide sequence comparisons.
+###end p 15
+###begin p 16
+###xml 499 501 499 501 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 502 504 502 504 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 686 688 686 688 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+Here, we present an efficient implementation of the multiple TF-map alignment based in the progressive alignment paradigm. We have introduced some modifications in the pairwise global TF-map alignment algorithm to allow the alignment of TF-map alignments. In addition, we have extended the algorithm to allow for non-collinear alignments, which are rarely considered in conventional dynamic programming algorithms, being only partially identified by combining global and local alignment strategies [10,11]. The ability to predict non-collinear alignments may be particularly relevant in the case of promoter regions, where the linearity of TFBSs configurations can be weakly conserved [12].
+###end p 16
+###begin p 17
+###xml 671 673 671 673 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 614 619 <span type="species:ncbi:9606">human</span>
+###xml 712 719 <span type="species:ncbi:9031">chicken</span>
+###xml 724 733 <span type="species:ncbi:7955">zebrafish</span>
+The structure of the paper is the following: first, we briefly review the concept of TF-map and provide the formal definition of a multiple TF-map alignment. Then, we introduce the algorithm to compute the optimal pairwise alignment of two alignments. Next, we describe the main algorithm that performs the progressive alignment of multiple TF-maps. Later, we define formally a non-collinear alignment, introducing some modifications in the basic algorithm. Finally, we systematically estimate the optimal parameters of the alignment to distinguish promoters from other gene regions in a set of well characterized human-rodent gene pairs extracted from the ABS database [13] and their corresponding orthologs in chicken and zebrafish. These results are compared to those obtained by conventional sequence alignment methods. Three particular examples are presented in which multiple TF-map alignments characterize conserved regulatory elements that are otherwise imperceptible in sequence-level comparisons.
+###end p 17
+###begin title 18
+TF-maps
+###end title 18
+###begin p 19
+###xml 22 26 5 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">DNA </italic>
+###xml 22 26 5 9 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>DNA </italic></sub>
+###xml 85 87 51 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H </italic>
+###xml 85 87 51 53 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>H </italic></sub>
+###xml 309 311 275 277 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 313 314 279 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 314 315 280 281 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 315 316 281 282 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 316 318 282 284 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 322 323 288 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 323 325 289 291 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 323 325 289 291 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 347 348 313 314 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 348 349 314 315 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 348 349 314 315 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 370 373 318 321 <italic xmlns:xlink="http://www.w3.org/1999/xlink">DNA</italic>
+###xml 370 373 318 321 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>DNA</italic></sub>
+###xml 401 403 349 351 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+###xml 405 406 353 354 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 406 407 354 355 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 407 408 355 356 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 408 410 356 358 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 414 415 362 363 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 415 417 363 365 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 415 417 363 365 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>n </italic></sub>
+###xml 515 517 445 447 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H </italic>
+###xml 515 517 445 447 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>H </italic></sub>
+###xml 585 587 515 517 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+Let summation operatorDNA be the alphabet of four nucleotides. Let summation operatorH be the alphabet of symbols corresponding to higher-order elements that can be annotated over a genomic sequence, for instance TFs. We define a generic mapping function as a procedure to translate a sequence of nucleotides S = s1s2 ... sk where each nucleotide siin summation operatorDNA, into a sequence of tuples M = m1m2 ... mn where each tuple  denotes the match of a motif for the higher-order element  in summation operatorH occurring between the position  and the position  over the sequence S with score .
+###end p 19
+###begin p 20
+###xml 99 100 99 100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 125 128 108 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TF </italic>
+###xml 125 128 108 111 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>TF </italic></sub>
+###xml 234 236 217 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 238 239 221 222 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 239 240 222 223 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 240 241 223 224 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 241 243 224 226 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 247 248 230 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 248 250 231 233 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 248 250 231 233 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 272 273 255 256 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 273 275 256 258 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 273 275 256 258 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 296 299 261 264 <italic xmlns:xlink="http://www.w3.org/1999/xlink">DNA</italic>
+###xml 296 299 261 264 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>DNA</italic></sub>
+###xml 330 332 295 297 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+###xml 334 335 299 300 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 335 336 300 301 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 336 337 301 302 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 337 339 302 304 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 343 344 308 309 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 344 346 309 311 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 344 346 309 311 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>n </italic></sub>
+###xml 436 439 383 386 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TF </italic>
+###xml 436 439 383 386 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>TF </italic></sub>
+###xml 507 509 454 456 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+We introduced the concept of mapping for the promoter characterization problem in a previous work [9]. Let summation operatorTF be the alphabet of TFs denoting symbols. A mapping function is a procedure to translate a promoter region S = s1s2 ... sk where each nucleotide si in summation operatorDNA, into a sequence of TF-tuples M = m1m2 ... mn where each TF-tuple  denotes the match of a binding site for the TF  in summation operatorTF occurring between the position  and the position  over the sequence S with score .
+###end p 20
+###begin p 21
+###xml 127 129 127 129 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 132 134 132 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+###xml 218 220 218 220 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 230 232 230 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 247 249 247 249 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 364 366 364 366 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 452 454 452 454 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+###xml 565 569 565 569 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1(A)</xref>
+###xml 628 630 628 630 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 633 634 633 634 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 647 649 647 649 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 650 652 650 652 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 655 657 655 657 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+###xml 798 802 798 802 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1(B)</xref>
+###xml 853 855 853 855 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M </italic>
+In the context of the detection of regulatory elements, different mapping functions can be used to obtain the translation from S to M such as a collection of position weight matrices (PWMs) representing TFBSs (JASPAR [14], PROMO [15] or TRANSFAC [16]), or a pattern discovery tool that identifies a set of unknown motifs conserved in several promoters (e.g. MEME [17]). In practice, for each match over a given threshold, we register a new TF-tuple in M defined by the label () of the TF or the pattern, the positions (, ) and the score () of the match (see Figure 1(A), for an example). This translation preserves the order of S in M, that is if i <j in M then  <. Matches to different TFs may possibly occur at the same position, being false positives in most cases (see a real example in Figure 1(B)). We refer to the resulting sequence of TF-tuples M as a Transcription Factor Map, or simply a TF-map.
+###end p 21
+###begin p 22
+###xml 614 629 614 629 <italic xmlns:xlink="http://www.w3.org/1999/xlink">phospholipase A</italic>
+(A) The sequence of a promoter is searched for occurrences of known binding motifs for transcription factors (TFs), using a collection of position weight matrices. Matches are denoted as TF-tuples that contain the label of the TF, the positions of the match in the primary sequence, and the score provided by the corresponding matrix. Because binding sites tolerate sequence substitutions, several overlapping TF-tuples can be identified in a subset of positions. TF-tuples are graphically represented as boxes along the promoter sequence. Each TF is denoted with a different color. (B) Promoter TF-mapping of the phospholipase A1 gene (RefSeq: NM 015900, 500 nucleotides). TRANSFAC 6.3 was used as the mapping function [16]. In both cases, the TF occurrences are displayed as boxes along the promoter. In (A), the boxes are condensed in a single line. The TF-map graphical representation has been produced with the program gff2ps [27].
+###end p 22
+###begin p 23
+###xml 369 371 369 371 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 372 374 372 374 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+In the implementation here, matches to PWMs are considered strandless, that is, they are annotated at a given location, irrespective of the orientation in which they occur. While biological evidence suggests that some TFBSs are functional only when present in a given strand, in other cases TF activity appears to be independent of the orientation of the binding site [18,19]. Since in general, we do not have information of the strand in which a binding site may be functional, we have not considered strand in our analysis.
+###end p 23
+###begin title 24
+Multiple alignment of TF-maps
+###end title 24
+###begin p 25
+###xml 4 5 4 5 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 5 6 5 6 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 8 9 8 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 9 10 9 10 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 17 18 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 18 20 18 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 18 20 18 20 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 64 65 64 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 65 67 65 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 65 67 65 67 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 69 70 69 70 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 70 71 70 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 70 74 70 74 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>, 1</sub>
+###xml 74 75 74 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 75 76 75 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 75 80 75 80 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>, 2 </sub>
+###xml 113 115 95 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TF</italic>
+###xml 113 115 95 97 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>TF</italic></sub>
+###xml 197 198 178 179 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 198 199 179 180 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 198 199 179 180 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 320 326 282 284 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947; </italic>
+###xml 363 369 321 323 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947; </italic>
+Let M1, M2, ..., Mk be a set of TF-maps. Each map is denoted as Mi = mi, 1mi, 2 ...  where  in summation operatorTF. Let  be the extended set of TF-maps. Each extended map is denoted as  where  in Miunion or logical sum {-}. The symbol '-' indicates a gap, which can be considered as a particular TF-tuple < '-', . , ., gamma >. The value . denotes a null value, gamma is the penalty for introducing a gap in a column of the alignment.
+###end p 25
+###begin p 26
+###xml 26 28 26 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 33 34 33 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 34 35 34 35 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1</sub>
+###xml 37 38 37 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 38 39 38 39 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 46 47 46 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 47 49 47 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 47 49 47 49 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k </italic></sub>
+###xml 83 85 83 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 158 160 158 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+The multiple alignment of k maps M1, M2, ..., Mk is defined as a rectangular array T where each column  is the multiple match among the TF-tuples in position i from the extended maps :
+###end p 26
+###begin p 27
+
+###end p 27
+###begin p 28
+Such a multiple TF-map alignment - or simply, a multiple map alignment (MMA), in contrast to a multiple sequence alignment (MSA) - satisfies the following conditions:
+###end p 28
+###begin p 29
+1. The extended maps have the same length.
+###end p 29
+###begin p 30
+###xml 52 53 52 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 53 55 53 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 53 55 53 55 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+2. If the gaps are removed from each , the original Mi is recovered.
+###end p 30
+###begin p 31
+3. At least one element in every column is different from a gap.
+###end p 31
+###begin p 32
+4. The elements that are aligned in a column correspond to the same TF.
+###end p 32
+###begin p 33
+###xml 243 244 243 244 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+Note that the first three conditions define the classical multiple alignment of sequences. The last one, however, introduces a new constrain that is related to the match state, according to the notion of pairwise TF-map alignment provided in [9].
+###end p 33
+###begin title 34
+The score of a multiple alignment of TF-maps
+###end title 34
+###begin p 35
+###xml 29 30 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 64 65 64 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 66 67 66 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+Given the multiple alignment T, we compute the score of the MMA s(T) as:
+###end p 35
+###begin p 36
+
+###end p 36
+###begin p 37
+###xml 6 11 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+###xml 13 19 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955;</italic>
+###xml 21 23 12 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 30 32 20 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink">g </italic>
+###xml 137 139 127 129 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f </italic>
+###xml 255 256 245 246 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 258 260 248 250 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i'</italic>
+###xml 395 400 385 386 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+###xml 442 447 428 429 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947;</italic>
+###xml 484 490 466 467 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955;</italic>
+###xml 568 570 545 546 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 578 579 554 555 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+where alpha, lambda, mu, > 0, g is the number of columns with only one element different from a gap in the MMA (unaligned elements), and f is a function that measures the conservation of distance between the sites of every map in two consecutive columns (i, i') with at least two aligned elements in the MMA. That is, the score of the alignment increases with the score of the aligned elements (alpha), and decreases with the number of gaps (gamma), the number of unaligned elements (lambda), and with the difference in the distance between adjacent aligned elements (mu). See [9] for further details about the TF-map alignment parameters.
+###end p 37
+###begin title 38
+The algorithms
+###end title 38
+###begin p 39
+###xml 201 202 201 202 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 496 498 496 498 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+There are many possible alignments among multiple TF-maps. The optimal alignment is the one scoring the maximum (that is, showing maximum similarity) among all possible alignments. In a previous work [9], we implemented a dynamic programming algorithm to obtain such an alignment efficiently for the case of two TF-maps. The optimal multiple sequence alignment problem (and therefore the multiple alignment of maps as well) is, however, much more difficult, being formally a NP-complete problem [20].
+###end p 39
+###begin p 40
+###xml 314 315 314 315 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 398 399 398 399 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+Here, we propose to adapt the popular progressive alignment strategy to the TF-map alignment. The solutions obtained by this method are not guaranteed to be optimal. However, multiple progressive alignments usually capture the sequence features underlying the common functionality shared by the aligned sequences [5]. We have generalized the basic pairwise TF-map alignment algorithm developed in [9] in order to allow the comparisons between two single TF-maps, a TF-map and a MMA, and two MMAs.
+###end p 40
+###begin title 41
+The alignment of two MMAs
+###end title 41
+###begin p 42
+###xml 4 5 4 5 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 5 7 5 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 5 7 5 7 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x </italic></sub>
+###xml 9 10 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 10 11 10 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 10 14 10 14 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, 1</sub>
+###xml 14 15 14 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 15 16 15 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 15 20 15 20 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, 2 </sub>
+###xml 29 30 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 30 32 30 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 30 32 30 32 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y </italic></sub>
+###xml 34 35 34 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 35 36 35 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 35 39 35 39 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, 1</sub>
+###xml 39 40 39 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 40 41 40 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 40 45 40 45 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, 2 </sub>
+###xml 99 101 99 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 149 150 149 150 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 151 152 151 152 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 154 155 154 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 159 160 159 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 161 162 161 162 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 162 163 162 163 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 165 166 165 166 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 162 166 162 166 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, <italic>i</italic></sub>
+###xml 168 169 168 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 169 170 169 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 172 173 172 173 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 169 173 169 173 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, <italic>j</italic></sub>
+###xml 240 241 240 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 241 243 241 243 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 241 243 241 243 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x </italic></sub>
+###xml 245 246 245 246 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 246 247 246 247 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 246 251 246 251 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, 1 </sub>
+###xml 255 256 255 256 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 256 257 256 257 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 259 261 259 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 256 261 256 261 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, <italic>i </italic></sub>
+###xml 265 266 265 266 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 266 268 266 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 266 268 266 268 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y </italic></sub>
+###xml 270 271 270 271 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 271 272 271 272 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 271 276 271 276 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, 1 </sub>
+###xml 280 281 280 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 281 282 281 282 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 284 286 284 286 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 281 286 281 286 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, <italic>j </italic></sub>
+###xml 326 352 326 352 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ComputePairwiseSimilarity </italic>
+###xml 416 417 416 417 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 500 501 500 501 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 501 503 501 503 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 501 503 501 503 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x </italic></sub>
+###xml 507 508 507 508 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 508 509 508 509 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 508 509 508 509 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic></sub>
+Let Ax = mx, 1mx, 2 ...  and Ay = my, 1my, 2 ...  be two MMAs that have been already computed. Let S be the scoring dynamic programming matrix where S(i, j) = S(mx, i, my, j) denotes the score of the best TF-map alignment of the alignments Ax = mx, 1 ... mx, i and Ay = my, 1 ... my, j as defined previously (Equation 2). The ComputePairwiseSimilarity algorithm shown below is a generalization of that developed in [9] to align two TF-maps that computes the optimal pairwise TF-map alignment between Ax and Ay.
+###end p 42
+###begin p 43
+###xml 295 296 295 296 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 357 358 357 358 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 392 394 392 394 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 477 478 477 478 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 479 480 479 480 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 482 483 482 483 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 514 516 514 516 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 858 859 858 859 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+This algorithm basically searches the maps of both alignments to find matches between one site in the first alignment and one site in the second one. Once a new match is identified, the previous matches must be evaluated in order to construct the optimal alignment with this new one (see Figure 2). Because this class of scoring matrices are highly sparse [9], we register the coordinates in S of the matches computed previously. Thus, to compute the optimal score at the cell S(i, j), only the non-empty cells in S that are visible for the current match need to be accessed. In addition, we maintain the list sorted by optimal score, so that the cell scoring the maximum value is at the beginning of the list and, in most cases, only a few nodes will need to be accessed before a critical node is reached beyond which the optimal score can not be improved [9].
+###end p 43
+###begin p 44
+###xml 97 98 97 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 98 100 98 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 98 100 98 100 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x </italic></sub>
+###xml 104 105 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 105 106 105 106 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 105 106 105 106 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic></sub>
+###xml 239 240 239 240 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 276 277 276 277 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+Graphical representation of the dynamic programming matrix produced in the alignment of two MMAs Ax and Ay. A new match between sites from both alignments must preserve the previous internal alignment (matches in red). For each new match (A), the best previous aligned match (B) must be selected to form the optimal alignment.
+###end p 44
+###begin p 45
+###xml 27 28 27 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 29 30 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 140 141 140 141 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 300 301 300 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 659 660 659 660 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 738 740 738 740 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 797 798 797 798 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 799 800 799 800 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 801 802 801 802 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 802 803 802 803 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 812 814 812 814 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+The number of computations P(n) in this algorithm is very similar to that obtained in the conventional pairwise TF-map alignment algorithm [9]. The exact complexity of this algorithm is difficult to be studied - depending mostly on the size of the input maps and the sparsity of the resulting matrix S. An expected time cost analysis reveals that the cost function can be explained in terms of (a) a first quadratic term derived from the necessary comparison between all of the TFBSs of both maps to detect the match cells and (b) a second quadratic term necessary to search for each match the best adjacent previous pair in the optimal TF-map alignment. In [9], we studied the positive contribution of using a list of non-empty cells in S that reduces the second component to an expected cost of O(p.n2), where p is the percentage of the similarity matrix that is occupied. In the case of pairwise TF-map promoter comparisons, this value was estimated to be below 0.05 (less than 5% of occupancy).
+###end p 45
+###begin title 46
+Implementation
+###end title 46
+###begin p 47
+###xml 40 41 40 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 41 43 41 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 41 43 41 43 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x </italic></sub>
+###xml 47 48 47 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 48 50 48 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 48 50 48 50 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y </italic></sub>
+###xml 314 315 314 315 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 315 316 315 316 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 318 320 318 320 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 315 320 315 320 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, <italic>i </italic></sub>
+###xml 373 379 373 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink">factor</italic>
+###xml 381 385 381 385 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pos1</italic>
+###xml 387 392 387 392 <italic xmlns:xlink="http://www.w3.org/1999/xlink">pos2 </italic>
+###xml 396 402 396 402 <italic xmlns:xlink="http://www.w3.org/1999/xlink">score </italic>
+In the pseudocode below, the alignments Ax and Ay are represented as two arrays of sites sorted by the position in their promoters, where each site corresponds to an input TFBS. The MMAs are internally encoded with pointers among the sites that form each match. Gaps here are not explicitly represented. Each site mx, i is a structure as described above with the functions factor, pos1, pos2 and score returning the values of the corresponding fields.
+###end p 47
+###begin p 48
+###xml 13 20 13 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">maxSim </italic>
+###xml 160 164 160 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink">path</italic>
+###xml 165 166 165 166 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 168 169 168 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 240 241 240 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 242 243 242 243 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 245 246 245 246 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 275 300 275 300 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ComputeInitialSimilarity </italic>
+###xml 326 327 326 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 328 329 328 329 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 331 332 331 332 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 409 410 409 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 410 411 410 411 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 413 415 413 415 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 410 415 410 415 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, <italic>i </italic></sub>
+###xml 419 420 419 420 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 420 421 420 421 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 423 424 423 424 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 420 424 420 424 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, <italic>j</italic></sub>
+###xml 459 460 459 460 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 460 461 460 461 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 463 465 463 465 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 460 465 460 465 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, <italic>i </italic></sub>
+###xml 469 470 469 470 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 470 471 470 471 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 473 475 473 475 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 470 475 470 475 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, <italic>j </italic></sub>
+###xml 544 545 544 545 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 545 546 545 546 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 548 551 548 551 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i' </italic>
+###xml 545 551 545 551 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, <italic>i' </italic></sub>
+###xml 555 556 555 556 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 556 557 556 557 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 559 562 559 562 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j' </italic>
+###xml 556 562 556 562 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, <italic>j' </italic></sub>
+###xml 618 620 618 620 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A </italic>
+###xml 624 626 624 626 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B </italic>
+###xml 636 637 636 637 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 649 651 649 651 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L </italic>
+###xml 696 697 696 697 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 721 723 721 723 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L </italic>
+###xml 752 754 752 754 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 758 760 758 760 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 779 788 779 788 <italic xmlns:xlink="http://www.w3.org/1999/xlink">abscissa </italic>
+###xml 792 801 792 801 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ordinate </italic>
+###xml 844 846 844 846 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+The variable maxSim stores the optimal score computed so far. The sites in the optimal TF-map alignment can be easily retrieved using a supplementary structure path(i, j) that points to the previous cell in the optimal path leading to cell S(i, j). In addition, the function ComputeInitialSimilarity calculates for each match S(i, j) the initial score of a hypothetical alignment that includes only the sites mx, i and my, j. Once the match between two sites mx, i and my, j has been identified, the best previous match between two other sites mx, i' and my, j' is used to construct the new alignment (see the matches A and B in Figure 2). The list L is used to locate the non-empty positions in S. Each node of the list L is represented as structures p and n with the functions abscissa and ordinate returning the corresponding coordinates in S of each previous match.
+###end p 48
+###begin p 49
+###xml 35 36 35 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 36 37 36 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 39 41 39 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 36 41 36 41 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, <italic>i </italic></sub>
+###xml 45 46 45 46 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 46 47 46 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 49 51 49 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 46 51 46 51 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, <italic>j </italic></sub>
+###xml 201 207 201 203 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947; </italic>
+###xml 222 236 218 232 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ComputeLambda </italic>
+The score of the new match between mx, i and my, j is the sum of the scores of the columns in which both elements were aligned in their respective MMAs. Unaligned sites are scored with the gap penalty gamma . The function ComputeLambda counts the number of sites in each group that are not included in the alignment, taking into account the size of each individual MMA.
+###end p 49
+###begin p 50
+###xml 276 291 276 291 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ComputeOverlap </italic>
+###xml 324 325 324 325 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 331 332 331 332 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 481 482 481 482 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 486 487 486 487 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 606 607 606 607 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+In practice, we do not allow overlap in the primary sequence between adjacent sites in the alignment. This is not a practical limitation of the algorithm, but a requirement introduced according to our observations in available annotations of regulatory elements. The function ComputeOverlap calculates the average distances D1 and D2 between any pair of consecutive matches in the maps of each alignment, verifying the absence of physical overlap in their promoters. The function |D1 - D2| scores the conservation of distance between the sites of every map in two consecutive columns on each MMA (function f, see Equation 2).
+###end p 50
+###begin title 51
+ComputePairwiseSimilarity
+###end title 51
+###begin p 52
+###xml 0 9 0 9 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Require: </bold>
+###xml 9 10 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 10 11 10 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 10 11 10 11 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic></sub>
+###xml 13 14 13 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 14 15 14 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 14 15 14 15 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic></sub>
+###xml 36 37 36 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+###xml 69 71 69 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L </italic>
+Require: Ax, Ay: TF-map alignments, L: list of <abscissa, ordinate>, L = ∅
+###end p 52
+###begin p 53
+###xml 28 29 28 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 31 33 31 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 36 37 36 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+   {Calculating the element i, j in S}
+###end p 53
+###begin p 54
+###xml 6 10 6 10 <bold xmlns:xlink="http://www.w3.org/1999/xlink">for </bold>
+###xml 10 12 10 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 21 22 21 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 21 22 21 22 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic></sub>
+###xml 22 26 22 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">| - </italic>
+###xml 28 30 28 30 <bold xmlns:xlink="http://www.w3.org/1999/xlink">do</bold>
+      for i = 0 to |Ax| - 1 do
+###end p 54
+###begin p 55
+###xml 9 13 9 13 <bold xmlns:xlink="http://www.w3.org/1999/xlink">for </bold>
+###xml 13 15 13 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 23 24 23 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 24 25 24 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 24 25 24 25 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic></sub>
+###xml 25 27 25 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">| </italic>
+###xml 31 33 31 33 <bold xmlns:xlink="http://www.w3.org/1999/xlink">do</bold>
+         for j = 0 to |Ay| - 1 do
+###end p 55
+###begin p 56
+###xml 12 15 12 15 <bold xmlns:xlink="http://www.w3.org/1999/xlink">if </bold>
+###xml 22 23 22 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 23 24 23 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 26 27 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 23 27 23 27 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, <italic>i</italic></sub>
+###xml 38 39 38 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 39 40 39 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 42 43 42 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 39 43 39 43 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, <italic>j</italic></sub>
+###xml 45 50 45 50 <bold xmlns:xlink="http://www.w3.org/1999/xlink">then </bold>
+            if factor(mx, i) = factor(my, j) then
+###end p 56
+###begin p 57
+###xml 15 16 15 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 17 18 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 51 52 49 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 52 53 50 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 55 56 53 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 52 56 50 54 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic>, <italic>i</italic></sub>
+###xml 58 59 56 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 59 60 57 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 62 63 60 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 59 63 57 61 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic>, <italic>j</italic></sub>
+5:             S(i, j)<-- ComputeInitialSimilarity(mx, i, my, j);
+###end p 57
+###begin p 58
+###xml 15 17 15 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 21 27 19 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 34 35 28 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 35 36 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 35 36 29 30 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 46 47 40 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 47 48 41 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 47 48 41 42 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic></sub>
+               x <-- alpha (score(mi) + score(mj));
+###end p 58
+###begin p 59
+###xml 53 54 53 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+               {Searching the best previous match in L}
+###end p 59
+###begin p 60
+###xml 15 17 15 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 28 29 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+               p <-- first (L);
+###end p 60
+###begin p 61
+###xml 15 18 15 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i' </italic>
+###xml 31 32 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+               i' <-- abscissa(p);
+###end p 61
+###begin p 62
+###xml 15 18 15 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j' </italic>
+###xml 31 32 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+10:            j' <-- ordinate(p);
+###end p 62
+###begin p 63
+###xml 15 21 15 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink">while </bold>
+###xml 25 26 25 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+###xml 40 41 40 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 42 44 42 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i'</italic>
+###xml 46 48 46 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j'</italic>
+###xml 49 53 49 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink">+ x </italic>
+###xml 54 55 54 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 56 57 56 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 59 60 59 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 62 64 62 64 <bold xmlns:xlink="http://www.w3.org/1999/xlink">do</bold>
+               while end(L) = FALSE and S(i', j')+ x >S(i, j) do
+###end p 63
+###begin p 64
+###xml 31 34 31 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956; </italic>
+                  {Compute the mu value and check overlap}
+###end p 64
+###begin p 65
+###xml 19 20 19 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 23 24 23 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 55 56 53 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 58 60 56 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i'</italic>
+###xml 62 63 60 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 65 67 63 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j'</italic>
+###xml 69 70 67 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 70 71 68 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 70 71 68 69 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x</italic></sub>
+###xml 73 74 71 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 74 75 72 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y</italic>
+###xml 74 75 72 73 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>y</italic></sub>
+                  (D1, D2, overlap) <-- ComputeOverlap(i, i', j, j', Ax, Ay);
+###end p 65
+###begin p 66
+###xml 18 21 18 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink">if </bold>
+###xml 37 41 37 41 <bold xmlns:xlink="http://www.w3.org/1999/xlink">then</bold>
+                  if overlap = FALSE then
+###end p 66
+###begin p 67
+###xml 18 20 18 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">y </italic>
+###xml 24 31 22 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955; </italic>
+###xml 46 47 39 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 49 50 42 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 53 54 46 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 56 58 49 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j'</italic>
+15:               y <-- lambda (ComputeLambda(i, i', j, j'));
+###end p 67
+###begin p 68
+###xml 18 20 18 20 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 24 27 22 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956; </italic>
+###xml 29 30 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 33 34 30 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+                  z <-- mu (|D1- D2|);
+###end p 68
+###begin p 69
+###xml 29 30 27 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 31 33 29 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i'</italic>
+###xml 35 37 33 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j'</italic>
+###xml 41 51 39 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x - y - z;</italic>
+                  maxSim <-- S(i', j') + x - y - z;
+###end p 69
+###begin p 70
+###xml 18 21 18 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink">if </bold>
+###xml 30 31 30 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 32 33 32 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 35 36 35 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 37 41 37 41 <bold xmlns:xlink="http://www.w3.org/1999/xlink">then</bold>
+                  if maxSim > S(i, j)then
+###end p 70
+###begin p 71
+###xml 21 22 21 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 23 24 23 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 26 27 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+                     S(i, j) <-- maxSim;
+###end p 71
+###begin p 72
+###xml 15 17 15 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 26 27 24 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+20:            p <-- next(L);
+###end p 72
+###begin p 73
+###xml 15 18 15 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i' </italic>
+###xml 31 32 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+               i' <-- abscissa(p);
+###end p 73
+###begin p 74
+###xml 15 18 15 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j' </italic>
+###xml 31 32 29 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+               j' <-- ordinate(p);
+###end p 74
+###begin p 75
+###xml 12 14 12 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 32 33 30 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 35 36 33 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+            n <-- CreateNewNode(i, j);
+###end p 75
+###begin p 76
+###xml 23 24 23 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 26 27 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">L</italic>
+            InsertNode(n, L);
+###end p 76
+###begin title 77
+Progressive MMA algorithm
+###end title 77
+###begin p 78
+###xml 5 6 5 6 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 6 8 6 8 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 12 13 12 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 13 14 13 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 13 14 13 14 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+###xml 39 41 39 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 81 82 81 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 82 84 82 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 82 84 82 84 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 114 116 114 116 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 147 148 147 148 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 149 150 149 150 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 150 151 150 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 150 151 150 151 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 153 154 153 154 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 154 155 154 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 154 155 154 155 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic></sub>
+###xml 210 211 210 211 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 211 213 211 213 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 211 213 211 213 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 217 218 217 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 218 219 218 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 218 219 218 219 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic></sub>
+Let (A1 ... Ak) be the initial list of k TF-map alignments, where each alignment Ai contains a single TF-map. Let S be the similarity matrix where S(Ai, Aj) denotes the similarity between two TF-map alignments Ai and Aj.
+###end p 78
+###begin p 79
+###xml 395 397 395 397 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+The progressive MMA algorithm shown below builds up a multiple TF-map alignment in a stepwise manner. In a first step, all pairwise TF-map alignments are performed. The initial multiple alignment is created with the two most similar ones. These maps are substituted for the alignment of both. The similarity between this new alignment and the rest of the TF-maps is then estimated, updating the S matrix (see Implementation).
+###end p 79
+###begin p 80
+In a second step, an iterative procedure selects at each round the pair of alignments that are more similar from the pool of available ones. These two alignments are then merged into a new MMA, estimating the similarity to the remaining ones. At the end of the process, there is only one alignment that contains the multiple alignment of the input maps.
+###end p 80
+###begin p 81
+###xml 129 131 129 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 171 173 171 173 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n </italic>
+###xml 227 228 227 228 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 229 230 229 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 230 231 230 231 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2</sup>
+###xml 291 292 291 292 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 293 294 293 294 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 346 347 346 347 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 348 349 348 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 474 475 474 475 <italic xmlns:xlink="http://www.w3.org/1999/xlink">O</italic>
+###xml 476 477 476 477 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 477 479 477 479 <sup xmlns:xlink="http://www.w3.org/1999/xlink">2 </sup>
+###xml 479 480 479 480 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 481 482 481 482 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+The cost of the progressive MMA can be expressed in terms of the number of pairwise TF-map alignments that must be computed. Let k be the number of maps to be aligned and n be the length of each map. The initial round performs O(k2) pairwise alignments. Next, the progressive rounds perform O(k) alignments involving two previous alignments. Let P(n) be the cost of each pairwise operation (see previous section), then the cost of the progressive map alignment algorithm is O(k2 P(n)).
+###end p 81
+###begin title 82
+Implementation
+###end title 82
+###begin p 83
+###xml 59 66 59 66 <italic xmlns:xlink="http://www.w3.org/1999/xlink">maxSim </italic>
+###xml 245 249 245 249 <italic xmlns:xlink="http://www.w3.org/1999/xlink">iSim</italic>
+###xml 251 255 251 255 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jSim</italic>
+In the progressive MMA algorithm shown below, the variable maxSim saves the maximum score so far computed at each round. The identifiers of the alignments that produce such a score can easily be retrieved using a supplementary pair of variables iSim, jSim.
+###end p 83
+###begin p 84
+###xml 13 39 13 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ComputePairwiseSimilarity </italic>
+###xml 107 108 107 108 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+The function ComputePairwiseSimilarity is a generalization of the TF-map alignment algorithm presented in [9], as explained in the previous section. The optimal pairwise alignments between the input TF-maps in the initial round are saved, as they could be required during the iterative procedure.
+###end p 84
+###begin p 85
+###xml 116 131 116 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MergeAlignments</italic>
+Once a new TF-map alignment is created from the two most similar ones, their binding sites must be merged (function MergeAlignments). The order of the TFBSs in the new alignment must take into account the position of the binding sites in their primary promoter sequences. In the approach here, we do not create a profile of each MMA. Instead, all of the TFBSs of each alignment are always available for subsequent TF-map alignments.
+###end p 85
+###begin p 86
+###xml 209 211 209 211 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 274 275 274 275 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 275 280 275 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink">iSim </italic>
+###xml 275 280 275 280 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>iSim </italic></sub>
+###xml 284 285 284 285 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 285 290 285 290 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jSim </italic>
+###xml 285 290 285 290 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>jSim </italic></sub>
+The alignments between this new TF-map alignment and the others are not explicitly computed. The similarity of them is instead estimated with the WPGMA method (Weighted Pair Group Method with Arithmetic Mean [21]), in which the similarity of the previous alignments between AiSim and AjSim to the other alignments is weighted according to the number of maps of each one. If an estimated alignment between two MMAs is identified as the most similar one during the progressive step, then it must be explicitly computed before merging both TF-map alignments.
+###end p 86
+###begin title 87
+Progressive MMA algorithm
+###end title 87
+###begin p 88
+###xml 0 9 0 9 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Require: </bold>
+###xml 9 10 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 39 40 39 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 40 42 40 42 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 46 47 46 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 47 48 47 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 47 48 47 48 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>k</italic></sub>
+Require: A: list of TF-map alignments (A1 ... Ak)
+###end p 88
+###begin p 89
+   {Initial Step: pairwise alignment all Vs all}
+###end p 89
+###begin p 90
+   maxSim <-- -infinity
+###end p 90
+###begin p 91
+###xml 3 7 3 7 <bold xmlns:xlink="http://www.w3.org/1999/xlink">for </bold>
+###xml 7 9 7 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 16 18 16 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 18 20 18 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink">do</bold>
+   for i = 1 to k do
+###end p 91
+###begin p 92
+###xml 4 8 4 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink">for </bold>
+###xml 8 10 8 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 12 14 12 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 21 23 21 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 23 25 23 25 <bold xmlns:xlink="http://www.w3.org/1999/xlink">do</bold>
+5:  for j = i + 1 to k do
+###end p 92
+###begin p 93
+###xml 9 10 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 11 12 11 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 12 13 12 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 12 13 12 13 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 13 16 13 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">, A</italic>
+###xml 16 17 16 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 16 17 16 17 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic></sub>
+###xml 49 50 47 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 50 51 48 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 50 51 48 49 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 53 54 51 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 54 55 52 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 54 55 52 53 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic></sub>
+         S(Ai, Aj) <-- ComputePairwiseSimilarity(Ai, Aj);
+###end p 93
+###begin p 94
+         {Select the pair with maximum similarity}
+###end p 94
+###begin p 95
+###xml 32 33 30 31 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 34 35 32 33 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 35 36 33 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 35 36 33 34 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 38 39 36 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 39 40 37 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 39 40 37 38 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic></sub>
+         maxSim <-- max(maxSim, S(Ai, Aj));
+###end p 95
+###begin p 96
+   {Create a new MMA: estimate the similarity to others}
+###end p 96
+###begin p 97
+###xml 3 4 3 4 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 4 8 4 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">iSim</italic>
+###xml 9 14 9 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jSim </italic>
+###xml 4 14 4 14 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>iSim</italic>-<italic>jSim </italic></sub>
+###xml 35 36 33 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 36 40 34 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">iSim</italic>
+###xml 36 40 34 38 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>iSim</italic></sub>
+###xml 40 43 38 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">, A</italic>
+###xml 43 47 41 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jSim</italic>
+###xml 43 47 41 45 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>jSim</italic></sub>
+10:AiSim-jSim <-- Merge Alignments(AiSim, AjSim);
+###end p 97
+###begin p 98
+   {Progressive Step: select the two most similar alignments}
+###end p 98
+###begin p 99
+###xml 3 9 3 9 <bold xmlns:xlink="http://www.w3.org/1999/xlink">while </bold>
+###xml 10 11 10 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 17 19 17 19 <bold xmlns:xlink="http://www.w3.org/1999/xlink">do</bold>
+   while |A| > 1 do
+###end p 99
+###begin p 100
+      maxSim <-- -infinity
+###end p 100
+###begin p 101
+###xml 6 10 6 10 <bold xmlns:xlink="http://www.w3.org/1999/xlink">for </bold>
+###xml 10 12 10 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 23 25 23 25 <bold xmlns:xlink="http://www.w3.org/1999/xlink">do</bold>
+15:   for i = 1 to |A| do
+###end p 101
+###begin p 102
+###xml 9 13 9 13 <bold xmlns:xlink="http://www.w3.org/1999/xlink">for </bold>
+###xml 13 15 13 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 17 19 17 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 27 28 27 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 30 32 30 32 <bold xmlns:xlink="http://www.w3.org/1999/xlink">do</bold>
+         for j = i + 1 to |A| do
+###end p 102
+###begin p 103
+            {Select the pair with maximum similarity}
+###end p 103
+###begin p 104
+###xml 35 36 33 34 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 37 38 35 36 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 38 39 36 37 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 38 39 36 37 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 41 42 39 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 42 43 40 41 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 42 43 40 41 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>j</italic></sub>
+            maxSim <-- max(maxSim, S(Ai, Aj));
+###end p 104
+###begin p 105
+      {Create a new MMA: estimate the similarity to others}
+###end p 105
+###begin p 106
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 7 11 7 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink">iSim</italic>
+###xml 12 17 12 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jSim </italic>
+###xml 7 17 7 17 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>iSim</italic>-<italic>jSim </italic></sub>
+###xml 39 40 37 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 40 44 38 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink">iSim</italic>
+###xml 40 44 38 42 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>iSim</italic></sub>
+###xml 46 47 44 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 47 51 45 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">jSim</italic>
+###xml 47 51 45 49 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>jSim</italic></sub>
+20:   AiSim-jSim <-- Merge Alignments (AiSim, AjSim);
+###end p 106
+###begin title 107
+Non-collinear TF-map alignments
+###end title 107
+###begin p 108
+###xml 168 170 168 170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+The existence of regulatory elements that are conserved in different order among related regulatory regions has been documented in a few cases, specially in enhancers [22]. The identification of these regulatory rearrangements is very difficult at the sequence level. We have here introduced some subtle changes in the pairwise TF-map alignment algorithm shown before to deal with non-collinear alignments. The aligned TFBSs in such MMAs are therefore not necessarily located in the same relative order in every map.
+###end p 108
+###begin title 109
+Definition
+###end title 109
+###begin p 110
+###xml 42 43 42 43 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 43 45 43 45 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 49 50 49 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">M</italic>
+###xml 50 52 50 52 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2 </sub>
+###xml 89 91 89 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 95 96 95 96 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 96 100 96 100 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1, 1</sub>
+###xml 102 103 102 103 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 103 107 103 107 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2, 1</sub>
+###xml 116 117 116 117 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 120 121 120 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 117 121 117 121 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1, <italic>t</italic></sub>
+###xml 123 124 123 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 127 128 127 128 <italic xmlns:xlink="http://www.w3.org/1999/xlink">t</italic>
+###xml 124 128 124 128 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2, <italic>t</italic></sub>
+###xml 132 133 132 133 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 141 142 141 142 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 145 146 145 146 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 142 146 142 146 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1, <italic>i</italic></sub>
+###xml 148 149 148 149 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 152 153 152 153 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 149 153 149 153 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2, <italic>j</italic></sub>
+###xml 160 161 160 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 164 165 164 165 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 161 165 161 165 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1, <italic>k</italic></sub>
+###xml 167 168 167 168 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 171 172 171 172 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l</italic>
+###xml 168 172 168 172 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2, <italic>l</italic></sub>
+###xml 192 193 192 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 228 230 228 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 231 232 231 232 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k</italic>
+###xml 290 292 290 292 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 330 332 330 332 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 336 337 336 337 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l</italic>
+###xml 366 368 366 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+Let T be an alignment between two TF-maps M1 and M2 formally defined as a correspondence T = {(m1, 1, m2, 1), ..., (m1, t, m2, t)} [9]. Let (m1, i, m2, j) and (m1, k, m2, l) be two matches in T, not necessarily contiguous, with i <k. Then, we define the collinearity or non-collinearity of T in terms of the partial order between j and l, for all the match pairs of T as:
+###end p 110
+###begin p 111
+###xml 6 8 6 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 9 11 9 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l </italic>
+###xml 16 18 16 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+1. If j <l then T is a collinear alignment
+###end p 111
+###begin p 112
+###xml 6 8 6 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 10 12 10 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">l </italic>
+###xml 17 19 17 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 77 81 77 81 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3(A)</xref>
+2. If j > l then T is a non-collinear alignment (see example shown in Figure 3(A)).
+###end p 112
+###begin p 113
+Graphical representation of two examples of non-collinear TF-map alignments. In (A), the alignment involves only two TF-maps. In (B), the resulting multiple alignment of three maps contains a non-collinear block of three TFBSs.
+###end p 113
+###begin p 114
+###xml 42 44 42 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 117 119 117 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+###xml 141 145 141 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3(B)</xref>
+The generalization of this definition for k > 2 TF-maps is trivial (see the example of a non-collinear alignment for k = 3 TF-maps in Figure 3(B)).
+###end p 114
+###begin title 115
+Algorithm
+###end title 115
+###begin p 116
+###xml 42 43 42 43 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 114 115 114 115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 122 124 122 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A </italic>
+###xml 128 130 128 130 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B </italic>
+###xml 251 252 251 252 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+The non-collinear matches shown in Figure 3 can not be detected in the basic pairwise TF-map alignment algorithm [9]. Let A and B be two TF-maps in which two matches could form a non collinear alignment (represented as a circle and a square in Figure 4). The normal implementation fills the matrix in row by row, from top to bottom (or column by column, from left to right).
+###end p 116
+###begin p 117
+Different forms to fill a dynamic programming matrix in during the alignment. For a current match between two alignments (denoted as a red square), the available area to search the best previous match when the matrix is processed row by row is depicted in green. For the same element, the additional area to search the best previous match when the matrix is processed diagonal by diagonal is depicted in blue. With the diagonal filling, a previous match (denoted as a red circle) that forms a non-collinear alignment can be detected.
+###end p 117
+###begin p 118
+According to this, when the first match is being processed (red square), the second one (red circle) is not yet available (the red circle is not in the green area). Conversely, when the second match is processed, the first one is not accessible as the basic algorithm only allows the search for best previous aligned elements in the list of computed values that are in the area delimited by the current match (area denoted by dotted lines).
+###end p 118
+###begin p 119
+###xml 86 88 86 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 312 313 312 313 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+To overcome such a limitation, we propose to compute the optimal values of the matrix S following a different order, to allow the second element (red circle) to be visible when the first one is being processed (red square). A diagonal filling of the matrix calculates first the match between circles (see Figure 4).
+###end p 119
+###begin p 120
+Thus, this element will be available to compute the best alignment for the match between squares that is processed later. While this strategy still produces the same alignments obtained with the ordinary implementation, non-collinear alignments produced by new combinations of matches can also be constructed.
+###end p 120
+###begin title 121
+Adjusting the non-collinearity
+###end title 121
+###begin p 122
+###xml 130 132 130 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c </italic>
+We have designed a simple mechanism to adjust the frequency of non-collinear aligned sites in the output. An additional parameter c has been introduced in the basic MMA algorithm to weight those alignments involving non-collinearity.
+###end p 122
+###begin p 123
+###xml 4 6 4 6 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A </italic>
+###xml 10 12 10 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B </italic>
+###xml 111 115 111 115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5(A)</xref>
+###xml 162 164 162 164 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A </italic>
+###xml 183 185 183 185 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B </italic>
+###xml 242 246 242 246 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5(A)</xref>
+###xml 295 297 295 297 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B </italic>
+###xml 558 560 558 560 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A </italic>
+Let A and B be two TF-maps in which a previous match has been identified (represented as two circles in Figure 5(A)). Then, a second match between one element in A and another one in B is being processed (represented as two squares in Figure 5(A)). The dotted lines indicate that such a site in B can be located either on the left or on the right of the circle site in the same map. In the first case, a non-collinear alignment is produced; in the second case, a normal collinear alignment is constructed. The case in which the non-collinear match occurs in A can be similarly defined.
+###end p 123
+###begin p 124
+###xml 45 47 45 47 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c </italic>
+###xml 233 239 233 239 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MMP13 </italic>
+###xml 304 305 304 305 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 182 187 <span type="species:ncbi:9606">human</span>
+###xml 192 197 <span type="species:ncbi:10090">mouse</span>
+(A) A graphical explanation of the parameter c that controls the proportion of non-collinear blocks in a resulting alignment; (B) Number of inversions in the TF-map alignment of the human and mouse promoters (500 nucleotides) of the MMP13 gene (RefSeq: NM 002427 and NM 008607), using multiple values of c.
+###end p 124
+###begin p 125
+###xml 103 104 103 104 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 119 121 119 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink">z </italic>
+###xml 128 154 128 154 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ComputePairwiseSimilarity </italic>
+The algorithm to align two MMAs must be slightly modified to accomodate the non-collinearity parameter c. The variable z in the ComputePairwiseSimilarity is defined now as:
+###end p 125
+###begin p 126
+
+###end p 126
+###begin p 127
+###xml 69 70 69 70 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 70 72 70 72 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 74 75 74 75 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 75 76 75 76 <sub xmlns:xlink="http://www.w3.org/1999/xlink">2</sub>
+###xml 118 120 118 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 275 276 274 275 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B</italic>
+###xml 289 293 288 292 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5(A)</xref>
+The optimal positional conservation between both matches occurs when D1 = D2. However, the parameter c is used in the mu, penalty to punish only those matches that do not respect the collinearity of the current alignment (the square site is on the left of the circle site in B, see Figure 5(A)).
+###end p 127
+###begin p 128
+###xml 15 17 15 17 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c </italic>
+###xml 131 132 131 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 404 410 404 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MMP13 </italic>
+###xml 457 461 457 461 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5(B)</xref>
+###xml 556 557 556 557 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 606 607 606 607 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 741 743 741 743 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 1010 1023 1010 1023 <italic xmlns:xlink="http://www.w3.org/1999/xlink">even-skipped </italic>
+###xml 353 358 <span type="species:ncbi:9606">human</span>
+###xml 363 368 <span type="species:ncbi:10090">mouse</span>
+Informally, if c = 1 then both collinear and non-colinear matches are indistinctly combined into the resulting MMA. High values of c, however, produce a higher amount of collinear matches into the results. In order to establish formally the behaviour of this parameter, we have counted the number of non-collinear matches in the TF-map alignment of the human and mouse promoters (500 nucleotides) of the MMP13 gene (RefSeq: NM_002427, NM_008607). In Figure 5(B), there is a clear correspondence between the amount of inversions in the MMA and the value of c. No inversions are produced for large values of c. Identification of non-collinear configurations of TFBSs in regulatory regions is poorly known, and only a few cases are documented [22]. We recommend, therefore, to use this option very carefully. In addition, we also suggest the use of a small set of matrices to perform the mapping, which can reduce the number of artifacts in the resulting non-collinear MMA (see Promoter characterization section, even-skipped stripe 2 enhancer).
+###end p 128
+###begin title 129
+Datasets and software availability
+###end title 129
+###begin p 130
+###xml 50 52 50 52 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 143 145 143 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 275 277 275 277 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+The datasets used in this paper are available at [23]. An implementation of this algorithm has been written in C and is publicly available at [24]. A web server that performs the mapping and the alignment of multiple promoter regions with such an algorithm is accessible at [25].
+###end p 130
+###begin p 131
+###xml 129 131 129 131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 173 178 173 174 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+###xml 180 186 176 177 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955;</italic>
+###xml 188 190 179 180 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 192 198 182 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947; </italic>
+###xml 202 204 188 190 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c </italic>
+###xml 383 384 369 370 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 484 486 470 472 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+The input of the program consists of a file that contains the TF-maps to be aligned. The file must be in General Feature Format [26]. Options allow to control the values of alpha, lambda, mu, gamma and c as well as to display the results in plain format or GFF format. The output includes the score and the length of the optimal MMA, and the matches in the input TF-maps (see Figure 6 for an example). A graphical representation of the MMA is also displayed using the program gff2ps [27].
+###end p 131
+###begin p 132
+###xml 61 71 61 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Myoglobin </italic>
+###xml 39 44 <span type="species:ncbi:9606">human</span>
+###xml 97 102 <span type="species:ncbi:10090">mouse</span>
+###xml 104 111 <span type="species:ncbi:9031">chicken</span>
+###xml 116 125 <span type="species:ncbi:7955">zebrafish</span>
+Results of the TF-map alignment of the human promoter of the Myoglobin gene and the orthologs in mouse, chicken and zebrafish. Here, the 500 nucleotides upstream of the annotated TSS have been considered (with position 1 corresponding to -500). Each row contains the aligned occurrences of the same TF at the TF-maps of some species (only the starting position of the binding site is shown). Gaps are represented with the symbol "-". A graphical representation of the TF-map alignment is shown in Figure 8.
+###end p 132
+###begin title 133
+Results
+###end title 133
+###begin p 134
+###xml 80 85 80 81 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+###xml 87 93 83 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955;</italic>
+###xml 95 97 86 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 99 105 89 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947; </italic>
+###xml 109 111 95 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c </italic>
+The optimal MMA of a set of TF-maps is obviously dependant on the values of the alpha, lambda, mu, gamma and c parameters. In addition, the optimal parameter configuration is likely to depend on the particular problem to be addressed (orthologous genes or co-regulated genes in microarray experiments), and the particular protocol to map the TFBSs on the sequences.
+###end p 134
+###begin p 135
+###xml 28 29 28 29 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+Results in a previous work [9] indicated that TF-maps alignments are able to characterize promoter regions of co-regulated genes even in absence of sequence similarity. Thus, TF-map alignments were shown to detect high-order regulatory signals conserved in a collection of related promoters that were undetectable with current sequence alignment methods. It is important to mention that two or more different TFBSs can be aligned if and only if they correspond to the same TF, even though they may not show sequence similarity.
+###end p 135
+###begin p 136
+###xml 634 644 634 644 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+Here we have conducted a similar systematic training over an extended set of orthologous promoters to obtain the optimal parameter configuration. In order to verify the ability of MMA to identify regulatory elements that are rarely detected in conventional comparisons, we have compared the results to those obtained by several multiple sequence alignment methods. We have focused on two specific examples to show the abilities of MMA in the characterization of multiple collinear related promoters. Finally, we have characterized non-collinear arrangements of TFBSs on an early developmental enhancer conserved in several species of Drosophila.
+###end p 136
+###begin title 137
+Multiple TF-map training
+###end title 137
+###begin p 138
+###xml 145 146 145 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 147 149 147 149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 282 284 282 284 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 112 117 <span type="species:ncbi:9606">human</span>
+###xml 233 240 <span type="species:ncbi:9031">chicken</span>
+###xml 245 254 <span type="species:ncbi:7955">zebrafish</span>
+###xml 441 446 <span type="species:ncbi:9606">human</span>
+###xml 447 452 <span type="species:ncbi:10090">mouse</span>
+###xml 453 460 <span type="species:ncbi:9031">chicken</span>
+###xml 461 470 <span type="species:ncbi:7955">zebrafish</span>
+###xml 530 535 <span type="species:ncbi:9606">human</span>
+###xml 543 550 <span type="species:ncbi:9031">chicken</span>
+###xml 551 560 <span type="species:ncbi:7955">zebrafish</span>
+###xml 574 579 <span type="species:ncbi:9606">human</span>
+###xml 587 594 <span type="species:ncbi:9031">chicken</span>
+###xml 608 613 <span type="species:ncbi:9606">human</span>
+###xml 621 630 <span type="species:ncbi:7955">zebrafish</span>
+###xml 648 653 <span type="species:ncbi:9606">human</span>
+For the pairwise TF-map alignment, we estimated the optimal parameters in a set of experimentally characterized human and rodent gene promoters [9,13]. Here we have extended such a dataset by searching the corresponding orthologs in chicken and zebrafish as well. Using the RefSeq [28] gene set as mapped into the UCSC genome browser, we have correctly identified the ortholog in both species, if available. We refer to the resulting set of human-mouse-chicken-zebrafish homologous genes as the HRCZ SET. This dataset contains 18 human-rodent-chicken-zebrafish orthologs, 7 human-rodent-chicken orthologs, 4 human-rodent-zebrafish orthologs, and 7 human-rodent orthologs.
+###end p 138
+###begin p 139
+###xml 256 258 256 258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 259 261 259 261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 342 347 <span type="species:ncbi:9606">human</span>
+###xml 352 357 <span type="species:ncbi:10090">mouse</span>
+The lack of available collections of experimentally verified TFBSs is an important limitation for the evaluation and the training of phylogenetic footprinting systems. Despite several databases of annotations and promoter sequences have recently appeared [13,29], there is not enough regulatory information conserved among species other than human and mouse to train the MMA.
+###end p 139
+###begin p 140
+###xml 56 57 56 57 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 274 275 274 275 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+Thus, we can not repeat the training procedure used in [9] to evaluate the ability of MMA to detect conserved regulatory elements at larger evolutionary distances - at which the degree of conservation may be negligible. However, we can use another method also presented in [9] to show that MMAs are much more informative than primary multiple sequence alignments.
+###end p 140
+###begin p 141
+###xml 138 140 138 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 163 164 163 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 498 501 498 501 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TOP</italic>
+###xml 498 504 498 504 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>TOP</italic>50 </sub>
+###xml 508 509 508 509 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 631 634 631 634 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TOP</italic>
+###xml 631 637 631 637 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>TOP</italic>50 </sub>
+###xml 725 727 725 727 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+We first have mapped the TFBSs occurrences in the promoter sequences using the collection of 50 most informatives matrices in JASPAR 1.0 [14]. In a previous work [9], we observed a substantial gain of specificity in the detection of real TFBSs (without a significant loss of sensitivity) when using such a subset of matrices instead of the entire JASPAR collection. The original frequency coefficients of the matrices were converted before into log-likelihood ratios, to which we referred as JASPARTOP50 in [9], using the random equiprobability distribution as a background model. A prediction obtained with a given PWM from JASPARTOP50 was accepted if it had a score above 50% of the maximum possible score for such matrix [23].
+###end p 141
+###begin p 142
+###xml 612 613 612 613 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+Then, we have compared the MMAs obtained in the 200 nucleotides of the promoter region of the 36 gene pairs from the HRCZ SET, with the MMAs obtained using the same mapping function in fragments of 200 nucleotides from intergenic (2000 nucleotides upstream of the TSS, 2000 nucleotides downstream the transcript), 5'UTR (downstream of the TSS), 3'UTR (upstream the end of the transcript), coding (downstream of the translation start site and considering only coding DNA), intronic (downstream of the first intron junction), and downstream (downstream of the transcription termination site) sequences (see Figure 7 for a graphical representation of the test).
+###end p 142
+###begin p 143
+###xml 75 80 75 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+###xml 82 88 78 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955;</italic>
+###xml 90 93 81 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956; </italic>
+###xml 97 102 87 88 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947;</italic>
+Graphical representation of the MMA training. For multiple combinations of alpha, lambda, mu and gamma, we have compared the multiple TF-map alignments obtained in the proximal promoter regions from the HRCZ SET (200 nucleotides), with the alignments obtained in fragments of 200 nucleotides from intergenic (2000 nucleotides upstream of the TSS and 2000 nucleotides downstream of the transcript), 5'UTR (downstream of the TSS), 3'UTR (upstream of the end of the transcript), coding (downstream of the translation start site and considering only coding DNA), intronic (downstream of the first intron junction), and downstream (downstream of the transcription termination site) sequences.
+###end p 143
+###begin p 144
+###xml 268 273 268 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+###xml 275 281 271 272 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955;</italic>
+###xml 287 290 278 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956; </italic>
+###xml 414 420 404 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947; </italic>
+We have computed the average score of the MMA on each one of the genomic regions, identifying the alignment that produces the highest score for each orthologous set. We have repeated this test using different combinations of parameters. Systematically, the parameters alpha, lambda, and mu were allowed to independently take values between 0.0 and 1.0, in incremental steps of 0.1. At the same time, the parameter gamma (gap penalty) was tested between 0 and -10 with a step of -1. The optimal parameter configuration is considered to be that set of parameter values that better discriminate between promoters and the rest of genomic regions.
+###end p 144
+###begin p 145
+###xml 111 113 111 113 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 180 181 180 181 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B5">5</xref>
+###xml 192 194 192 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 213 215 213 215 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+We have also performed the multiple sequence alignments of the same regions using the following programs (see [30] for a comprehensive review on DNA sequence alignment): CLUSTALW [5], MLAGAN [31] and FOOTPRINTER [32]. CLUSTALW and MLAGAN perform global multiple sequence alignment.
+###end p 145
+###begin p 146
+FOOTPRINTER performs local multiple sequence alignment. The number of significant motifs (parsimony score 2) identified by FOOTPRINTER on each gene region was used to rank the alignments of this program.
+###end p 146
+###begin p 147
+###xml 24 25 24 25 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+Results appear in Table 1. As expected, nucleotide sequence alignments score the highest in the coding regions (in 27 out of 36 cases for CLUSTALW, 26 and 23 cases for MLAGAN and FOOTPRINTER respectively), followed by the alignments in the 5'UTRs (4 out of 36 for CLUSTALW, 4 and 3 for MLAGAN and FOOTPRINTER) and in the promoters (4 out of 36 for CLUSTALW, 4 and 5 for MLAGAN and FOOTPRINTER). Only in one case, the 3'UTR was the most conserved region among orthologs (in three cases for FOOTPRINTER). The scores of the sequence alignments indicate that promoter regions are less conserved than coding regions.
+###end p 147
+###begin p 148
+Multiple alignment results in orthologous sequences
+###end p 148
+###begin p 149
+###xml 357 363 357 359 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 368 375 364 366 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955; </italic>
+###xml 382 385 373 375 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956; </italic>
+###xml 392 398 382 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947; </italic>
+###xml 118 123 <span type="species:ncbi:9606">human</span>
+###xml 125 130 <span type="species:ncbi:10090">mouse</span>
+###xml 132 139 <span type="species:ncbi:9031">chicken</span>
+###xml 144 153 <span type="species:ncbi:7955">zebrafish</span>
+TF-map and sequence alignments (CLUSTALW [5], MLAGAN [31], FOOTPRINTER [32]) of different genomic regions between the human, mouse, chicken and zebrafish orthologous promoters in the HRCZ SET. TOP1 is the number of genes in which the highest scoring alignment is found in a given genomic region. The MMA results were obtained with the optimal configuration alpha = 1; lambda = 0.3; mu = 0.1; gamma = 2.
+###end p 149
+###begin p 150
+###xml 55 61 55 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945; </italic>
+###xml 66 73 62 64 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#955; </italic>
+###xml 80 83 71 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956; </italic>
+###xml 90 96 80 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#947; </italic>
+###xml 173 174 159 160 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 688 690 674 676 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 976 978 962 964 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 979 981 965 967 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 428 433 <span type="species:ncbi:9606">human</span>
+###xml 434 439 <span type="species:ncbi:10090">mouse</span>
+###xml 440 447 <span type="species:ncbi:9031">chicken</span>
+###xml 448 457 <span type="species:ncbi:7955">zebrafish</span>
+Despite this, the optimal collinear MMA configuration [alpha = 1, lambda = 0.3, mu = 0.1, gamma = -2] scores the highest in the promoter regions (in 18 out of 36, see Table 1). In addition, the average score of map alignments is notably higher than that of the coding regions (25.41 against 17.15). Only in 6 out of 36 cases the TF-map alignments score the highest in coding regions. Interestingly, while 3'UTR sequences in the human-mouse-chicken-zebrafish orthologs are much less conserved than coding regions or 5'UTRs, MMAs score the highest in them in 7 cases. This is consistent with recent investigations about the existence of regulatory motifs in the 3'UTR regions of the genes [33]. A similar result is obtained in the case of introns: intronic sequences are much less conserved than coding and UTR sequences. However, MMAs score the highest in intronic regions in 2 cases. This fact is noticeable as first introns are also known to often contain regulatory motifs [34,35].
+###end p 150
+###begin p 151
+###xml 436 437 436 437 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 731 734 731 734 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TOP</italic>
+###xml 731 737 731 737 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>TOP</italic>50 </sub>
+###xml 769 770 769 770 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 218 223 <span type="species:ncbi:9606">human</span>
+###xml 224 229 <span type="species:ncbi:10090">mouse</span>
+###xml 230 237 <span type="species:ncbi:9031">chicken</span>
+###xml 238 247 <span type="species:ncbi:7955">zebrafish</span>
+We have also performed a complementary test to measure the specificity of the TF-map alignments. As a negative control, we have shuffled the orthologous associations in the HRCZ SET to construct a pool of 36 unrelated human-mouse-chicken-zebrafish gene entries. Then, the corresponding multiple TF-map alignments of these non-orthologous paired promoters were obtained using the parameters previously optimized. Results appear in Table 2. The TF-map alignments of unrelated promoters were significantly worse with an average score more than 50% smaller than TF-map alignments that involved "bona fide" orthologous promoters. For instance, the average score of the TF-map alignments among orthologous promoters when using the JASPARTOP50 collection was 25.41 (see Table 2). In contrast, the score of the TF-map alignments between non-related promoters was 9.91. The sites in the alignments involving non-orthologous gene promoters may correspond to general regulatory elements present in most core promoters of our dataset.
+###end p 151
+###begin p 152
+Specificity of the TF-map alignments
+###end p 152
+###begin p 153
+Comparison between average and maximum scores of TF-map alignments of several regions from orthologous genes from the HRCZ SET and average and maximum scores of TF-map alignments of several regions from randomly shuffled genes from the HRCZ SET (denoted as *, see main text for details).
+###end p 153
+###begin p 154
+###xml 918 920 918 920 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 927 929 927 929 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 937 938 937 938 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+To validate this hypothesis, we have analyzed the composition of the TF-map alignments of non-orthologous gene promoters. We have detected an enrichment in TATA and CAAT boxes (20% and 10% of the aligned sites, respectively), which are well known to be part of core promoters. Such a bias is not observed in the composition of the alignments of the coding sequences of unrelated genes. These alignments are therefore partially capturing common regulatory elements present in unrelated gene promoters of our dataset. In addition, we also found an overrepresentation (25% of the aligned sites) of TFs mainly expressed in the liver (HNF3, COUP-TF, HNF1). Such a trend is not detected in the composition of the alignments of the coding sequences of non-related genes. This enrichment correlates well with the composition of the HRCZ SET, which contains experimental regulatory annotations from liver-specific genes (e.g. [36] and [37]; see [9] for further details).
+###end p 154
+###begin p 155
+###xml 495 496 495 496 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 500 504 500 504 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PPPS</italic>
+###xml 512 514 512 514 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P </italic>
+###xml 536 538 536 538 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+We have performed an additional test to assess the significance of the scores of the MMAs. The previous tests have involved alignments of orthologous gene regions of the same type (e.g. four promoters or four coding segments). We have compared now the score of the MMAs among orthologous promoters of the same gene in the HRCZ SET with the scores of the alignments of the same maps in which one TF-map was randomly substituted by the TF-map of another segment of the same gene (denoted in Table 3 as PPPS, where P is a promoter map and S is any gene region: Coding, Promoter, Intronic, 5'UTR, 3'UTR, intergenic, downstream).
+###end p 155
+###begin p 156
+Significance of the TF-map alignment scores
+###end p 156
+###begin p 157
+###xml 121 122 121 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 200 201 200 201 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 301 302 301 302 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 302 303 302 303 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H</italic>
+###xml 302 303 302 303 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>H</italic></sub>
+###xml 359 360 359 360 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 360 361 360 361 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 360 361 360 361 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>R</italic></sub>
+###xml 285 290 <span type="species:ncbi:9606">human</span>
+Average score of multiple TF-map alignments of groups constituted of orthologous promoters from the HRCZ SET (denoted as P), introducing one or two non-corresponding orthologous sequences (denoted as S). Last row shows the average score of pairwise TF-map alignments that involve each human promoter (PH) and the corresponding rodent region of the same gene (SR) in the HRCZ SET.
+###end p 157
+###begin p 158
+###xml 24 25 24 25 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 105 111 105 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PPP + </italic>
+###xml 129 130 129 130 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 321 327 321 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PPP + </italic>
+###xml 343 344 343 344 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 454 455 454 455 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+Results appear in Table 3. The average score of MMAs exclusively constituted by promoter maps was 25.41 (PPP + Promoter in Table 3). Indeed, the average score of the MMAs involving only promoter maps was more than 60% higher than alignments in which one of them was substituted by another gene region map (e.g. 10.06 for PPP + Coding in Table 3). The average score of such alignments dropped even more when a second substitution was permitted (see Table 3).
+###end p 158
+###begin p 159
+###xml 107 108 107 108 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 108 109 108 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink">H</italic>
+###xml 108 109 108 109 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>H</italic></sub>
+###xml 159 160 159 160 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 160 161 160 161 <italic xmlns:xlink="http://www.w3.org/1999/xlink">R</italic>
+###xml 160 161 160 161 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>R</italic></sub>
+###xml 75 80 <span type="species:ncbi:9606">human</span>
+###xml 166 171 <span type="species:ncbi:10090">mouse</span>
+###xml 329 334 <span type="species:ncbi:9606">human</span>
+###xml 344 349 <span type="species:ncbi:10090">mouse</span>
+Finally, we analyzed the scores of pairwise TF-map alignments between each human promoter in the HRCZ SET (PH) and the corresponding orthologous gene regions (SR) in mouse. The average score of the TF-map alignments involving the two promoters was substantially higher (42.00) than any other incorrect combination (e.g. 5.80 for human promoter-mouse coding region alignments). These results show that orthologous promoter-promoter TF-map alignments are more significant than alignments of any other combination of gene region maps.
+###end p 159
+###begin title 160
+Promoter characterization
+###end title 160
+###begin p 161
+We have selected three particular examples that show the ability of MMAs to characterize promoter regions in the absence of sequence conservation. In all cases, we have compared the multiple TF-map alignment to the corresponding multiple sequence alignments, as in the section above, to measure their accuracy to detect the TFBSs experimentally annotated on these promoters.
+###end p 161
+###begin title 162
+###xml 6 11 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#945;</italic>
+Actin alpha-cardiac gene
+###end title 162
+###begin p 163
+###xml 197 217 197 213 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Actin &#945;-cardiac </italic>
+###xml 352 354 348 350 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+Actins are highly conserved proteins that are involved in various types of cell motility. The alpha actins are found in muscle tissues and are a major constituent of the contractile apparatus. The Actin alpha-cardiac gene has been identified in many kinds of cells including muscle, where it is a major constituent of the thin filament, and platelets [38].
+###end p 163
+###begin p 164
+###xml 36 56 36 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Actin &#945;-cardiac </italic>
+###xml 140 142 136 138 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 166 168 162 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 181 182 177 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A</italic>
+###xml 20 25 <span type="species:ncbi:9606">human</span>
+###xml 30 35 <span type="species:ncbi:10090">mouse</span>
+###xml 250 255 <span type="species:ncbi:9606">human</span>
+###xml 260 265 <span type="species:ncbi:10090">mouse</span>
+###xml 329 334 <span type="species:ncbi:9606">human</span>
+The promoter of the human and mouse Actin alpha-cardiac genes (ACTC, GenBank: , ) has been extensively characterized by experimental means [39]. In the ABS database [13], the entry A0028 includes the known orthologous binding sites in the respective human and mouse promoters (500 nucleotides, the position +501 is the TSS). The human ACTC promoter is constituted of three SRF sites (+301, +352, +392), a SP1 site (+418), and a TATA box (+469).
+###end p 164
+###begin p 165
+###xml 35 37 35 37 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 107 114 <span type="species:ncbi:9031">chicken</span>
+###xml 119 128 <span type="species:ncbi:7955">zebrafish</span>
+Using the RefSeq gene annotations [28], we have also identified the corresponding orthologous promoters in chicken and zebrafish (RefSeq: NM_001031229, NM_214784).
+###end p 165
+###begin p 166
+###xml 255 260 <span type="species:ncbi:9606">human</span>
+###xml 265 270 <span type="species:ncbi:10090">mouse</span>
+We have then aligned the four promoters and compared the resulting MMA with the functional annotations in the ABS database. In general, the multiple TF-map alignment of the four orthologous promoters of ACTC contains many of the known functional sites in human and mouse, detecting as well the corresponding orthologs in the other species.
+###end p 166
+###begin p 167
+###xml 80 81 80 81 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+###xml 325 330 <span type="species:ncbi:9606">human</span>
+###xml 335 340 <span type="species:ncbi:10090">mouse</span>
+###xml 379 386 <span type="species:ncbi:9031">chicken</span>
+###xml 391 400 <span type="species:ncbi:7955">zebrafish</span>
+The MMA of the ACTC promoters and the experimental evidence are shown in Figure 8 (top). While the region proximal to the TSS is not more dense in predicted TFBSs than other regions, most of the aligned elements cluster next to the near TSS. In addition, the alignment agrees well with the functional annotation available in human and mouse, providing novel orthologous sites in chicken and zebrafish:
+###end p 167
+###begin p 168
+###xml 85 105 85 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Actin &#945;-cardiac </italic>
+###xml 307 317 303 313 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Myoglobin </italic>
+###xml 38 43 <span type="species:ncbi:9606">human</span>
+###xml 44 49 <span type="species:ncbi:10090">mouse</span>
+###xml 50 57 <span type="species:ncbi:9031">chicken</span>
+###xml 58 67 <span type="species:ncbi:7955">zebrafish</span>
+###xml 260 265 <span type="species:ncbi:9606">human</span>
+###xml 266 271 <span type="species:ncbi:10090">mouse</span>
+###xml 272 279 <span type="species:ncbi:9031">chicken</span>
+###xml 280 289 <span type="species:ncbi:7955">zebrafish</span>
+On top, the JASPAR predictions on the human-mouse-chicken-zebrafish promoters of the Actin alpha-cardiac gene (ACTC, GENBANK:  and , RefSeq: NM 001031229 and NM 214784), the resulting MMA and the experimental evidence. At bottom, the JASPAR predictions on the human-mouse-chicken-zebrafish promoters of the Myoglobin gene (MB, GENBANK: , RefSeq: NM 013593, NM 203377 and NM 200586), the resulting MMA and the experimental evidence. In both cases, the TF-map alignment represents a considerable noise reduction which has biological relevance, as most experimentally annotated TFBSs in these promoters are successfully covered by the MMAs (see main text). Both graphical representations have been produced with the program gff2ps [27].
+###end p 168
+###begin p 169
+###xml 58 63 <span type="species:ncbi:9606">human</span>
+###xml 65 70 <span type="species:ncbi:10090">mouse</span>
+###xml 83 92 <span type="species:ncbi:7955">zebrafish</span>
+1. The second SRF binding site is correctly identified in human, mouse and also in zebrafish.
+###end p 169
+###begin p 170
+###xml 306 308 306 308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+2. A RREB-1 site that overlaps the SP-1 active site is identified in the MMA. RREB-1 and SP-1 are members of the zinc finger protein family with different binding specificities. However, the consensus of both matrices in JASPAR are very similar, being constituted of several occurrences of the motif CCCC [14].
+###end p 170
+###begin p 171
+###xml 131 133 131 133 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+3. A SQUA site that overlaps the third SRF active site is identified in the MMA. SQUA and SRF are both members of the MADS family [14].
+###end p 171
+###begin p 172
+4. A novel forth SRF binding site is located immediately upstream of the experimental first one at the four species.
+###end p 172
+###begin p 173
+###xml 41 46 <span type="species:ncbi:9606">human</span>
+###xml 48 53 <span type="species:ncbi:10090">mouse</span>
+###xml 58 67 <span type="species:ncbi:7955">zebrafish</span>
+5. The TATA box is correctly detected in human, mouse and zebrafish as well.
+###end p 173
+###begin p 174
+No significant conservation among the sequences was, however, detected in the multiple sequence alignment of the four ACTC promoters (see the alignments in the Supplementary Information).
+###end p 174
+###begin title 175
+Myoglobin gene
+###end title 175
+###begin p 176
+###xml 4 14 4 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Myoglobin </italic>
+###xml 242 244 242 244 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+The Myoglobin gene is a member of the globin superfamily and is expressed in skeletal and cardiac muscles. The encoded protein is an haemoprotein contributing to intracellular oxygen storage and transcellular facilitated diffusion of oxygen [40].
+###end p 176
+###begin p 177
+###xml 20 30 20 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Myoglobin </italic>
+###xml 132 134 132 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 135 137 135 137 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 161 163 161 163 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 499 501 499 501 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 38 43 <span type="species:ncbi:9606">human</span>
+###xml 67 72 <span type="species:ncbi:10090">mouse</span>
+###xml 245 250 <span type="species:ncbi:9606">human</span>
+###xml 255 260 <span type="species:ncbi:10090">mouse</span>
+###xml 324 329 <span type="species:ncbi:9606">human</span>
+###xml 571 578 <span type="species:ncbi:9031">chicken</span>
+###xml 583 592 <span type="species:ncbi:7955">zebrafish</span>
+The promoter of the Myoglobin gene in human (MB, GenBank: ) and in mouse (RefSeq: NM_013593) has been experimentally characterized [39,41]. In the ABS database [13], the entry A0037 includes the known orthologous binding sites in the respective human and mouse promoters (500 nucleotides, the position +501 is the TSS). The human MB promoter is constituted of a CCAC box (+272), a MEF-2 site (+335) with two surrounding E-boxes (+326, +348) and a TATA box (+469). Using the RefSeq gene annotations [28], we have also identified the corresponding orthologous promoters in chicken and zebrafish (RefSeq: NM_203377, NM_200586).
+###end p 177
+###begin p 178
+###xml 233 238 <span type="species:ncbi:9606">human</span>
+###xml 243 248 <span type="species:ncbi:10090">mouse</span>
+We have then aligned the four promoters and compared the resulting MMA with the functional annotations detailed above. The multiple TF-map alignment of the four orthologous promoters of MB contains several of the functional sites in human and mouse, detecting some of the orthologs in the other two species. The output coverage is again very small.
+###end p 178
+###begin p 179
+###xml 78 79 78 79 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+###xml 282 287 <span type="species:ncbi:9606">human</span>
+###xml 292 297 <span type="species:ncbi:10090">mouse</span>
+###xml 337 344 <span type="species:ncbi:9031">chicken</span>
+###xml 349 358 <span type="species:ncbi:7955">zebrafish</span>
+The MMA of the MB promoters and the experimental evidence are shown in Figure 8 (bottom). Most of the aligned elements are present next to the TSS, while this spatial trend is not observable in the predictions at each promoter. The alignment also contains several of the functional human and mouse sites, providing their counterparts in chicken and zebrafish:
+###end p 179
+###begin p 180
+###xml 186 188 186 188 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+1. A RREB-1 site that overlaps the functional CCAC box is identified in the MMA. In fact, the RREB-1 matrix consensus in JASPAR represents an A/C rich area that contains the CCAC motif [14].
+###end p 180
+###begin p 181
+2. The TATA box is correctly detected in the four species.
+###end p 181
+###begin p 182
+The multiple sequence alignment of the four MP promoters did not reveal any significant conservation (see the alignments in the Supplementary Information).
+###end p 182
+###begin title 183
+Even-skipped stripe 2 enhancer
+###end title 183
+###begin p 184
+###xml 309 311 309 311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 465 467 465 467 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 625 627 625 627 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+Proximal promoters are adjacent to the gene. Enhancers, however, are other type of regulatory regions (typically 500 - 1,000 nucleotides long) positioned several kilobases upstream or downstream of the regulated gene. Such elements can function in either orientation, being distance and position independent [42]. The regulatory logic of enhancers is different from the promoters, allowing a great plasticity in the arrangement of the TFBSs (e.g. non-collinearity [22]). Enhancers are constituted of multiple binding sites to recruit four or five different TFs that define space and time specific aspects of gene expression [43]).
+###end p 184
+###begin p 185
+###xml 39 50 39 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila </italic>
+###xml 306 308 306 308 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+###xml 355 368 355 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Even-skipped </italic>
+###xml 428 438 428 438 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+###xml 526 528 526 528 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+###xml 647 649 647 649 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B46">46</xref>
+###xml 650 652 650 652 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B48">48</xref>
+The body patterning of early embryo in Drosophila is governed by a hierarchy of maternal and zygotic genes. In particular, maternal and gap gene factors together control pair rule gene expression in 7 alternating stripes, which in turn regulate segment polarity and homeotic gene expression in 14 stripes [44]. The stripe 2 enhancer of the pair-rule gene Even-skipped has been experimentally characterized in several species of Drosophila, showing considerable evolutionary change in the binding site composition and spacing [45]. Such annotations have been extensively used to train several computational regulatory module prediction approaches [46-48].
+###end p 185
+###begin p 186
+###xml 29 42 29 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Even-skipped </italic>
+###xml 64 79 64 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. melanogaster</italic>
+###xml 84 93 84 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. yakuba</italic>
+###xml 98 107 98 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. erecta</italic>
+###xml 112 128 112 128 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. pseudoobscura</italic>
+###xml 168 170 168 170 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+###xml 283 285 283 285 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 512 536 512 536 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila melanogaster </italic>
+###xml 550 552 550 552 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+###xml 1216 1217 1216 1217 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9</xref>
+###xml 64 79 <span type="species:ncbi:7227">D. melanogaster</span>
+###xml 84 93 <span type="species:ncbi:7245">D. yakuba</span>
+###xml 98 107 <span type="species:ncbi:280662|species:ncbi:203672|species:ncbi:167917|species:ncbi:491826|species:ncbi:7220">D. erecta</span>
+###xml 112 128 <span type="species:ncbi:7237">D. pseudoobscura</span>
+###xml 512 535 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+The stripe 2 enhancer of the Even-skipped gene (EVE, GenBank:  (D. melanogaster),  (D. yakuba),  (D. erecta),  (D. pseudoobscura)) is governed by 17 TFBSs of four TFs [45]: 2 activators (bicoid and hunchback) and 2 repressors (giant and Kruppel). We have obtained from TRANSFAC 8.4 [16] the PWMs to recognize bicoid (I$BCD_01), hunchback (I$HB_01) and Kruppel sites (I$KR_01). We will focus therefore only on the occurrences for these three TFs. The positions of the experimentally verified binding sites in the Drosophila melanogaster enhancer are [45]: bicoid (+138, +159, +310, +403, +521), hunchback (+496, +578, +661) and Kruppel (+3, +139, +327, +521, +571, +615). We have obtained the TF-maps of bicoid, hunchback and Kruppel in these enhancers (threshold score 50%). We have then aligned the four enhancer maps allowing non-collinear rearrangement in the alignments (parameter c = 1, see Section Non-collinear TF-map alignments). We have compared the resulting MMA with the available functional annotations. Matches to one of the elements in overlapping sites for activators/repressors are considered to be correct. The MMA of the four orthologous enhancers and the experimental evidence are shown in Figure 9.
+###end p 186
+###begin p 187
+###xml 139 152 139 152 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Even-skipped </italic>
+###xml 160 175 160 175 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. melanogaster</italic>
+###xml 177 186 177 186 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. yakuba</italic>
+###xml 188 198 188 198 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. erecta </italic>
+###xml 202 219 202 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. pseudoobscura </italic>
+###xml 380 395 380 395 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. melanogaster</italic>
+###xml 160 175 <span type="species:ncbi:7227">D. melanogaster</span>
+###xml 177 186 <span type="species:ncbi:7245">D. yakuba</span>
+###xml 188 197 <span type="species:ncbi:280662|species:ncbi:203672|species:ncbi:167917|species:ncbi:491826|species:ncbi:7220">D. erecta</span>
+###xml 202 218 <span type="species:ncbi:7237">D. pseudoobscura</span>
+###xml 380 395 <span type="species:ncbi:7227">D. melanogaster</span>
+The TRANSFAC predictions of bicoid (in green), hunchback (in blue) and Kruppel (in yellow) zygotic factors on the stripe 2 enhancer of the Even-skipped gene in D. melanogaster, D. yakuba, D. erecta and D. pseudoobscura (EVE, GenBank: , ,  and ), the resulting MMA and the experimental evidence. The TF-map alignment agrees well with the experimental annotation of the enhancer in D. melanogaster, as most experimentally annotated TFBSs are successfully covered by the MMAs. Non-collinear rearrangements in the MMA are denoted with a red square (see main text). The graphical representation of the maps and the alignments has been produced with the program gff2ps [27].
+###end p 187
+###begin p 188
+###xml 120 131 120 131 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila </italic>
+###xml 204 227 204 227 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila melanogaster</italic>
+###xml 357 358 357 358 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9</xref>
+###xml 49 54 <span type="species:ncbi:9606">human</span>
+###xml 55 60 <span type="species:ncbi:10090">mouse</span>
+###xml 61 68 <span type="species:ncbi:9031">chicken</span>
+###xml 69 78 <span type="species:ncbi:7955">zebrafish</span>
+###xml 204 227 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+Despite we trained our algorithm specifically on human-mouse-chicken-zebrafish genes (vertebrates), the MMA of the four Drosophila enhancers still agrees well with the regulatory annotation available for Drosophila melanogaster, providing the orthologous known sites in the other species and two additional putative non-collinear rearrangements (see Figure 9):
+###end p 188
+###begin p 189
+1. Five out of six known Kruppel sites are correctly identified in the four enhancers.
+###end p 189
+###begin p 190
+2. Three out of five known bicoid sites are identified in the four enhancers.
+###end p 190
+###begin p 191
+3. Two out of the three hunchback sites are identified.
+###end p 191
+###begin p 192
+###xml 88 98 88 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. erecta </italic>
+###xml 110 111 110 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9</xref>
+###xml 146 156 146 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. erecta </italic>
+###xml 160 177 160 177 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. pseudoobscura </italic>
+###xml 239 241 239 241 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+###xml 344 360 344 360 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D. pseudoobscura</italic>
+###xml 88 97 <span type="species:ncbi:280662|species:ncbi:203672|species:ncbi:167917|species:ncbi:491826|species:ncbi:7220">D. erecta</span>
+###xml 146 155 <span type="species:ncbi:280662|species:ncbi:203672|species:ncbi:167917|species:ncbi:491826|species:ncbi:7220">D. erecta</span>
+###xml 160 176 <span type="species:ncbi:7237">D. pseudoobscura</span>
+###xml 344 360 <span type="species:ncbi:7237">D. pseudoobscura</span>
+The MMA contains a non-collinear rearrangement between the HB1 site and the KR1 site in D. erecta (see Figure 9). The HB1 site is not detected in D. erecta and D. pseudoobscura in the conventional sequence alignment of the four enhancers [45]. Non-collinearity is also observed between the BC2 site and a hypothetical Kruppel site predicted in D. pseudoobscura.
+###end p 192
+###begin title 193
+Discussion
+###end title 193
+###begin p 194
+Among the many codes that shape the sequence of the genomes, the one regulating their transcriptional activity remains remarkably elusive. Indeed, it is usually impossible to infer the specific spatial and temporal expression pattern of a given genomic locus simply from the analysis of the sequences presumably involved in its regulation. It is well known that the initiation of the transcription by RNA Polymerase II requires the interaction between this enzyme and a number of TFs that bind to the DNA sequence in the promoter region upstream of the transcription initiation site. While transcription factors bind short DNA motifs on the promoter region, these motifs are often degenerated, and their effective recognition by the factors is dependent on the structural conformation of the region harboring them.
+###end p 194
+###begin p 195
+###xml 362 364 362 364 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B49">49</xref>
+###xml 365 367 365 367 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B51">51</xref>
+###xml 562 564 562 564 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B52">52</xref>
+###xml 565 567 565 567 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B53">53</xref>
+As a result of these and other circumstances, the relation between primary sequence and regulatory code is far from being trivial. Indeed, recent genome-wide studies based on chromatin immunoprecipitation (ChIP) of DNA bound by promoter-associated proteins, followed by either direct sequencing of the bound region or hybridization in a tiling array (ChIP-chip [49-51]) underlined the complexity of this relationship. Often no occupancy by a given TF has been experimentally detected for many genomic sites where binding motifs can be computationally predicted [52,53]. Therefore, promoter regions of genes sharing similar expression programs often do not show nucleotide sequence conservation.
+###end p 195
+###begin p 196
+###xml 365 366 365 366 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+To overcome this limitation, we introduced recently a novel approach based on abstracting the nucleotide sequence of gene promoters and replacing it by a sequence of labels, each label denoting, at a specific location on the primary sequence, the TF for which a known binding site has been predicted. We used the term TF-maps for denoting such sequences of labels [9]. Pairwise alignments between TF-maps can occasionally reveal underlying configurations of TFBSs shared by co-regulated genes, which escape detection by typical nucleotide sequence comparisons.
+###end p 196
+###begin p 197
+###xml 332 334 332 334 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B54">54</xref>
+###xml 335 337 335 337 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B55">55</xref>
+###xml 681 683 681 683 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B56">56</xref>
+###xml 684 686 684 686 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B57">57</xref>
+Here, we introduce the multiple TF-map alignments. Multiple comparisons increase the power to detect the underlying features common across the compared elements by increasing the signal to noise ratio. Multiple sequence comparisons, in particular, have been used to identify regulatory motifs and coding exons in genomic sequences [54,55]. The rationale is that since the probability of mutation is lower in functional than in non-functional regions, by increasing the number of sequences in the comparisons, nucleotide divergence increases in non-functional regions proportionally more than in functional ones, producing a sharper contrast in the sequence conservation landscape [56,57]. A similar rationale can be applied to the multiple-TF map alignments. TF-maps, obtained usually through computational predictions of binding sites, contain many non-functional elements (i.e. false positive hits). One expects that, among multiple TF-maps corresponding to genes with similar expression patterns, only the functional elements (i.e. the "bona fide" TFBSs) will be conserved.
+###end p 197
+###begin p 198
+###xml 197 198 197 198 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+###xml 329 349 329 345 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Actin &#945;-cardiac </italic>
+###xml 230 235 <span type="species:ncbi:9606">human</span>
+###xml 249 254 <span type="species:ncbi:10090">mouse</span>
+###xml 266 273 <span type="species:ncbi:9031">chicken</span>
+###xml 288 297 <span type="species:ncbi:7955">zebrafish</span>
+Indeed, as we have shown, the main effect of the multiple map alignments (MMA) is the dramatic reduction in the number of predicted TFBSs that typically result after a PWM-based search (see Figure 8). For instance, we aligned 157 human sites to 197 mouse sites, 229 chicken sites and 167 zebrafish sites mapped in the respective Actin alpha-cardiac gene promoter orthologs. The resulting multiple TF-map alignment included only 14 TFBSs, which approximately represents a 13-fold reduction. In addition, most aligned sites in the MMAs are concentrated in the proximal promoter region of each gene (200 nucleotides upstream of the TSS). This gain in specificity is not simply due to the selection of an arbitrary set of non-overlapping TFBSs, since many experimentally annotated TFBSs on these promoters are successfully covered by the resulting MMAs.
+###end p 198
+###begin p 199
+###xml 209 211 209 211 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 212 214 212 214 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 389 391 389 391 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B58">58</xref>
+###xml 819 832 819 832 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Even-skipped </italic>
+###xml 1013 1014 1013 1014 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 1103 1105 1103 1105 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B59">59</xref>
+###xml 1188 1190 1188 1190 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B60">60</xref>
+###xml 1533 1534 1533 1534 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 1651 1652 1651 1652 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 34 39 <span type="species:ncbi:9606">human</span>
+###xml 40 45 <span type="species:ncbi:10090">mouse</span>
+###xml 46 53 <span type="species:ncbi:9031">chicken</span>
+###xml 54 63 <span type="species:ncbi:7955">zebrafish</span>
+###xml 372 377 <span type="species:ncbi:9606">human</span>
+###xml 382 387 <span type="species:ncbi:10090">mouse</span>
+We have trained our approach on a human-mouse-chicken-zebrafish dataset mostly constituted of tissue-specific genes, because of the enrichment of such a promoter class in the regulatory annotation literature [36,39]. A recent study states, however, that the classical TATA-box promoter architecture of such genes represents a minority of the set of mammalian promoters in human and mouse [58]. The structure of TATA-independent promoters occurring within a CpG island is more flexible and evolvable. We consider, however, the evaluation of the MMA presented here is still correct as our approach does not distinguish the TATA-box and the other core promoter elements from the rest of TFs during the alignment. MMAs can therefore also deal with flexible regulatory rearrangements (see the TF-map characterization of the Even-skipped stripe 2 enhancer). In addition, in a previous study the TF-map alignments showed to be also effective in more general regulatory datasets that contained both classes of promoters [9]. Map alignments were introduced in the early 1980s to compare restriction enzyme maps [59]. Several improvements on the basic pairwise algorithm were developed since then [60] but this is the first time a multiple alignment implementation is proposed. In practice, guaranteeing the optimal solution to the multiple sequence comparison problem is difficult. Our approach is based on the progressive alignment paradigm, which produces not necessarily optimal alignments despite the results are biologically meaningful [4]. Here we have generalized the data structures and algorithms shown in a previous work for the pairwise comparison [9], to deal with multiple maps without adding supplementary complexity. Thus, the cost of the final implementation is proportional to the number of pairwise comparisons performed by the progressive approach.
+###end p 199
+###begin p 200
+###xml 593 595 593 595 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+In addition, we have redefined the way in which the dynamic programming matrix is processed in order to capture non-collinear configurations in the maps of regulatory elements. We have shown an example in which non-collinearity helps to find rearrangements of TFBSs that can not be detected using a conventional linear approach. Despite it is actually very difficult to train the non-collinear algorithm due to the lack of abundant experimental annotations, we believe this kind of approach will be very important in the future as collinearity can not be always assumed in regulatory regions [12].
+###end p 200
+###begin p 201
+###xml 425 427 425 427 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 549 569 549 565 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Actin &#945;-cardiac </italic>
+###xml 573 583 569 579 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Myoglobin </italic>
+###xml 718 720 714 716 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10</xref>
+###xml 845 846 841 842 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+The TF-map alignments are able to unveil characteristic regulatory patterns that are difficult to be detected at the sequence level. To test this hypothesis, we have used collections of position weight matrices as external mapping functions. However, the TF-map alignment algorithm can also deal with other kind of regulatory maps as those produced by pattern discovery programs. For instance, we have used the MEME program [17] to discover novel motifs (number of motifs: 20, minimum site length: 6, maximum site length:15) in the promoters of the Actin alpha-cardiac and Myoglobin genes. We have then performed the MMA of such patterns. The input motifs and the resulting alignment in both cases are shown in Figure 10. Such an approach can be useful to enrich the results obtained when the same promoters are aligned using JASPAR (see Figure 8).
+###end p 201
+###begin p 202
+###xml 97 117 97 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Actin &#945;-cardiac </italic>
+###xml 398 408 394 404 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Myoglobin </italic>
+###xml 50 55 <span type="species:ncbi:9606">human</span>
+###xml 56 61 <span type="species:ncbi:10090">mouse</span>
+###xml 62 69 <span type="species:ncbi:9031">chicken</span>
+###xml 70 79 <span type="species:ncbi:7955">zebrafish</span>
+###xml 351 356 <span type="species:ncbi:9606">human</span>
+###xml 357 362 <span type="species:ncbi:10090">mouse</span>
+###xml 363 370 <span type="species:ncbi:9031">chicken</span>
+###xml 371 380 <span type="species:ncbi:7955">zebrafish</span>
+On top, the MEME novel patterns discovered on the human-mouse-chicken-zebrafish promoters of the Actin alpha-cardiac gene, the resulting MMA and the experimental evidence. MEME motifs in the alignment supported by real sites: (Motif2, GACCAAATAAGGCAA, SRF), (Motif4, GGCAGGGGAGAGGAT, SP1), (Motif10, TATAAAG, TBP). At bottom, the MEME patterns on the human-mouse-chicken-zebrafish promoters of the Myoglobin gene, the resulting MMA and the experimental evidence. MEME motifs in the alignment supported by real sites: (Motif5, TATAAAA, TBP). The motifs are displayed as boxes along the promoter. MEME motifs were obtained with these parameters: -nmotifs 20 -minw 6 -maxw 15. Both graphical representations have been produced with the program gff2ps [27].
+###end p 202
+###begin p 203
+###xml 552 554 552 554 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B61">61</xref>
+###xml 748 750 748 750 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B62">62</xref>
+###xml 979 981 979 981 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B63">63</xref>
+While here we have focused on TF-maps, the algorithms and software that we have developed can also be applied, in principle, to any other problem in which the primary sequence can be annotated with higher-order features (that is, it can be mapped into a sequence of labels denoting these features). Thus, comparisons between the annotations (instead of primary sequences) can reveal more biological clues. Examples could include comparisons between exons/introns that have been annotated with matches to binding motifs for splicing regulatory factors [61]. The MMAs, in this case, could reveal classes of exons whose splicing is regulated in a similar way. Or comparisons between protein sequences which have been annotated with functional (PFAM, [62]) or structural domains. The MMAs could help here to infer functional super-families. Or comparisons between entire genomes, which have been annotated with the biological functions (for instance, using Gene Ontology (GO) terms [63] of the genes across the genomes). The MMAs could help to investigate whether function and chromosomal localization are related.
+###end p 203
+###begin title 204
+Conclusion
+###end title 204
+###begin p 205
+In general, as the functionality of the primary sequence becomes better understood, more innovative alignment techniques between higher-order representations of the sequences, such as the approach we presented here, will become increasingly useful to uncover the features that underlie common functionality.
+###end p 205
+###begin title 206
+Authors' contributions
+###end title 206
+###begin p 207
+EB, RG and XM conceived and designed the experiments. EB performed the experiments. EB, RG and XM analyzed the data. RG contributed reagents/material/analysis tools. EB, RG and XM wrote the paper.
+###end p 207
+###begin title 208
+Acknowledgements
+###end title 208
+###begin p 209
+We thank Josep F. Abril, Miguel Pignatelli and Arnaud Kerhornou for useful suggestions about the multiple map alignment software. This work was supported by grant BIO2003-05073 from the Spanish Ministerio de Ciencia y Tecnologia to RG.
+###end p 209
+###begin article-title 210
+A general method to search for similarities in the amino acid sequence of two proteins
+###end article-title 210
+###begin article-title 211
+On the theory and computation of evolutionary distances
+###end article-title 211
+###begin article-title 212
+Some biological sequence metrics
+###end article-title 212
+###begin article-title 213
+Progressive sequence alignment as a prerequisite to correct phylogenetic trees
+###end article-title 213
+###begin article-title 214
+CLUSTALW: improving the sensitivity of progressive multiple sequence alignment through sequence weighting, position-specific gap penalties and weight matrix choice
+###end article-title 214
+###begin article-title 215
+The evolution of transcriptional regulation in eukaryotes
+###end article-title 215
+###begin article-title 216
+Genomic strategies to identify mammalian regulatory sequences
+###end article-title 216
+###begin article-title 217
+Deciphering genetic regulatory codes: a challenge for functional genomics
+###end article-title 217
+###begin article-title 218
+Transcription Factor Map Alignment of Promoter Regions
+###end article-title 218
+###begin article-title 219
+Glocal alignment: finding rearrangements during alignment
+###end article-title 219
+###begin article-title 220
+Mauve: multiple alignment of conserved genomic sequence with rearrangements
+###end article-title 220
+###begin article-title 221
+Shuffling of cis-regulatory elements is a pervasive feature of the vertebrate lineage
+###end article-title 221
+###begin article-title 222
+ABS: a database of Annotated regulatory Binding Sites from orthologous promoters
+###end article-title 222
+###begin article-title 223
+A new generation of JASPAR, the open-access repository for transcription factor binding site profiles
+###end article-title 223
+###begin article-title 224
+Identification of patterns in biological sequences at the ALGGEN server: PROMO and MALGEN
+###end article-title 224
+###begin article-title 225
+TRANSFAC and its module TRANSCompel: transcriptional gene regulation in eukaryotes
+###end article-title 225
+###begin article-title 226
+Fitting a mixture model by expectation maximization to discover motifs in biopolymers
+###end article-title 226
+###begin article-title 227
+Models for prediction and recognition of eukaryotic promoters
+###end article-title 227
+###begin article-title 228
+On the complexity of multiple sequence alignment
+###end article-title 228
+###begin article-title 229
+GATA: a graphic alignment tool for comparative sequence analysis
+###end article-title 229
+###begin article-title 230
+gff2ps: visualizing genomic annotations
+###end article-title 230
+###begin article-title 231
+NCBI Reference Sequence (RefSeq): a curated non-redundant sequence database of genomes, transcripts and proteins
+###end article-title 231
+###begin article-title 232
+###xml 48 53 <span type="species:ncbi:9606">human</span>
+###xml 55 60 <span type="species:ncbi:10090">mouse</span>
+###xml 66 69 <span type="species:ncbi:10116">rat</span>
+Genome-wide promoter extraction and analysis in human, mouse, and rat
+###end article-title 232
+###begin article-title 233
+Multiple sequence alignment: in pursuit of homologous DNA positions
+###end article-title 233
+###begin article-title 234
+LAGAN and Multi-LAGAN: efficient tools for large-scale multiple alignment of genomic DNA
+###end article-title 234
+###begin article-title 235
+FootPrinter: a program designed for phylogenetic footprinting
+###end article-title 235
+###begin article-title 236
+###xml 45 50 <span type="species:ncbi:9606">human</span>
+Systematic discovery of regulatory motifs in human promoters and 3' UTRs by comparison of several mammals
+###end article-title 236
+###begin article-title 237
+###xml 112 117 <span type="species:ncbi:10090">mouse</span>
+Regulatory elements in the 5'-flanking region and the first intron contribute to transcriptional control of the mouse alpha 1 type I collagen gene
+###end article-title 237
+###begin article-title 238
+Transcriptional Regulatory Elements Within the First Intron of Bruton's Tyrosine Kinase
+###end article-title 238
+###begin article-title 239
+A predictive model for regulatory sequences detecting liver-specific transcription
+###end article-title 239
+###begin article-title 240
+Identification of conserved regulatory elements by comprative genome analysis
+###end article-title 240
+###begin article-title 241
+###xml 70 75 <span type="species:ncbi:9606">human</span>
+Alpha-skeletal and alpha-cardiac actin genes are coexpressed in adult human skeletal muscle and heart
+###end article-title 241
+###begin article-title 242
+Identification of regulatory regions which confer muscle-specific gene expression
+###end article-title 242
+###begin article-title 243
+Myoglobin: The hydrogen atom of biology and a paradigm of complexity
+###end article-title 243
+###begin article-title 244
+###xml 126 131 <span type="species:ncbi:9606">human</span>
+A 40-kilodalton protein binds specifically to an upstream sequence element essential for muscle-specific transcription of the human myoglobin promoter
+###end article-title 244
+###begin article-title 245
+Going to the distance: a current view of enhancer action
+###end article-title 245
+###begin article-title 246
+The hardwiring of development: organization and function of genomic regulatory systems
+###end article-title 246
+###begin article-title 247
+Transcriptional control in the segmentation gene network of Drosophila
+###end article-title 247
+###begin article-title 248
+Functional analysis of eve stripe 2 enhancer evolution in Drosophila: rules governing conservation and change
+###end article-title 248
+###begin article-title 249
+Extraction of functional binding sites from unique regulatory regions: the Drosophila early developmental enhancers
+###end article-title 249
+###begin article-title 250
+Computational detection of genomic cis-regulatory modules applied to body patterning in the early Drosophila embryo
+###end article-title 250
+###begin article-title 251
+Genome-wide prediction of mammalian enhancers based on analysis of transcription-factor binding affinity
+###end article-title 251
+###begin article-title 252
+DNA microarray technologies for measuring protein-DNA interactions
+###end article-title 252
+###begin article-title 253
+Locating mammalian transcription factor binding sites: a survey of computational and experimental techniques
+###end article-title 253
+###begin article-title 254
+Microarray technology: beyond transcript profiling and genotype analysis
+###end article-title 254
+###begin article-title 255
+###xml 101 106 <span type="species:ncbi:9606">human</span>
+Genome-wide computational prediction of transcriptional regulatory modules reveals new insights into human gene expression
+###end article-title 255
+###begin article-title 256
+###xml 47 52 <span type="species:ncbi:9606">human</span>
+Distribution of NF-kappaB-binding sites across human chromosome 22
+###end article-title 256
+###begin article-title 257
+Identification and analysis of multigene families by comparison of exon fingerprints
+###end article-title 257
+###begin article-title 258
+Using Multiple Alignments to Improve Gene Prediction
+###end article-title 258
+###begin article-title 259
+###xml 78 83 <span type="species:ncbi:9606">human</span>
+Phylogenetic shadowing of primate sequences to find functional regions of the human genome
+###end article-title 259
+###begin article-title 260
+Applied bioinformatics for the identification of regulatory elements
+###end article-title 260
+###begin article-title 261
+Genome-wide analysis of mammalian promoter architecture and evolution
+###end article-title 261
+###begin article-title 262
+Algorithms for restriction map comparisons
+###end article-title 262
+###begin article-title 263
+Dynamic programming algorithms for restriction map comparison
+###end article-title 263
+###begin article-title 264
+Defective splicing, disease and therapy: searching for master checkpoints in exon definition
+###end article-title 264
+###begin article-title 265
+The Pfam protein families database
+###end article-title 265
+###begin article-title 266
+Gene ontology: tool for the unification of biology
+###end article-title 266
+

@@ -1,0 +1,804 @@
+###begin article-title 0
+Promoter prediction and annotation of microbial genomes based on DNA sequence and structural responses to superhelical stress
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+###xml 177 185 177 185 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo </italic>
+In our previous studies, we found that the sites in prokaryotic genomes which are most susceptible to duplex destabilization under the negative superhelical stresses that occur in vivo are statistically highly significantly associated with intergenic regions that are known or inferred to contain promoters. In this report we investigate how this structural property, either alone or together with other structural and sequence attributes, may be used to search prokaryotic genomes for promoters.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 437 445 437 445 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 960 977 960 977 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis</italic>
+###xml 437 444 <span type="species:ncbi:562">E. coli</span>
+###xml 960 977 <span type="species:ncbi:1423">Bacillus subtilis</span>
+We show that the propensity for stress-induced DNA duplex destabilization (SIDD) is closely associated with specific promoter regions. The extent of destabilization in promoter-containing regions is found to be bimodally distributed. When compared with DNA curvature, deformability, thermostability or sequence motif scores within the -10 region, SIDD is found to be the most informative DNA property regarding promoter locations in the E. coli K12 genome. SIDD properties alone perform better at detecting promoter regions than other programs trained on this genome. Because this approach has a very low false positive rate, it can be used to predict with high confidence the subset of promoters that are strongly destabilized. When SIDD properties are combined with -10 motif scores in a linear classification function, they predict promoter regions with better than 80% accuracy. When these methods were tested with promoter and non-promoter sequences from Bacillus subtilis, they achieved similar or higher accuracies. We also present a strictly SIDD-based predictor for annotating promoter sequences in complete microbial genomes.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+In this report we show that the propensity to undergo stress-induced duplex destabilization (SIDD) is a distinctive structural attribute of many prokaryotic promoter sequences. We have developed methods to identify promoter sequences in prokaryotic genomes that use SIDD either as a sole predictor or in combination with other DNA structural and sequence properties. Although these methods cannot predict all the promoter-containing regions in a genome, they do find large sets of potential regions that have high probabilities of being true positives. This approach could be especially valuable for annotating those genomes about which there is limited experimental data.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 174 175 174 175 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 176 177 176 177 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+As the number of completely sequenced microbial genomes grows, the need for efficient annotation tools becomes more acute. Gene-finding programs such as GeneMark or Glimmer [1,2] can predict protein coding regions at a generally high level of accuracy. However, there also are genes encoding rRNA, tRNA and small non-coding RNAs in prokaryotic genomes, which these methods may not always find. The precise locations of translation and transcription start sites also need to be identified. Better understanding of the attributes associated with promoters, in addition to shedding light on the basic mechanisms by which they function, will also assist in identifying these sites within genomic sequences.
+###end p 9
+###begin p 10
+###xml 194 202 194 202 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 194 201 <span type="species:ncbi:562">E. coli</span>
+Promoter prediction in prokaryotic genomes presents unique challenges owing to their organizational properties. First, gene densities are very high in prokaryotes - 89% of the base pairs in the E. coli genome are in open reading frames (ORFs). Neighboring genes may have very short intergenic regions; in some cases their coding regions even overlap. Further, the operon structure, in which multiple genes are transcribed as a single transcription unit, means that not all genes require their own promoters. In order for bacteria to thrive in different environments, their genomic sequences are highly adaptive within genomes and highly diversified across genomes. This makes it difficult to detect conserved regulatory sites within and across genomes by sequence homology. These factors have complicated the search for the determinants of promoter activity in prokaryotes.
+###end p 10
+###begin p 11
+###xml 173 174 173 174 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 195 203 195 203 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 297 298 297 298 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 299 300 299 300 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B6">6</xref>
+###xml 442 450 442 450 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 525 526 525 526 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 675 676 675 676 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 677 678 677 678 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 195 202 <span type="species:ncbi:562">E. coli</span>
+###xml 442 449 <span type="species:ncbi:562">E. coli</span>
+Prokaryotic promoters are known to contain conserved sequence motifs, which may be represented either as consensus sequences or by position-specific score matrices (PSSMs) [3]. For example, most E. coli K12 promoters contain approximately conserved sequence elements in their -35 and -10 regions [4-6]. The -10 motif is essential for transcription initiation, while the -35 motif is dispensable for some promoters. Other sequence features of E. coli K12 promoters include the A+T rich UP element located around position -50 [7]. Most of the promoter prediction programs thus far developed search sequences for conserved -10 motifs, and in some cases also include -35 motifs [8,9]. These methods commonly suffer from high false positive rates.
+###end p 11
+###begin p 12
+###xml 300 308 300 308 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in vivo </italic>
+###xml 720 721 720 721 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 722 723 722 723 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 786 788 786 788 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B10">10</xref>
+###xml 789 791 789 791 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 996 1004 996 1004 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1308 1310 1308 1310 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 1424 1426 1424 1426 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 996 1003 <span type="species:ncbi:562">E. coli</span>
+Local separation of the DNA duplex within promoter regions is a critical step in transcriptional initiation for both prokaryotes and eukaryotes. This step must be highly regulated, but does not occur as a strictly thermal melting. Instead, the untwisting torsional stresses imposed on genomic DNA by in vivo negative superhelicity destabilize the DNA duplex in specific regions, and thereby facilitate local strand opening. We have developed statistical mechanical methods to analyze this stress-induced DNA duplex destabilization (SIDD) within complete chromosomes. For a specified level of superhelicity, we calculate two quantities for each base pair - the probability of its opening, and the incremental free energy G(x) needed to force it to be always open under these conditions [10,11]. A small number of specific sites in genomic DNA are predicted by SIDD analysis to have a high propensity to melt under normal physiological conditions. We have demonstrated that these SIDD sites in the E. coli K12 genome are statistically significantly associated with intergenic regions that are known or inferred to contain promoters. It is found that many - but not every - documented promoter contains a strong SIDD site. Further, SIDD sites also occur at frequencies much below expectation in coding regions [12]. This pattern of SIDD site distribution has recently been confirmed to occur in many other prokaryotic genomes [13]. This suggests that SIDD properties may be used to identify and investigate promoter-containing regions in prokaryotic genomes.
+###end p 12
+###begin p 13
+In this report we show that SIDD is a distinct structural property of promoter regions that cannot be identified by sequence conservation. There is no one-to-one correspondence between local attributes of the sequence and the extent of destabilization, and no unique sequence motifs are involved. When compared with other known DNA structural properties and with -10 motif scores, SIDD properties are found to be the best discriminator for distinguishing promoters from non-promoters. When SIDD was either the sole predictor or was combined with other features in a promoter prediction program, high levels of sensitivity and specificity were achieved. We present two approaches for annotating promoter locations in sequenced prokaryotic genomes.
+###end p 13
+###begin title 14
+Results and discussion
+###end title 14
+###begin title 15
+SIDD is a distinct structural property in promoter regions that cannot be captured by sequence conservation
+###end title 15
+###begin p 16
+###xml 49 57 49 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 394 406 394 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli K12 </italic>
+###xml 414 416 414 416 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 1308 1316 1308 1316 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 49 56 <span type="species:ncbi:562">E. coli</span>
+###xml 394 401 <span type="species:ncbi:562">E. coli</span>
+###xml 1308 1315 <span type="species:ncbi:562">E. coli</span>
+We first performed a SIDD analysis of the entire E. coli K12 genome, as described in the Methods section. Then three sets of regions were selected according to their transcriptional properties, and their SIDD attributes were compared. To construct the first set we randomly selected 500 documented transcription start sites (TSS) from the 927 that are annotated in the Regulon database for the E. coli K12 genome [14]. For each of these TSSs, we found the 1001 bp sequence centered on that TSS. The regions immediately upstream from these TSSs were considered to be promoters, which hence would be contained in these regions. For comparison we selected two other sets for analysis, each also containing 500 sequences that are 1001 bp long, that are chosen to contain few or no promoters. Each sequence in the second set starts at one of the TSSs chosen above, and extends 1001 bp in the direction of transcription. This is called the coding set of sequences. The third set consists of 500 randomly selected sequences, each 1001 bp long, centered on an intergenic region separating convergently oriented genes. This set, which we call CON, may contain parts of ORFs, but is inferred not to contain promoters. We also constructed a fourth set of random sequence DNA as follows. We randomly shuffled the entire E. coli K12 genome to preserve the mononucleotide compositions, and performed a SIDD analysis on the entire resulting sequence. Then a set of 500 sequences, each 1001 bp long, was chosen at random from this shuffled genome, and their SIDD attributes were compared with those of the sequences in the other three sets.
+###end p 16
+###begin p 17
+###xml 97 98 97 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 99 100 99 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 193 194 193 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 195 196 195 196 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 278 280 278 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 348 349 348 349 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 350 351 350 351 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 501 503 501 503 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1A</xref>
+###xml 962 964 962 964 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 995 996 995 996 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 997 998 997 998 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 1105 1113 1105 1113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1105 1112 <span type="species:ncbi:562">E. coli</span>
+First, for each of these sets we determined the average value of the destabilization free energy G(x) that occurs at each position within the 1001 bp sequence. (The destabilization free energy G(x) corresponds to the incremental free energy needed for the base pair at position x to always remain open. Highly destabilized sites have low values of G(x); sites that are open in all low energy states can even have negative values.) These calculated position-specific average values are shown in Figure 1A. On average, the sequences containing promoters are more destabilized than either the coding sequences or the CON sequences that may not contain promoters. These results agree with those from our previous analysis, which showed strong SIDD sites to be statistically significantly associated with intergenic regions whose bounding ORFs are either divergently or tandemly oriented, and hence may contain promoters or other transcriptional regulatory elements [12]. The lowest average value of G(x) occurs around position -49 relative to the TSS, a region previously identified as the UP element in some E. coli K12 promoters. Statistical analysis shows the regions between positions -174 and +57 are significantly destabilized (p < 0.001) when compared with either of the two sets that do not contain promoters, or with the randomly shuffled sequences.
+###end p 17
+###begin p 18
+###xml 346 348 346 348 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 381 383 381 383 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1B</xref>
+In what follows we designate the 100 bp sequence from positions -80 to +20 relative to each of the 500 chosen TSSs as containing a promoter. (This is 100 base pairs, there being no base pair that is given the position 0.) These 500 promoter sequences were aligned at their TSSs, and their sequence conservation was measured by Shannon's entropy [15]. The result is shown in Figure 1B. As expected, a slight entropy decrease (corresponding to slightly increased sequence conservation) was observed between positions -7 and -12, which are their -10 regions. However, there was no significant entropy decrease at the -35 regions, indicating that on average the local sequence is not more conserved at this location than elsewhere in these promoters. It is known that the -35 motif is dispensable for so-called "extended -10" sigma 70 promoters. Strikingly, the region around -49 bp where the maximal average destabilization was found also shows no increase in sequence conservation. This indicates that SIDD properties and -10 motifs are fundamentally different attributes of promoters; one is tied directly to the base sequence but the other is not.
+###end p 18
+###begin p 19
+###xml 206 208 206 208 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+A recent paper that presented a promoter prediction method based on thermostability in promoter regions reported that the region from -20 to -6 was much less stable than were other, non-promoter locations [16]. It is possible that the decreased thermostability in this region was partly due to the conserved -10 sequence motif, which is A+T-rich.
+###end p 19
+###begin p 20
+###xml 850 851 850 851 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 870 872 870 872 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+This result emphasizes the fact that SIDD properties are fundamentally different from thermostability. SIDD does not depend only on the local thermal properties of the DNA sequence. The energies that govern SIDD are the differences between the energy cost of strand separation for the specific base pairs involved, and the energy benefit from the fractional relaxation of the superhelical stress this transition provides. The thermal energy only relates to the cost half of this relationship. Moreover, superhelical stresses couple together all the base pairs that experience them, so whether SIDD melting occurs at any specific location depends on how well that site competes with all others that feel this stress. This means a site can open at one level of stress, then re-close coupled to opening elsewhere as the stresses are increased. (See Fig 2 of the reference [11], where both sites have the same thermodynamic stability.) This type of complicated, nonlinear behavior does not occur in thermal melting, and cannot be predicted only from the thermal properties of the sequence.
+###end p 20
+###begin title 21
+Construction of training and test sets
+###end title 21
+###begin p 22
+All the analyses that follow used three training sets, each of which contains 500 sequences that are 100 bp long. The promoter-containing training set, described above, consists of sequences spanning positions -80 to +20 relative to each of the 500 selected TSSs. In each of the 500 CON sequences described above we selected the central 100 bp, which are centered in the middle of their intergenic regions. As these regions are short and separate convergently transcribing ORFs, they are inferred not to contain promoters. Henceforth we describe this as the CON training set. The third training set consists of the 100 base pair sequences between position +300 and +399 within each of the 1001 bp coding sequences described above. This set, which is sometimes referred to as the coding training set, also is inferred not to contain promoters.
+###end p 22
+###begin p 23
+We also construct three test sets, each having the same transcriptional properties as its corresponding training set. These test sets also contains sequences of length 100 bp, constructed in the same way as were the training sets. The promoter-containing test set was constructed from the 427 experimentally characterized TSSs that were not used to construct the training set. The coding test set consists of the sequences between position +300 and +399 relative to each of these 427 TSSs. The CON test set consists of 427 different 100 bp sequences, each centered in the middle of an intergenic region that separates convergently transcribing ORFs. These regions were randomly chosen from among those that were not used to make the CON training set.
+###end p 23
+###begin p 24
+Thus we have three types of training sets of equal size, and three types of test sets, also of equal size (but a bit smaller than the training sets). Each of these three set types has distinct transcriptional attributes. The first contains promoters, the second contains coding sequences but not promoters, and the third contains terminal intergenic sequences that also do not contain promoters. Some of the analyses whose results are described below do not involve test sets. In those cases the larger, 500 sequence training sets were analyzed. However, in procedures where parameters had to be developed, the training sets were used for that purpose. Then the procedure with those parameter values was applied to the test sets.
+###end p 24
+###begin p 25
+We know the SIDD properties of each sequence in these sets, as these were determined through the whole genome SIDD analysis described in the Methods section. Next, we compare the values of a variety of attributes in promoter-containing regions to their values in each of the two types of non-promoter-containing regions. We describe each in turn.
+###end p 25
+###begin title 26
+SIDD energy levels are bimodally distributed among promoter sequences
+###end title 26
+###begin p 27
+###xml 121 122 117 118 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 123 124 119 120 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 207 208 203 204 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 208 210 204 206 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 208 210 204 206 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 222 223 218 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 224 225 220 221 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 343 344 339 340 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 525 526 517 518 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 526 527 518 519 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 526 527 518 519 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m</italic></sub>
+We first examined two SIDD properties of the sequences in each of these types of regions. These are the sum Sigma of the G(x) values for the 100 base pairs in each sequence in the set, and the minimum value Gm attained by G(x) in that sequence. The probability distributions of these quantities over each of the three sets are shown in Figure 2. (There being no training involved in this procedure, the training sets were used in these analyses.) The majority of the non-promoter sequences have high values of both Sigma and Gm, indicating that they remain stable under superhelical stress. However, the distributions of both parameters within promoters are bimodal. It appears that two sub-populations of promoter sequences can be distinguished according to their SIDD properties, one group being highly destabilized and the other less so.
+###end p 27
+###begin p 28
+###xml 145 147 145 147 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 532 533 528 529 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 533 535 529 531 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 533 535 529 531 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 785 786 781 782 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+Because we previously showed that strong SIDD sites are closely associated with promoter-containing intergenic regions and avoid coding regions [12], we wanted to test whether this bimodal character could be partially attributed to promoter location. For this purpose we separated the full set of 927 experimentally characterized TSSs into those that are intergenic and those that occur within ORFs. For each we chose the 100 base pair segments from positions -80 to +20 as their promoter-containing regions. We found the Sigma and Gm values for each of these regions, considering the intraORF-TSS and intergenic-TSS sets separately. More than 80% of these 927 TSSs are located in intergenic regions, so these sets have substantially different sizes. For this reason we plot in Figure 2 the probability distributions of each score for each of these two additional sets. As shown in the figure, there is some enrichment of promoters with intraORF TSSs in the non-destabilized population. But because the number of these promoters is small, the bimodal character of the intergenic-TSS promoter set is not much different from that of the 500 sequence promoter-containing training set that contains both types.
+###end p 28
+###begin p 29
+###xml 788 796 788 796 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 813 815 813 815 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 1426 1430 1426 1430 <italic xmlns:xlink="http://www.w3.org/1999/xlink">fis </italic>
+###xml 1446 1448 1446 1448 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 788 795 <span type="species:ncbi:562">E. coli</span>
+The observed bimodal distribution of SIDD properties in promoters may reflect the complexity of transcriptional regulation, suggesting that superhelical destabilization may be needed to initiate transcription from some promoters, but not others. SIDD in highly destabilized promoters may be directly involved in the mechanism of open complex formation. However, one cannot rule out the possibility that SIDD also could be involved in regulating more stable promoters. In the present analysis we confined our attention to the 100 bp sequence from -80 bp to +20 bp. But SIDD sites further upstream are known to play central roles in specific mechanisms of transcriptional regulation. An example is the IHF-mediated transcriptional activation of the promoter governing the expression of the E. coli ilvGMEDA operon [17]. In the absence of IHF binding, negative superhelicity opens the SIDD region, which is located upstream from position -90. IHF binding forces this region back to B-form, so the superhelical stresses open the next most easily destabilized site, which is in the -10 region. This regulatory mechanism involves a binding-induced transmission of destabilization from the binding site into the promoter. SIDD clearly plays a central role in this mechanism, even though the regulatory SIDD site is not at the promoter. A similar mechanism was also observed to regulate the LeuV operon, which involved the binding of fis to a SIDD site [18].
+###end p 29
+###begin title 30
+###xml 125 133 125 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 125 132 <span type="species:ncbi:562">E. coli</span>
+SIDD is more capable than other structural or sequence properties of distinguishing promoters from non-promoter sequences in E. coli K12
+###end title 30
+###begin p 31
+###xml 264 266 264 266 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 267 269 267 269 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+Other research groups have reported that several other types of structural parameters also appear to be distributed differently between promoters and non-promoters. These include DNA intrinsic curvature, protein-induced deformability, and thermodynamic stability [19-21]. To compare these attributes with SIDD properties, we used published methods to calculate each property for the entire genome as described in the Methods section, then examined their values in the test and training sets.
+###end p 31
+###begin p 32
+###xml 281 282 281 282 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 540 541 540 541 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+We determined the sums, and the maximum and minimum values, of each of these quantities over each of the 100 bp training sets described above. The distributions of the sums of these parameters in promoters, and in the coding and CON non-promoter training sets, are shown in Figure 3ABC. Overall, promoter regions tend to be slightly more curved, less flexible for protein binding, and less stable under thermal fluctuations than are non-promoter regions. However, these feature differences are much less dramatic than those shown in Figure 2 for SIDD properties. The corresponding graphs for the maxima and minima of these parameters are less informative, but show similar trends. (Data not shown.)
+###end p 32
+###begin p 33
+###xml 310 311 310 311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 312 313 312 313 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 497 498 497 498 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 728 730 728 730 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3D</xref>
+###xml 849 857 849 857 <italic xmlns:xlink="http://www.w3.org/1999/xlink">density </italic>
+Position-specific score matrices (PSSMs) are frequently used to represent conserved motifs, such as protein binding sites. PSSM methods based either on the -10 motif or on motifs from both the -10 and -35 regions have been used to find putative sigma factor binding sites, presumably as signals for promoters [8,9]. By aligning the promoter sequences in the training set at their TSSs, we derived a log-odds PSSM for the -10 motif (from -6 to -13) in the promoters, using the method described in [3]. When this PSSM was used to search our promoter and non-promoter test sequences, we found that promoters contain higher densities of high-scoring PSSM motifs than do either the coding or the CON classes of non-promoters (figure 3D, and other data not shown). However, there are substantial numbers of these motifs in all three sets. But the average density of high-scoring PSSM motifs is approximately twice as high in promoter-containing sequences as in those that do not contain promoters. So the sum of the motif scores over a window may be a useful discriminator of promoters. But the exact locations of -10 motifs alone may not be useful for inferring either transcription start sites or promoter locations.
+###end p 33
+###begin p 34
+###xml 712 714 712 714 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 778 779 778 779 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+We have examined the distributions of each of these five properties (SIDD, curvature, deformability, thermodynamic stability, and -10 motif scores) for each set of promoter and non-promoter sequences in each of two cases - first using the summed variable and then (except for -10 scores) its extreme value in the region. (As promoters are thought to have high intrinsic curvature we used maxima of this parameter. For SIDD properties, deformation energy and thermodynamic stability we used minima.) In each case the statistical significances of the differences found between the promoter-containing training set and each of the two non-promoter containing sets were calculated using the Kolmogorov-Smirnov test [22]. The results of these statistical analyses are shown in Table 1. For all parameters the distributions of the summed variables show statistically significant differences between promoters and either of the non-promoter sets. Among these, the SIDD property shows the highest significance level. The distribution of extreme values remains highly significant for SIDD, but is much less so for the other parameters. In fact, only the difference of the maximum values of curvature between promoter and non-promoter sets retains significance at the 95% level, while the differences of minimum values of either deformation energy or thermostability between promoters and non-promoters are not significant. Thus, among these variables, SIDD is the most informative for differentiating promoters from non-promoters, followed by -10 motif scores.
+###end p 34
+###begin title 35
+###xml 75 87 75 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli K12 </italic>
+###xml 94 111 94 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis</italic>
+###xml 75 82 <span type="species:ncbi:562">E. coli</span>
+###xml 94 111 <span type="species:ncbi:1423">Bacillus subtilis</span>
+SIDD alone outperforms other parameters in detecting promoter sequences in E. coli K12 and in Bacillus subtilis
+###end title 35
+###begin p 36
+###xml 66 67 62 63 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 67 69 63 65 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 67 69 63 65 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 403 404 395 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 404 406 396 398 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 404 406 396 398 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 519 527 511 519 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 700 701 688 689 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 701 703 689 691 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 701 703 689 691 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 749 750 733 734 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 750 751 734 735 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 750 751 734 735 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m</italic></sub>
+###xml 771 773 755 757 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4A</xref>
+###xml 957 958 937 938 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 958 960 938 940 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 958 960 938 940 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 987 988 963 964 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 988 989 964 965 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 988 989 964 965 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m</italic></sub>
+###xml 1072 1073 1048 1049 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1380 1381 1348 1349 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 1381 1383 1349 1351 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 1381 1383 1349 1351 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 519 526 <span type="species:ncbi:562">E. coli</span>
+In order to determine the values of the SIDD parameters Sigma and Gm that most reliably discriminate promoter from non-promoter sequences, we first chose a series of values spanning the ranges of their distributions. Each value was regarded as a threshold, so in this analysis a sequence would be classified as containing a promoter or not, solely based on whether or not its sum Sigma or minimum value Gm fell below this threshold. In this way we placed all the 100 bp sequences in the three training sequences in the E. coli genome into promoter or non-promoter bins, then calculated the true and false positive rates achieved when that threshold was used. This was done for each value of Sigma or Gm in the series, and also for each pair (Sigma, Gm) of values. Figure 4A shows the sensitivities and specificities as the threshold of Sigma is varied. (Sensitivity = true positive rate; specificity = 1- false positive rate.) Similar results are found for Gm and also for pairs (Sigma, Gm) (Representative data presented in Supplementary Information [see Additional file 1].) As this figure shows, the sensitivity increases monotonically with threshold, while the specificity decreases monotonically. However, the specificity is essentially unity until a substantial threshold, around Sigma = 280 in this case. In this way a range of threshold values of the parameters Sigma and Gm were obtained that provide high true positive rates and low false positive rates.
+###end p 36
+###begin p 37
+###xml 466 467 466 467 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 804 811 804 811 <italic xmlns:xlink="http://www.w3.org/1999/xlink">versus </italic>
+We note that sensitivities of 25% to 30% can be achieved with very small false positive rates, but that higher sensitivities have an increasing cost in terms of decreased specificity. This corresponds to our previous observation that, although strongly destabilized sites are highly concentrated at promoters, not all promoters are destabilized. This fact also is reflected in the bimodal distributions of SIDD parameters at promoters that were documented in Figure 2. However, at this modest level of sensitivity the specificity is so high that false positives are very few. This will be shown to be an important attribute for promoter prediction, as most other methods suffer from high false positive rates. Moreover, for purposes of comparing methods the important attribute is the true positive rate versus the false positive rate, as described below.
+###end p 37
+###begin p 38
+###xml 230 254 230 254 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila melanogaster </italic>
+###xml 262 264 262 264 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 332 340 332 340 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 373 381 373 381 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 230 253 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+###xml 332 339 <span type="species:ncbi:562">E. coli</span>
+###xml 373 380 <span type="species:ncbi:562">E. coli</span>
+We compared the performances on the test sets of these optimized SIDD predictors with that of the publicly available NNPP promoter prediction program. Although NNPP was originally developed to predict core promoter regions in the Drosophila melanogaster genome [23], it was also trained on a set of documented promoter sequences in E. coli K12. (We note that the number of E. coli K12 promoter sequences used to train NNPP was about half the size of the training set used in our study.) NNPP is a neural network-based computer program that uses a time-delay architecture to incorporate structural and compositional properties of promoter sequences. By setting its stringency between 0.1 and 0.9, we obtained a range of NNPP predictions regarding whether each sequence in each of our sets either did or did not contain a promoter. The true positive and false positive rates achieved were calculated for each level of stringency. Since our SIDD method detects promoter-containing regions without pinpointing the TSS while NNPP predicts TSSs, care must be taken to calculate these rates in equivalent manners. If NNPP predicts that a sequence contains a TSS, no matter where it is, for the purposes of comparing with the SIDD results that sequence was considered to contain a promoter.
+###end p 38
+###begin p 39
+###xml 168 171 168 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink">vs </italic>
+###xml 322 324 322 324 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4B</xref>
+###xml 1159 1161 1159 1161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4B</xref>
+The performance characteristics of the SIDD predictor and NNPP were compared using a ROC (receiver operating characteristic) curve, which graphs the true positive rate vs the false positive rate achieved by each method for several values of SIDD parameter thresholds and NNPP stringencies. The results are shown in Figure 4B. The better the predictor the more the curve moves towards the vertical axis, having higher true positive rates and lower false positive rates. At a given false positive rate, SIDD always predicted more true positives than did NNPP. For example, SIDD correctly predicted 74.6% of the real promoters with a false positive rate of 18%. When NNPP correctly predicted 66.4% of the real promoters, it had at 22.4% false positive rate. The area under the ROC is a convenient way of comparing classifiers. If the area under the ROC curve is unity, the classifier is perfect - it gives a 100% true positive rate with no false positives. Conversely, a method with no classifying power will have a diagonal curve with area 0.5 - it cannot distinguish true from false positives, giving both at the same rates. The SIDD predictor curve in Figure 4B has area 0.831, while the NNPP curve has area 0.785. By this criterion SIDD has better predictive power than does NNPP.
+###end p 39
+###begin p 40
+###xml 42 50 42 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 192 194 192 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 231 248 231 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis</italic>
+###xml 299 307 299 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 423 430 423 430 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 761 763 761 763 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1A</xref>
+###xml 776 784 776 784 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 848 866 848 866 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis </italic>
+###xml 901 912 901 912 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli K12</italic>
+###xml 932 950 932 950 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis </italic>
+###xml 1020 1021 1020 1021 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 1128 1139 1128 1139 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 1201 1209 1201 1209 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1236 1238 1236 1238 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4C</xref>
+###xml 1307 1315 1307 1315 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1323 1341 1323 1341 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis </italic>
+###xml 1370 1378 1370 1378 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1396 1407 1396 1407 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 42 49 <span type="species:ncbi:562">E. coli</span>
+###xml 231 248 <span type="species:ncbi:1423">Bacillus subtilis</span>
+###xml 299 306 <span type="species:ncbi:562">E. coli</span>
+###xml 423 430 <span type="species:ncbi:562">E. coli</span>
+###xml 776 783 <span type="species:ncbi:562">E. coli</span>
+###xml 848 865 <span type="species:ncbi:1423">Bacillus subtilis</span>
+###xml 901 908 <span type="species:ncbi:562">E. coli</span>
+###xml 932 949 <span type="species:ncbi:1423">Bacillus subtilis</span>
+###xml 1128 1139 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 1201 1208 <span type="species:ncbi:562">E. coli</span>
+###xml 1307 1314 <span type="species:ncbi:562">E. coli</span>
+###xml 1323 1340 <span type="species:ncbi:1423">Bacillus subtilis</span>
+###xml 1370 1377 <span type="species:ncbi:562">E. coli</span>
+###xml 1396 1407 <span type="species:ncbi:1423">B. subtilis</span>
+The pattern of SIDD distribution found in E. coli K12, in which strongly destabilized sites are concentrated at promoters and avoid coding sequences, also occurs in other prokaryotic genomes [24]. So we also applied our methods to Bacillus subtilis, the only prokaryote from a different phylum than E. coli that has extensive experimental annotation of promoters. We developed training and test sets as described above for E. coli, and examined their SIDD properties as above. (The SIDD properties again were calculated in a whole genome analysis.) In this organism the most extreme level of average destabilization also occurs at position -49 relative to the TSSs. The sequences at this site are not as conserved as that of -10 regions, as was shown in Figure 1A to occur in E. coli K12. A bimodal distribution of SIDD properties also is found in Bacillus subtilis promoter regions, just as it is in E. coli K12. (These results on Bacillus subtilis are presented in the Suppplementary Information [see Additional file ]1.) When SIDD alone was used to differentiate promoter-containing from non-promoter-containing sequences in B. subtilis, it demonstrated comparable performance to that achieved for E. coli K12, as is shown in Figure 4C. Despite of the different nucleotide compositions of the genomes of E. coli K12 and Bacillus subtilis (the AT/GC ratio is 0.968 in E. coli K12, and 1.298 in B. subtilis), and the large evolutionary distance separating them, SIDD consistently predicted promoter and non-promoter sequences in both organisms with comparably high precisions and low false positive rates. (Precision is the fraction of all positive predictions that are true.) Thus, SIDD characteristics may be capable of detecting promoter-containing sequences in many prokaryotic genomes.
+###end p 40
+###begin p 41
+###xml 153 155 153 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 251 259 251 259 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 267 284 267 284 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis</italic>
+###xml 410 412 410 412 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4C</xref>
+###xml 568 570 568 570 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4C</xref>
+###xml 816 824 816 824 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 859 870 859 870 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 1007 1015 1007 1015 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1023 1034 1023 1034 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 1381 1383 1381 1383 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4C</xref>
+###xml 1455 1457 1455 1457 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 251 258 <span type="species:ncbi:562">E. coli</span>
+###xml 267 284 <span type="species:ncbi:1423">Bacillus subtilis</span>
+###xml 816 823 <span type="species:ncbi:562">E. coli</span>
+###xml 859 870 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 1007 1014 <span type="species:ncbi:562">E. coli</span>
+###xml 1023 1034 <span type="species:ncbi:1423">B. subtilis</span>
+A recent paper that used thermostability as a promoter predictor also claimed that their method was likely to be applicable to different microorganisms [16]. Both our method and theirs have been tested using the same sources of experimental TSSs from E. coli K12 and Bacillus subtilis. Since their program was not publicly available, we tried to compare the performances of both methods by plotting our figure 4C in a way equivalent to that of their Figure 9, which showed the precision of their method. The definitions of precision and sensitivity used in our figure 4C are the same as those defined there. (See the Methods section for precise definitions.) As the sensitivity of the thermostability method increased from 20% to 90%, its published precision decreased dramatically - from about 72% to about 37% for E. coli K12, and from about 82% to 27% for B. subtilis. In contrast, the predicted precisions achieved by our SIDD-based method at all levels of sensitivity remained higher than 62% for both E. coli K12 and B. subtilis. Even at sensitivities below 30%, precisions exceeding 90% were achieved for both organisms. These high precisions are achieved because the SIDD method has very low false positive rates. So while it may find only a fraction of the actual promoters, those it does identify have high probabilities of being true. As can be seen by comparing Figure 4C here with Figure 9 in the paper describing the thermostability method [16], the SIDD technique significantly outperformed that technique. These results further support the claim that SIDD is a better discriminator of promoter sequences than is thermostability.
+###end p 41
+###begin title 42
+SIDD can predict with high confidence the set of promoters that have strong stress-induced destabilization properties
+###end title 42
+###begin p 43
+###xml 233 241 233 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 249 261 249 261 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 322 332 322 332 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ab initio </italic>
+###xml 550 558 550 558 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 635 637 635 637 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 953 961 953 961 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 1111 1112 1107 1108 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 1112 1113 1108 1109 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 1112 1113 1108 1109 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m</italic></sub>
+###xml 233 240 <span type="species:ncbi:562">E. coli</span>
+###xml 249 260 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 550 557 <span type="species:ncbi:562">E. coli</span>
+###xml 953 960 <span type="species:ncbi:562">E. coli</span>
+A substantial number of experimentally characterized promoters are required to construct training sequences for most sequence-based promoter prediction programs. Sufficiently large documented promoter sets are only available for the E. coli K12 and B. subtilis bacterial genomes. One way to circumvent this shortage is to ab initio predict promoters by also identifying the distinct sequence and/or structural attributes with which they are associated. In our previous and current studies we have shown that strongly destabilized SIDD regions in the E. coli K12 genome are statistically highly significantly associated with promoters [12]. Since the SIDD profile of a genome is directly calculated from its primary sequence, SIDD properties can be used to predict promoters, even in cases where training sequences are limited. The following is a demonstration of how SIDD properties can be used to estimate the probability that a 100 bp fragment in the E. coli K12 genome contains a promoter. For this purpose we use the sum SIDD parameter Sigma, although similar results may be obtained with the minimum value Gm. This approach can be applied to any completely sequenced bacterial genome, once its SIDD profile has been calculated.
+###end p 43
+###begin p 44
+###xml 7 9 7 9 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4A</xref>
+###xml 49 50 49 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 136 138 132 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 167 169 163 165 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 170 171 166 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 200 201 196 197 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 202 204 198 200 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 205 207 201 203 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 365 367 361 363 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4A</xref>
+###xml 403 404 399 400 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 405 407 401 403 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 408 410 404 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 485 487 481 483 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 488 489 484 485 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 559 572 555 568 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a posteriori </italic>
+###xml 672 674 668 670 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 705 707 701 703 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 708 709 704 705 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 721 722 717 718 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 726 728 722 724 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 729 730 725 726 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 736 737 732 733 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 743 745 739 741 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 746 747 742 743 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+Figure 4A shows, for any value of the threshold (T) of Sigma, the true positive rate for a 100 bp promoter sequence (P) to have the sum D of its SIDD energies satisfy D <T. This gives the probability p(D <T |P) that this sum satisfies the threshold inequality, given that the sequence involved contains a promoter. From the false positive rate, also found from Fig 4A, one can determine the probability p(D <T |~P) that a sequence which is not a promoter (~P) satisfies the inequality D <T. In order to use SIDD for promoter prediction, one must estimate the a posteriori probabilities that a 100 bp region in the genome either is or is not a promoter, given that the sum D of its SIDD energies satisfies D <T. These are p(P| D <T) and p(~P | D <T), respectively. According to Bayes' theorem, these quantities can be obtained by
+###end p 44
+###begin p 45
+
+###end p 45
+###begin p 46
+and 
+###end p 46
+###begin p 47
+respectively.
+###end p 47
+###begin p 48
+###xml 72 80 72 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 188 189 188 189 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 189 191 189 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink">d </italic>
+###xml 189 191 189 191 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>d </italic></sub>
+###xml 214 216 214 216 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 217 219 217 219 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 294 295 294 295 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 295 297 295 297 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p </italic>
+###xml 295 297 295 297 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>p </italic></sub>
+###xml 450 451 450 451 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 452 454 452 454 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 455 456 455 456 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 462 463 462 463 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 72 79 <span type="species:ncbi:562">E. coli</span>
+For the purposes of this calculation we consider 100 bp segments in the E. coli K12 genome, and seek the probabilities that they contain promoters, given their SIDD properties. The number nd of DNA segments having D <T can be calculated directly from the SIDD profile of the genome. The number np of segments that contain promoters is not known, so illustrative calculations can be made using various values for this quantity. Then the probabilities p(D <T) and p(P) can be estimated as the fractions of base pairs in the genome that lie in these two types of regions. These are
+###end p 48
+###begin p 49
+
+###end p 49
+###begin p 50
+and 
+###end p 50
+###begin p 51
+###xml 6 8 6 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+where N is the number of base pairs of the genome. Also,
+###end p 51
+###begin p 52
+###xml 0 1 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 3 4 3 4 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+###xml 12 13 12 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 14 15 14 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink">P</italic>
+p(~P) = 1 - p(P).
+###end p 52
+###begin p 53
+###xml 4 12 4 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 48 50 48 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 238 239 238 239 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 307 308 307 308 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 324 325 324 325 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 4 11 <span type="species:ncbi:562">E. coli</span>
+The E. coli K12 genome analyzed here has length N = 4639221 bp and approximately 4400 annotated genes. Assuming each gene has at least one promoter, and that all promoters for a gene lie in one 100 bp segment, we estimate the probability p(P) that a randomly chosen 100 bp segment contains a promoter to be p(P) = 0.095, so p(~P) = 0.905.
+###end p 53
+###begin p 54
+###xml 38 40 38 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 90 91 90 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 96 98 96 98 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 99 100 99 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 106 107 106 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 113 115 113 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 116 117 116 117 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 146 147 146 147 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 152 154 152 154 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 155 156 155 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 200 201 200 201 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 207 209 207 209 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 210 211 210 211 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T</italic>
+###xml 385 386 385 386 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 387 389 387 389 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 390 392 390 392 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 401 402 401 402 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 403 405 403 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 406 408 406 408 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 540 542 540 542 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4A</xref>
+###xml 583 586 583 586 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T =</italic>
+###xml 624 625 624 625 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 626 628 626 628 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 629 631 629 631 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 705 706 705 706 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 707 709 707 709 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 710 712 710 712 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 792 793 792 793 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 794 796 794 796 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 985 986 981 982 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 987 989 983 985 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 1134 1135 1130 1131 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1302 1303 1294 1295 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1308 1310 1300 1302 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 1385 1386 1377 1378 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1387 1389 1379 1381 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 1471 1472 1463 1464 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 1478 1480 1470 1472 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+Next we need to find threshold values T that give acceptable values for the probabilities p(P | D <T) and p(~P | D <T). One wants the probability p(P | D <T) to be as large as possible, while keeping p(~P | D <T) small. As shown in Eqns 1a and 1b, these probabilities depend on the estimated number of promoter-containing and non-promoter-containing segments, and on the probabilities p(D <T | P) and p(D <T | ~P). Values for the latter probabilities can be found for the case of the summation SIDD parameter from the information in Figure 4A. There one sees that a threshold sum of T =308.5 gives a substantial probability p(D <T | P) that a promoter satisfies the threshold and a very small probability p(D <T | ~P) that a non-promoter does. Using this value one finds from the figure that p(D < 308.5 | P) = 0.236. From the SIDD profile of the whole genome we find there are 1356 regions where the sum Sigma of the SIDD energies is less than 308.5. Thus, from Eqn 2a one finds that p(D < 308.5) = 1356*100/4639221 = 0.029. If we assume as above that there are 4400 promoter-containing regions, one for each gene, then Eqn 2b gives p(P) = 0.095. Substituting into Eqn 1a, we calculate that a 100 bp DNA fragment whose sum Sigma of SIDD energies is less than 308.5 has probability of being a promoter p(P | D < 308.5) = 0.236*0.095/0.029 = 0.773. Similarly, we find in this case that p(D < 308.5 | ~P) = 0.01, so the probability of such a region not being a promoter is p(~P | D < 308.5) = 0.01*0.905/0.029 = 0.312.
+###end p 54
+###begin p 55
+###xml 46 58 46 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 83 85 83 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink">N </italic>
+###xml 222 223 222 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 291 293 291 293 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 320 321 320 321 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 363 364 363 364 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 365 367 365 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 392 393 392 393 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 394 396 394 396 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 568 569 568 569 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 574 576 574 576 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 644 645 644 645 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 651 653 651 653 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D </italic>
+###xml 46 57 <span type="species:ncbi:1423">B. subtilis</span>
+We also performed similar calculations on the B. subtilis genome, which has length N = 4214630 bp, and approximate 4226 genes. Assuming again that each gene has one promoter-containing region, we find for this genome that p(P) = 4226*100/4214630 = 0.1003. When we choose the threshold value T = 316.5, we calculate that p(D < 316.5) = 1575 *100/4214630 = 0.0374. p(D < 316.5 | P) = 0.304 and p(D < 316.5 | ~P) = 0.008. Using these values in Eqns 1a and 1b, we find that the probability of a region being a promoter, given that it satisfies the threshold condition, is p(P | D < 316.5) = 0.815; and the probability of it being a non-promoter is p(~P | D < 316.5) = 0.193.
+###end p 55
+###begin p 56
+###xml 106 114 106 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 122 133 122 133 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 106 113 <span type="species:ncbi:562">E. coli</span>
+###xml 122 133 <span type="species:ncbi:1423">B. subtilis</span>
+It is interesting to notice that the thresholds for the SIDD summation parameter are almost identical for E. coli K12 and B. subtilis. This seems unlikely to be a coincidence since these organisms are in different phyla, and have quite distinct genomic compositions, gene sets and environmental niches.
+###end p 56
+###begin p 57
+###xml 390 398 390 398 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 390 397 <span type="species:ncbi:562">E. coli</span>
+Two points must be borne in mind when interpreting these results, which are intended only to be illustrative. First, the values computed for these probabilities depend on an estimate for the number of promoters in the given genome. Because prokaryotic genes are often arranged into co-transcribing operons, it may not be correct that every gene has its own promoter. However, some genes in E. coli are known to have multiple promoters. And second, not all promoters are strongly destabilized. Because the SIDD method presented here has a small false positive rate, it can reliably find those promoters that are destabilized, but will not find those that are not.
+###end p 57
+###begin title 58
+SIDD and -10 motifs together predict promoter and non-promoter sequences with high accuracy
+###end title 58
+###begin p 59
+###xml 468 469 468 469 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+As was described above, several types of DNA structural parameters, as well as -10 motif scores, have been suggested to differentiate promoters from non-promoter sequences, at least to some degree. One strategy for improving promoter predictions could be to combine together different variables that may not be highly correlated. We have calculated the correlation coefficient for each pair of these attributes over the entire collection of three training sets. Table 2 shows the results of this analysis. SIDD is moderately positively correlated with deformability and low thermostability, and moderately negatively correlated with -10 motif scores. High curvature is seen not to correlate with any other parameters used in this study.
+###end p 59
+###begin p 60
+###xml 105 113 105 113 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 161 163 161 163 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 620 631 616 627 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis</italic>
+###xml 105 112 <span type="species:ncbi:562">E. coli</span>
+###xml 620 631 <span type="species:ncbi:1423">B. subtilis</span>
+We developed a linear classification function for discriminating promoter from non-promoter sequences in E. coli K12 that combines together multiple parameters [25]. (A description of how this was done is presented in the Methods section.) When all these variables were combined together, the resulting classifier achieved an accuracy of more than 82% on our test sets. However, a linear discrimination analysis that only included the SIDD sum parameter Sigma and the -10 motif scores performed almost as well, attaining an accuracy of about 80%. Similar results were obtained when linear classifiers were developed for B. subtilis. (Data not shown.) The small loss of predictive accuracy that results when the other parameters are omitted indicates that, of the parameters examined here, SIDD and -10 motif scores are the two most effective attributes for differentiating promoters from non-promoters.
+###end p 60
+###begin p 61
+###xml 433 435 433 435 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+Sequence-based methods (including the PSSM techniques applied to -10 motif scores that were used here) are known to suffer high false positive rates. The high accuracy achieved by the linear classification functions developed here largely resulted from a dramatic decrease in the false positive rate that occurred when SIDD properties were included. Similar result were found for a eukaryotic promoter prediction program McPromoter [26]. There a combination of sequence information with several physical properties achieved a 30% reduction of false positives, when compared with the sequence model alone.
+###end p 61
+###begin title 62
+Annotating promoter regions in microbial genomes using SIDD, either alone or combined with sequence motifs
+###end title 62
+###begin p 63
+###xml 48 49 48 49 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+###xml 358 360 358 360 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B13">13</xref>
+###xml 994 995 990 991 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 995 996 991 992 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m</italic>
+###xml 995 996 991 992 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m</italic></sub>
+The procedure schematically described in Figure 5 has been developed to annotate promoter regions in sample microbial genomes. Complete genomic sequences of more than 240 prokaryotic and archaeal organisms have been downloaded from the NCBI web site, and their SIDD profiles have been calculated. These SIDD profiles can be accessed through our database at [13]. To annotate the promoter regions in a given genome, our program calculates the sum of the SIDD energies and the minimum energy over a 100 bp window. This window is moved along the genome with an offset of 1 bp, and parameter values are calculated for each position. For those genomes that have enough experimentally characterized promoter sequences, we will additionally build PSSMs for the conserved motifs embedded in these sequences. The sum of the motif scores of the promoter sequences and non-promoter sequences are then calculated using these PSSMs. These scores, together with their correspondent SIDD scores (Sigma and/or Gm), are used as training sets for the linear classification function kernel to predict new promoter regions in the whole genome. Post-processing includes combining overlapping 100 bp potential promoter-containing regions into a single site prediction, and identifying potential transcriptional start sites. For those genomes that have insufficient experimental data to generate a meaningful PSSM, we will use SIDD as a sole predictor for discriminating promoters. Although the promoters predicted in this way may represent only a fraction of all the possible promoter regions in the genome, the present results suggest that they have high probabilities of being true.
+###end p 63
+###begin p 64
+###xml 37 45 37 45 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 282 284 278 280 <italic xmlns:xlink="http://www.w3.org/1999/xlink">T </italic>
+###xml 37 44 <span type="species:ncbi:562">E. coli</span>
+We tested these approaches using the E. coli K12 genome. When SIDD scores were combined with -10 motif scores, 844 out of the 927 document TSSs were found to occur in the predicted 5272 potential promoter regions. When SIDD was used as a sole predictor and a threshold for Sigma of T = 250 was used (this is a higher level of stringency than that used in the above Bayesian estimation), 340 documented TSSs were found in the predicted 1145 promoter regions. While the number of potential promoter regions was much smaller when SIDD was the sole predictor, the fraction of the predicted sites with experimentally documented TSSs doubled. Using either predictor, several instances were observed where multiple TSSs were located in a single predicted region. We expect the identification of these potential regulatory regions could enable further bioinformatics and experimental studies.
+###end p 64
+###begin title 65
+Conclusion
+###end title 65
+###begin p 66
+###xml 497 505 497 505 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 497 504 <span type="species:ncbi:562">E. coli</span>
+In this report we show that the propensity to undergo stress-induced duplex destabilization (SIDD) is a distinctive structural attribute of prokaryotic promoter sequences. SIDD is not directly related to primary sequence alone, nor equivalent to the thermostability of the DNA double helix. Comparisons with other important DNA structural properties, and with conserved -10 motifs, show that SIDD is the best discriminator between promoter and non-promoter sequences in test sets derived from the E. coli K12 genome.
+###end p 66
+###begin p 67
+###xml 433 441 433 441 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 452 469 452 469 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis</italic>
+###xml 433 440 <span type="species:ncbi:562">E. coli</span>
+###xml 452 469 <span type="species:ncbi:1423">Bacillus subtilis</span>
+We have developed methods to identify promoter sequences in prokaryotic genomes that use SIDD either as a sole predictor or in combination with other DNA structural and sequence properties. The inclusion of SIDD properties is shown to greatly reduce the false positive prediction rates of predictions. So, for any given false positive rate, the true positive rate is higher when SIDD is included than when it is not. When applied to E. coli K12 and to Bacillus subtilis, the two experimentally best annotated bacterial genomes, our methods achieved comparably high levels of accuracy for both, and outperformed other published promoter prediction methods.
+###end p 67
+###begin p 68
+Because these organisms are from different phyla and their genomes have different nucleotide compositions, we suggest that this approach might be useful for other prokaryotes, for which experimental information may not be available. In all the microbial genomes we have investigated to date, strong SIDD sites have been found to be preferentially located in those intergenic regions that are known or inferred to contain promoters. The SIDD-based methods presented here have been implemented in a preliminary strategy for annotating promoter regions in complete microbial genomes. Although these methods cannot predict all the promoter-containing regions in a genome, they do find large sets of potential regions that have high probabilities of being true positives. These lists of predicted promoter-containing sites can be used as targets for experimental verification or further bioinformatic investigation. This approach could be especially valuable for those genomes about which there is limited experimental data.
+###end p 68
+###begin title 69
+Methods
+###end title 69
+###begin title 70
+Sequences
+###end title 70
+###begin p 71
+###xml 4 12 4 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 218 220 218 220 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B14">14</xref>
+###xml 227 245 227 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis </italic>
+###xml 438 440 438 440 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+###xml 702 710 702 710 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 897 909 897 909 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 4 11 <span type="species:ncbi:562">E. coli</span>
+###xml 227 244 <span type="species:ncbi:1423">Bacillus subtilis</span>
+###xml 702 709 <span type="species:ncbi:562">E. coli</span>
+###xml 897 908 <span type="species:ncbi:1423">B. subtilis</span>
+The E. coli K12 genome analyzed in this study is version M54, containing 4639221 base pairs. The locations of 927 experimentally characterized transcriptional start sites (TSS) were obtained from the Regulon Database [14]. The Bacillus subtilis genome analyzed here is the version submitted on 29 July, 2004, and containing 4214630 base pairs. Positions of 480 experimentally characterized TSSs in this organism were obtained from DBTBS [27]. In our analysis, the promoter regions were represented by the 100 base pair DNA fragments between positions -80 bp and +20 bp relative to a TSS. (This is 100 base pairs because in this scheme no base pair is given the number 0.) The promoter training set for E. coli K12 consisted of promoter regions of this size taken from 500 randomly chosen documented TSSs. The rest of the 427 promoter regions were used as a test set. The promoter training set for B. subtilis consisted of promoter regions from 250 randomly chosen documented TSSs. The rest of the 230 known TSSs were used to construct a promoter test set. The set of coding regions were selected as 100 base pair DNA fragments starting from +300 bp relative to (i.e. downstream from) the TSSs. The CON regions were chosen as 100 base pair DNA fragments centered in the middle of intergenic regions separating convergently transcribing ORFs. The coding and CON data sets each consisted of 500 randomly chosen regions of these types.
+###end p 71
+###begin title 72
+Curvature calculations
+###end title 72
+###begin p 73
+###xml 114 116 114 116 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+The predicted values of DNA curvature were calculated for complete genomic sequences using the CURVATURE program [28], which creates a curvature map of the entire genome. For each base pair the curvature value (in curvature units, cu) corresponds to the curvature of the calculated path of a 121 bp segment centered at that base pair.
+###end p 73
+###begin title 74
+Protein-induced deformability calculations
+###end title 74
+###begin p 75
+###xml 148 150 148 150 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+Values of the local protein-induced deformability were calculated complete genomic sequences using the dinucleotide model developed by Olson et al [29]. For each base pair in the genome, the deformability value is calculated as the average of the conformational volumes covered by its two neighboring DNA dimers in protein-DNA complexes.
+###end p 75
+###begin title 76
+Thermostability calculations
+###end title 76
+###begin p 77
+###xml 162 164 162 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+The thermodynamic stability profiles of complete genomic sequences were calculated using the nearest-neighbor (NN) thermodynamics presented by SantaLucia et al. [30]. For each base pair in the genome, the value for its thermostability is calculated as the average of the opening energies for the two dinucleotides that contain it.
+###end p 77
+###begin title 78
+SIDD profile calculations
+###end title 78
+###begin p 79
+###xml 51 52 51 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 53 54 53 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 138 140 138 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+###xml 167 173 167 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#963; </italic>
+###xml 226 227 222 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 228 229 224 225 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 271 273 267 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 395 397 391 393 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+The predicted values of the destabilization energy G(x) were calculated for complete genomic sequences using the method of Benham and Bi [11]. A superhelix density of sigma = -0.06 was assumed. The destabilization free energy G(x) associated to the base pair at position x is the difference between the ensemble average free energy and the average free energy of those states in which base pair x is open. So it approximately corresponds to the incremental free energy needed to guarantee that this base pair is always open under the assumed superhelicity.
+###end p 79
+###begin title 80
+DNA sequence conservation and position specific score matrix (PSSM) calculation
+###end title 80
+###begin p 81
+###xml 113 115 113 115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B15">15</xref>
+###xml 264 265 264 265 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+The conservation of multiple aligned sequences can be evaluated using the Shannon entropy of information theory [15]. Sequence motifs or conserved sequences are here evaluated using position-specific scoring matrices (PSSMs) calculated using the method of Durbin [3]. To calculate the sum and the number of high-scoring motifs in the training sequences, we used a threshold equal to the mean (-0.695) plus one standard deviation (1.214) of motif scores sampled in the randomly shuffled genomic sequence. About 55.2% of the documented -10 motifs in the promoter training set have their scores higher than this threshold, as compared with about 15.5% of the random sequences. Here, we consider the high-scoring motifs to be those whose scores are higher than the above threshold.
+###end p 81
+###begin title 82
+Probability density estimation and statistical tests
+###end title 82
+###begin p 83
+###xml 414 416 414 416 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+The distributions of DNA structural properties or -10 motif scores in promoter regions, coding regions and CON regions were represented by their probability densities. The density for each property and type of region was evaluated using a normal kernel smoother at 100 equally spaced points covering the range of the data. The comparison of two distributions was made using the Kolmogorov-Smirnov two-sample test [22]. The null hypothesis for this test is that the two compared datasets are from the same continuous distribution.
+###end p 83
+###begin title 84
+Linear discrimination analysis
+###end title 84
+###begin p 85
+###xml 213 215 213 215 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 580 582 580 582 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w </italic>
+###xml 584 585 584 585 <bold xmlns:xlink="http://www.w3.org/1999/xlink">S</bold>
+###xml 585 588 585 588 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-1 </sup>
+###xml 590 592 590 591 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 592 594 591 593 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 596 598 595 596 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 598 599 596 597 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 607 609 605 607 <bold xmlns:xlink="http://www.w3.org/1999/xlink">S </bold>
+###xml 664 666 662 663 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 666 668 663 665 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 672 674 669 670 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 674 676 670 672 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0 </sub>
+###xml 784 786 780 782 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w </italic>
+###xml 911 913 907 909 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 990 991 986 987 <sup xmlns:xlink="http://www.w3.org/1999/xlink">T</sup>
+###xml 1112 1114 1106 1107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 1114 1116 1107 1109 <sub xmlns:xlink="http://www.w3.org/1999/xlink">1 </sub>
+###xml 1118 1120 1111 1112 <italic xmlns:xlink="http://www.w3.org/1999/xlink">&#956;</italic>
+###xml 1120 1121 1112 1113 <sub xmlns:xlink="http://www.w3.org/1999/xlink">0</sub>
+###xml 1122 1123 1114 1115 <sup xmlns:xlink="http://www.w3.org/1999/xlink">T</sup>
+We combined DNA structural properties (destabilization free energy, curvature, or thermostability) with -10 sequence motif scores into a linear discrimination model according to the method of Johnson and Wichern [25]. Because promoter identification is a two-class classification, it is implemented using Fisher linear discriminant analysis. This procedure finds a linear combination of the measures that provides maximum discrimination, in our case between promoter and non-promoters. It assumes that the training sets are normally distributed. To generate a score, we first let w = S-1 *(mu1 - mu0). Here S is the pooled covariance matrix of the parameters, and mu1 and mu0 are the sample mean vectors of parameters for the positive and negative data sets, respectively. The vector w maximizes the ratio of inter-class variation of score to intra-class variation of score. The scores of a data point (vector) x associated to a member of a test set is calculated as the dot product D = x.wT. A data point is classified into class 1 if its score is D = c, or into class 0 if its score is D >/= c; where c = w * (mu1 - mu0)T/2.
+###end p 85
+###begin p 86
+All the calculation relative to statistical tests and linear discrimination analysis were carried out using MATLAB 6.0.
+###end p 86
+###begin p 87
+###xml 98 101 98 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TP </italic>
+###xml 119 122 119 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FP </italic>
+###xml 141 144 141 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TN </italic>
+###xml 165 168 165 168 <italic xmlns:xlink="http://www.w3.org/1999/xlink">FN </italic>
+The true positive rate, false positive rate, accuracy and precision are defined as follows (where TP = true positives, FP = false positives, TN = true negatives and FN = false negatives):
+###end p 87
+###begin p 88
+True positive rate = ; False positive rate = ; Accuracy = ;
+###end p 88
+###begin p 89
+Precision = . Sensitivity = true positive rate, and specificity = 1 - (false positive rate)
+###end p 89
+###begin title 90
+Authors' contributions
+###end title 90
+###begin p 91
+HW conceived and designed most of the strategies used here, with assistance from CJB. HW performed all the calculations and data mining. The paper was jointly written
+###end p 91
+###begin title 92
+Supplementary Material
+###end title 92
+###begin title 93
+Additional File 1
+###end title 93
+###begin p 94
+###xml 12 29 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Analysis of Bacillus subtilis. Analysis of the SIDD properties in the promoter regions of B. sublilis' genome
+###end p 94
+###begin p 95
+Click here for file
+###end p 95
+###begin title 96
+Acknowledgements
+###end title 96
+###begin p 97
+The work reported here was supported in part by grants to CJB from the National Science Foundation (DBI 0416764) and the National Institutes of Health (RO1-GM68903)
+###end p 97
+###begin article-title 98
+How to interpret an anonymous bacterial genome: machine learning approach to gene identification
+###end article-title 98
+###begin article-title 99
+Improved microbial gene identification with GLIMMER
+###end article-title 99
+###begin article-title 100
+###xml 12 19 <span type="species:ncbi:562">E. coli</span>
+Analysis of E. coli promoter sequences
+###end article-title 100
+###begin article-title 101
+###xml 28 44 <span type="species:ncbi:562">Escherichia coli</span>
+Compilation and analysis of Escherichia coli promoter DNA sequences
+###end article-title 101
+###begin article-title 102
+Regulatory sequences involved in the promotion and termination of RNA transcription
+###end article-title 102
+###begin article-title 103
+Protein-nucleic acid interactions during open complex formation investigated by systematic alteration of the protein and DNA binding partners
+###end article-title 103
+###begin article-title 104
+###xml 22 38 <span type="species:ncbi:562">Escherichia coli</span>
+Sigma 70 promoters in Escherichia coli: specific transcription in dense regions of overlapping promoter-like signals
+###end article-title 104
+###begin article-title 105
+###xml 0 16 <span type="species:ncbi:562">Escherichia coli</span>
+Escherichia coli promoter sequences: analysis and prediction
+###end article-title 105
+###begin article-title 106
+Sites of predicted stress-induced DNA duplex destabilization occur preferentially at regulatory loci
+###end article-title 106
+###begin article-title 107
+The analysis of stress-induced duplex destabilization in long genomic DNA sequences
+###end article-title 107
+###begin article-title 108
+###xml 56 63 <span type="species:ncbi:562">E. coli</span>
+Stress-induced DNA duplex destabilization (SIDD) in the E. coli genome: SIDD sites are closely associated with promoters
+###end article-title 108
+###begin article-title 109
+SIDDBASE: A Database Containing the Stress-Induced DNA Duplex Destabilization (SIDD) Profiles of Complete Microbial Genomes
+###end article-title 109
+###begin article-title 110
+###xml 98 119 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+RegulonDB (version 4.0): transcriptional regulation, operon organization and growth conditions in Escherichia coli K-12
+###end article-title 110
+###begin article-title 111
+A novel method for prokaryotic promoter prediction based on DNA stability
+###end article-title 111
+###begin article-title 112
+Activation of gene expression by a novel DNA structural transmission mechanism that requires supercoiling-induced DNA duplex destabilization in an upstream activating sequence
+###end article-title 112
+###begin article-title 113
+Activation of transcription initiation from a stable RNA promoter by a Fis protein-mediated DNA structural transmission mechanism
+###end article-title 113
+###begin article-title 114
+Curvature distribution in prokaryotic genomes
+###end article-title 114
+###begin article-title 115
+###xml 27 43 <span type="species:ncbi:562">Escherichia coli</span>
+A DNA structural atlas for Escherichia coli
+###end article-title 115
+###begin article-title 116
+###xml 47 63 <span type="species:ncbi:562">Escherichia coli</span>
+Determination of common structural features in Escherichia coli promoters by computer analysis
+###end article-title 116
+###begin article-title 117
+###xml 73 96 <span type="species:ncbi:7227">Drosophila melanogaster</span>
+Application of a time-delay neural network to promoter annotation in the Drosophila melanogaster genome
+###end article-title 117
+###begin article-title 118
+SIDDBASE: a database containing the stress-induced DNA duplex destabilization (SIDD) profiles of complete microbial genomes
+###end article-title 118
+###begin article-title 119
+Joint modeling of DNA sequence and physical properties to improve eukaryotic promoter recognition
+###end article-title 119
+###begin article-title 120
+###xml 49 66 <span type="species:ncbi:1423">Bacillus subtilis</span>
+DBTBS: database of transcriptional regulation in Bacillus subtilis and its contribution to comparative genomics
+###end article-title 120
+###begin article-title 121
+CURVATURE: software for the analysis of curved DNA
+###end article-title 121
+###begin article-title 122
+DNA sequence-dependent deformability deduced from protein-DNA crystal complexes
+###end article-title 122
+###begin article-title 123
+A unified view of polymer, dumbbell, and oligonucleotide DNA nearest-neighbor thermodynamics
+###end article-title 123
+###begin title 124
+Figures and Tables
+###end title 124
+###begin p 125
+###xml 24 25 24 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 26 27 26 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 114 122 114 122 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 416 424 416 424 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 114 121 <span type="species:ncbi:562">E. coli</span>
+###xml 416 423 <span type="species:ncbi:562">E. coli</span>
+A. The average value of G(x) at each position in each of the four sets described in the text. Promoter regions in E. coli K12 are generally more destabilized than are either coding or CON regions. The most destabilized site is at position -49 relative to the transcription start site (TSS). B. The Shannon entropy is calculated in promoter-containing regions (blue) and in non- promoter-containing regions (red) for E. coli K12. The -10 regions show a slight increase of sequence conservation relative to other locations.
+###end p 125
+###begin p 126
+###xml 342 343 342 343 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 344 345 344 345 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 397 398 397 398 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 398 400 398 400 <italic xmlns:xlink="http://www.w3.org/1999/xlink">m </italic>
+###xml 398 400 398 400 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>m </italic></sub>
+###xml 403 404 403 404 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 405 406 405 406 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+The probability distributions of destabilization (SIDD) properties are shown for 100 bp long promoter, coding, and CON regions. We also partition the promoters from all known TSSs into those that are intergenic and those that overlap coding regions. (A) The SIDD parameter here is the sum over all 100 positions of the destabilization energy G(x); (B) The parameter used here is the minimum value Gm of G(x). Because the numbers of intergenic and coding promoters are different, these curves are plotted as probability density functions. In consequence, the area under each curve sums to 1, a choice which facilitates comparisons between different sized sets.
+###end p 126
+###begin p 127
+Probability distributions of the sums of the scores for (A) curvature, (B) deformability, (C) thermostability, and (D) the sum of all -10 motif scores found in promoter regions, coding regions and CON regions. These are plotted the same way as was used in Figure 2.
+###end p 127
+###begin p 128
+###xml 112 120 112 120 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 190 191 190 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink">G</italic>
+###xml 192 193 192 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x</italic>
+###xml 482 490 482 490 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 587 595 587 595 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 606 623 606 623 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis</italic>
+###xml 112 119 <span type="species:ncbi:562">E. coli</span>
+###xml 482 489 <span type="species:ncbi:562">E. coli</span>
+###xml 587 594 <span type="species:ncbi:562">E. coli</span>
+###xml 606 623 <span type="species:ncbi:1423">Bacillus subtilis</span>
+(A) The sensitivity (true positive rate) and specificity (1 - false positive rate) achieved in classifying 1000 E. coli K12 sequences into promoters and non-promoters, based on their sum of G(x) parameters. The graph shows how the sensitivity and specificity depend on the threshold for regarding a sequence as a promoter. Of the 1000 sequences analyzed here, half are promoters and half are not. (B) ROC curves comparing the performance of SIDD vs NNPP at identifying promoters in E. coli K12. (C) The performance of our SIDD-based promoter discriminator is comparable for sequences in E. coli K12 and in Bacillus subtilis.
+###end p 128
+###begin p 129
+Schematic representation of a promoter region annotation strategy for microbial genomes.
+###end p 129
+###begin p 130
+SIDD is the most distinct variable that differentiates promoter from non-promoter sequences
+###end p 130
+###begin p 131
+Each value in the table is the probability that the two distributions are the same, as found using the Kolmogorov-Smirnov two sample test.
+###end p 131
+###begin p 132
+a, sum of the values of the variables in the sequences; b, minimum value of the variable in the sequences; c, maximum value of the variable in the sequences; d, sum of the -10 motif scores of the sequences
+###end p 132
+###begin p 133
+Correlation coefficients between structural parameters, -10 motif scores in promoter sequences
+###end p 133
+

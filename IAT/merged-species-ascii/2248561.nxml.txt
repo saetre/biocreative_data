@@ -1,0 +1,1286 @@
+###begin article-title 0
+Evaluation of phylogenetic footprint discovery for predicting bacterial cis-regulatory elements and revealing their evolution
+###end article-title 0
+###begin p 1
+This is an Open Access article distributed under the terms of the Creative Commons Attribution License (), which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited.
+###end p 1
+###begin title 2
+Background
+###end title 2
+###begin p 3
+The detection of conserved motifs in promoters of orthologous genes (phylogenetic footprints) has become a common strategy to predict cis-acting regulatory elements. Several software tools are routinely used to raise hypotheses about regulation. However, these tools are generally used as black boxes, with default parameters. A systematic evaluation of optimal parameters for a footprint discovery strategy can bring a sizeable improvement to the predictions.
+###end p 3
+###begin title 4
+Results
+###end title 4
+###begin p 5
+###xml 323 344 323 344 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli K12 </italic>
+###xml 323 343 <span type="species:ncbi:83333">Escherichia coli K12</span>
+We evaluate the performances of a footprint discovery approach based on the detection of over-represented spaced motifs. This method is particularly suitable for (but not restricted to) Bacteria, since such motifs are typically bound by factors containing a Helix-Turn-Helix domain. We evaluated footprint discovery in 368 Escherichia coli K12 genes with annotated sites, under 40 different combinations of parameters (taxonomical level, background model, organism-specific filtering, operon inference). Motifs are assessed both at the levels of correctness and significance. We further report a detailed analysis of 181 bacterial orthologs of the LexA repressor. Distinct motifs are detected at various taxonomical levels, including the 7 previously characterized taxon-specific motifs. In addition, we highlight a significantly stronger conservation of half-motifs in Actinobacteria, relative to Firmicutes, suggesting an intermediate state in specificity switching between the two Gram-positive phyla, and thereby revealing the on-going evolution of LexA auto-regulation.
+###end p 5
+###begin title 6
+Conclusion
+###end title 6
+###begin p 7
+###xml 74 82 74 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 74 81 <span type="species:ncbi:562">E. coli</span>
+The footprint discovery method proposed here shows excellent results with E. coli and can readily be extended to predict cis-acting regulatory signals and propose testable hypotheses in bacterial genomes for which nothing is known about regulation.
+###end p 7
+###begin title 8
+Background
+###end title 8
+###begin p 9
+###xml 740 741 740 741 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 742 744 742 744 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+A major challenge of current genomics is to decipher the regulation of the expression for all the genes of a genome. Transcriptional regulation is mediated by interactions between transcription factors (TF) and specific cis-acting elements. The identification of putative transcription factor binding sites (TFBS) is far from trivial, given their short size (typically 6 to 25 bp), and the low level of information in the signal (typically restricted to 5-10 informative nucleotides). For this reason, specific algorithms have been developed to detect cis-acting elements in non-coding sequences. Several pattern discovery algorithms were developed to discover putative regulatory motifs in sets of co-regulated genes from the same genome [1-11].
+###end p 9
+###begin p 10
+###xml 362 388 362 388 <italic xmlns:xlink="http://www.w3.org/1999/xlink">phylogenetic footprinting </italic>
+###xml 669 673 669 673 <italic xmlns:xlink="http://www.w3.org/1999/xlink">rbc </italic>
+###xml 691 693 691 693 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B12">12</xref>
+###xml 694 696 694 696 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B16">16</xref>
+###xml 746 748 746 748 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 749 751 749 751 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 772 774 772 774 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+The ever-increasing number of sequenced genomes opens the possibility to apply comparative genomics in order to analyze taxonomical conservation and divergence between cis-acting elements. This is particularly true for Bacteria, for which the NCBI distributes 548 complete genomes and reports 840 on-going sequencing projects (October 2007). The approach called phylogenetic footprinting relies on the hypothesis that, due to selective pressure, regulatory elements tend to evolve at a slower rate than surrounding non-coding sequences. This approach has been applied to detect conserved elements in the regulatory regions of selected mammalian genes, such as globins, rbc genes, TnF-alpha [12-16], and in completely sequenced bacterial genomes [17-19] or fungal genomes [20].
+###end p 10
+###begin p 11
+###xml 83 85 83 85 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 141 143 141 143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B21">21</xref>
+###xml 153 155 153 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B22">22</xref>
+###xml 165 167 165 167 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B23">23</xref>
+###xml 184 186 184 186 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B24">24</xref>
+###xml 261 263 261 263 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B25">25</xref>
+###xml 286 294 286 294 <italic xmlns:xlink="http://www.w3.org/1999/xlink">DiAlign </italic>
+###xml 318 324 318 324 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gibbs </italic>
+###xml 354 356 354 356 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 591 605 591 605 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces </italic>
+###xml 606 608 606 608 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B20">20</xref>
+###xml 609 611 609 611 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 659 661 659 661 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 724 726 724 726 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+A first essential parameter is the choice of the algorithm. Kellis and co-workers [20] used ClustalW, a multiple global alignment algorithm [21]. PhyME [22], EMnEM [23] and orthoMEME [24] are based on Expectation-Maximization, PhyloCon uses a greedy algorithm [25], PhyloGibbs combines DiAlign for local alignment and gibbs sampling for motif discovery [26]. Another crucial choice is the taxonomical level at which the analysis is led. The initial articles were restricted to the few genomes available at that time, and encompassed various levels of taxonomies: 4 or 5 genomes of the genus Saccharomyces [20,26], 9 genomes in the class Gamma-proteobacteria [18], or 17 genomes distributed over the whole bacterial kingdom [17].
+###end p 11
+###begin p 12
+###xml 272 284 272 284 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Footprinter </italic>
+###xml 285 287 285 287 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B27">27</xref>
+With larger numbers of genomes, one can even address the problem in a more general way by comparing motifs discovered at various taxonomical levels, in order to detect not only conservation but also divergence between regulatory elements. This functionality is offered by Footprinter [27], which takes as input a set of upstream sequences and a corresponding taxonomic tree, and searches for conserved elements in each branch of the tree.
+###end p 12
+###begin p 13
+###xml 135 136 135 136 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+The choice of optimal background models is also a critical issue, and exerts a strong influence on the relevance of discovered motifs [7]. Background models are generally defined in an organism-specific way, and the divergence of promoter composition across taxa opens the question about the definition of optimal taxon-wide background models.
+###end p 13
+###begin p 14
+###xml 405 407 405 407 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B18">18</xref>
+###xml 478 494 478 494 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 631 633 631 633 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B28">28</xref>
+###xml 648 650 648 650 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B29">29</xref>
+###xml 699 701 699 701 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 722 736 722 736 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Saccharomyces </italic>
+###xml 478 494 <span type="species:ncbi:562">Escherichia coli</span>
+Despite the wide variety of approaches used to detect phylogenetic footprints, not very much has been done to evaluate their optimal conditions of utilization. In most publications, the quality of the predictions is illustrated on the basis of a few selected transcription factors (between 3 and 10). To our knowledge, a systematic evaluation has been performed in a very few cases. McCue and co-workers [18] evaluated their approach on a complete collection of known motifs in Escherichia coli. Evolutionary models, generated by simulating mutations in non-coding sequences, have been used to assess the performances of pairwise [28] or multiple [29] alignment programs. More recently, PhyloGibbs [26] was evaluated on 5 Saccharomyces species with 200 annotated TFs, and compared to 6 other algorithms (EMnEM, PhyME, WGibbs and MEME).
+###end p 14
+###begin p 15
+Several questions remain open. What is the optimal taxonomical level to detect conserved elements? How to deal with the redundancy between promoters of very close species? How to calibrate taxon-wide background models? Which fraction of existing motifs can we hope to detect (sensitivity)? Which fraction of the discovered motifs can we trust as reliable (predictive value)? How can we select score thresholds to tune up the tradeoff between sensitivity and predictive value?
+###end p 15
+###begin p 16
+###xml 94 107 94 107 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis</italic>
+###xml 252 253 252 253 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 254 256 254 256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 510 512 510 512 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B31">31</xref>
+###xml 548 553 548 553 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad </italic>
+###xml 668 682 668 682 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+###xml 865 879 865 879 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+We address all these questions by evaluating the capability of a pattern discovery algorithm (dyad-analysis) to predict cis-acting elements in bacterial promoters. This algorithm is based on the statistical detection of over-represented spaced motifs [9,30], and is particularly well suited for the detection of cis-regulatory motifs in bacterial promoters, since most bacterial transcriptions factors belong to the Helix-Turn-Helix (HTH) family. HTH proteins typically form dimers that bind to spaced motifs [31]. In this context, we use the term dyad to denote a pair of trinucleotides separated by a spacing of fixed size but variable content. Another advantage of dyad-analysis is that it is based on a significance test, which returns an estimated E-value for each motif, thereby permitting to control the rate of false positives. A third important feature of dyad-analysis is that it supports a variety of background models to estimate the prior probability of each dyad.
+###end p 16
+###begin p 17
+###xml 172 174 172 174 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B32">32</xref>
+###xml 238 246 238 246 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 276 278 276 278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 238 245 <span type="species:ncbi:562">E. coli</span>
+We first illustrate the approach with a well-characterized case, the auto-regulation of the transcription factor LexA at a single taxonomical level (Gamma-proteobacteria) [32]. We then present a systematic evaluation of our method on 368 E. coli genes annotated in RegulonDB [33]. Discovered motifs are evaluated at two levels: correctness and statistical significance. The correctness is estimated by comparing discovered motifs to those previously annotated. The evaluation of significance is based on a comparison between motifs discovered in promoters of orthologous genes (putative footprints), and those discovered in random selections of promoters (spurious motifs). In the last section, we further illustrate the potential interest of our approach by performing a detailed analysis of the auto-regulation of the transcription factor LexA across the whole bacterial taxonomy. Several distinct motifs are detected, each being characteristic of a particular taxonomic class. The correctness of the discovered motifs is confirmed by previously published experiments.
+###end p 17
+###begin title 18
+Results and discussion
+###end title 18
+###begin title 19
+Discovering the LexA auto-regulation in Gamma-proteobacteria
+###end title 19
+###begin p 20
+###xml 54 58 54 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lexA</italic>
+###xml 151 153 151 153 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B34">34</xref>
+###xml 160 167 160 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 293 297 293 297 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lexA</italic>
+###xml 300 302 300 302 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B35">35</xref>
+###xml 303 305 303 305 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 160 167 <span type="species:ncbi:562">E. coli</span>
+We will illustrate our method by focusing on the gene lexA, which codes for the LexA repressor, involved in the SOS response to DNA damage (review in [34]). In E. coli, the LexA protein regulates its own production by recognizing specific binding sites in the upstream region of its own gene (lexA) [35,36].
+###end p 20
+###begin p 21
+###xml 299 307 299 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 308 310 308 310 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B37">37</xref>
+###xml 311 313 311 313 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 319 331 319 331 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 332 334 332 334 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B39">39</xref>
+###xml 343 344 343 344 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T1">1</xref>
+###xml 449 453 449 453 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lexA</italic>
+###xml 613 618 613 618 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lexA </italic>
+###xml 660 661 660 661 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 853 854 853 854 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T2">2</xref>
+###xml 882 886 882 886 <bold xmlns:xlink="http://www.w3.org/1999/xlink">CTGT</bold>
+###xml 894 898 894 898 <bold xmlns:xlink="http://www.w3.org/1999/xlink">ACAG</bold>
+###xml 978 979 978 979 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 1013 1015 1013 1015 <sub xmlns:xlink="http://www.w3.org/1999/xlink">10</sub>
+###xml 1085 1087 1085 1087 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B36">36</xref>
+###xml 1088 1090 1088 1090 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 1091 1093 1091 1093 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B41">41</xref>
+###xml 1163 1165 1163 1165 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B42">42</xref>
+###xml 299 306 <span type="species:ncbi:562">E. coli</span>
+###xml 319 330 <span type="species:ncbi:1423">B. subtilis</span>
+We identified 181 putative orthologs of LexA in 286 bacterial genomes, and collected upstream non-coding sequences up to the next gene, with a maximal length of 400 bp. The choice of this limit was based on statistical analyses of the TFBS positions in two phylogenetically distant model organisms: E. coli [37,38] and B. subtilis [39]. Table 1 shows the most significant dyads detected in the 53 promoters of the Gamma-proteobacterial orthologs of lexA. Among the 38,615 distinct dyads found in these sequences, 184 are significantly over-represented, among which 122 show a perfect match with the two annotated lexA binding sites. On the feature map (Figure 1), these dyads appear aggregated in clumps, thereby revealing different fragments of a same motif. Indeed, the majority of the significant dyads can be assembled to form a larger motif (Table 2), whose strict consensus, ACTGTATATATATACAGT, corresponds to the LexA consensus (matching nucleotides are in bold) (Figure 2). The most significant dyad, CTGn10CAG, corresponds to the most conserved nucleotides of this consensus [36,40,41], and to the interface between the transcription factor and the DNA [42]. This example illustrates the main keys for interpreting the result of dyad-analysis: a motif is generally detected as a collection of mutually overlapping dyads, which can be assembled to form an extended consensus. The most significant dyads of the collection generally correspond to nucleotides entering in direct contact with the transcription factor.
+###end p 21
+###begin p 22
+###xml 52 57 52 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lexA </italic>
+###xml 0 90 0 90 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Feature-map of the dyads detected as significant in <italic>lexA </italic>promoters of Gamma-proteobacteria</bold>
+Feature-map of the dyads detected as significant in lexA promoters of Gamma-proteobacteria. Each line represents one upstream sequence and discovered motifs are displayed on the feature-map as colored boxes with a height proportional to the significance score. The maps displays all dyads with a significance >= 2.
+###end p 22
+###begin p 23
+###xml 0 78 0 78 <bold xmlns:xlink="http://www.w3.org/1999/xlink">LexA binding motifs experimentally characterized in different taxonomic groups</bold>
+###xml 339 347 339 347 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 339 346 <span type="species:ncbi:562">E. coli</span>
+LexA binding motifs experimentally characterized in different taxonomic groups. Gamma-proteobacteria [36, 74, 75]; Xanthomonadales [46]; Alpha-proteobacteria [76, 41]; Delta-proteobacteria [77]; Cyanobacteria [78]; Gram-positives [48, 79, 80]. Sequence logos were generated with Weblogo [81] from the alignment of the annotated sites. The E. coli sequence logo was obtained from annotated sites in RegulonDB [82, 43].
+###end p 23
+###begin p 24
+###xml 90 94 90 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lexA</italic>
+Most significant dyads detected in promoters of the 53 Gamma-proteobacterial orthologs of lexA.
+###end p 24
+###begin p 25
+###xml 46 57 46 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sig &#8805; 10 </italic>
+The table only displays the 20 dyads having a sig >/= 10 using the TAXFREQ background model. Column content: (1) dyad; (2) dyad identifier (the dyad + its reverse complement); (3) observed number of occurrences (obs_occ); (4) expected frequency (exp_freq); (5) expected number of occurrences (exp_occ); (6) P-values (occ_P), (7) E-value (occ_E), significance (occ_sig), rank.
+###end p 25
+###begin p 26
+Assembly of the patterns discovered in Gamma-proteobacteria.
+###end p 26
+###begin p 27
+###xml 20 30 20 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sig &#8805; 10</italic>
+###xml 80 82 78 80 <sub xmlns:xlink="http://www.w3.org/1999/xlink">10</sub>
+The selected dyads (sig >/= 10) can be aligned on the most significant one (CTGn10CAG). The "best" consensus of the alignment, obtained by retaining the highest scoring letter at each position, is ACTGTATATATATACAGT.
+###end p 27
+###begin title 28
+Systematic evaluation of the approach
+###end title 28
+###begin p 29
+###xml 178 180 178 180 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+###xml 262 273 262 273 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli K12</italic>
+###xml 341 348 341 348 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 262 269 <span type="species:ncbi:562">E. coli</span>
+###xml 341 348 <span type="species:ncbi:562">E. coli</span>
+In order to estimate the general performances of the approach, we performed a systematic analysis of the 368 protein-coding genes having annotated TF binding sites in RegulonDB [43], and for which an identifier was found in the Genbank/NCBI genome of the strain E. coli K12. This analysis was led for all the ancestral taxonomical levels of E. coli: Escherichia (genus), Enterobacteriales (order), Gamma-proteobacteria (class), Proteobacteria (phylum), Bacteria (superkingdom), by increasing order of phylogenetic distance.
+###end p 29
+###begin title 30
+Impact of the parametric choices: dyad filtering, background model, operon inference, and taxonomical level
+###end title 30
+###begin p 31
+###xml 270 281 270 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli K12</italic>
+###xml 270 277 <span type="species:ncbi:562">E. coli</span>
+Footprint detection involves several crucial parametric choices. A first option, called "dyad filtering", was to consider either the dyads found in all the promoters of the orthologs of the gene of interest, or only those found in the promoter of the reference species (E. coli K12). A second option was to use either a gene-specific (MONAD) or a taxon-wide (TAXFREQ) background model. A third option was to collect promoter sequences either directly upstream of each gene, or to infer operons and to retrieve the promoter of their leader gene. A fourth option is the choice of the taxonomical level at which orthologs are collected. In total, there are 40 possible combinations of these 4 parameters. In this section, we present a systematic evaluation of their impact on the accuracy of the predictions.
+###end p 31
+###begin title 32
+Gene-per-gene comparison
+###end title 32
+###begin p 33
+###xml 184 191 184 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 369 381 369 381 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sensitivity </italic>
+###xml 382 384 382 384 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Sn</italic>
+###xml 481 507 481 507 <italic xmlns:xlink="http://www.w3.org/1999/xlink">positive predictive value </italic>
+###xml 508 511 508 511 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PPV</italic>
+###xml 705 710 705 710 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lexA </italic>
+###xml 821 836 821 836 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Sn = 2/2 = 100%</italic>
+###xml 947 968 947 968 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PPV = 122/184 = 66.3%</italic>
+###xml 184 191 <span type="species:ncbi:562">E. coli</span>
+###xml 508 511 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 627 630 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 947 950 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+The correctness of discovered motifs was assessed by a gene-per-gene comparison between significant dyads and experimentally characterized binding sites (as annotated in RegulonDB for E. coli). A dyad is considered as true positive if it perfectly matches at least one of the annotated sites for the considered gene. For a given pattern discovery result, we define the sensitivity (Sn) as the fraction of annotated binding sites matched by at least one discovered pattern, and the positive predictive value (PPV) as the fraction of discovered patterns matching at least one annotated site. The tradeoff between sensitivity and PPV is measured by the computing the geometric accuracy,  For example, in the lexA result of the previous section, both annotated sites are matched by at least one dyad, the sensitivity is thus Sn = 2/2 = 100%. Among the 184 discovered dyads, 122 match at least one annotated site, the positive predictive power is thus PPV = 122/184 = 66.3%. The resulting geometric accuracy is .
+###end p 33
+###begin p 34
+###xml 7 8 7 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+###xml 260 261 260 261 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+###xml 595 604 595 602 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sig &#8805; 0</italic>
+###xml 889 890 887 888 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S2">2</xref>
+###xml 552 555 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+Figure 3 summarizes the results obtained with 20 combinations of parameters, each one being depicted as an "accuracy heat map", where rows correspond to groups of orthologs and columns to taxonomical levels (the other combinations are shown in Additional file 1). The darkness is proportional to the accuracy (a perfect prediction is displayed in black), and the color code represents the tradeoff between sensitivity (green) and specificity (blue). Note the overall prevalence of green hues, indicating that the sensitivity is usually higher than the PPV at the default significance threshold (sig >/= 0). Not surprisingly, when applying higher thresholds of significance, the heat maps show a progressive decrease in darkness, reflecting the loss in sensitivity, together with an increased predominance of the blue color, reflecting the increase of predictive value (see Additional file 2). Beyond these general trends, accuracy heat maps show that the optimal taxonomical level can vary from gene to gene. The rightmost column of each parametric condition, corresponding to the genus Escherichia, shows interspersed dark and yellow/white bars, indicating the erratic character of these predictions. The parameter having the strongest impact on the accuracy is the dyad filtering, as denoted by the fact that corresponding heat maps systematically appear darker than those of non-filtered dyads, all other conditions being identical. The color maps also suggest that taxon-wide background models (TAXFREQ) are systematically better than gene-wise models (MONAD).
+###end p 34
+###begin p 35
+###xml 0 70 0 70 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Correctness of dyads predicted by group of genes and taxonomical level</bold>
+###xml 942 945 942 945 <italic xmlns:xlink="http://www.w3.org/1999/xlink">NA </italic>
+###xml 654 657 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+Correctness of dyads predicted by group of genes and taxonomical level. Rows represent genes with annotations in RegulonDB (368 genes), and are ordered by sum of geometric accuracy then by maximal geometric accuracy. Different conditions are represented: choice of upstream sequences (orthologs or predicted leader genes), background model (MONAD or TAXFREQ) and the use of dyads filtering or not. For each condition, the first five columns correspond to decreasing taxonomical levels: Bacteria (Ba.), Proteobacteria (Pr.), Gamma-proteobacteria (Ga.), Enterobacteriales (En.) and Escherichia (Es.). The background color reflects the tradeoff between the PPV (blue channel) and the sensitivity (green channel) as shown on the reference colour scale. A perfect prediction is displayed with a black background. When the predictions do not match any annotated sites, the accuracy is zero with a white background. Yellow background corresponds to NA which means there is not a single discovered dyad or that the analysis could not be performed (not enough sequences to analyze or too redundant sequences).
+###end p 35
+###begin p 36
+###xml 387 389 387 389 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+An important fraction of bacterial genes are organized in operons, i.e. polycistronic transcription units. In such cases, transcriptional regulation is mediated at the level of the promoter of the operon leader gene. Intra-operon intergenic sequences are generally much shorter than real promoters, and this feature has been exploited to predict operons in completely sequenced genomes [40]. We evaluated the impact of operon inference on the quality of the detected footprints: instead of retrieving the sequence directly upstream of each gene, we select the sequence upstream of the leader gene of its predicted operon. On the heat map, operon inference seems to improve the predictions for some genes, and weaken it for other genes, but, based on visual impression, it is hard to evaluate the general effect on the average darkness for all the genes.
+###end p 36
+###begin title 37
+Quantitative comparison of parameter combinations
+###end title 37
+###begin p 38
+###xml 126 127 126 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 174 175 174 175 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 365 368 365 368 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-7 </sup>
+###xml 377 378 377 378 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+###xml 401 402 401 402 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 646 648 646 648 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-5</sup>
+###xml 946 947 946 947 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 1173 1185 1173 1185 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli K12 </italic>
+###xml 1173 1180 <span type="species:ncbi:562">E. coli</span>
+In order to quantify the impact of the respective parameters, we averaged the accuracy for all genes in each condition (Table 3), and applied the Wilcoxon paired test (Table 4) to each parameter (dyad filtering, operon inference, background model, and all possible pairs of taxa). The most significant parameter is the choice of the background model (P-value = 9.5E-7 in Table 4). Consistently, Table 3 shows that taxon-wide background models (TAXFREQ) give systematically better results than gene-wise models (MONAD), all other parameters being identical. The second parameter, dyad filtering, also shows a straightforward effect (P-value = 4.8E-5): the accuracy is systematically improved when dyad filtering is applied. By contrast, operon inference gives variable results, depending on the other parameter values: retrieving the promoter from the operon leader gene gives better results in 5 cases, but worse results in 13 other cases (Table 3). Indeed, the high P-value (10.7%) indicates that this parameter is poorly significant. The poor impact of operon prediction might be influenced by the fact that we analysed genes with known sites in their promoter region in E. coli K12 (these genes are thus always operon leaders, at least in the reference organism). However, operon inference might improve the results of the analysis of all genes of a genome for which there would be no prior knowledge on the motifs.
+###end p 38
+###begin p 39
+Impact of the parametric choices on the correctness of the discovered motifs
+###end p 39
+###begin p 40
+Significance of the impact of individual parameters on the accuracy of discovered motifs
+###end p 40
+###begin p 41
+Parameters are sorted according to the significance of their impact on the geometric accuracy. The best parameter value of each pair is in the left column. N: number of parametric combinations. Sup, inf, equal: number of pairs where the left value gives better, wose or identical results than the right value, respectively. The P-value is estimated with a Wilcoxon paired test.
+###end p 41
+###begin p 42
+###xml 408 419 408 419 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia</italic>
+For the choice of the optimal taxonomic level, we performed pairwise comparisons between each possible pair of taxa considered in this study. The class Gamma-proteobacteria appears as the optimal taxonomical level, since it systematically appears in the left column, indicating that it gives better results than any other taxon. On the contrary, analyses restricted to the various strains of the same genus (Escherichia) give systematically worse results that the other taxa.
+###end p 42
+###begin p 43
+###xml 19 20 19 20 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 25 26 25 26 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T4">4</xref>
+In summary, Tables 3 and 4 clearly show that the best results are obtained when phylogenetic footprints are discovered at the level of Gamma-proteobacteria, with taxon-wide background model, and with species-specific dyad filtering, and that operon inference has no obvious impact on the general accuracy.
+###end p 43
+###begin title 44
+Correctness of the discovered patterns
+###end title 44
+###begin p 45
+###xml 113 114 113 114 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4</xref>
+###xml 305 307 305 307 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4B</xref>
+###xml 348 350 348 350 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4A</xref>
+###xml 940 942 940 942 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4C</xref>
+###xml 1031 1040 1031 1038 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sig &#8805; 0</italic>
+###xml 1600 1610 1598 1606 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sig &#8805; 10</italic>
+###xml 176 179 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 255 258 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 671 674 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 890 893 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 1345 1348 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 1715 1718 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+The correctness of predictions was estimated by comparing discovered motifs with annotated binding sites. Figure 4 displays the inverse cumulative distribution of sensitivity, PPV and Accuracy as a function of the significance threshold. As expected, the PPV increases with the significance score (Figure 4B), at the expense of sensitivity (Figure 4A). There is also a clear impact of the taxonomical level on the matching statistics: the sensitivity is higher at the level of the class (Gamma-proteobacteria) or above (Proteobacteria, and Bacteria) than at the level of the order (Enterobacteriales) or below (Escherichia). At the closest level (genus Escherichia), the PPV curve is very erratic, because a very few motifs are detected, due to the small number of species included in the analysis and the low level of divergence between those genomes. The tradeoff between sensitivity and PPV is measured by the geometric accuracy (Figure 4C). The optimal geometric accuracy is obtained around the default significance threshold (sig >/= 0) for all taxonomical levels (not shown). The accuracy curves are lower for narrow taxonomical levels (Enterobacteriales and Escherichia) than for wider groups (Gamma-proteobacteria to Bacteria). The maximal geometric accuracy is reached for Gamma-proteobacteria (64.8%) with a sensitivity of 86.4% and a PPV of 48.7% at the default threshold. The choice of the threshold should however not be based on the sole criterion of optimal accuracy, but can depend on the purpose of the analysis. For example, selecting the motifs with a very high significance (e.g. sig >/= 10) will result in a drastic loss of sensitivity (10%), but is likely to return the most promising motifs (PPV = 80%) as candidates for experimental validation.
+###end p 45
+###begin p 46
+###xml 0 167 0 167 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Systematic evaluation of the performances obtained with the TAXFREQ background model using the upstream sequences of the predicted leader genes and the dyads filtering</bold>
+###xml 196 199 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+Systematic evaluation of the performances obtained with the TAXFREQ background model using the upstream sequences of the predicted leader genes and the dyads filtering. Gene-wise sensitivity (A), PPV (B), geometric accuracy (C), and transcription factor-wise sensitivity (D).
+###end p 46
+###begin p 47
+###xml 7 9 7 9 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4D</xref>
+###xml 254 256 254 256 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F4">4A</xref>
+Figure 4D displays the transcription factor-wise sensitivity, defined as the fraction of transcription factors for which the correct motif has been found in at least one target gene. This figure shows the same trends as the gene-wise sensitivity (Figure 4A), and indicates that, with the default significance threshold, the correct motif can generally be detected in at least one of the target genes for each transcription factor, and this at any taxonomical level.
+###end p 47
+###begin p 48
+###xml 903 905 903 905 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B38">38</xref>
+###xml 1031 1033 1031 1033 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B44">44</xref>
+###xml 1125 1130 1125 1130 <italic xmlns:xlink="http://www.w3.org/1999/xlink">glpT </italic>
+For 14 genes among 368, our approach failed to return any true positive. We identified two reasons for these failures. The first reason is the absence of the motif from the promoter sequences analyzed. This absence is in some cases due to errors in the annotated position of the start codon (as discussed below for some Xanthomonadales). In some other cases, a cis-acting element is actually located downstream of the start codon, in the beginning of the coding sequence of the regulated gene. Intragenic regulatory are generally involved in transcriptional repression, and a few such cases are reported in RegulonDB, and thus included in our testing set (see Supplementary material). It has previously been reported that 71% of the promoters contain at least one repressing site downstream of the transcription start site, whereas there is not a single annotated example of downstream activating site [38]. In some cases, binding sites are even found in the coding sequence, downstream of the start codon. As example, Yang et al [44] characterized three binding sites for the repressor GalR in the coding region of the gene glpT which codes for a transporter of the glycerol-3-P.
+###end p 48
+###begin p 49
+Another reason for not detecting the correct motifs comes from genes having only a small number of orthologs, when the analysis is restricted to a very narrow taxon (e.g. the genus Escherichia). In such cases, the promoters are largely redundant, and functional sites are masked during the purging procedure.
+###end p 49
+###begin title 50
+Reliability of the significance score
+###end title 50
+###begin p 51
+###xml 461 469 461 469 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 461 468 <span type="species:ncbi:562">E. coli</span>
+In the previous chapter, we evaluated the accuracy of pattern discovery by comparing discovered motifs with those annotated in the reference database, RegulonDB. However, the concept of false positive is not trivial, since the reference set cannot be considered as exhaustive, for two reasons: (1) the annotation effort requires time, so that the regulatory elements stored in the database onlyrepresent a subset of the published ones; (2) despite de fact that E. coli has been, since several decades, among the most popular model organisms for hundreds geneticists and molecular biologists, it is clear that a good fraction of its regulation has still not been characterized.
+###end p 51
+###begin p 52
+In this section, we present a simple strategy for assessing the reliability of the significance without depending on any prior annotation about cis-regulatory elements. This strategy relies on a comparison of scores distributions obtained in a positive and a negative sequence set, respectively.
+###end p 52
+###begin p 53
+###xml 24 25 24 25 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 26 27 26 27 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 64 79 64 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink">oligo-analysis </italic>
+###xml 83 97 83 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+###xml 226 233 226 233 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sig = s</italic>
+###xml 277 279 277 279 <italic xmlns:xlink="http://www.w3.org/1999/xlink">10</italic>
+###xml 280 281 280 281 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 279 281 279 281 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-<italic>s</italic></sup>
+###xml 308 319 308 317 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sig &#8805; -2 </italic>
+###xml 586 595 584 591 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sig &#8805; 0</italic>
+###xml 643 652 639 646 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sig &#8805; 2</italic>
+As discussed elsewhere [7,9] the significance score returned by oligo-analysis and dyad-analysis is the minus-log of the binomial E-value, and can directly be interpreted in terms of risks of false positive: for a given value sig = s, the expected number of false positives is 10-s. For example, a threshold sig >/= -2 corresponds to an E-value of 100, meaning that, in a random data set, one would expect an average of 100 dyads to be selected by chance with such a score (and thus 100 false positives). Similarly, one would expect an average of 1 dyad per random set with a threshold sig >/= 0, and 0.01 dyad per random set with a threshold sig >/= 2. The E-value provides thus a very intuitive indication of the reliability of the discovered motifs (the lower the E-value, the more reliable are the motifs).
+###end p 53
+###begin p 54
+A first question is whether this theoretical significance score corresponds to the rate of false positives observed in a random data set. Indeed, the theoretical model underlying the estimation of E-value is based on some assumptions about sequences (in short, the working hypothesis is that sequences can be modelled as homogeneous Markov chains). A second question is whether the significance score makes an efficient distinction between biologically relevant and spurious motifs.
+###end p 54
+###begin p 55
+###xml 7 8 7 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+Figure 5 shows the inverse cumulative distribution of significance scores obtained in promoters of orthologous genes (positive sets, plain lines) and in random selection of promoters (negative control, dotted lines), respectively.
+###end p 55
+###begin p 56
+###xml 54 68 54 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+###xml 0 166 0 166 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Distribution of significance score values returned by <italic>dyad-analysis </italic>in promoters of orthologous clusters (solid lines) or in random selections of genes (dotted lines)</bold>
+###xml 396 410 396 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+###xml 452 459 452 459 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 452 459 <span type="species:ncbi:562">E. coli</span>
+Distribution of significance score values returned by dyad-analysis in promoters of orthologous clusters (solid lines) or in random selections of genes (dotted lines). Each curve represents the results of the analysis at one taxonomical level. A. Number of dyads per sequence set. B. Number of sequence sets with at least one significant motif. Black lines represent the theoretic curves. We run dyad-analysis with the TAXFREQ background model and the E. coli-specific dyads filtering.
+###end p 56
+###begin p 57
+###xml 23 25 23 25 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5A</xref>
+###xml 399 403 399 403 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-sig</sup>
+The left panel (Figure 5A) shows the expected and observed number of significant patterns per gene (ordinate) above each significance value (abscissa). The black curve represents the expected number of false positives per data set, on the basis of the theoretical model. This corresponds to the E-value, which, by definition, decreases exponentially with increasing significance values (E-value = 10-sig), and thus appears as a straight line on the graph with a logarithmic ordinate.
+###end p 57
+###begin p 58
+The negative control consists in running the footprint detection in sequences where there are supposedly no conserved motifs. For this, we perform random selections in the complete collection of bacterial promoters at the considered taxonomical level. If the background model is correct, the empirical rate of false positives should fit with the theoretical curve. This is clearly the case for the three lowest taxonomical levels (Escherichia, Enterobacteriales and Gamma-proteobacteria), whereas the rate of false positives is higher for larger taxa (Proteobacteria and Bacteria). This increase in the rate of false positives indicates that the background model is not perfectly appropriate for large taxonomical level, probably due to the fact that these promoters contain mixtures of G+C-rich and G+C-poor genomes (the mixture of sequences thus correspond to an heterogeneous Markov model).
+###end p 58
+###begin p 59
+###xml 168 169 168 169 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5</xref>
+The positive test consists in measuring dyad significance in sequences supposed to contain conserved motifs, i.e. promoters of orthologous genes (plain lines on Figure 5). There is a clear effect of the taxonomical level, and the general trend is that the number of significant patterns increases with broader taxonomical levels.
+###end p 59
+###begin p 60
+The difference between the negative and positive curves indicates the reliability of the significance score to distinguish relevant (orthologous) from irrelevant (random) gene sets. At the narrowest taxonomical level (Escherichia), the two curves are very close from each other, and from the theoretical curve. This weak significance reflects the insufficient signal-to-noise ratio, due to the small number of available sequences (5 genomes), and to the fact that they are too similar with each other (5 strains of the same species). The number of detected patterns already increases at the level of the order (Enterobacteriales), but the highest sensitivity is clearly obtained at the level of the class (Gamma-proteobacteria) and above (Proteobacteria and Bacteria). The best signal-to-noise ratio is obtained at the level of the class (Gamma-proteobacteria), where the random curve is very close to the theoretical expectation, whereas the number of patterns found in orthologous groups is almost as high as at the highest taxonomical levels.
+###end p 60
+###begin p 61
+###xml 7 9 7 9 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5B</xref>
+###xml 468 470 468 470 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F5">5A</xref>
+Figure 5B displays the fraction of genes for which at least one pattern has been returned. This curve is obtained by selecting, for each data set, the top scoring dyad only. The theoretical curve (black curve) is estimated from a Poisson distribution, and reflects the Family-Wise Error Rate (FWER), i.e. the probability to have at least one false positive dyad in a random set. The negative (dotted lines) and positive (plain lines) show the same trends as in Figure 5A.
+###end p 61
+###begin p 62
+In summary, our analysis shows that the E-value returned by dyad-analysis gives a reliable estimate of the expected number of false positives, and that it clearly distinguishes phylogenetic footprints from spurious motifs.
+###end p 62
+###begin title 63
+Deciphering the evolution of LexA auto-regulation
+###end title 63
+###begin p 64
+###xml 521 522 521 522 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 607 609 607 609 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B45">45</xref>
+The analyses above show that cis-acting elements can be detected by their conservation across the promoters of a set of related species. A complementary question is whether a separate analysis of distant taxonomic groups would allow us to detect divergences between regulatory motifs. To address this question, we focused our attention on the LexA regulator, whose peptidic sequence is highly conserved across bacteria, and for which distinct DNA-binding motifs have been characterized for various bacterial taxa (Figure 2), suggesting a co-evolution of the transcription factor with its DNA binding motif [45]. The question addressed in this section is whether footprint discovery would allow us to rediscover the evolution of LexA auto-regulation.
+###end p 64
+###begin p 65
+###xml 7 8 7 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+###xml 144 145 144 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S3">3</xref>
+###xml 946 947 946 947 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+Figure 6 shows a synthetic view of the most significant dyads discovered at each taxonomical level. This figure is displayed in Additional file 3 with the tree corresponding to the dyads clustering. For the sake of clarity, we selected dyads with a high significance level (sig >= 7). This view illustrates the taxon specificity of the detected motifs: distinct clusters of dyads are detected at the different taxonomical levels, with a strong consistency: a group of 35 dyads is found, with various levels of significance, at all taxonomical levels from Enterobacteriaceae to Bacteria (Gamma-proteobacterial motif). A subset of these is also found in Beta-proteobacteria. However, completely distinct motifs are found in Alpha-proteobacteria and Xanthomonadales, respectively. Interestingly, the hierarchical clustering of motifs by sequence similarity clearly corresponds to taxonomical divergences: the motifs found in the left part of Figure 6 are those discovered in Proteobacteria (Alpha-, Beta- and Gamma-proteobacteria) whereas the right side regroups motifs detected in Gram-positive bacteria (Firmicutes and Actinobacteria). The only exceptions are the motifs found in Xanthomonadales, which are grouped with Gram-positive bacteria, whereas this order belongs to Gamma-proteobacteria (detailed analysis below).
+###end p 65
+###begin p 66
+###xml 0 117 0 117 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Significance heat map of the dyads discovered at different taxonomical levels in upstream sequences of lexA orthologs</bold>
+###xml 235 248 235 248 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis</italic>
+###xml 290 301 290 301 <italic xmlns:xlink="http://www.w3.org/1999/xlink">sig = 41.01</italic>
+Significance heat map of the dyads discovered at different taxonomical levels in upstream sequences of lexA orthologs. Each column represents one pattern, each row one taxon. The grey level indicates the significance score returned by dyad-analysis: black corresponds to the maximal score (sig = 41.01) obtained in the whole taxonomy, and non-significant patterns appear with a white color. Patterns are clustered by sequence similarity (Ward linkage hierarchical clustering). Taxa are ordered by depth-first-search traversal of the taxonomic tree. In order to simplify this heat map, we used a stringent threshold, by only selecting taxa having at least one predicted pattern with a significance score >/=7. We manually boxed groups of patterns corresponding to taxon-specific motifs.
+###end p 66
+###begin p 67
+###xml 7 8 7 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7</xref>
+Figure 7 shows the localization of the motifs discovered at the level of the Reign (all Bacteria together, left panel) and in each separated class (right panel). This comparison shows that the motifs discovered in the most represented classes (Gamma/Beta-proteobacteria, Firmicutes, Actinobacteria) are also discovered when all the bacterial sequences are analyzed as a single group. This illustrates the robustness of the method to noise, since it can detect motifs presents in a subset of the sequences only. However, some other motifs are significant at the level of the class (e.g. Cyanobacteria, Alpha-proteobacteria) but are not detected when all bacterial promoters are analyzed as a single set. In order to analyze the divergence between regulatory elements, it is thus worth applying pattern discovery at all levels of the taxonomical tree.
+###end p 67
+###begin p 68
+###xml 51 56 51 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lexA </italic>
+###xml 0 97 0 97 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Feature-maps of the dyads detected in promoters of <italic>lexA </italic>orthologs at different taxonomical levels</bold>
+###xml 197 202 197 202 <italic xmlns:xlink="http://www.w3.org/1999/xlink">lexA </italic>
+Feature-maps of the dyads detected in promoters of lexA orthologs at different taxonomical levels. In the left hand column, motifs were discovered on the whole collection of bacterial promoters of lexA orthologs (A). The right hand column shows motifs detected in subsets corresponding to narrower taxa: Actinobacteria (B), Cyanobacteria (C), Firmicutes (D), Alpha-Proteobacteria (E), Beta-Proteobacteria (F), Delta-Proteobacteria (G), Gamma-Proteobacteria (H). The maps displays all dyads with a significance >= 2.
+###end p 68
+###begin title 69
+Comparison of significant dyads with the annotated LexA binding motifs for different taxa
+###end title 69
+###begin p 70
+###xml 99 100 99 100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 196 197 196 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 379 380 379 380 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F1">1</xref>
+###xml 586 598 586 598 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Xanthomonas </italic>
+###xml 602 609 602 609 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Xylella</italic>
+###xml 920 921 920 921 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+###xml 982 983 982 983 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T5">5</xref>
+###xml 1036 1038 1036 1038 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B46">46</xref>
+As discussed above, the most significant dyads detected in Gamma-proteobacterial promoters (Figure 1) correspond to the LexA binding element characterized in several species of this class (Figure 2). An informative characteristic about discovered motifs is their gene coverage, i.e. fraction of genes whose upstream sequence contains at least one occurrence of the motif. Figure 1 shows that the Gamma-proteobacterial motif is found in 47 among the 54 promoters. Interestingly, the 7 promoters where the motif is absent belong to the order Xanthomonadales (which includes the two genus Xanthomonas and Xylella). This suggests that LexA auto-regulation might have diverged in this subgroup. Consistently, when pattern discovery is restricted to Xanthomonadales sequences, another motif, TTAGTA is detected in 5 of the 7 promoters. This hexamer is found in two occurrences per sequence, forming an inverted repeat (Figure 8). The assembly of the Xanthomonadales-specific dyads (Table 5) corresponds to the experimentally validated motif [46].
+###end p 70
+###begin p 71
+###xml 0 80 0 80 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Feature-map of the dyads detected as significant in promoters of Xanthomonadales</bold>
+Feature-map of the dyads detected as significant in promoters of Xanthomonadales. The symmetrical motif corresponds to the Xanthomonadales-specific LexA binding site regulatory element (see text). Note that, although the motif seems to be missing in two promoters, in both cases it can be found downstream of the annotated start codon (see Supplementary Material), and their absence on the feature map probably reflects errors in the annotation of the start codon, or the presence of a repression site inside the coding sequence (not shown).
+###end p 71
+###begin p 72
+Evolution of LexA binding motif: comparison between annotated and predicted motifs.
+###end p 72
+###begin p 73
+For each analysis at a given taxonomical level (column 1), the annotated motif (column 2) is compared with the predicted motif (column 3) with matching letters in bold. Capital letters in the predicted motif correspond to the most significant dyad (column 4, with significance score in column 5). The gene coverage is the fraction of genes whose upstream sequence contains at least one occurrence of the most significant dyad. The last columns indicate the number of tested dyads and the number of dyads detected as significant (sig > 0), respectively.
+###end p 73
+###begin p 74
+###xml 228 262 <span type="species:ncbi:77643">Mycobacterium tuberculosis complex</span>
+###xml 302 323 <span type="species:ncbi:86661">Bacillus cereus group</span>
+When the analysis is restricted to a very narrow taxonomical level, the pattern discovery approach fails to detect motifs, because the species are too close from each other to have allowed divergence between promoter sequences (Mycobacterium tuberculosis complex, Brucellaceae, pseudo mallei group and Bacillus cereus group). In all those cases, the sensitivity of the method is expected to increase with the number of orthologs, so that the missing motifs will hopefully be detected in the future, when additional genomes will be available for these taxonomic groups.
+###end p 74
+###begin p 75
+###xml 144 145 144 145 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T5">5</xref>
+###xml 279 289 279 289 <italic xmlns:xlink="http://www.w3.org/1999/xlink">in silico </italic>
+###xml 301 324 301 324 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Ralstonia solanacearum </italic>
+###xml 325 327 325 327 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B47">47</xref>
+###xml 387 389 387 389 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7F</xref>
+###xml 301 323 <span type="species:ncbi:305">Ralstonia solanacearum</span>
+In addition to the 7 taxa where discovered motifs match the annotated one, a highly significant motif is detected in Beta-proteobacteria (Table 5). This motif is the same as for Gamma-proteobacteria, and corresponds to a LexA binding site suggested for Beta-proteobacteria after in silico analysis in Ralstonia solanacearum [47]. It is detected in 9 of the 14 promoters analyzed (Figure 7F), but, as discussed above for Xanthomonadales, the five remaining genes have one or two occurrences in the beginning of their coding sequences.
+###end p 75
+###begin p 76
+###xml 161 162 161 162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T5">5</xref>
+In summary, the phylogenetic footprint detection reveals all the taxon-specific LexA binding motifs that had previously been characterized experimentally (Table 5).
+###end p 76
+###begin title 77
+Divergence of the LexA binding motif in Gram-positive bacteria
+###end title 77
+###begin p 78
+###xml 311 312 311 312 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9</xref>
+###xml 449 453 449 453 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9A,C</xref>
+###xml 555 556 555 556 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+###xml 568 569 568 569 <sub xmlns:xlink="http://www.w3.org/1999/xlink">5</sub>
+###xml 619 622 619 622 <bold xmlns:xlink="http://www.w3.org/1999/xlink">AAC</bold>
+###xml 623 624 623 624 <sub xmlns:xlink="http://www.w3.org/1999/xlink">4</sub>
+###xml 624 629 624 629 <bold xmlns:xlink="http://www.w3.org/1999/xlink">GTTC </bold>
+###xml 630 632 630 632 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B48">48</xref>
+###xml 663 666 663 666 <bold xmlns:xlink="http://www.w3.org/1999/xlink">AAC</bold>
+###xml 670 673 670 673 <bold xmlns:xlink="http://www.w3.org/1999/xlink">GTT</bold>
+###xml 725 727 725 727 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B49">49</xref>
+###xml 858 862 858 862 <bold xmlns:xlink="http://www.w3.org/1999/xlink">GAAC</bold>
+###xml 866 870 866 870 <bold xmlns:xlink="http://www.w3.org/1999/xlink">GTTC</bold>
+###xml 975 977 975 977 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7D</xref>
+###xml 1133 1135 1133 1135 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9A</xref>
+###xml 1181 1183 1181 1183 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9B</xref>
+The relationships between the motifs discovered at different levels of the taxonomic tree can give us insight into evolutionary events, such as conservation, appearance, loss and divergence of regulatory signals. This is well illustrated by the comparison of motifs discovered in Gram-positive bacteria (Figure 9), which are comprised of two phyla: Firmicutes and Actinobacteria. The dyads selected in these two phyla show a partial overlap (Figure 9A,C), but also some interesting differences. The most significant dyads discovered in Firmicutes are AACn4GTT and AACn5TTC which correspond to the core of the Cheo box GAACn4GTTC [48] and to the LexA consensus (CGAACRNRYGTTYC) proposed for Gram-positive bacteria altogether [49]. In Firmicutes promoters, the most significant dyads are spaced motifs, which can be combined to form a palindromic consensus TACGAACATATGTTCGTA. This motif is found in 1 to 3 occurrences per promoter, at more or less conserved positions (Figure 7D). In contrast, the most significant dyads discovered in Actinobacteria are hexanucleotides that can be aligned to form the heptanucleotide TCGAACA (Figure 9A). A comparison of the sequence logos (Figure 9B) shows that this heptanucleotide matches one half of the spaced palindrome found in all the Gram-positive bacteria, but that the half-motif is more specific for Actinobacteria than Firmicutes.
+###end p 78
+###begin p 79
+###xml 0 124 0 124 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Partial divergence between the motifs discovered in lexA promoters of Gram-positive bacteria (Firmicutes and Actinobacteria)</bold>
+Partial divergence between the motifs discovered in lexA promoters of Gram-positive bacteria (Firmicutes and Actinobacteria). (A) Comparison between the significance scores of all discovered patterns in Actinobacteria and Firmicutes. The significance is arbitrarily set to -1 for non significant patterns (sig < 0), in order to highlight dyads detected in only one of the subgroups. (B) Sequence logo of motifs obtained by aligning all the sites annotated for Gram-positive bacteria (top), Firmicutes (middle) and Actinobacteria (bottom), respectively. For each taxon, all sites matching the discovered patterns were extracted with their flanking region and were aligned using MEME [3] with a motif width of 24 nucleotides. Sequence logos were generated with Weblogo [81]. (C) Feature-map of the dyads discovered in Gram-positive bacteria. The 17 first top sequences are promoters of sequences from Actinobacteria, while others are from Firmicutes. In Actinobacteria, the 11 first sequences are promoters of orthologous sequences from Corynebacterineae.
+###end p 79
+###begin p 80
+###xml 89 91 89 91 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9C</xref>
+###xml 426 428 426 428 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7A</xref>
+###xml 516 518 516 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F9">9C</xref>
+###xml 1035 1047 1035 1047 <italic xmlns:xlink="http://www.w3.org/1999/xlink">B. subtilis </italic>
+###xml 1048 1050 1048 1050 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B48">48</xref>
+###xml 1182 1184 1182 1184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B50">50</xref>
+###xml 1286 1291 1286 1291 <italic xmlns:xlink="http://www.w3.org/1999/xlink">recA </italic>
+###xml 1303 1325 1303 1325 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Streptomyces lividans </italic>
+###xml 1326 1328 1326 1328 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B51">51</xref>
+###xml 1035 1046 <span type="species:ncbi:1423">B. subtilis</span>
+###xml 1303 1324 <span type="species:ncbi:1916">Streptomyces lividans</span>
+Consistently, the feature map obtained by merging all the gram-positive bacteria (Figure 9C) shows that in Firmicutes, instances of the heptanucleotide generally overlap with the larger Cheo boxes. The situation however differs in Actinobacteria: although some promoters contain one occurrence of the Cheo box, many additional instances of the short motifs are found more distally, without being part of a large motif (Figure 7A). This feature is particularly marked in Corynebacterium (11 first sequences in Figure 9C), where the large motif has apparently been lost, and is somehow "compensated" by a more occurrences of the short motif. This observation raises the intriguing hypothesis that LexA binding specificity is on its way to diverge between Firmicutes and Actinobacteria. The reverse complementary symmetry of a binding motif generally reflects the binding of the transcription factor as a homodimer. This is the case for the Gamma-proteobacterial LexA protein. The symmetry of the large motif has previously been shown in B. subtilis [48] and suggests that, in Firmicutes as well, LexA may act as homodimer, and this hypothesis is compatible with the structural model [50]. In Actinobacteria, the imperfect palindromic nature of the SOS box has been previously observed in recA promoter of Streptomyces lividans [51]. The presence of half-instances of the motif in Actinobacteria opens the question of the structure of the protein/DNA interface. Is it possible for the Actinobacterial LexA to bind DNA as a monomer? Does it form heterodimers with another protein? A structural characterization of the LexA/DNA complex would be required elucidate this mechanism.
+###end p 80
+###begin p 81
+Beyond the particular case of LexA auto-regulation, this example shows that the comparative analysis of taxon-specific footprints is a powerful method to trace the evolution of DNA recognition by transcription factors.
+###end p 81
+###begin title 82
+Comparison between dyad-analysis and other pattern discovery algorithms
+###end title 82
+###begin p 83
+###xml 235 241 235 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gibbs </italic>
+###xml 250 252 250 252 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 253 255 253 255 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B52">52</xref>
+###xml 256 258 256 258 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+Several previous studies have addressed similar issues as we do in this paper. In particular, the detection of phylogenetic footprints in bacterial promoters has been treated by several other groups, using various implementations of a gibbs sampler [17,52,19].
+###end p 83
+###begin p 84
+###xml 193 194 193 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 195 196 195 196 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+###xml 197 199 197 199 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B53">53</xref>
+###xml 299 300 299 300 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B3">3</xref>
+###xml 321 322 321 322 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B1">1</xref>
+###xml 341 342 341 342 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 343 344 343 344 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 345 347 345 347 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B54">54</xref>
+###xml 348 350 348 350 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+Pattern discovery algorithms can be broadly subdivided into two main categories: (1) enumerative approaches based on the detection of over-represented words (oligonucleotides or spaced pairs) [7,9,53]; (2) matrix-based approaches, based on various optimization strategies: expectation-maximization [3], greedy algorithm [1], gibbs sampling [2,4,54,11].
+###end p 84
+###begin title 85
+Reliability of matrix scores
+###end title 85
+###begin p 86
+The comparison of score distributions between orthologs and random gene selections presented above can easily be applied to other programs, and used as a criterion to estimate the reliability of the motifs discovered under various conditions.
+###end p 86
+###begin p 87
+###xml 233 235 233 235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B55">55</xref>
+###xml 310 312 310 312 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B56">56</xref>
+For obvious reasons, a comparative assessment should in principle not be led by the team who developed one of the programs: a fair comparison should either be done by a naive user who did not contribute to any of the tools assessed [55], or by letting developers run their own tool on some benchmark data set [56]. However, as a condition for publishing this paper, the referees and editors asked us to compare our own program with other pattern discovery programs. We performed this comparison as honestly as possible, and we tried to select, for each program, the most appropriate parameters. However, it is clear that, even with the best will, there is one bias that cannot be avoided: each developer better knows how to use his/her own tools. It is thus likely that the other programs would return better results in the hands of their respective developers than in ours.
+###end p 87
+###begin p 88
+###xml 38 39 38 39 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 298 315 298 315 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli </italic>
+###xml 743 744 743 744 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="T3">3</xref>
+###xml 298 314 <span type="species:ncbi:562">Escherichia coli</span>
+One further remark: as shown in Table 3, dyad filtering has a massive effect on the accuracy of footprint detection. However, the other matrix-based pattern discovery tools do not support the concept of filtering (i.e. the fact to select motifs found in the promoter of a given reference organism, Escherichia coli in our case). Thus, for the sake of fairness, we decided to avoid dyad filtering for this comparison, so that all programs are fed with exactly the same sequences, without any prior information on the reference organism. It should be stressed that these conditions are far from our optimum, since they correspond to an accuracy of 48.8%, whereas our best parametric conditions (with filtering) reach an accuracy of 65.8% (Table 3). As shown below, even under these sub-optimal conditions, dyad-analysis outperforms the other programs.
+###end p 88
+###begin p 89
+###xml 67 69 67 69 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10</xref>
+###xml 412 415 412 415 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10A</xref>
+The results of our comparative assessment are summarized on Figure 10, in the form of "ROC-like" curves. Each curve shows the performances of a given program and a given scoring scheme. For each score value, the curve indicates the fraction of sequence sets with at least one significant motif in promoters of random groups of genes (abscissa) and orthologous genes (ordinate), respectively. For example, Figure 10A indicates that, with a significance threshold of 1.5, motifs are found in 10% of the random selections versus 65% of the orthologous groups. There is thus a "cost" of 10% of false positives for obtaining 65% of sensitivity. With score of 3.1, the rate of false positives drops to 1.4%, but the sensitivity is reduced to 40%.
+###end p 89
+###begin p 90
+###xml 0 58 0 58 <bold xmlns:xlink="http://www.w3.org/1999/xlink">Comparison between programs and between scoring statistics</bold>
+Comparison between programs and between scoring statistics. The "ROC-like" curves are displayed for each program: (A) dyad-analysis, (B) oligo-analysis, (C) AlignACE, (D) MEME, (E) MotifSampler and (F) Gibbs sampler.
+###end p 90
+###begin p 91
+###xml 472 486 472 486 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+###xml 494 497 494 497 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10A</xref>
+###xml 577 592 577 592 <italic xmlns:xlink="http://www.w3.org/1999/xlink">oligo-analysis </italic>
+###xml 593 594 593 594 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B7">7</xref>
+###xml 625 628 625 628 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10B</xref>
+A classical statistics for estimating the general performances is to compute the Area Under the Curve (AUC). A perfect program would give an AUC of 1.0 (the curve would actually follow the left axis from bottom to top, and then the top axis from left to right), whereas a random predictor would follow the diagonal from bottom left to top right, since it would return as many patterns in random selections as in orthologous groups (the AUC would be 0.5). The sig score of dyad-analysis (Figure 10A) gives an AUC of 0.87. By comparison, the word-based pattern discovery program oligo-analysis [7] gives an AUC of 0.79 (Figure 10B). Since these two programs use exactly the same binomial statistics for scoring motif significance, the difference comes from the motif structure (dyads versus words) thereby confirming the importance of using spaced motifs to decipher bacterial regulation, as discussed in the introduction.
+###end p 91
+###begin p 92
+###xml 76 81 76 81 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10C&#8211;F</xref>
+###xml 426 427 426 427 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+###xml 692 695 692 695 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10C</xref>
+###xml 882 883 882 883 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 919 922 919 922 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10F</xref>
+###xml 1034 1037 1034 1037 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10D</xref>
+###xml 1040 1042 1040 1042 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B57">57</xref>
+We also tested four popular matrix-based pattern discovery programs (Figure 10C-F; the supplementary material provides the parameters used for each program). Each of these programs returns several scores per matrix, shown as separate curves on the same plot. In addition to the matrix scores returned by the programs, we computed the total information content (TIC) of each matrix, following to Hertz and Stormo's definition [8], as well as an information per column, in order to discard the effects of matrix width. Interestingly, the total information content (TIC) performs generally better than the original statistics of those programs. This is particularly obvious for AlignACE (Figure 10C), for which the TIC gives an AUC of 0.78, whereas the MAP per site only gives 0.64, and the MAP per matrix gives an AUC smaller than 0.5. Surprisingly, the original gibbs motif sampler [4] shows the opposite trends (Figure 10F): the MAP (AUC = 0.62) gives better results than the TIC (AUC = 0.57). An interesting property of MEME (Figure 10D) [57] is that it returns a negative answer (no matrix) for 50% of the random selections, thanks to the threshold on E-value < 1. However, with this threshold, a negative answer is also returned for 30% of the groups of orthologs. The TIC obtained with MEME matrices gives a total AUC of 0.72, but, if one only considers the subset of sequences giving at least one matrix, the curve shows a pretty good shape.
+###end p 92
+###begin p 93
+###xml 505 507 505 507 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10</xref>
+###xml 580 594 580 594 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+###xml 699 714 699 714 <italic xmlns:xlink="http://www.w3.org/1999/xlink">oligo-analysis </italic>
+###xml 778 784 778 784 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gibbs </italic>
+It should be noted that the AUC, despite its popularity as measure of global performances, can be very misleading since it is integrated over the whole curve, whereas in realistic conditions, a user would not even consider the motifs returned in the right part of the curve, which are expected to return more than 50% of false positives. Beyond the AUC, a more relevant criterion for estimating the relevance of a program is the sensitivity obtained for a given rate of false positives (e.g. 10%). Figure 10 shows that, with a 10% rate of false discovery (random gene selections) dyad-analysis discovers motifs in 65% or the orthologous groups, which outperforms MEME TIC (58%), AlignACE TIC (52%), oligo-analysis significance (51%), MotifSampler information content (41%), and gibbs MAP per site (36%). The program ranking is similar with a rate of false positive of 5%.
+###end p 93
+###begin p 94
+###xml 35 49 35 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+In summary, in our hands at least, dyad-analysis outperforms the other pattern discovery programs in its capability to discovery higher scoring motifs in promoters of orthologous genes than in randomly selected promoters. We would however like to make clear that we consider this analysis as biased by our better experience for using our own program. Since all the data used for our analyses are available on the supplementary web site, anyone interested is able to perform his/her own tests in order to estimate the most appropriate program.
+###end p 94
+###begin title 95
+Comparison with previous studies
+###end title 95
+###begin p 96
+We further discuss hereafter our methodological choices and compare them with previous studies.
+###end p 96
+###begin title 97
+Prior versus posterior probability of motif occurrences
+###end title 97
+###begin p 98
+###xml 132 134 132 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B17">17</xref>
+###xml 135 137 135 137 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B52">52</xref>
+###xml 138 140 138 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 141 143 141 143 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B26">26</xref>
+###xml 219 220 219 220 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 370 383 370 383 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a posteriori </italic>
+###xml 408 440 408 440 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Maximum A Posteriori Probability</italic>
+###xml 449 451 449 451 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B54">54</xref>
+###xml 452 454 452 454 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B58">58</xref>
+Many previous studies about footprint discovery in Bacterial promoters were based on various implementations of the Gibbs sampling [17,52,19,26]. This algorithm is based on the optimization of "relative entropy" score [2]. This score is however not efficient to discriminate between informative and non-informative motifs. For this reason, motifs are generally filtered a posteriori on the basis of the MAP (Maximum A Posteriori Probability) score [54,58].
+###end p 98
+###begin p 99
+###xml 102 111 102 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a priori </italic>
+###xml 123 135 123 135 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a posteriori</italic>
+###xml 299 301 299 301 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10</xref>
+###xml 668 673 668 673 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F10">10C,F</xref>
+An advantage of the enumerative approach used here is that the probability of each motif is estimated a priori rather than a posteriori, on the basis of its occurrences in a reference data set (the complete set of promoters for the considered taxon). Our analysis of the score distributions (Figure 10) clearly shows that this prior estimation provides an efficient discrimination between promoters of orthologs and random selections. In addition, our comparison between programs suggests that the MAP is generally not the best score, since the total information content (which is also based on prior probabilities) shows better performances on the ROC curves (Figure 10C,F).
+###end p 99
+###begin title 100
+Choice of the motif width
+###end title 100
+###begin p 101
+###xml 26 40 26 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+An important advantage of dyad-analysis is that it does not require prior assumptions about motif width. Indeed, different widths are automatically detected since the program scans all spacing values between user-specified limits (from 0 to 20 in our case). By contrast, matrix-based approaches generally require for the user to specify a matrix width. An exception is the programs MEME, which permits to specify a range of matrix widths, and returns the motifs with the lowest E-value.
+###end p 101
+###begin title 102
+Expected number of sites
+###end title 102
+###begin p 103
+###xml 407 422 407 422 <italic xmlns:xlink="http://www.w3.org/1999/xlink">oligo-analysis </italic>
+###xml 426 439 426 439 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis</italic>
+###xml 581 593 581 593 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a posteriori</italic>
+Another important parameter required by most matrix-based pattern discovery programs is an estimate of the expected number of sites (instances of the motif in the input sequence set). This parameter is very hard to estimate, since it depends on the transcription factor itself: some factors have 2 or 3 binding sites per promoter, whereas others have a single binding site. With enumerative algorithms like oligo-analysis and dyad-analysis, there is no need to provide prior estimates of the number of transcription-factor binding sites. Rather, the number of sites can be deduced a posteriori, by inspecting the feature maps of discovered words/dyads.
+###end p 103
+###begin title 104
+Negative control
+###end title 104
+###begin p 105
+###xml 461 463 461 463 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B52">52</xref>
+###xml 618 620 618 620 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B54">54</xref>
+An essential quality of a pattern discovery program is its capability to return a negative answer when, for some reason, the input sequences do not share any regulatory motif. In many articles, this aspect is simply neglected, and the evaluation is restricted to an analysis of promoters of co-regulated genes. In other cases, the negative control is performed, but it is based on a set of artificial sequences is generated by shuffling the original sequences [52]. Such artificial sequences already provide some level of control, but a more stringent test is to submit a random selection of real bacterial promoters [54]. Each of these promoters is likely to contain some binding sites for some transcription factors, but in principle no specific motif should be over-represented in random selections. Beyond its stringency, this negative control is also more realistic, because it mimics the situation where a biologists tries to detect motifs in bad clusters of genes. We thus chose to base our negative control on random selections of bacterial promoters.
+###end p 105
+###begin title 106
+Treatment of redundancy
+###end title 106
+###begin p 107
+###xml 32 38 32 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">gibbs </italic>
+###xml 47 48 47 48 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B2">2</xref>
+###xml 86 91 86 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink">purge</italic>
+###xml 602 618 602 618 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Escherichia coli</italic>
+###xml 719 721 719 721 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B52">52</xref>
+###xml 722 724 722 724 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B19">19</xref>
+###xml 602 618 <span type="species:ncbi:562">Escherichia coli</span>
+The first implementation of the gibbs sampler [2] was accompanied by a program called purge, designed to discard redundant sequences. Indeed, the inclusion of multiple closely related sequences provokes a systematic repetition of all their fragments, which prevent the sampler from identifying the correct motifs. The effect of redundant sequences is very strong for footprint detection, because some small taxonomic groups are over-represented in genome databases. For example, the current NCBI collection (July 2007) contains 38 species for the family of Enterobacteriaceae, among which 8 strains of Escherichia coli. An approach to circumvent this problem has been to manually select a set of non-redundant genomes [52,19]. We address the problem in a more automated way, by applying a gene-wise sequence purging: for each set of orthologs, redundant sequences are masked before the pattern discovery step, but in a second time pattern matching is applied on the full set of non-purged sequences, in order to visualize motif conservation across all available species.
+###end p 107
+###begin title 108
+Site positions
+###end title 108
+###begin p 109
+###xml 162 164 162 164 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B59">59</xref>
+###xml 296 298 296 298 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7C</xref>
+###xml 320 322 320 322 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7D</xref>
+###xml 353 355 353 355 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7F</xref>
+###xml 387 389 387 389 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F7">7H</xref>
+###xml 419 420 419 420 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F8">8</xref>
+Previous analysis of the upstream distribution of cis-regulatory elements in conserved groups of genes shows that positions of TFBS are conserved across species [59]. Consistently, the feature maps show a high conservation of the positions of putative LexA binding sites in Cyanobacteria (Figure 7C), Firmicutes (Figure 7D), Beta-proteobacteria (Figure 7F), Gamma-proteobacteria (Figure 7H) and Xanthomonadales (Figure 8), respectively. By contrast, position of the predicted sites are less conserved for two other taxonomical classes (Actinobacteria and Alpha-proteobacteria). This might either reflect a more heterogeneous collection of available genomes in this taxon, or that a more rapid turn-over of TF binding sites. A more detailed gene-per-gene study of motif locations within this group would be required to clarify this question.
+###end p 109
+###begin title 110
+Conclusion
+###end title 110
+###begin p 111
+###xml 172 174 172 174 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B52">52</xref>
+As pointed out by McCue and co-workers, many parameters can influence the results of phylogenetic footprinting, such as the number of sequences and the selected organisms [52]. We extended this question by assessing the impact of various parameters on the significance and correctness of discovered motifs in 368 genes. We tested all possible combinations between the following parameters: 2 background models, 5 taxonomical levels, operon inference, organism-specific dyad filtering, significance threshold. This quantitative evaluation suggests that the global optimum is generally found at intermediate taxonomical levels, and the class (Gamma-proteobacteria) seems to ensure the best tradeoff between sensitivity and specificity. However, beyond this general trend, the optimal level varies from gene to gene. For the detection of motifs in genes for which no regulation is known, we thus recommend to apply pattern discovery at all the taxonomical levels, and to inspect the feature maps in order to analyze the distribution of the predicted sites across the promoters of each taxon.
+###end p 111
+###begin p 112
+Furthermore, our evaluation shows that phylogenetic footprint detection is significantly improved by choosing a taxon-wide background model and by applying organism-specific dyad filtering.
+###end p 112
+###begin p 113
+In the second part of the article, we showed how a cross-taxonomical exploration of phylogenetic footprints can reveal the conservation and divergence of cis-regulation. This strategy was illustrated with the example of LexA auto-regulation, for which our predictions are remarkably consistent with the binding sites characterized in different taxonomical groups. Our method also detects a significant motif in Beta-proteobacteria, which has not yet been experimentally characterized. The predicted Beta-proteobacterial motif is similar to the one known in Gamma-proteobacteria, suggesting that cis-regulation has been conserved across these two groups. In addition, we highlight a partial divergence between the motifs detected in two subclasses of Gram-positive bacteria (Actinobacteria and Firmicutes), suggesting a progressive evolution of LexA binding specificity. These features illustrate the predictive power of the method, and its capability to track the evolutionary divergence of cis-regulatory motifs.
+###end p 113
+###begin p 114
+In summary, this assessment can be considered as a calibration, which should help biologists to estimate the relevance of each predicted motif, and guide their experimental work by producing testable hypothesis about the regulation of genes with no annotated function.
+###end p 114
+###begin p 115
+In the future, this approach opens the way to identify groups of co-regulated genes (regulons), by regrouping genes with similar motifs, in order to address the challenging domain of the evolution of transcriptional regulatory networks.
+###end p 115
+###begin title 116
+Methods
+###end title 116
+###begin title 117
+Prokaryotes genomes and orthologs selection
+###end title 117
+###begin p 118
+###xml 62 64 62 64 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B60">60</xref>
+###xml 123 125 123 125 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B61">61</xref>
+###xml 182 184 182 184 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B62">62</xref>
+###xml 240 252 240 252 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli K12 </italic>
+###xml 392 394 392 394 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B63">63</xref>
+###xml 427 429 427 429 <sup xmlns:xlink="http://www.w3.org/1999/xlink">-5</sup>
+###xml 443 456 443 456 <italic xmlns:xlink="http://www.w3.org/1999/xlink">get-orthologs</italic>
+###xml 539 541 539 541 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B64">64</xref>
+###xml 240 247 <span type="species:ncbi:562">E. coli</span>
+Fully sequenced prokaryote genomes were downloaded from NCBI [60] and installed in the Regulatory Sequence Analysis Tools [61]. Pairwise gene similarities were detected using BLAST [62] between the translated sequence of all the genes from E. coli K12 and 286 other bacterial genomes (12 September 2005) (see supplementary material). Orthologs were defined as bi-directional best hits (BBH) [63] with an E-value smaller than 10-5. The program get-orthologs, has been developed in order to select hits according to user-specified criteria [64].
+###end p 118
+###begin title 119
+Pattern discovery in the taxonomic tree
+###end title 119
+###begin p 120
+###xml 44 46 44 46 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B61">61</xref>
+###xml 47 49 47 49 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B65">65</xref>
+###xml 50 52 50 52 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B30">30</xref>
+###xml 78 90 78 90 <italic xmlns:xlink="http://www.w3.org/1999/xlink">retrieve-seq</italic>
+###xml 112 125 112 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis</italic>
+###xml 146 157 146 157 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dna-pattern</italic>
+###xml 181 192 181 192 <italic xmlns:xlink="http://www.w3.org/1999/xlink">feature-map</italic>
+###xml 218 234 218 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink">compare-patterns</italic>
+We used Regulatory Sequence Analysis Tools [61,65,30] for sequence retrieval (retrieve-seq), pattern discovery (dyad-analysis), pattern matching (dna-pattern), feature map drawing (feature-map) and pattern comparison (compare-patterns).
+###end p 120
+###begin p 121
+###xml 106 124 106 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink">footprint-analysis</italic>
+###xml 267 269 267 269 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B66">66</xref>
+###xml 270 272 270 272 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B67">67</xref>
+###xml 342 361 342 361 <italic xmlns:xlink="http://www.w3.org/1999/xlink">footprint-analysis </italic>
+###xml 564 578 564 578 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+###xml 675 680 675 680 <italic xmlns:xlink="http://www.w3.org/1999/xlink">-noov</italic>
+###xml 721 735 721 735 <italic xmlns:xlink="http://www.w3.org/1999/xlink">-lth occ_sig 0</italic>
+###xml 786 794 786 794 <italic xmlns:xlink="http://www.w3.org/1999/xlink">-sp 0&#8211;20</italic>
+In order to manage these tasks at each level of a taxonomic tree, we implemented in Perl a program called footprint-analysis. The program takes as input a taxonomic tree and a set of input sequences. We extracted the prokaryotic tree from the NCBI taxonomy database [66,67]. Starting from a set of input genes and their orthologous clusters, footprint-analysis retrieves the corresponding upstream sequences up to the upstream neighbor gene, with a maximal length of 400 bp, purges the sequences to discard large redundant fragments (>= 30 bp identical), and runs dyad-analysis at each taxonomical level, with the following options: no self-overlap between word occurrences (-noov), lower threshold of significance of 0 (-lth occ_sig 0), spacing comprised between 0 and 20 nucleotides (-sp 0-20). The analysis is restricted to groups containing at least three sequences.
+###end p 121
+###begin title 122
+Prediction of operons
+###end title 122
+###begin p 123
+###xml 106 108 106 108 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B40">40</xref>
+###xml 204 218 204 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink">within-operon </italic>
+###xml 219 221 219 221 <italic xmlns:xlink="http://www.w3.org/1999/xlink">WO</italic>
+###xml 269 295 269 295 <italic xmlns:xlink="http://www.w3.org/1999/xlink">transcription unit border </italic>
+###xml 296 299 296 299 <italic xmlns:xlink="http://www.w3.org/1999/xlink">TUB</italic>
+###xml 367 379 367 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli K12 </italic>
+###xml 380 382 380 382 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B43">43</xref>
+###xml 405 423 405 423 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bacillus subtilis </italic>
+###xml 424 426 424 426 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B68">68</xref>
+###xml 427 429 427 429 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B69">69</xref>
+###xml 367 374 <span type="species:ncbi:562">E. coli</span>
+###xml 405 422 <span type="species:ncbi:1423">Bacillus subtilis</span>
+We predicted operons on the basis of a simple distance-based method inspired from Salgado and co-workers [40]. Rather than calculating a training-based log-likelihood, we classify an intergenic region as within-operon (WO) if it has a length smaller than 55 bp, and as transcription unit border (TUB) otherwise. We evaluated this method on 407 annotated operons from E. coli K12 [43] and 351 operons from Bacillus subtilis [68,69], and observed that, despite its simplicity, this distance-based threshold strategy gives a comparable accuracy (~80%) to that obtained with more elaborated methods.
+###end p 123
+###begin title 124
+Sequence purging
+###end title 124
+###begin p 125
+###xml 421 428 421 428 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 654 662 654 662 <italic xmlns:xlink="http://www.w3.org/1999/xlink">mkvtree </italic>
+###xml 666 673 666 673 <italic xmlns:xlink="http://www.w3.org/1999/xlink">vmatch </italic>
+###xml 674 676 674 676 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B70">70</xref>
+###xml 677 679 677 679 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B71">71</xref>
+###xml 421 428 <span type="species:ncbi:562">E. coli</span>
+An essential precaution for pattern discovery is to avoid statistical biases due to sequence redundancy. This problem is classically addressed by purging sequences, i.e. discarding repeated fragments. Sequence purging is even more important for promoters of orthologous genes, because the collection of sequenced genomes contains several closely related strains (for example, there are currently 5 strains of the species E. coli). If the selected species are too close from each other, the whole promoter sequence will be conserved, which will lead to an over-estimation of the significance for all the dyads found in these regions. We used the programs mkvtree and vmatch [70,71] to mask redundant fragments larger than 30 bp.
+###end p 125
+###begin title 126
+Background models
+###end title 126
+###begin p 127
+###xml 12 26 12 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">dyad-analysis </italic>
+###xml 149 150 149 150 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B9">9</xref>
+The program dyad-analysis lets the user specify a background model to estimate prior dyad frequencies for the calculation of the significance score [9]. Two alternative background models have been tested in this study. A first possibility is to estimate the prior probability of each dyad as the product of the frequencies observed in the input sequences for its two spaced words (monads).
+###end p 127
+###begin p 128
+
+###end p 128
+###begin p 129
+###xml 6 9 6 9 <italic xmlns:xlink="http://www.w3.org/1999/xlink">W1 </italic>
+###xml 13 16 13 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink">W2 </italic>
+###xml 83 84 83 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink">n</italic>
+###xml 84 86 84 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 84 86 84 86 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>x </italic></sub>
+###xml 119 121 119 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink">x </italic>
+###xml 155 156 155 156 <italic xmlns:xlink="http://www.w3.org/1999/xlink">F</italic>
+###xml 157 158 157 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink">W</italic>
+###xml 158 159 158 159 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 158 159 158 159 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic></sub>
+###xml 190 191 190 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink">W</italic>
+###xml 191 193 191 193 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 191 193 191 193 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+where W1 and W2 are the two monads (in our case, trinucleotides) forming the dyad, nx represents the spacing of length x between these trinucleotides, and F(Wi) is the frequency of the word Wi in the input sequence set. This model is referred to as MONAD in the rest of the text.
+###end p 129
+###begin p 130
+In the second background model (TAXFREQ), the prior probability of each dyad is estimated by computing the frequency of the same dyad in a taxon-specific reference set (sequences upstream of all genes of all organisms belonging to the considered taxon).
+###end p 130
+###begin title 131
+Organism-specific dyads filtering
+###end title 131
+###begin p 132
+###xml 122 129 122 129 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli</italic>
+###xml 648 656 648 656 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli </italic>
+###xml 122 129 <span type="species:ncbi:562">E. coli</span>
+###xml 648 655 <span type="species:ncbi:562">E. coli</span>
+The search of phylogenetic footprints is generally motivated by the interest in one particular "reference" organism (e.g. E. coli). However, when patterns are discovered in promoters of a set of orthologous genes, some motifs can be significant due to their presence in other orthologs, whilst being absent from the promoter of the reference organism. Such motifs can indeed be involved in the regulation of some subgroups of the considered taxon, but not for the reference organism. In order to filter out such motifs, we apply an organism-specific filter, by discarding all the dyads that are not found in the promoter of the reference organism (E. coli in our case). Since the number of tested dyads is drastically lowered, the multi-testing correction is lower than with the full analysis. Consequently, for the same P-value, one generally has a lower E-value, and thus a higher significance. This organism-specific dyad filtering has thus a double effect of lowering the rate of false positives (by filtering our irrelevant dyads) and increasing the sensitivity (by increasing the significance of the relevant dyads).
+###end p 132
+###begin title 133
+Heat map
+###end title 133
+###begin p 134
+###xml 91 93 91 93 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B72">72</xref>
+###xml 115 127 115 127 <italic xmlns:xlink="http://www.w3.org/1999/xlink">heatmap.2() </italic>
+###xml 165 166 165 166 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 166 169 166 169 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij </italic>
+###xml 166 169 166 169 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij </italic></sub>
+###xml 203 204 203 204 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 206 208 206 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 249 266 249 266 <italic xmlns:xlink="http://www.w3.org/1999/xlink">compare-patterns </italic>
+###xml 296 298 296 298 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S </italic>
+###xml 339 340 339 340 <italic xmlns:xlink="http://www.w3.org/1999/xlink">D</italic>
+###xml 340 343 340 343 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij </italic>
+###xml 340 343 340 343 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij </italic></sub>
+###xml 345 348 345 348 <italic xmlns:xlink="http://www.w3.org/1999/xlink">max</italic>
+###xml 349 350 349 350 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 352 353 352 353 <italic xmlns:xlink="http://www.w3.org/1999/xlink">S</italic>
+###xml 353 355 353 355 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ij</italic>
+###xml 353 355 353 355 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>ij</italic></sub>
+###xml 425 434 425 434 <italic xmlns:xlink="http://www.w3.org/1999/xlink">hclust() </italic>
+###xml 659 660 659 660 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="supplementary-material" rid="S1">1</xref>
+The significance heat map (patterns versus taxa) was drawn with the statistical freeware R[72], using the function heatmap.2() from the package gplots. Similarities Sij were calculated between each pair i, j of significant patterns with the program compare-patterns (RSAT). The similarity matrix S was then converted to a distance matrix (Dij = max(S)-Sij), used to cluster patterns using a hierarchical clustering algorithm hclust() with the single linkage method. In order to simplify the visualization, we selected only patterns having a score at least equal to 8 in at least one taxon. Heat maps with other thresholds are available in the Additional file 1.
+###end p 134
+###begin title 135
+Annotated motifs
+###end title 135
+###begin p 136
+###xml 241 242 241 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F2">2</xref>
+###xml 336 348 336 348 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E. coli K12 </italic>
+###xml 372 374 372 374 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B33">33</xref>
+###xml 595 600 595 600 <italic xmlns:xlink="http://www.w3.org/1999/xlink">trpL </italic>
+###xml 604 608 604 608 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ilvL</italic>
+###xml 614 617 614 617 <italic xmlns:xlink="http://www.w3.org/1999/xlink">asr</italic>
+###xml 336 343 <span type="species:ncbi:562">E. coli</span>
+In order to validate our analysis, the discovered motifs (significant dyads) were compared to annotated sites. For the analysis of LexA auto-regulation in all taxa, taxon-specific motifs were collected from the biological literature (Figure 2). For our systemic validation, we used annotated sites for 368 genes (coding sequences) from E. coli K12 annotated in RegulonDB [33] (updated in 11/2005). From 402 genes having annotated sites in the original set, we discarded 31 genes corresponding to non translated RNA (tRNA, sRNA, rRNA) and 3 genes without identified orthologs (2 leader peptides: trpL and ilvL; and asr, an heat shock polypeptide). The exact position of binding sites is not always perfectly identified, due to experimental imprecision. For this reason, we preferred to maintain the site-flanking sequences for this evaluation (10 bp on each side).
+###end p 136
+###begin title 137
+Comparison between discovered motifs and annotated sites
+###end title 137
+###begin p 138
+###xml 12 28 12 28 <italic xmlns:xlink="http://www.w3.org/1999/xlink">compare-patterns</italic>
+The program compare-patterns, takes as input two collections of patterns (in this case, a set of discovered dyads and a set of annotated binding sites), and calculates the number of matching bases between each pair of patterns, as well as the statistical significance of the matches. We consider only perfect matches.
+###end p 138
+###begin p 139
+We define the following statistics:
+###end p 139
+###begin p 140
+###xml 2 22 2 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Matching dyad (MD): </italic>
+- Matching dyad (MD): discovered dyad matching at least one annotated site for the considered gene.
+###end p 140
+###begin p 141
+###xml 2 26 2 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Non-matching dyad (ND): </italic>
+- Non-matching dyad (ND): discovered dyads without any match with the annotated sites for the considered gene.
+###end p 141
+###begin p 142
+###xml 2 21 2 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Matched site (MS): </italic>
+- Matched site (MS): annotated site matched by at least one discovered dyad.
+###end p 142
+###begin p 143
+###xml 2 25 2 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Non-matched site (NS): </italic>
+- Non-matched site (NS): annotated site without any match with the discovered dyads.
+###end p 143
+###begin p 144
+###xml 2 23 2 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Matched factor (MF): </italic>
+- Matched factor (MF): transcription factor for which at least one of the binding sites has been matched by at least one of the discovered dyads in at least one of the target genes.
+###end p 144
+###begin p 145
+###xml 2 27 2 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Non-matched factor (NF): </italic>
+- Non-matched factor (NF): transcription factors for which none of the binding sites has been matched by any of the discovered dyads in any of the target genes.
+###end p 145
+###begin title 146
+Matching statistics
+###end title 146
+###begin p 147
+From the pattern comparison results, we derive the following evaluation parameters:
+###end p 147
+###begin p 148
+###xml 8 40 8 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">positive predictive value (PPV) </italic>
+###xml 117 121 117 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PPV </italic>
+###xml 123 125 123 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MD</italic>
+###xml 127 132 127 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MD+ND</italic>
+###xml 35 38 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 117 120 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+(1) The positive predictive value (PPV) is the fraction of discovered patterns matching at least one annotated site. PPV = MD/(MD+ND)
+###end p 148
+###begin p 149
+###xml 4 25 4 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink">The sensitivity (Sn) </italic>
+###xml 112 115 112 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Sn </italic>
+###xml 117 119 117 119 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MS</italic>
+###xml 121 126 121 126 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MS+NS</italic>
+(2) The sensitivity (Sn) is the fraction of annotated binding sites matched by at least one discovered pattern. Sn = MS/(MS+NS)
+###end p 149
+###begin p 150
+###xml 38 40 38 40 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Sn</italic>
+###xml 79 82 79 82 <italic xmlns:xlink="http://www.w3.org/1999/xlink">PPV</italic>
+###xml 127 132 127 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Acc.g</italic>
+###xml 79 82 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 191 194 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 360 363 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+###xml 372 375 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+(3) The tradeoff between sensitivity (Sn) and selectivity (as estimated by the PPV) can be captured by the geometric accuracy (Acc.g), defined as the geometric average of the sensitivity and PPV. . The geometric accuracy is more severe than the frequently used arithmetic mean, because it puts a higher penalty on unbalanced predictions (e.g. low Sn with high PPV, or low PPV with high Sn).
+###end p 150
+###begin p 151
+###xml 8 54 8 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">transcription factor-wise sensitivity (tf.Sn) </italic>
+###xml 224 230 224 230 <italic xmlns:xlink="http://www.w3.org/1999/xlink">tf.Sn </italic>
+###xml 232 234 232 234 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MF</italic>
+###xml 236 241 236 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink">MF+NF</italic>
+(4) The transcription factor-wise sensitivity (tf.Sn) is the fraction of transcription factors for which at least one of the binding sites has been matched by at least one of the discovered dyads in one of the target genes. tf.Sn = MF/(MF+NF)
+###end p 151
+###begin title 152
+Random promoter selections
+###end title 152
+###begin p 153
+###xml 20 38 20 38 <italic xmlns:xlink="http://www.w3.org/1999/xlink">random-seq-select </italic>
+We used the program random-seq-select (RSAT) to select, at each taxonomical level, 100 random sets of promoters. For each taxonomical level, the number of sequences per random set was defined as the average number of sequences obtained by group of orthologous genes (80 sequences per set for Bacteria, 49 for Proteobacteria, 32 for Gamma-proteobacteria, 16 for Enterobacteriales and 4 for Escherichia).
+###end p 153
+###begin title 154
+Matrix-based pattern discovery
+###end title 154
+###begin p 155
+###xml 73 75 73 75 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B57">57</xref>
+###xml 85 86 85 86 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B4">4</xref>
+###xml 99 101 99 101 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B54">54</xref>
+###xml 118 120 118 120 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B11">11</xref>
+We used the following programs for matrix-based pattern discovery: MEME [57], gibbs [4], AlignACE [54], MotifSampler [11]. MEME relies on an expectation-maximization algorithm, whereas gibbs, AlignACE and MotifSampler rely on a Gibbs sampling algorithm, each implementation presenting some interesting characteristics.
+###end p 155
+###begin title 156
+Matrix width
+###end title 156
+###begin p 157
+the motif width (number of columns of the matrices) was set to 16 for all programs, except for MEME, which includes an option for testing all matrix width within a given range (we tested from 6 to 25).
+###end p 157
+###begin title 158
+Number of motifs
+###end title 158
+###begin p 159
+MEME, gibbs and MotifSampler support the detection of multiple motifs. We set the number of motifs per sequences to 5, and selected the top-ranking motif for each program. AlignACE detects a single motif per analysis.
+###end p 159
+###begin p 160
+The other program-specific options are detailed on the supporting web site.
+###end p 160
+###begin p 161
+###xml 12 27 12 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink">convert-matrix </italic>
+###xml 306 307 306 307 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B8">8</xref>
+The program convert-matrix of RSAT was used to convert the output files of these matrix-based programs into a homogeneous format. The conversion also includes the computation of total information content (TIC) and information per column (IPC), following Hertz and Stormo's formula for information content [8]:
+###end p 161
+###begin p 162
+
+###end p 162
+###begin p 163
+###xml 6 7 6 7 <italic xmlns:xlink="http://www.w3.org/1999/xlink">f</italic>
+###xml 7 8 7 8 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 9 11 9 11 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j </italic>
+###xml 7 11 7 11 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i</italic>,<italic>j </italic></sub>
+###xml 31 32 31 32 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 32 35 32 35 <italic xmlns:xlink="http://www.w3.org/1999/xlink">th </italic>
+###xml 32 35 32 35 <sup xmlns:xlink="http://www.w3.org/1999/xlink"><italic>th </italic></sup>
+###xml 63 64 63 64 <italic xmlns:xlink="http://www.w3.org/1999/xlink">j</italic>
+###xml 64 67 64 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink">th </italic>
+###xml 64 67 64 67 <sup xmlns:xlink="http://www.w3.org/1999/xlink"><italic>th </italic></sup>
+###xml 113 115 113 115 <italic xmlns:xlink="http://www.w3.org/1999/xlink">A </italic>
+###xml 183 184 183 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 184 186 184 186 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i </italic>
+###xml 184 186 184 186 <sub xmlns:xlink="http://www.w3.org/1999/xlink"><italic>i </italic></sub>
+###xml 214 215 214 215 <italic xmlns:xlink="http://www.w3.org/1999/xlink">i</italic>
+###xml 215 218 215 218 <italic xmlns:xlink="http://www.w3.org/1999/xlink">th </italic>
+###xml 215 218 215 218 <sup xmlns:xlink="http://www.w3.org/1999/xlink"><italic>th </italic></sup>
+###xml 231 233 231 233 <italic xmlns:xlink="http://www.w3.org/1999/xlink">k </italic>
+where fi,j is the frequency of ith residue (matrix row) in the jth position of the motif (column of the matrix); A is the size of the alphabet (A = 4 for DNA), w is the matrix width, pi is the prior residue of the ith residue, and k is a pseudo-weight (set to 1 by default).
+###end p 163
+###begin title 164
+Availability and requirements
+###end title 164
+###begin p 165
+Project name: Regulatory Sequence Analysis Tools (RSAT)
+###end p 165
+###begin p 166
+Project home page: 
+###end p 166
+###begin p 167
+###xml 101 103 101 103 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B61">61</xref>
+Operating system(s): The main access to Regulatory Sequence Analysis Tools is via the web interface [61], which is platform independent. The Regulatory Sequence Analysis Tools can be used as stand-alone application on Unix-based systems (tested on Linux, Mac OSX, SPARC Solaris, Alpha Dec);
+###end p 167
+###begin p 168
+Programming language: Perl.
+###end p 168
+###begin p 169
+Licence: The web site is freely available to all users. The stand-alone version is freely available for academic users. Commercial companies are allowed to use the site during a reasonable testing period.
+###end p 169
+###begin p 170
+Any restrictions to use: non-commercial, non-military and non-redistribution.
+###end p 170
+###begin p 171
+###xml 97 99 97 99 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="B73">73</xref>
+Supplementary methods, scripts and predictions are available on the RSAT supplementary material [73].
+###end p 171
+###begin title 172
+Abbreviations
+###end title 172
+###begin p 173
+###xml 208 211 <span type="species:ncbi:10796?0.09130166563849476|species:ncbi:12211?0.07279457125231338">PPV</span>
+Sig: Significance score; MD: Matching dyads; ND: Non-matching dyad; MS: Matched site; NS: Non-matched site; MF: Matched factor; NF: Non-matched factor: FP: False Positive; TP: True Positive; Sn: Sensitivity; PPV: Positive Predictive Value; Acc.g: geometric Accuracy; Sn.tf: Transcription Factor-wise Sensitivity; TIC: total information content; MAP: maximum a posteriori probability; TF: transcription factor; TFBS: transcription factor binding site.
+###end p 173
+###begin title 174
+Authors' contributions
+###end title 174
+###begin p 175
+RJ collected the data, implemented the pipeline of RSAT programs, made the analysis and ran the evaluation procedures. JvH conceived the study and participated in its design, coordination, and in defining the matching statistics. Both authors were equally involved in writing the manuscript.
+###end p 175
+###begin title 176
+Supplementary Material
+###end title 176
+###begin title 177
+Additional file 1
+###end title 177
+###begin p 178
+###xml 120 121 120 121 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+Correctness of dyads predicted by group of genes and taxonomical level, with all combinations of parameters. See Figure 3 for legend.
+###end p 178
+###begin p 179
+Click here for file
+###end p 179
+###begin title 180
+Additional file 2
+###end title 180
+###begin p 181
+###xml 388 389 388 389 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F3">3</xref>
+Correctness of dyads predicted by group of genes and taxonomical level, at different significance thresholds. Each heat map is drawn for a given threshold on the significance score. This threshold increases from left to right: 0, 1, 1.5, 2, 3, 4 and 5. We used here the results of dyad-analysis using the MONAD background model, the dyads filtering and the operons prediction. See Figure 3 for legend.
+###end p 181
+###begin p 182
+Click here for file
+###end p 182
+###begin title 183
+Additional file 3
+###end title 183
+###begin p 184
+###xml 130 131 130 131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="F6">6</xref>
+Significance heat map of the dyads discovered at different taxonomical levels in upstream sequences of lexA orthologs (See figure 6 for legend).
+###end p 184
+###begin p 185
+Click here for file
+###end p 185
+###begin title 186
+Acknowledgements
+###end title 186
+###begin p 187
+RJ is supported by a doctoral grant from the Fonds pour la Recherche dans l'Industrie et l'Agriculture (F.R.I.A.) allowed by the Belgian Fond National de la Recherche Scientifique (F.N.R.S.). This project was partly supported by the BioSapiens Network of Excellence funded under the sixth Framework program of the European Communities (LSHG-CT-2003-503265). Publication costs were sponsored by the Region Wallonne de Belgique (TransMaze project 415925).
+###end p 187
+###begin article-title 188
+Identification of consensus patterns in unaligned DNA sequences known to be functionally related
+###end article-title 188
+###begin article-title 189
+Detecting subtle sequence signals: a Gibbs sampling strategy for multiple alignment
+###end article-title 189
+###begin article-title 190
+Gibbs motif sampling: detection of bacterial outer membrane protein repeats
+###end article-title 190
+###begin article-title 191
+The value of prior knowledge in discovering motifs with MEME
+###end article-title 191
+###begin article-title 192
+###xml 56 61 <span type="species:ncbi:4932">yeast</span>
+Extracting regulatory sites from the upstream region of yeast genes by computational analysis of oligonucleotide frequencies
+###end article-title 192
+###begin article-title 193
+Approaches to the automatic discovery of patterns in biosequences
+###end article-title 193
+###begin article-title 194
+Predicting gene regulatory elements in silico on a genomic scale
+###end article-title 194
+###begin article-title 195
+Identifying DNA and protein patterns with statistically significant alignments of multiple sequences
+###end article-title 195
+###begin article-title 196
+Discovering regulatory elements in non-coding sequences by analysis of spaced dyads
+###end article-title 196
+###begin article-title 197
+A higher-order background model improves the detection of promoter regulatory elements by Gibbs sampling
+###end article-title 197
+###begin article-title 198
+BioProspector: discovering conserved DNA motifs in upstream regulatory regions of co-expressed genes
+###end article-title 198
+###begin article-title 199
+###xml 65 86 <span type="species:ncbi:9463">Galago crassicaudatus</span>
+Embryonic epsilon and gamma globin genes of a prosimian primate (Galago crassicaudatus). Nucleotide and amino acid sequences, developmental regulation and phylogenetic footprints
+###end article-title 199
+###begin article-title 200
+Identification of regulatory regions which confer muscle-specific gene expression
+###end article-title 200
+###begin article-title 201
+###xml 0 5 <span type="species:ncbi:9606">Human</span>
+###xml 6 11 <span type="species:ncbi:10090">mouse</span>
+Human-mouse genome comparisons to locate regulatory sites
+###end article-title 201
+###begin article-title 202
+Discovery and modeling of transcriptional regulatory regions
+###end article-title 202
+###begin article-title 203
+Identifying functional elements by comparative DNA sequence analysis
+###end article-title 203
+###begin article-title 204
+Conservation of DNA regulatory motifs and discovery of new motifs in microbial genomes
+###end article-title 204
+###begin article-title 205
+Phylogenetic footprinting of transcription factor binding sites in proteobacterial genomes
+###end article-title 205
+###begin article-title 206
+###xml 93 114 <span type="species:ncbi:1280">Staphylococcus aureus</span>
+Regulog analysis: detection of conserved regulatory networks across bacteria: application to Staphylococcus aureus
+###end article-title 206
+###begin article-title 207
+###xml 29 34 <span type="species:ncbi:4932">yeast</span>
+Sequencing and comparison of yeast species to identify genes and regulatory elements
+###end article-title 207
+###begin article-title 208
+Progressive alignment of amino acid sequences and construction of phylogenetic trees from them
+###end article-title 208
+###begin article-title 209
+PhyME: a probabilistic algorithm for finding motifs in sets of orthologous sequences
+###end article-title 209
+###begin article-title 210
+Phylogenetic motif detection by expectation-maximization on evolutionary mixtures
+###end article-title 210
+###begin article-title 211
+Motif discovery in heterogeneous sequence data
+###end article-title 211
+###begin article-title 212
+Combining phylogenetic data with co-regulated genes to identify regulatory motifs
+###end article-title 212
+###begin article-title 213
+PhyloGibbs: a Gibbs sampling motif finder that incorporates phylogeny
+###end article-title 213
+###begin article-title 214
+FootPrinter: A program designed for phylogenetic footprinting
+###end article-title 214
+###begin article-title 215
+Benchmarking tools for the alignment of functional noncoding DNA
+###end article-title 215
+###begin article-title 216
+Aligning multiple genomic sequences with the threaded blockset aligner
+###end article-title 216
+###begin article-title 217
+Regulatory sequence analysis tools
+###end article-title 217
+###begin article-title 218
+###xml 60 81 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+The repertoire of DNA-binding transcriptional regulators in Escherichia coli K-12
+###end article-title 218
+###begin article-title 219
+Purified lexA protein is a repressor of the recA and lexA genes
+###end article-title 219
+###begin article-title 220
+###xml 25 46 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+RegulonDB (version 5.0): Escherichia coli K-12 transcriptional regulatory network, operon organization, and growth conditions
+###end article-title 220
+###begin article-title 221
+###xml 20 36 <span type="species:ncbi:562">Escherichia coli</span>
+The SOS response of Escherichia coli.
+###end article-title 221
+###begin article-title 222
+SOS repair hypothesis: phenomenology of an inducible DNA repair which is accompanied by mutagenesis
+###end article-title 222
+###begin article-title 223
+###xml 71 87 <span type="species:ncbi:562">Escherichia coli</span>
+Mutagenesis and inducible responses to deoxyribonucleic acid damage in Escherichia coli
+###end article-title 223
+###begin article-title 224
+###xml 56 72 <span type="species:ncbi:562">Escherichia coli</span>
+Control site location and transcriptional regulation in Escherichia coli
+###end article-title 224
+###begin article-title 225
+###xml 52 68 <span type="species:ncbi:562">Escherichia coli</span>
+Functional determinants of transcription factors in Escherichia coli: protein families and binding sites
+###end article-title 225
+###begin article-title 226
+###xml 68 85 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Identification and analysis of DNA-binding transcription factors in Bacillus subtilis and other Firmicutes--a genomic approach
+###end article-title 226
+###begin article-title 227
+###xml 11 27 <span type="species:ncbi:562">Escherichia coli</span>
+Operons in Escherichia coli: genomic analyses and predictions
+###end article-title 227
+###begin article-title 228
+Differences in LexA regulon structure among Proteobacteria through in vivo assisted comparative genomics
+###end article-title 228
+###begin article-title 229
+Contacts between the LexA repressor--or its DNA-binding domain--and the backbone of the recA operator DNA
+###end article-title 229
+###begin article-title 230
+###xml 98 119 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+RegulonDB (version 4.0): transcriptional regulation, operon organization and growth conditions in Escherichia coli K-12
+###end article-title 230
+###begin article-title 231
+###xml 126 147 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+Action at a distance for negative control of transcription of the glpD gene encoding sn-glycerol 3-phosphate dehydrogenase of Escherichia coli K-12
+###end article-title 231
+###begin article-title 232
+Reconstruction of the evolutionary history of the LexA-binding sequence
+###end article-title 232
+###begin article-title 233
+###xml 135 153 <span type="species:ncbi:2371">Xylella fastidiosa</span>
+A new regulatory DNA motif of the gamma subclass Proteobacteria: identification of the LexA protein binding site of the plant pathogen Xylella fastidiosa
+###end article-title 233
+###begin article-title 234
+In silico analysis reveals substantial variability in the gene contents of the gamma proteobacteria LexA-regulon
+###end article-title 234
+###begin article-title 235
+###xml 75 92 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Cloning and characterization of DNA damage-inducible promoter regions from Bacillus subtilis
+###end article-title 235
+###begin article-title 236
+###xml 4 21 <span type="species:ncbi:1423">Bacillus subtilis</span>
+The Bacillus subtilis DinR binding site: redefinition of the consensus sequence
+###end article-title 236
+###begin article-title 237
+###xml 15 32 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Binding of the Bacillus subtilis LexA protein to the SOS operator
+###end article-title 237
+###begin article-title 238
+###xml 93 114 <span type="species:ncbi:1916">Streptomyces lividans</span>
+Evidence that an additional mutation is required to tolerate insertional inactivation of the Streptomyces lividans recA gene
+###end article-title 238
+###begin article-title 239
+Factors influencing the identification of transcription factor binding sites by cross-species comparison
+###end article-title 239
+###begin article-title 240
+MicroFootPrinter: a tool for phylogenetic footprinting in prokaryotic genomes
+###end article-title 240
+###begin article-title 241
+Finding DNA regulatory motifs within unaligned noncoding sequences clustered by whole-genome mRNA quantitation
+###end article-title 241
+###begin article-title 242
+Evaluation of clustering algorithms for protein-protein interaction networks
+###end article-title 242
+###begin article-title 243
+Assessing computational tools for the discovery of transcription factor binding sites
+###end article-title 243
+###begin article-title 244
+Fitting a mixture model by expectation maximization to discover motifs in biopolymers
+###end article-title 244
+###begin article-title 245
+Systematic determination of genetic network architecture
+###end article-title 245
+###begin article-title 246
+Conservation and evolution of cis-regulatory systems in ascomycete fungi
+###end article-title 246
+###begin article-title 247
+NCBI Microbial Genomes FTP server
+###end article-title 247
+###begin article-title 248
+The Regulatory Sequence Analysis Tools (RSAT)
+###end article-title 248
+###begin article-title 249
+Basic local alignment search tool
+###end article-title 249
+###begin article-title 250
+Measuring genome evolution
+###end article-title 250
+###begin article-title 251
+Discovery of conserved motifs in promoters of orthologous genes in prokaryotes
+###end article-title 251
+###begin article-title 252
+###xml 45 50 <span type="species:ncbi:4932">yeast</span>
+A web site for the computational analysis of yeast regulatory sequences
+###end article-title 252
+###begin article-title 253
+GenBank
+###end article-title 253
+###begin article-title 254
+Database resources of the National Center for Biotechnology Information
+###end article-title 254
+###begin article-title 255
+###xml 23 40 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Database of Operons in Bacillus subtilis
+###end article-title 255
+###begin article-title 256
+###xml 35 52 <span type="species:ncbi:1423">Bacillus subtilis</span>
+Predicting the operon structure of Bacillus subtilis using operon length, intergene distance, and gene expression information
+###end article-title 256
+###begin article-title 257
+REPuter: fast computation of maximal repeats in complete genomes
+###end article-title 257
+###begin article-title 258
+REPuter: the manifold applications of repeat analysis on a genomic scale
+###end article-title 258
+###begin article-title 259
+The R Project for Statistical Computing
+###end article-title 259
+###begin article-title 260
+The RSAT Supplementary material
+###end article-title 260
+###begin article-title 261
+###xml 65 86 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+Nucleotide sequence binding specificity of the LexA repressor of Escherichia coli K-12
+###end article-title 261
+###begin article-title 262
+###xml 102 118 <span type="species:ncbi:562">Escherichia coli</span>
+Identification of high affinity binding sites for LexA which define new DNA damage-inducible genes in Escherichia coli
+###end article-title 262
+###begin article-title 263
+###xml 69 91 <span type="species:ncbi:382">Sinorhizobium meliloti</span>
+Regulation of divergent transcription from the uvrA-ssb promoters in Sinorhizobium meliloti
+###end article-title 263
+###begin article-title 264
+###xml 69 87 <span type="species:ncbi:34">Myxococcus xanthus</span>
+LexA-independent DNA damage-mediated induction of gene expression in Myxococcus xanthus
+###end article-title 264
+###begin article-title 265
+LexA-binding sequences in Gram-positive and cyanobacteria are closely related
+###end article-title 265
+###begin article-title 266
+###xml 20 46 <span type="species:ncbi:1773">Mycobacterium tuberculosis</span>
+Characterization of Mycobacterium tuberculosis LexA: recognition of a Cheo (Bacillus-type SOS) box
+###end article-title 266
+###begin article-title 267
+###xml 152 175 <span type="species:ncbi:1772">Mycobacterium smegmatis</span>
+SOS induction in mycobacteria: analysis of the DNA-binding activity of a LexA-like repressor and its role in DNA damage induction of the recA gene from Mycobacterium smegmatis
+###end article-title 267
+###begin article-title 268
+WebLogo: a sequence logo generator
+###end article-title 268
+###begin article-title 269
+###xml 55 71 <span type="species:ncbi:562">Escherichia coli</span>
+RegulonDB: a database on transcriptional regulation in Escherichia coli
+###end article-title 269
+

@@ -1,0 +1,999 @@
+###begin article-title 0
+Module-Based Analysis of Robustness Tradeoffs in the Heat Shock Response System
+###end article-title 0
+###begin p 1
+###xml 471 487 471 487 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 692 694 688 690 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 471 487 <span type="species:ncbi:562">Escherichia coli</span>
+Biological systems have evolved complex regulatory mechanisms, even in situations where much simpler designs seem to be sufficient for generating nominal functionality. Using module-based analysis coupled with rigorous mathematical comparisons, we propose that in analogy to control engineering architectures, the complexity of cellular systems and the presence of hierarchical modular structures can be attributed to the necessity of achieving robustness. We employ the Escherichia coli heat shock response system, a strongly conserved cellular mechanism, as an example to explore the design principles of such modular architectures. In the heat shock response system, the sigma-factor sigma32 is a central regulator that integrates multiple feedforward and feedback modules. Each of these modules provides a different type of robustness with its inherent tradeoffs in terms of transient response and efficiency. We demonstrate how the overall architecture of the system balances such tradeoffs. An extensive mathematical exploration nevertheless points to the existence of an array of alternative strategies for the existing heat shock response that could exhibit similar behavior. We therefore deduce that the evolutionary constraints facing the system might have steered its architecture toward one of many robustly functional solutions.
+###end p 1
+###begin title 2
+Synopsis
+###end title 2
+###begin p 3
+Biological systems maintain phenotypic stability in the face of various perturbations arising from environmental changes, stochastic fluctuations, and genetic variations. This robustness, which seems to be an inherent property of such systems, is still poorly understood at the molecular level. At the same time, systems approaches that were used with great success in the study and design of complex engineered systems provide a unique opportunity for investigating the basic tenants of robustness in cellular mechanisms. This is motivated by the fact that at the system level, biology and engineering seem to have a large number of common features despite their extremely different physical implementations. The heat shock response is one such robust cellular system, which interestingly achieves its seemingly simple objective of refolding or eliminating heat-denatured proteins through a complicated set of interactions. In analogy to engineering control architectures, the complex regulation strategies seem to be a specifically designed solution to generate robustness against different types of perturbations.
+###end p 3
+###begin title 4
+Introduction
+###end title 4
+###begin p 5
+###xml 61 62 61 62 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b001">1</xref>
+###xml 87 88 87 88 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b002">2</xref>
+###xml 88 88 88 88 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b003"/>
+###xml 88 88 88 88 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b004"/>
+###xml 88 88 88 88 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b005"/>
+###xml 89 90 89 90 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b006">6</xref>
+System-level approaches in biology have both a long history [1] and a revived present [2-6]. The main catalyst behind the renewed mainstream interest in the application of such approaches to the study of biological systems is their undeniable successes in the study of engineering systems. Indeed, systems-level design has consistently been at the core of modern engineering, motivating its most sophisticated theories in controls, computation, and information. While biological systems seem to employ feedback and feedforward loops of a similar nature to those present in engineering systems, they still possess subtle differences that need to be elucidated.
+###end p 5
+###begin p 6
+###xml 408 409 408 409 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b007">7</xref>
+###xml 410 411 410 411 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b008">8</xref>
+###xml 551 552 551 552 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b009">9</xref>
+Whether applied to manmade or naturally occurring systems, the hallmark of a systems approach resides in the identification of distinct functional modules and protocols, i.e., the laws used to manage the connections between the different modules. In this context, two questions are of primary importance. What architectural aspects of biological modules make them similar or different from manmade machines [7,8]? And, how do biological control modules evolve and assemble into hierarchical modular systems that can survive in demanding environments [9]?
+###end p 6
+###begin p 7
+###xml 567 569 567 569 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b010">10</xref>
+###xml 569 569 569 569 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b011"/>
+###xml 570 572 570 572 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b012">12</xref>
+The first property that engineering and biological systems seem to have in common is the need for elaborate designs to generate robustly operational systems. A close scrutiny of both types of systems shows that in many instances, minimal designs are sufficient to generate nominal functionality. However, these minimal designs often fail to provide crucial aspects of robustness and performance necessary for competitive survival in challenging environments. Examples from technological sciences are abundant, while examples from natural sciences are still emerging [10-12]. In either case, a broad spectrum of strategies has evolved to generate such robustness and maintain internal conditions in the presence of both internal and external disturbances.
+###end p 7
+###begin p 8
+###xml 51 53 51 53 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b013">13</xref>
+###xml 524 532 524 532 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli,</italic>
+###xml 632 634 628 630 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 657 659 653 655 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b014">14</xref>
+###xml 788 790 784 786 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b015">15</xref>
+###xml 899 901 891 893 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 970 972 958 960 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1085 1087 1069 1071 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1125 1127 1105 1107 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 524 531 <span type="species:ncbi:562">E. coli</span>
+The heat shock response is one such robust system [13]. Heat shock causes unfolding, misfolding, or aggregation of proteins at the cellular level on the order of seconds, compromising cellular function. Cells overcome the heat stress by initiating the production of heat-shock proteins (hsps) that act as chaperones to refold denatured proteins into their native states, or proteases that degrade them. Although the objective of the heat shock response seems simple, its implementation involves complicated interactions. In E. coli, these interactions are centered on regulating the synthesis, degradation, and activity of the sigma32 transcription factor [14]. These interactions result in chaperone-mediated and protease-mediated feedback loops, and a feedforward loop for translation [15]. Chaperone-mediated feedback measures the quantity of unfolded proteins and modulates the activity of sigma32, whereas protease-mediated feedback modulates the stability of sigma32. At the same time, the feedforward control senses temperature changes directly and instantaneously induces sigma32 translation, thereby regulating sigma32 synthesis.
+###end p 8
+###begin p 9
+###xml 160 162 160 162 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b010">10</xref>
+###xml 192 194 192 194 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b010">10</xref>
+Using a dynamic model of the heat shock response, we have previously analyzed the function of these feedback and feedforward regulators in terms of robustness [10]. The analysis presented in [10] mostly focused on local robustness properties corresponding to a particular choice of plausible parameter values. Here we explore instead a large space of relevant kinetic parameters and study the performance of the system in terms of newly defined mathematical criteria such as the efficiency and yield of the time response. These criteria are used to enable mathematical comparisons between the dynamics of wild-type and virtual knockout mutants that lack specific regulators. To interpret our results, we decompose the architecture of the system into hierarchical modules, and introduce the notion of a mechanistic protocol that dictates the way by which these modules are assembled.
+###end p 9
+###begin title 10
+Results
+###end title 10
+###begin title 11
+Modular Architecture in the Heat Shock Response System
+###end title 11
+###begin p 12
+###xml 27 34 27 34 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 98 106 98 106 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g001">Figure 1</xref>
+###xml 126 134 126 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g002">Figure 2</xref>
+###xml 633 635 629 631 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 903 905 895 897 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1183 1185 1171 1173 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1328 1330 1312 1314 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1373 1375 1353 1355 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1511 1519 1491 1499 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g001">Figure 1</xref>
+###xml 1616 1624 1596 1604 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t001">Tables 1</xref>
+###xml 1625 1626 1605 1606 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t003">3</xref>
+###xml 1637 1658 1617 1638 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Materials and Methods</xref>
+###xml 1702 1709 1682 1689 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t001">Table 1</xref>
+###xml 1770 1777 1750 1757 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t001">Table 1</xref>
+###xml 1856 1863 1836 1843 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t001">Table 1</xref>
+###xml 1940 1947 1920 1927 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t001">Table 1</xref>
+###xml 2074 2082 2054 2062 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020059-st001">Table S1</xref>
+###xml 2120 2129 2100 2109 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020059-sg001">Figure S1</xref>
+###xml 27 34 <span type="species:ncbi:562">E. coli</span>
+The biochemical map of the E. coli heat shock response can be decomposed into functional modules (Figure 1) and flux modules (Figure 2). The functional decomposition is carried out in analogy to engineering control systems block diagrams. Specifically, if we define the protein-folding task as the process to be regulated or controlled, then the quantity that drives this process is the actuation signal. The actuator module in the heat shock system comprises the high-gain processes of transcription and translation that produce cellular chaperones. Such synthesis of chaperones uses a modest control input, the number of free sigma32, and amplifies it to produce a large chaperone actuation signal that drives the folding plant. This control signal is itself the output of a "computational" or a "controller" unit which, based on the sensed folding state of the cell, modulates the number of the sigma32 molecules to generate an appropriate control signal. Finally, the folding state of the cell is sensed through the binding of the unfolded proteins to the chaperones. For example, when the number of unfolded proteins increases, the number of free chaperones decreases. The sigma32 computational unit then assesses this measured signal. The information content of this signal leads, through both the degradation of the sigma32 factor and the amount of sequestered sigma32, to an adequate control action. The integration of the molecular modules into these defined functional modules is pictorially shown in Figure 1. The mathematical equations can also be connected to the functional modules for the full model (Tables 1-3, see also Materials and Methods). In this model, Equations 1-6 and 8-11 in Table 1 describe the computation module, while Equations 4 and 7 in Table 1 describe the FB sensor module. The mass balance equations, Equations 12-19 in Table 1, are common to both modules. The differential equations, Equations 20-28 in Table 1, describe the actuators and plants. To clearly illustrate such connections, a reduced order model of the heat shock response (Table S1) is divided into functional modules (Figure S1).
+###end p 12
+###begin title 13
+###xml 27 34 27 34 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 27 34 <span type="species:ncbi:562">E. coli</span>
+A Schematic Diagram of the E. coli Heat Shock Response and Its Functional Modules
+###end title 13
+###begin p 14
+The notation of CADLIVE is used for simplifying the diagram:  binding,  degradation,  irreversible conversion,  protein synthesis,  catalysis,  activation. The rectangles show the functional modules. The activation is the semantic reaction whose molecular mechanism is neither revealed nor fully described. For example, the notation of protein synthesis is semantic because many molecules, such as ribosomes, tRNAs, and amino acids, are omitted. On the other hand, the catalysis is the mechanistic reaction whose mechanism can be described at the molecular interaction level.
+###end p 14
+###begin title 15
+###xml 20 27 20 27 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 20 27 <span type="species:ncbi:562">E. coli</span>
+Flux Modules of the E. coli Heat Shock Response
+###end title 15
+###begin p 16
+(A) Feedforward flux module.
+###end p 16
+###begin p 17
+(B) Sequestration-mediated feedback (SEQ-FB) flux module.
+###end p 17
+###begin p 18
+(C) Degradation-mediated feedback (DEG-FB) flux module.
+###end p 18
+###begin p 19
+###xml 9 11 5 7 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 69 77 65 73 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g001">Figure 1</xref>
+(D) sigma32 amplifier flux module. The notation used is identical to Figure 1.
+###end p 19
+###begin p 20
+Mathematical Equations for the Detailed Mechanistic Model of the Heat Shock Response
+###end p 20
+###begin p 21
+###xml 208 216 208 216 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g002">Figure 2</xref>
+###xml 286 295 286 295 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020059-sg002">Figure S2</xref>
+###xml 595 597 591 593 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 623 631 619 627 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g002">Figure 2</xref>
+###xml 797 799 789 791 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 821 829 813 821 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g002">Figure 2</xref>
+###xml 859 861 847 849 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1066 1068 1050 1052 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1256 1258 1236 1238 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1365 1373 1345 1353 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g002">Figure 2</xref>
+###xml 1431 1433 1407 1409 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1608 1610 1580 1582 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1668 1676 1640 1648 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g002">Figure 2</xref>
+###xml 1743 1745 1711 1713 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1935 1942 1903 1910 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t001">Table 1</xref>
+###xml 2094 2101 2062 2069 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t001">Table 1</xref>
+Superimposed on these functional modules, we identify four distinct flux modules. Although our description of these fluxes will be mainly qualitative, the components of the fluxes can be easily identified in Figure 2 or through the equations describing the simplified heat shock model (Figure S2). It turns out that the identified roles of these fluxes are in close correspondence with different experimentally identified aspects of the regulation scheme of the heat shock response. First, we identify the FF flux module through which heat shock directly increases the translation rate for sigma32 in a feedforward manner (Figure 2A). This flux affects the time response to a heat disturbance. Second, we identify the main feedback flux (SEQ-FB module), which acts through the interaction of sigma32 with the chaperones (Figure 2B). The sequestration of sigma32 is controlled by the folding state of the cell, and therefore the sequestration flux encompasses the folding machinery that dictates the number of free chaperones, and accordingly the number of free sigma32 that are capable of binding to the RNA polymerase (RNAP) and initiating transcription of the hsps. Therefore, the function of this flux seems to be the regulation of the activity of sigma32. The third flux module that we identify in the heat shock system is the degradation flux (DEG-FB module) (Figure 2C). The molecules involved in this flux are the free sigma32 factors that, as a result of their sequestration by the chaperones, are susceptible to degradation by the FtsH protease. This flux essentially controls the stability of sigma32. Finally, the fourth flux module is an "amplifier flux" (Figure 2D). The amplifier flux depicts the sequence of reactions that sigma32 undergoes, in addition to its different encounters with other molecules from its synthesis to its degradation by FtsH. In the full model, the differential equations, Equations 20 and 21 in Table 1, describe the amplifier flux module, where the first term of Equation 21 describes the FF flux module. Equations 22 and 23 and Equations 24 and 25 (in Table 1) correspond to the SEQ-FB and DEG-FB flux modules, respectively.
+###end p 21
+###begin title 22
+Speed, Yield, and Efficiency of the Heat Shock Response and Its In Silico Mutants
+###end title 22
+###begin p 23
+###xml 534 555 534 555 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="sec" rid="s4">Materials and Methods</xref>
+Having identified the modular structure of the heat shock response system and constructed the mathematical model, we now analyze the dynamic behavior of the three flux modules: SEQ-FB, DEG-FB, and FF. The main objective of the heat shock regulatory system is to refold denatured proteins upon exposure of the cells to heat shock. The response of the system is required to be fast, efficient, and robust. To capture these properties of the system, here we introduce the criteria for analysis: yield, efficiency, and response time (see Materials and Methods for details). Robustness and its connection to these criteria are analyzed in the next section. The yield is defined as the fraction of folded proteins in a pool of total proteins and the efficiency as the ratio of chaperones (DnaK) that are actively involved in refolding proteins to the total amount of chaperones. Both high efficiency and yield would indicate that unfolded proteins are being efficiently refolded with an appropriate number of hsps, a highly desirable feature. The speed of the response to increases in temperature also constitutes a crucial performance criterion in the heat shock system since proteins denatured for extended periods of time tend to form aggregates. We therefore define the response time as the time required for refolding 90% of the total folded proteins after heat shock and use it as a performance criterion.
+###end p 23
+###begin p 24
+To characterize the behavior of the system in terms of these performance criteria, we base our analysis on mathematical comparisons between wild-type and virtual mutants where various flux modules are disabled. The "virtual" mutants employed in this paper are distinct from ordinary gene knockout mutants. Genetic mutations alter the structure of the system while leaving all kinetic parameters not related to the mutation intact. Our virtual mathematical mutants, however, compensate for the mutation by readjusting the kinetic parameter values so as to conserve such properties of the wild-type as yield and efficiency. This allows for the direct comparison between architectures that generate an equivalent output, a difficult task in the wet lab. Mathematically, we carry out these mathematical mutations by looking at the structural blueprint of the heat shock response system and removing the terms in the differential equations model that contribute to the targeted mechanism. These virtual mutants include a system where FF is the only regulator (SEQ-FB and DEG-FB double knockout mutant), a system where sequestration is the only response regulator (FF and DEG-FB double knockout mutant), a system where sequestration is augmented with degradation feedback (FF knockout mutant), and a wild-type system possessing the three types of control. The kinetic parameters for the wild-type are determined from the heat shock literature. The kinetic parameters used in all mutant models are chosen to produce a value of the yield equal to 0.99 at both low and high temperature and an efficiency value greater than 0.9 at low temperature. We carry out the comparison between wild-type and mutants at high temperature. There are evidently multiple parameter sets that give a yield value equal to 0.99. We use these different sets to further study the dependence of the transient response on the kinetic parameters.
+###end p 24
+###begin p 25
+Components Used in the Detailed Mechanistic Model of the Heat Shock Response
+###end p 25
+###begin p 26
+Kinetic Parameters Used in the Detailed Mechanistic Model of the Heat Shock Response
+###end p 26
+###begin p 27
+###xml 78 86 78 86 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g003">Figure 3</xref>
+###xml 106 108 102 104 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 130 138 126 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g003">Figure 3</xref>
+###xml 386 388 378 380 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 485 487 473 475 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 678 680 662 664 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 720 722 700 702 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 889 891 865 867 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 954 956 926 928 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1020 1022 988 990 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">70</sup>
+###xml 1080 1082 1044 1046 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1110 1112 1070 1072 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">70</sup>
+###xml 1230 1232 1186 1188 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1290 1292 1242 1244 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1338 1339 1286 1287 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sup>
+###xml 1450 1452 1382 1384 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">70</sup>
+###xml 1491 1493 1419 1421 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">70</sup>
+###xml 1603 1605 1527 1529 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+The corresponding time courses for wild-type and various mutants are shown in Figure 3. The level of sigma32 for the wild-type in Figure 3A increases rapidly at heat shock, achieves a sharp peak, and then reduces to a new steady state. This behavior corresponds to a time course characteristic of a typical heat shock response. The FF knockout mutant model also produces a peak of sigma32, albeit much smaller than in wild-type. This peak is due to the transient stabilization of sigma32 by the DEG-FB module. In contrast, the system possessing only FF (the SEQ-FB/DEG-FB knockout double mutant) exhibits an over-damped response and does not show any peaks in the level of sigma32 upon heat shock. The slow rise in sigma32 is due to increased translation at high temperature. When the only form of regulation is through the SEQ-FB (the DEG-FB/FF double knockout mutant), the level of sigma32 decreases slightly after heat shock as the abundant free sigma32 at the onset of heat shock competes with the housekeeping sigma70 factor to bind RNAP. As a result, the production of sigma32, which is governed by sigma70, is slightly suppressed. It is therefore apparent that DEG-FB contributes greatly to the characteristic peak of sigma32. Our model does not take into account the fact that sigma32 is also transcribed by the sigma factor sigmaE. This transcription is negligible at 30 degreesC and increases at 42 degreesC. Further, transcription of sigma70 increases after heat shock since sigma70 has a heat shock promoter. Overall, this contributed in part to the experimentally observed increase in sigma32 levels upon heat shock induction. However, as a first approximation, we expect the contribution of these interactions to be small compared with the contribution of the DEG-FB.
+###end p 27
+###begin title 28
+###xml 23 25 19 21 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+Time Evolution of sigma32, DnaK, Yield, and Efficiency of the Heat Shock Response System and Its Different Mutants
+###end title 28
+###begin p 29
+###xml 9 11 5 7 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+(A) sigma32, (B) DnaK, (C) Yield, (D) Efficiency. Heat shock occurs at 10 min and is implemented through an increase in the rate constant for protein denaturing. The parameters for the wild-type and mutants are adjusted to provide a value of 0.99 for the yield at the steady state level at low temperature, and the efficiency is constrained to be more than 0.9 at high and low temperature. The values of the key parameters for each model are provided as follows.
+###end p 29
+###begin p 30
+###xml 49 53 49 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 59 61 59 61 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 63 68 63 68 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 79 81 79 81 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 83 87 83 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 90 94 90 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 100 102 100 102 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 104 109 104 109 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 112 117 112 117 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 125 127 125 127 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 129 132 129 130 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 156 159 154 155 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+(Green) SEQ-FB/DEG-FB double mutant (FF system): K[4] = 0 M-1, km[1] = 0.04 min-1, K[5] = K[6] = 0 M-1, kx[1] = kx[2] = 0 min-1, eta = 1 (low temperature), eta = 4 (at high temperature);
+###end p 30
+###begin p 31
+###xml 48 52 48 52 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 65 66 65 66 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 68 70 68 70 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 72 77 72 77 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 87 89 87 89 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 91 95 91 95 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 98 102 98 102 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 108 110 108 110 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 112 117 112 117 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 120 125 120 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 133 135 133 135 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 137 140 137 138 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+(Blue) DEG-FB/FF double mutant (SEQ-FB system): K[4] = 4.096 x 108 M-1, km[1] = 0.2 min-1, K[5] = K[6] = 0 M-1, kx[1] = kx[2] = 0 min-1, eta = 1;
+###end p 31
+###begin p 32
+###xml 42 46 42 46 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 57 58 57 58 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sup>
+###xml 60 62 60 62 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 64 69 64 69 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 79 81 79 81 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 83 87 83 87 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 90 94 90 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 105 106 105 106 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 108 110 108 110 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 112 125 112 125 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1] = kx[2]</italic>
+###xml 133 135 133 135 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 137 140 137 138 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+(Red) FF mutant (SEQ-FB + DEG-FB system): K[4] = 4.0 x 105 M-1, km[1] = 1.6 min-1, K[5] = K[6] = 1.0 x 108 M-1, kx[1] = kx[2] = 5 min-1, eta = 1;
+###end p 32
+###begin p 33
+###xml 49 53 49 53 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 64 65 64 65 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sup>
+###xml 67 69 67 69 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 71 76 71 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 86 88 86 88 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 90 94 90 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 97 101 97 101 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 112 113 112 113 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 115 117 115 117 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 119 124 119 124 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 127 132 127 132 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 140 142 140 142 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 144 147 144 145 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 171 174 169 170 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+(Black) Wild-type (SEQ-FB + DEG-FB + FF system): K[4] = 4.0 x 105 M-1, km[1] = 1.6 min-1, K[5] = K[6] = 1.0 x 108 M-1, kx[1] = kx[2] = 5 min-1, eta = 1 (low temperature), eta = 4 (at high temperature).
+###end p 33
+###begin p 34
+###xml 0 8 0 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g003">Figure 3</xref>
+Figure 3B shows the time course for the chaperone DnaK. The level of DnaK for the wild-type system increases upon heat shock, achieves a small peak, and then declines to a new steady state. The DnaK time courses for the FF mutant and the DEG-FB/FF double mutant show smaller peaks and delayed rise times, while that for the SEQ-FB/DEG-FB double mutant shows a critically delayed response.
+###end p 34
+###begin p 35
+###xml 0 8 0 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g003">Figure 3</xref>
+Figure 3C shows the yield time course that characterizes the transient response of folded proteins after heat shock. The figure indicates that the level of folded proteins in all four systems was satisfactorily restored to its pre-shock value at the end of the response. The response in the FF mutant and DEG-FB/FF double mutant was slightly delayed, while the delay in the SEQ-FB/DEG-FB double mutant was about 100 min. These results show that FF alone is not sufficient to achieve the fast response observed in the wild-type heat shock. Alternatively, the FF, SEQ-FB, and DEG-FB modules orchestrate their functions and work additively to implement a fast response.
+###end p 35
+###begin p 36
+###xml 0 8 0 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g003">Figure 3</xref>
+Figure 3D shows the efficiency time course that characterizes the transient response of folded proteins after heat shock. Upon temperature up-shift, the efficiency increases sharply as heat-denatured proteins accumulate and bind to DnaK. In all the cases considered, except for the SEQ-FB/DEG-FB double mutant, the efficiency undergoes an under-damped transient and finally reaches a new steady state. The shape of the transient is negatively correlated with that of the DnaK concentration, as expected from the definition of the efficiency measure. As the DnaK level overshoots slightly, an excess of DnaK is produced, generating disproportionate increases in the total number of DnaK molecules as compared with the DnaK level bound to unfolded proteins, therefore reducing the efficiency. Comparison of the yield and efficiency plots points to a fundamental tradeoff that underlies the operation of the heat shock response system. While overexpression of DnaK increases the yield, it simultaneously decreases the efficiency, which necessitates the existence of a balance that establishes acceptable values for both.
+###end p 36
+###begin p 37
+###xml 124 132 124 132 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g003">Figure 3</xref>
+###xml 388 390 384 386 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 501 503 493 495 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 555 557 543 545 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 657 665 645 653 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g004">Figure 4</xref>
+###xml 1014 1016 998 1000 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1230 1232 1210 1212 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1275 1277 1251 1253 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1399 1401 1371 1373 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+We now quantify more accurately some of our previous observations. Specifically, we focus on the FF and DEG-FB loops, since Figure 3CD indicates that they greatly influence the adaptation time of the yield and efficiency. For the DEG-FB/FF double mutant, the FF mutant, the SEQ-FB/DEG-FB double mutant, and the wild-type models, we compute both the response time and low temperature sigma32 concentration for values of the 2-D parameter space (corresponding to the transcription rate constant of sigma32 and the association constant between DnaK and sigma32) that achieve a yield greater than 0.9 and an efficiency greater than 0.85. The result is shown in Figure 4. For the SEQ-FB/DEG-FB double mutant (FF-alone system), the response time was 80 min. It was difficult to obtain a fast response under the provided constraints of the yield and efficiency. However, the addition of FF to the closed loop feedback system substantially reduced the response time. For the values of the parameters that achieve low sigma32 concentrations, the addition of DEG-FB to SEQ-FB dramatically reduced the response time, an effect further enhanced by the addition of FF. However, the response time in the three cases was comparable at high sigma32 concentrations. SEQ-FB with the high sigma32 concentration showed a fast response, because the heat shock response does not need the time-consuming synthesis of sigma32.
+###end p 37
+###begin title 38
+Transient Response of the Wild-Type and Virtual Mutants
+###end title 38
+###begin p 39
+###xml 159 161 155 157 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 214 216 206 208 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 297 299 285 287 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 342 344 326 328 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 560 564 534 538 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 567 571 541 545 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 580 581 554 555 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 583 585 557 559 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 587 592 561 566 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 595 600 569 574 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 608 610 582 584 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 612 615 586 587 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 627 630 599 600 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 700 704 659 663 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 707 711 666 670 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 717 719 676 678 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 721 726 680 685 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 729 734 688 693 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 742 744 701 703 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 746 749 705 706 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 796 800 753 757 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 803 807 760 764 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 816 817 773 774 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 819 821 776 778 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 823 828 780 785 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 831 836 788 793 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 844 846 801 803 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 848 851 805 806 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 905 909 860 864 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 912 916 867 871 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 919 923 874 878 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 929 931 884 886 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 933 938 888 893 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 941 946 896 901 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 954 956 909 911 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 958 961 913 914 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 995 1000 948 953 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 1005 1008 958 959 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 1128 1133 1079 1084 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 1144 1146 1095 1097 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 1151 1154 1102 1103 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 1166 1169 1115 1116 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+The response time, defined as the time at which the level of unfolded proteins recovers to within 90% of its pre-shock value, is plotted versus the total sigma32 concentration at low temperature. The level of sigma32 parameterizes the 2-D parameter space (the transcription rate constant for sigma32 and the association constant between sigma32 and DnaK) that satisfies the yield and efficiency constraints (yield > 0.9 and efficiency > 0.85 at low and high temperature). The two parameters: were varied for the wild-type (SEQ-FB + DEG-FB + FF) (triangle up): K[5] = K[6] = 1 x 108 M-1, kx[1] = kx[2] = 5 min-1, eta = 1 (low), eta = 2 (high), for the DEG-FB/FF double mutant (SEQ-FB) (open diamond): K[5] = K[6] = 0 M-1, kx[1] = kx[2] = 0 min-1, eta = 1, and for FF mutant (SEQ-FB + DEG-FB) (*): K[5] = K[6] = 1 x 108 M-1, kx[1] = kx[2] = 5 min-1, eta = 1. For SEQ-FB/DEG-FB double mutant (FF alone) (X): K[4] = K[5] = K[6] = 0 M-1, kx[1] = kx[2] = 0 min-1, eta = 1 (low), the two parameters of km[1] and eta (high temperature) are varied as: In the mutant where FF is operating alone in open loop, the parameter combination of km[1] = 0.04 min-1 and eta = 1 (low), eta = 2 (high) is the only solution to satisfy the required yield and efficiency.
+###end p 39
+###begin title 40
+Sensitivity Analysis
+###end title 40
+###begin p 41
+###xml 560 562 556 558 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 574 577 570 571 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 581 588 575 582 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t003">Table 3</xref>
+###xml 634 636 624 626 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 648 653 638 643 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 657 664 647 654 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t003">Table 3</xref>
+###xml 964 969 954 959 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[2]</italic>
+###xml 973 980 963 970 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t003">Table 3</xref>
+In this section, we study the robustness properties of the heat shock response. Specifically, we focus on the sensitivity of the total chaperone level to the transcription rate constant of DnaK. A large sensitivity of the number of chaperones to crucial parameters is undesirable as it produces a variable and unpredictable folding of proteins, both at low and high temperature. We again compare the various mutants and the wild-type. For the SEQ-FB/DEG-FB double mutant, we search the 2-D parameter space corresponding to the translational efficiency of sigma32 (parameter eta in Table 3) and the transcription rate constant of sigma32 (parameter km[1] in Table 3). We isolate the values of these parameters that produce acceptable values of yield and efficiency at low and high temperature (set again to values greater than 0.9 and 0.85, respectively). For such values of the parameters, we determine the sensitivity of DnaK to its transcription rate (parameter km[2] in Table 3). Interestingly, the SEQ-FB/DEG-FB double mutant exhibited only one set of parameter values that were able to reproduce the desired yield and efficiency. Obviously, the sensitivity of the DnaK level to its transcription rate in the SEQ-FB/DEG-FB double mutant is one since all parametric perturbations are directly transmitted to the output of the system in the absence of feedback loops. However, in addition to large sensitivity, these results indicate that the absence of feedback limits the kinetic range where the system can operate efficiently.
+###end p 41
+###begin p 42
+###xml 169 171 165 167 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 182 186 178 182 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 190 197 186 193 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t003">Table 3</xref>
+###xml 230 232 222 224 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 234 239 226 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 243 250 235 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t003">Table 3</xref>
+###xml 944 952 936 944 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g005">Figure 5</xref>
+###xml 1088 1096 1080 1088 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g005">Figure 5</xref>
+###xml 1191 1193 1179 1181 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1641 1649 1629 1637 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g005">Figure 5</xref>
+###xml 1846 1848 1830 1832 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+We repeat the same exercise for the other virtual mutants. For the various cases considered, we search the 2-D parameter space corresponding to the binding between sigma32 and DnaK (K[4] in Table 3) and transcription rate of sigma32 (km[1] in Table 3), and isolate regions that simultaneously produce values of yield greater than 0.9 and values of efficiency greater than 0.85 at both low and high temperatures. For these parameter regions, we determine the sensitivity of DnaK to its transcription rate during low-temperature growth. The FF control operating alone in open loop is characterized by a high sensitivity of the total DnaK to the transcription rate constant for DnaK (unpublished data). This result is expected, as lack of robustness is an inherent property of open loop systems. By contrast, a system implementing SEQ-FB is characterized by small sensitivity, demonstrating that SEQ-FB plays a major role in enhancing robustness (Figure 5A). Interestingly, the addition of DEG-FB to SEQ-FB shifts the parameter region where the desired yield and efficiency can be achieved (Figure 5AB). In fact, the increased synthesis of FtsH at high temperature suppresses the level of sigma32, resulting in decreased yield as compared with the mutant where SEQ-FB is the only control mechanism available. For parameters lying in the desired yield and efficiency region, the sensitivity is slightly higher than in the system implementing SEQ-FB alone. The addition of the FF loop to DEG-FB and SEQ-FB increases the size of the parameter space where yield and efficiency can be achieved, but does not contribute to the decreased sensitivity (Figure 5BC). This effect is the outcome of the ability of FF to generate high values for the yield at elevated temperatures. The sensitivities in these three cases did not significantly depend on the sigma32 concentration (unpublished data), differing from the case of transient response.
+###end p 42
+###begin title 43
+Sensitivity of the Total DnaK to the Change in the Transcription Rate Constant for DnaK at Low Temperature
+###end title 43
+###begin p 44
+###xml 307 309 303 305 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 352 354 344 346 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+The plot reports the sensitivity computed for the parameters values that satisfy the required yield and efficiency (yield > 0.9 and efficiency > 0.85 at low and high temperature). Yield and efficiency were computed by searching the 2-D parameter space consisting of the transcription rate constant for sigma32 and the association constant between sigma32 and DnaK as follows: for the various systems,
+###end p 44
+###begin p 45
+###xml 45 49 45 49 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 52 56 52 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 62 64 62 64 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 66 71 66 71 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 74 79 74 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 87 89 87 89 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 91 94 91 92 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+(A) DEG-FB/FF double mutant (SEQ-FB system): K[5] = K[6] = 0 M-1, kx[1] = kx[2] = 0 min-1, eta = 1,
+###end p 45
+###begin p 46
+###xml 40 44 40 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 47 51 47 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 60 61 60 61 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 63 65 63 65 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 67 72 67 72 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 75 80 75 80 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 88 90 88 90 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 92 95 92 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+(B) FF mutant (SEQ-FB + DEG-FB system): K[5] = K[6] = 1 x 108 M-1, kx[1] = kx[2] = 5 min-1, eta = 1,
+###end p 46
+###begin p 47
+###xml 44 48 44 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 51 55 51 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 64 65 64 65 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 67 69 67 69 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 71 76 71 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 79 84 79 84 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 92 94 92 94 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 96 99 96 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+###xml 111 114 109 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+(C) Wild-type (SEQ-FB +DEG-FB + FF system): K[5] = K[6] = 1 x 108 M-1, kx[1] = kx[2] = 5 min-1, eta = 1 (low), eta = 2 (high).
+###end p 47
+###begin p 48
+###xml 145 150 145 150 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4],</italic>
+###xml 189 191 185 187 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 202 210 198 206 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g006">Figure 6</xref>
+###xml 221 227 217 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1],</italic>
+###xml 269 271 261 263 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 273 281 265 273 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g006">Figure 6</xref>
+###xml 300 304 292 296 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 372 377 364 369 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 475 479 467 471 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 484 489 476 481 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 797 806 789 798 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020059-sg003">Figure S3</xref>
+###xml 808 819 800 811 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020059-sd001">Protocol S1</xref>
+To further delineate this tradeoff between yield and sensitivity, we computed the sensitivity of the total DnaK and the yield of the response to K[4], the association constant between sigma32 and DnaK (Figure 6A), and to km[1], the transcription rate constant for sigma32 (Figure 6B). An increase in K[4] decreases both the sensitivity and the yield, while an increase in km[1] increases both. However, while the sensitivity value changes by multiple folds over the range of K[4] and km[1] variation, the changes in the yield values are more modest. Therefore, an increase in the "strength" of the SEQ-FB greatly increases the robustness of the system, but at the expense of some decrease in its yield performance. This can be analytically validated further using the simplified heat shock model (Figure S3, Protocol S1).
+###end p 48
+###begin title 49
+Robustness Tradeoff of SEQ-FB
+###end title 49
+###begin p 50
+###xml 223 225 219 221 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 236 240 232 236 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 291 293 283 285 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 295 300 287 292 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+The plots show the yield (dotted line) and the sensitivity of the total DnaK concentration (solid line) with respect to a change in the transcription rate constant for DnaK as a function of the association between and sigma32 and DnaK (K[4]) (A) and the transcription rate constant for sigma32 (km[1]) (B).
+###end p 50
+###begin p 51
+###xml 42 44 38 40 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 55 59 51 55 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+(A) The association constant between sigma32 and DnaK (K[4]) is varied as follows,
+###end p 51
+###begin p 52
+###xml 0 4 0 4 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 9 10 9 10 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">5</sup>
+###xml 14 15 14 15 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</sup>
+###xml 14 15 14 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sup>x</sup></italic>
+###xml 17 19 17 19 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 21 22 21 22 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 89 94 81 86 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 104 106 96 98 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 108 112 100 104 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 115 119 107 111 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 125 127 117 119 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 129 134 121 126 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 137 142 129 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 150 152 142 144 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 158 161 150 151 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+K[4] = 105 x 2x M-1 (x = 2, em leader, 16), when the other kinetic parameters are fixed: km[1] = 0.8 min-1, K[5] = K[6] = 0 M-1, kx[1] = kx[2] = 0 min-1, and eta = 1.
+###end p 52
+###begin p 53
+###xml 45 47 41 43 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 49 54 45 50 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 78 83 74 79 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 94 95 90 91 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</sup>
+###xml 94 95 90 91 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sup>x</sup></italic>
+###xml 99 101 95 97 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 103 104 99 100 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 170 174 158 162 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 185 186 173 174 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">9</sup>
+###xml 188 190 176 178 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 192 196 180 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5]</italic>
+###xml 199 203 187 191 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[6]</italic>
+###xml 209 211 197 199 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 213 218 201 206 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1]</italic>
+###xml 221 226 209 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[2]</italic>
+###xml 234 236 222 224 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 242 245 230 231 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;</italic>
+(B) The transcription rate constant for sigma32 (km[1]) is varied as follows, km[1] = 0.05 x 2x min-1 (x = 2, em leader,10), when the other kinetic parameters are fixed: K[4] = 1.6 x 109 M-1, K[5] = K[6] = 0 M-1, kx[1] = kx[2] = 0 min-1, and eta = 1.
+###end p 53
+###begin title 54
+Stochastic Analysis
+###end title 54
+###begin p 55
+###xml 151 153 151 153 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b016">16</xref>
+###xml 208 210 204 206 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 412 414 404 406 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 426 428 418 420 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b010">10</xref>
+###xml 429 431 421 423 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b017">17</xref>
+###xml 443 451 435 443 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g007">Figure 7</xref>
+###xml 506 508 498 500 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b018">18</xref>
+###xml 990 995 982 987 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">(K[4]</italic>
+###xml 1000 1006 992 998 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1])</italic>
+###xml 1262 1264 1250 1252 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1339 1347 1327 1335 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g007">Figure 7</xref>
+###xml 1422 1424 1406 1408 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1525 1527 1505 1507 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1577 1579 1553 1555 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1744 1746 1716 1718 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1834 1836 1802 1804 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1986 1988 1950 1952 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 2108 2110 2068 2070 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 2197 2204 2157 2164 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 2251 2252 2207 2208 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sup>
+###xml 2312 2314 2268 2270 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b019">19</xref>
+###xml 2197 2204 <span type="species:ncbi:562">E. coli</span>
+The effect of stochastic fluctuations attributed to biochemical noise has been shown to be especially pronounced in systems with low molecular counts [16]. The main regulator of the heat shock response, sigma32, is on the order of 30-50 molecules per cell (75-125 nM). We have previously demonstrated that DEG-FB contributes largely to the attenuation of biochemical noise generated by the small numbers of sigma32 molecules [10,17] (see also Figure 7A, computed using the Stochastic Simulation Algorithm [18]). Here, we extend this analysis by comparing the stochastic behavior of the wild-type heat shock system implementing DEG-FB to that of a DEG-FB mutant for a large range of parameters. As a measure of the variability in the system, we consider the coefficient of variation (CV) of DnaK, calculated by dividing the standard deviation of DnaK time course data by its mean value. Similar to the deterministic analysis, we only consider the parameter values in the 2-D parameter space (K[4] and km[1]) that achieve a yield value greater than 0.9 and an efficiency value greater than 0.85 at low and high temperatures. For the parameter values that achieve such desired efficiency and yield values, we compute the CV and the mean concentration of total sigma32 at low temperature, and plot one versus the other. The result is shown in Figure 7B. For the wild-type, the CV is less than 0.1 over the whole range of sigma32. In the DEG-FB knockout mutant, however, the CV is considerably larger, particularly for lower sigma32 concentrations. At higher concentrations of sigma32, the CV for both wild-type and mutant decreases are as would be expected. The CV of the wild-type remains smaller than that of DEG-FB mutant for all ranges of sigma32 concentrations. The two CVs however become comparable for large concentrations of sigma32, indicating that an alternative heat shock response strategy lacking DEG-FB can achieve reasonable noise attenuation by using a large number of sigma32 molecules. Such a strategy would evidently entail a tradeoff in terms of the metabolic cost of producing numerous sigma32, and hence numerous chaperones. Interestingly, the periplasmic heat shock response in E. coli is centered on the abundant sigma-factor sigmaE (5,000 molecules/cell) whose degradation is not regulated [19].
+###end p 55
+###begin title 56
+Stochastic Simulation of the Heat Shock Response
+###end title 56
+###begin p 57
+###xml 150 152 146 148 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 245 249 241 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 261 262 257 258 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sup>
+###xml 264 266 260 262 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 268 273 264 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 283 285 279 281 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 285 296 281 292 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5] = K[6]</italic>
+###xml 305 306 301 302 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">8</sup>
+###xml 308 310 304 306 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 312 325 308 321 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1] = kx[2]</italic>
+###xml 333 335 329 331 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 380 384 374 378 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 396 397 390 391 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">7</sup>
+###xml 399 401 393 395 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 403 408 397 402 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 418 420 412 414 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 420 431 414 425 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[5] = K[6]</italic>
+###xml 437 439 431 433 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+###xml 441 454 435 448 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1] = kx[2]</italic>
+###xml 462 464 456 458 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#8722;1</sup>
+(A) Stochastic realization of the concentration of DnaK at low temperature for the wild-type and the DEG-FB mutant. The average concentration of sigma32 and DnaK are constrained to be equal in wild-type and mutant. In the wild-type (bold line): K[4] = 5.12 x 107 M-1, km[1] = 3.2 min-1K[5] = K[6] = 1 x 108 M-1, kx[1] = kx[2] = 5 min-1, eta = 1. In the DEG-FB mutant (thin line): K[4] = 5.12 x 107 M-1, km[1] = 0.1 min-1K[5] = K[6] = 0 M-1, kx[1] = kx[2] = 0 min-1, eta = 1.
+###end p 57
+###begin p 58
+###xml 58 60 54 56 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 410 412 392 394 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 455 457 433 435 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+(B) The CV of DnaK is plotted as a function of total sigma32 concentration for the wild-type (SEQ+DEG+FF system) (triangle up) and the DEG-FB knockout mutant (SEQ+FF) (o). The plot reports the CV for the parameter values that satisfy the required yield (>0.9) and efficiency (>0.85). Yield and efficiency are computed by searching the 2-D parameter space consisting of the transcription rate constant for sigma32 and the association constant between sigma32 and DnaK as follows,
+###end p 58
+###begin title 59
+Discussion
+###end title 59
+###begin title 60
+Functional Analysis of the Heat Shock Response and Comparison with Engineering Systems
+###end title 60
+###begin p 61
+###xml 1480 1482 1480 1482 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b010">10</xref>
+###xml 1483 1485 1483 1485 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b017">17</xref>
+In this paper, we have used engineering analogies to decompose the heat shock system into hierarchical molecular, functional, and flux modules. Following this modular architecture, we found that mathematical mutations closely corresponded to the deletion of specific flux modules. The mathematical comparison between wild-type and the virtual mutants that lack flux modules proved to be very useful for assigning a function to the deleted components. To perform unbiased comparisons between wild-type and mutants, the mathematical models were constrained by the requirement of achieving the same values of appropriately defined yield and efficiency measures. Using a combination of analytical results, careful simulations, and searches in the relevant parameter space, we investigated the functions of each module in terms of performance criteria such as transient response, steady-state sensitivity and noise rejection characteristics. FF was identified as a powerful strategy that allows for the adaptation to elevated temperatures but that cannot implement a robust response if used by itself in open loop. Negative feedback loops increased the robustness of the system in the presence of parametric uncertainty and internal fluctuations, but limited the yield for production of hsps and hence the folding of heat-denatured proteins. Furthermore, the use of degradation feedback implemented a faster response to a heat disturbance and reduced the effects of biochemical noise [10,17].
+###end p 61
+###begin p 62
+Despite extremely different physical implementations, these regulatory strategies are widely used both in engineering and in biological systems. The electronic amplifier is an example of an engineering system that utilizes feedback to create robustness to parameter variations. In the absence of feedback, an open-loop amplifier has a wildly varying gain due to its sensitive dependence on its parameters and external environment. By closing the loop with the appropriate feedback, the system attains robustness to various uncertainties, making it a reliable amplification device that is used across a wide range of engineering applications. One often finds more than one layer of feedback control in engineering systems. For example, a feedback amplifier may itself be used in a feedback loop to control the motion of a mechanical device such as a motor. Feedforward control is also frequently employed in engineering systems to speed up the systems rejection of external disturbances. Once measured, these disturbances can be compensated for directly at the system input before they lead to large deviations in the output. Even though such deviations eventually get sensed and corrected by the feedback loop, the response time and effort needed for correction will be larger in the absence of feedforward. One engineering domain where feedforward is in common use is process control. As an example, a stirred tank with a heat exchanger is often used to maintain the reactants within the tank at a desired temperature. A feedback loop that adjusts the heat flow rate based on temperature measurement in the tank can be used for that purpose. If, in addition, the highly variable temperature of the feed material entering into the tank (disturbance) is also measured, this signal can be used in a feedforward fashion to adjust the heat flow rate in a way that cancels, or almost cancels, its anticipated effect on the tank temperature. Any residual differences between the actual and desired temperature is sensed by the feedback sensors and is corrected via the feedback loop. The result is a faster response and improved performance over feedback control alone.
+###end p 62
+###begin p 63
+###xml 1084 1086 1080 1082 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1303 1305 1295 1297 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1416 1418 1404 1406 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1449 1451 1437 1439 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b020">20</xref>
+###xml 1452 1454 1440 1442 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b021">21</xref>
+As a result of this analysis, we propose that the use of complex regulation strategies in the heat shock system is likely to be a specifically designed solution to different aspects and requirements of heat remediation rather than the result of evolutionary accidents that gave birth to redundant regulatory loops. To the contrary, the regulatory structures in the heat shock response seem to be crucial elements whose function is orchestrated to address the numerous, and sometimes contradictory, performance and design issues. These regulatory structures in turn impose new tradeoffs and costs that can be identified in the heat shock system. The SEQ-FB, for example, causes the yield of the response to decrease. Furthermore, the DEG-FB module implements a futile synthesis/degradation cycle that generates a fast response and high feedback gain despite the expense of constant utilization of mass and energy. At the same time, the use of complex regulation strategies generates new fragilities that are then compensated by other modules. For example, an FtsH knockout causes sigma32 to increase explosively in our model; DnaK would be overproduced to dangerous levels if there were no SEQ-FB module. Redundant protease flux modules (HslVU, ClpAP, Lon) appear to be fine-tuning for the level of sigma32, but they do not fully compensate for mutations in FtsH since FtsH null mutants have very high levels of sigma32 and a half life of 40-60 min [20,21]. Such tradeoffs between robustness and fragility seem to be a recurring theme both in biological systems and in the design of manmade machines.
+###end p 63
+###begin title 64
+Alternative Strategies for the Implementation of the Heat Shock Response
+###end title 64
+###begin p 65
+###xml 413 415 409 411 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 442 460 438 456 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Proteus mirabilis,</italic>
+###xml 503 511 495 503 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli,</italic>
+###xml 528 530 516 518 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 643 645 627 629 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 735 737 713 715 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b022">22</xref>
+###xml 775 782 753 760 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 811 812 781 782 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</sup>
+###xml 941 943 911 913 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b023">23</xref>
+###xml 442 459 <span type="species:ncbi:584">Proteus mirabilis</span>
+###xml 503 510 <span type="species:ncbi:562">E. coli</span>
+###xml 775 782 <span type="species:ncbi:562">E. coli</span>
+The existing architecture of the heat shock response is not the unique solution to achieve robustness and fast response in a system whose objective is to rescue the cell upon protein unfolding in a timely manner. Indeed, our mathematical analysis indicates that a system implementing SEQ-FB with FF (with no DEG-FB) is able to reproduce these characteristics, albeit at the expense of a much higher level of sigma32 concentration. Indeed, in Proteus mirabilis, a gamma-proteobacteria closely related to E. coli, control of sigma32 is implemented by SEQ-FB with FF but no DEG-FB. Importantly, as we predict, in this organism the levels of sigma32 are high at 30 degreesC and change very little if at all upon shift to high temperature [22]. Likewise, only the activity of the E. coli abundant sigma-factor (sigmaE) that implements the periplasmic heat shock response is regulated through its sequestration by the trans-membrane protein RseA [23]. These variations raise questions about how the DEG-FB strategy might have evolved, and the evolutionary constraints that led to its existence in the cytoplasmic heat shock response.
+###end p 65
+###begin title 66
+Connections of Modularity and Protocols to Evolvability
+###end title 66
+###begin p 67
+###xml 1016 1018 1012 1014 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1116 1125 1112 1121 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020059-sg004">Figure S4</xref>
+###xml 1328 1330 1320 1322 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1377 1379 1365 1367 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1432 1434 1416 1418 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1876 1878 1856 1858 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1897 1899 1877 1879 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b024">24</xref>
+###xml 1900 1902 1880 1882 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b025">25</xref>
+###xml 1905 1914 1885 1894 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020059-sg005">Figure S5</xref>
+###xml 1996 1998 1972 1974 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 2108 2110 2080 2082 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 2112 2114 2084 2086 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b021">21</xref>
+Engineering sciences constantly exploit the properties of modular designs to rapidly advance technology. The basic mechanical or electrical strategies that form the functional core of a plane, a car, or a computer change only in rare instances. It is often the superimposition of new modules and their correct interface with older modules through standardized protocols that generate increased speed, reliability, safety, and robustness. Modularity guarantees that the complexity of a design is hidden in "black boxes" that possess well-defined inputs, outputs, and functionality. At the same time, standardized interfaces guarantee the plug-and-play addition of other modules, without the need for extensive fine adjustment to achieve coordination with the existing modules. Therefore, modularity and protocols are often prerequisites for smooth evolvability, and as such may also have been extensively used in the evolution of complex gene regulatory networks. For example, in the heat shock response system, sigma32 acts as a hub that integrates various flux modules (FF, SEQ-FB, DEG-FB) in interconnected loops (Figure S4). Such architecture leaves room for evolvability in a simple manner. Imagine for instance that at some point in the evolutionary past of the heat shock system, FtsH synthesis was not controlled by sigma32. Such a system, where the degradation of sigma32 is not negatively regulated by a member of the sigma32 regulon, would have experienced large stochastic variability, necessitating the evolution of a mechanism for noise attenuation. One possible scheme would have been to evolve an independent controller that stabilizes the levels of FtsH tightly around its desired value. Perhaps a more straightforward solution to the problem is to employ an interconnected loop whereby the FtsH module is evolved just by fusing a promoter for binding of sigma32 to the FtsH gene [24,25] (Figure S5). Other proteases such as HslVU, ClpAP, and Lon are linked similarly to the sigma32 molecular module, although these proteases seem to play little or no role in vivo in the degradation of sigma32 [21]. Overall, approaches linking the architectural features of cellular networks, their functionality and performance, and their evolvability properties will undoubtedly be crucial for the investigation of biological complexity.
+###end p 67
+###begin title 68
+Materials and Methods
+###end title 68
+###begin title 69
+Molecular architecture in the heat shock response.
+###end title 69
+###begin p 70
+###xml 16 23 16 23 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 69 71 59 61 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">70</sup>
+###xml 276 278 256 258 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 293 295 273 275 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b026">26</xref>
+###xml 355 357 331 333 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 662 664 634 636 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 701 703 673 675 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b013">13</xref>
+###xml 704 704 676 676 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b014"/>
+###xml 704 706 676 678 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b015">15</xref>
+###xml 730 732 698 700 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 808 810 772 774 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 887 889 851 853 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b026">26</xref>
+###xml 890 892 854 856 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b027">27</xref>
+###xml 917 919 877 879 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1069 1071 1025 1027 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1081 1083 1037 1039 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b019">19</xref>
+###xml 1084 1086 1040 1042 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b020">20</xref>
+###xml 1108 1110 1060 1062 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1161 1163 1109 1111 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1209 1213 1157 1161 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpoH</italic>
+###xml 1395 1397 1343 1345 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b015">15</xref>
+###xml 1400 1408 1348 1356 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020059-g001">Figure 1</xref>
+###xml 1567 1569 1515 1517 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b028">28</xref>
+###xml 1570 1572 1518 1520 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b029">29</xref>
+###xml 16 23 <span type="species:ncbi:562">E. coli</span>
+In fast-growing E. coli at 37 degreesC, the major sigma factor, sigma70, binds RNAP core enzyme and directs RNAP to transcribe the genes necessary for normal growth. Heat shock (i.e., the increase in temperature to 42 degreesC) causes the amount of another sigma factor, sigma32, to increase [26]. This in turn results in increased expression of the sigma32-regulated hsps (chaperones and proteases). The heat shock response aims at refolding heat-denatured proteins through the action of chaperones or degrading such proteins by proteases as a measure to prevent them from forming aggregates. The heat shock response depends primarily on the regulation of sigma32 activity, stability, and synthesis [13-15]. The activity of sigma32 is regulated through its sequestration by chaperones. Chaperone-bound sigma32 is prevented from binding to RNAP, which limits its transcription activity [26,27]. The stability of sigma32 is regulated through its degradation by various proteases, predominantly FtsH, although HslVU, ClpAP, and Lon may play minor roles in degrading sigma32 in vivo [19,20]. FtsH degrades sigma32 in an ATP-dependent manner. The synthesis of sigma32 is regulated at the translational level. The rpoH mRNA forms a stable secondary structure which prevents the initiation of translation at low temperature. Higher temperature disrupts this secondary structure, inducing translation [15]. Figure 1 depicts the molecular mechanisms involved in the heat shock response as described above. The detailed notation of biochemical reactions is defined elsewhere [28,29].
+###end p 70
+###begin p 71
+###xml 264 266 260 262 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 331 333 323 325 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 434 436 422 424 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 509 511 493 495 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 601 603 581 583 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+These interactions result in a time course of the heat shock response that proceeds as follows. Upon heat shock, there is an increase in the cellular levels of unfolded proteins that sequester the members of the chaperone team. This results in an increase in sigma32 activity and stability. At the same time, the synthesis of sigma32 increases, resulting in its accumulation and leading to hsp induction. Therefore, the level of sigma32 rapidly increases, reaching a peak. Afterward, the level of active sigma32 is reduced by chaperone-mediated sequestration and protease-mediated degradation of sigma32 until it reaches a new steady state at high temperature.
+###end p 71
+###begin title 72
+Detailed mechanistic model of the heat shock response.
+###end title 72
+###begin p 73
+###xml 110 117 110 117 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t001">Table 1</xref>
+###xml 184 191 184 191 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t002">Table 2</xref>
+###xml 196 203 196 203 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020059-t003">Table 3</xref>
+###xml 271 273 267 269 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 372 374 364 366 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 510 512 498 500 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 786 788 770 772 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 869 871 853 855 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b030">30</xref>
+Based on the interactions described above, we built a detailed mathematical model of the heat shock response (Table 1). The components and kinetic parameters of the model are shown in Table 2 and Table 3, respectively. In the model, we account for the regulation of sigma32 activity through the chaperone-mediated feedback control (SEQ-FB), and for the regulation of sigma32 through the protease-mediated feedback control (DEG-FB). We also include the feedforward control that regulates the efficiency of sigma32translation as a step function of temperature (FF). We take DnaK as the representative of cellular chaperones and FtsH as representative of cellular proteases. There is data indicating that the GroE/GroL/GroS chaperone machinery is also involved in the inactivation of sigma32. However, the details of this interaction are still an area of active research [30].
+###end p 73
+###begin p 74
+###xml 434 436 434 436 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b031">31</xref>
+###xml 601 603 597 599 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 681 690 677 686 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="supplementary-material" rid="pcbi-0020059-sg006">Figure S6</xref>
+The model uses first order mass action kinetics to describe the synthesis, proteolysis, and binding of proteins. We make the common assumption that binding reactions occur on a faster timescale than production and degradation of proteins. Therefore, we replace the differential equations describing these fast reactions by algebraic binding equations. This mathematical model has been automatically built by using the CADLIVE system [31]. The kinetic parameters for the wild-type heat shock were picked or estimated from the vast heat shock literature. The simulated time course trajectories for sigma32 and chaperone reproduced the qualitative behaviors of wild-type and mutants (Figure S6).
+###end p 74
+###begin title 75
+Modular decompositions through modeling.
+###end title 75
+###begin p 76
+###xml 216 217 216 217 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b004">4</xref>
+###xml 326 327 326 327 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b009">9</xref>
+###xml 593 595 593 595 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b032">32</xref>
+A module has been characterized as a subsystem that possesses a function that is separable from that of other modules, in the sense that it is capable of maintaining most of its identity when isolated or rearranged [4], or is defined as "groups of nodes [in a graph] that are relatively isolated from the rest of the system" [9]. We prefer an approach to modularity that emphasizes connectivity and function over isolation. Indeed, regulatory modules are not necessarily isolated, nor would they preserve their function if isolated or rearranged, except in very structured and organized ways [32]. To provide a useful characterization of modularity, it is imperative to classify and identify different types of modularity based on the level of detail or abstraction that one is adopting. The resulting multi-resolution scheme can then be used to assess different aspects of the modular decomposition, zooming out from the molecular description (molecular modules) to a block diagram-like picture (functional modules).
+###end p 76
+###begin title 77
+Molecular modules: Zooming in to the fine details.
+###end title 77
+###begin p 78
+###xml 206 208 202 204 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+Molecular modules are defined as molecular entities that implement the mechanistic biological functionality and have identifiable interfaces and interactions with other molecular modules. For example, sigma32 is an integral molecular module that integrates key regulation strategies. This definition of molecular modules is obvious in the sense that they are the entities investigated in experimental settings. The behavior of molecular modules is assumed to be stochastic in nature but their orchestrated operation is often observed to be highly robust and reliable.
+###end p 78
+###begin title 79
+Functional modules: Zooming out to the block diagram.
+###end title 79
+###begin p 80
+###xml 119 137 119 137 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">functional modules</italic>
+###xml 371 372 371 372 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b007">7</xref>
+###xml 1424 1437 1424 1437 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">block diagram</italic>
+At a lower level of resolution, the components of a system can be divided into "functional groups" that we refer to as functional modules. This functional decomposition is a routine procedure in disciplines like control engineering, where the systems considered often have levels of complexity almost comparable to biology (power networks, planes, industrial processes) [7]. Therefore, we seek analogies with the modules that are traditionally identified in control engineering schemes. In such systems, the process to be controlled or regulated is identified, and the rest of the network is classified in terms of the function that it accomplishes to facilitate this regulation. Following engineering terminology, we call the process to be regulated or controlled the "plant." The other typical functional modules usually present in engineering systems include sensing and actuation modules, in addition to a "controller" module that actively computes the control signal based on the information provided by the other modules. The output of the plant to be controlled is usually sensed and the measurement provided to a logical unit, the controller. Based on this output measurement, the controller devises a control law, which is then fed to an actuator that drives the plant, therefore regulating its output. A block represents each of these modules, and the interconnection of such blocks is frequently referred to as a block diagram.
+###end p 80
+###begin title 81
+Flux modules: Connecting the fine to the coarse.
+###end title 81
+###begin p 82
+###xml 825 827 825 827 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">ij</sub>
+###xml 824 827 824 827 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">f<sub>ij</sub></italic>
+A pathway is commonly defined as a linked set of biological reactions. The concept of a pathway is very useful in comprehending the networks involved in regulating the cell's vital functions. We define a flux module as a pathway that traces the fate and mechanisms of interaction of a group of molecules involved together in the performance of a certain function. A flux module ideally connects different functional modules, but forms an entity that possesses its own functionality. Therefore, a flux is essentially the flow of information in the network, accompanied by a function tag that characterizes this flow. Notice that different fluxes may use some parts of the same pathway to accomplish distinct and identifiable functions. In terms of the deterministic rate equations, fluxes can be traced to be a collection of fij that establish a flow of information with a specific functional role as defined above. Feedback loops are simple examples of flux modules.
+###end p 82
+###begin title 83
+Criteria for system analysis.
+###end title 83
+###begin p 84
+###xml 820 822 816 818 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 829 831 821 823 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">38</sup>
+###xml 838 840 826 828 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">54</sup>
+###xml 851 853 835 837 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">70</sup>
+###xml 904 906 888 890 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b032">32</xref>
+###xml 986 988 966 968 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+The main objective of the heat shock regulatory system is to refold denatured proteins upon exposure of the cells to higher than normal temperatures. However, a response that accomplishes this function while, for instance, using an excess of hsps cannot be evolutionarily favorable, as the production and maintenance of these hsps represent an important metabolic burden. Therefore, cells must achieve a fine balance between the protective effect of the hsps and the metabolic burden of overexpressing them. At the same time, the response should be of appropriate speed and magnitude so as not to expose the cell to prolonged periods of damage, and robust in the presence of environmental changes, intrinsic noise, and intracellular interference from other cellular subsystems. For example, sigma factors including sigma32, sigma38, sigma54, and sigma70compete for binding to the limited number of RNAP [32]. The consequence of this competition for the heat shock response is that sigma32 is constantly exposed to disturbances from other sigma factors.
+###end p 84
+###begin p 85
+We quantify these various design requirements and assess their implementation strategies by devising mathematical mutants where certain structures present in the wild-type heat shock are absent, then comparing the performance of the mutants to that of wild-type. The performance criteria used in this procedure are as follows.
+###end p 85
+###begin title 86
+Comparison criteria and search for critical parameter space.
+###end title 86
+###begin p 87
+###xml 167 171 167 171 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">fold</sub>
+###xml 166 171 166 171 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P<sub>fold</sub></italic>
+###xml 203 208 203 208 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">total</sub>
+###xml 202 208 202 208 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P<sub>total</sub></italic>
+Since the objective of the heat shock response is to reduce the amounts of unfolded proteins, we define the yield of the response as the fraction of folded proteins (Pfold) in a pool of total proteins (Ptotal):
+###end p 87
+###begin p 88
+###xml 349 351 349 351 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">un</sub>
+###xml 348 356 348 356 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">P<sub>un</sub>:DnaK</italic>
+Although an excess amount of chaperone can be sufficient to refold proteins, hence increasing the yield, it can cause a wasteful synthesis burden for cell metabolism. Therefore, we define the efficiency of the response as the ratio of chaperones that are actively involved in refolding proteins (quantified by the amount bound to unfolded proteins Pun:DnaK) to the total amount of chaperones in the cell:
+###end p 88
+###begin p 89
+###xml 334 336 330 332 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 476 477 472 473 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 477 478 473 474 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 482 483 478 479 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Y</italic>
+###xml 483 484 479 480 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+###xml 545 546 541 542 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 546 547 542 543 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">1</sub>
+###xml 551 552 547 548 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">X</italic>
+###xml 552 553 548 549 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">2</sub>
+Robustness in engineering design and analysis is measured by the system's ability to resume successful operation in the presence of signal and system uncertainties. We quantify the heat shock system's robustness to parametric fluctuations by calculating the sensitivity in the level of the chaperones to perturbations related to sigma32. We define sensitivity by the steady-state logarithmic gain: This sensitivity measure captures the amount of change in the total DnaK from Y1 to Y2 induced by a change in the transcription rate constant from X1 to X2.
+###end p 89
+###begin p 90
+###xml 907 909 903 905 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 964 966 956 958 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 968 973 960 965 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 1017 1019 1005 1007 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1030 1034 1018 1022 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[4]</italic>
+###xml 1135 1137 1119 1121 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1139 1152 1123 1136 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">kx[1] = kx[2]</italic>
+###xml 1196 1198 1176 1178 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1200 1205 1180 1185 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">km[1]</italic>
+###xml 1259 1261 1235 1237 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 1265 1266 1241 1242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b005">5</xref>
+###xml 1263 1274 1239 1250 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">K[<xref ref-type="bibr" rid="pcbi-0020059-b005">5</xref>] = K[6]</italic>
+###xml 1366 1370 1342 1344 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">&#951;)</italic>
+The yield, efficiency, robustness, and speed of response criteria described above are used systematically to characterize the functions of the various structural components in the heat shock system and to constrain parameter values in wild-type and mutant heat shock models. For example, to characterize the transient response and the sensitivity at steady state, the yield and efficiency are constrained to be above a certain acceptable value. Comparison between wild-type and mutants is only made for values of the parameters in these models that yield a response satisfying the required yield and efficiency. These parameters values are chosen by gridding the appropriate parameter spaces over a wide range of values and computing the corresponding control performance criteria. In this analysis, we focus on the parameters of critical importance to the synthesis, sequestration, and degradation of sigma32. For SEQ-FB, the transcription rate constant for sigma32 (km[1]) and the association constant between sigma32 and DnaK (K[4]) are selected as critical factors. For DEG-FB, the FtsH-mediated degradation rate constant for sigma32 (kx[1] = kx[2]), the transcription rate constant for sigma32 (km[1]), and the association constant between FtsH and sigma32 (K[5] = K[6]) are employed. For FF, the critical factor is considered to be the translation efficiency (eta).
+###end p 90
+###begin title 91
+Supporting Information
+###end title 91
+###begin title 92
+Mathematical Functional Decomposition of the Reduced Order Heat Shock System
+###end title 92
+###begin p 93
+(75 KB PDF)
+###end p 93
+###begin p 94
+Click here for additional data file.
+###end p 94
+###begin title 95
+Connection of Flux Modules to the Differential Equations Describing the Reduced Qualitative Model
+###end title 95
+###begin p 96
+(61 KB PDF)
+###end p 96
+###begin p 97
+Click here for additional data file.
+###end p 97
+###begin title 98
+###xml 23 25 19 21 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 28 29 24 25 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">t</sub>
+###xml 27 29 23 25 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">S<sub>t</sub></italic>
+Time Evolution of sigma32 (St) for a Reduced Qualitative Model of the Heat Shock Response
+###end title 98
+###begin p 99
+(83 KB PDF)
+###end p 99
+###begin p 100
+Click here for additional data file.
+###end p 100
+###begin title 101
+Definition of Interconnected Feedback Loops
+###end title 101
+###begin p 102
+(65 KB PDF)
+###end p 102
+###begin p 103
+Click here for additional data file.
+###end p 103
+###begin title 104
+Protocol for Interconnected Feedback Loops
+###end title 104
+###begin p 105
+Evolution of the DEG-FB loop is used an example.
+###end p 105
+###begin p 106
+(70 KB PDF)
+###end p 106
+###begin p 107
+Click here for additional data file.
+###end p 107
+###begin title 108
+###xml 23 25 19 21 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+Time Evolution of sigma32 and DnaK for a Detailed Mechanistic Model in Wild-Type and Mutants
+###end title 108
+###begin p 109
+(70 KB PDF)
+###end p 109
+###begin p 110
+Click here for additional data file.
+###end p 110
+###begin title 111
+Derivation of the Sensitivity Equation from the Reduced Qualitative Model
+###end title 111
+###begin p 112
+(60 KB DOC)
+###end p 112
+###begin p 113
+Click here for additional data file.
+###end p 113
+###begin title 114
+Reduced Qualitative Model of the Heat Shock Response
+###end title 114
+###begin p 115
+(A) Mathematical equations.
+###end p 115
+###begin p 116
+###xml 58 60 58 60 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020059-b010">10</xref>
+(B) Lists of components and kinetic parameters (see also [10]).
+###end p 116
+###begin p 117
+(61 KB DOC)
+###end p 117
+###begin p 118
+Click here for additional data file.
+###end p 118
+###begin title 119
+
+###end title 119
+###begin p 120
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Author contributions.</bold>
+Author contributions. HK, HES, HO, JCD, CAG, and MK conceived and designed the experiments. HK and RI performed the experiments. HK, HES, and CAG analyzed the data. HES, JCD, IG, CAG, and MK contributed reagents/materials/analysis tools. HK, HES, JCD, CAG, and MK wrote the paper.
+###end p 120
+###begin p 121
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding.</bold>
+###xml 206 210 <span type="species:ncbi:4530">Rice</span>
+Funding. This material is based upon work supported by National Science Foundation grant CCF-0326576, Institute of Collaborative Biotechnologies grant DAAD19-03-D-0004 from the US Army Research office, the Rice Genome Simulator Project of the National Institute of Agrobiological Sciences, and the Sandler Family Supporting Foundation.
+###end p 121
+###begin p 122
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing interests.</bold>
+Competing interests. The authors have declared that no competing interests exist.
+###end p 122
+###begin p 123
+A previous version of this article appeared as an Early Online Release on April 13, 2006 (DOI: ).
+###end p 123
+###begin title 124
+Abbreviations
+###end title 124
+###begin p 125
+coefficient of variation
+###end p 125
+###begin p 126
+heat shock proteins
+###end p 126
+###begin p 127
+RNA polymerase
+###end p 127
+###begin title 128
+References
+###end title 128
+###begin article-title 129
+Robustness in bacterial chemotaxis
+###end article-title 129
+###begin article-title 130
+Computational approaches to cellular rhythms
+###end article-title 130
+###begin article-title 131
+From molecular to modular cell biology
+###end article-title 131
+###begin article-title 132
+Towards a circuit engineering discipline
+###end article-title 132
+###begin article-title 133
+Sniffers, buzzers, toggles and blinkers: Dynamics of regulatory and signaling pathways in the cell
+###end article-title 133
+###begin article-title 134
+Reverse engineering of biological complexity
+###end article-title 134
+###begin article-title 135
+Robustness of cellular functions
+###end article-title 135
+###begin article-title 136
+Hierarchical organization of modularity in metabolic networks
+###end article-title 136
+###begin article-title 137
+Surviving heat shock: Control strategies for robustness and performance
+###end article-title 137
+###begin article-title 138
+Control motifs for intracellular regulatory networks
+###end article-title 138
+###begin article-title 139
+Robustness properties of circadian clock architectures
+###end article-title 139
+###begin article-title 140
+Function and regulation of the heat shock proteins
+###end article-title 140
+###begin article-title 141
+Regulation of the heat-shock response
+###end article-title 141
+###begin article-title 142
+###xml 64 66 60 62 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+Translational induction of heat shock transcription factor sigma32: Evidence for a built-in RNA thermosensor
+###end article-title 142
+###begin article-title 143
+###xml 90 106 85 101 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 68 80 <span type="species:ncbi:10710">phage lambda</span>
+###xml 90 106 <span type="species:ncbi:562">Escherichia coli</span>
+Stochastic kinetic analysis of developmental pathway bifurcation in phage lambda-infected Escherichia coli cells
+###end article-title 143
+###begin article-title 144
+Regulated degradation is a mechanism for suppressing stochastic fluctuations in gene regulatory networks
+###end article-title 144
+###begin article-title 145
+A general method for numerically simulating the stochastic time evolution of coupled chemical reactions
+###end article-title 145
+###begin article-title 146
+Insights into transcriptional regulation and sigma competition from an equilibrium model of RNA polymerase binding to DNA
+###end article-title 146
+###begin article-title 147
+###xml 100 102 96 98 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 128 135 124 131 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 128 135 <span type="species:ncbi:562">E. coli</span>
+Synergetic roles of HslVU and other ATP-dependent proteases in controlling in vivo turnover of sigma32 and abnormal proteins in E. coli
+###end article-title 147
+###begin article-title 148
+###xml 49 65 49 65 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 130 132 126 128 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 49 65 <span type="species:ncbi:562">Escherichia coli</span>
+Heat shock regulation in the ftsH null mutant of Escherichia coli: Dissection of stability and activity control mechanism of sigma32 in vivo
+###end article-title 148
+###begin article-title 149
+###xml 47 49 43 45 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 88 151 84 147 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Serratia marcescens, Proteus mirabilis, Pseudomonas aeruginosa,</italic>
+###xml 156 181 152 177 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Agrobacterium tumafaciens</named-content>
+###xml 88 107 <span type="species:ncbi:615">Serratia marcescens</span>
+###xml 109 126 <span type="species:ncbi:584">Proteus mirabilis</span>
+###xml 128 150 <span type="species:ncbi:287">Pseudomonas aeruginosa</span>
+Regulatory conservation and divergence of sigma32 homologs from gram-negative bacteria: Serratia marcescens, Proteus mirabilis, Pseudomonas aeruginosa, and Agrobacterium tumafaciens
+###end article-title 149
+###begin article-title 150
+###xml 142 158 142 158 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 142 158 <span type="species:ncbi:562">Escherichia coli</span>
+Regulation of the alternative sigma factor sigma(E) during initiation, adaptation, and shutoff of the extracytoplasmic heat shock response in Escherichia coli
+###end article-title 150
+###begin article-title 151
+Imposing specificity by localization: Mechanism and evolvability
+###end article-title 151
+###begin article-title 152
+Transcription initiation: Imposing specificity by localization
+###end article-title 152
+###begin article-title 153
+###xml 27 34 27 34 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 88 90 84 86 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 27 34 <span type="species:ncbi:562">E. coli</span>
+The heat shock response of E. coli is regulated by changes in the concentration of sigma32
+###end article-title 153
+###begin article-title 154
+###xml 95 111 95 111 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 149 151 145 147 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 95 111 <span type="species:ncbi:562">Escherichia coli</span>
+A cycle of binding and release of the DnaK, DnaJ and GrpE chaperones regulates activity of the Escherichia coli heat shock transcription factor sigma32
+###end article-title 154
+###begin article-title 155
+Molecular interaction map of the mammalian cell cycle control and DNA repair systems
+###end article-title 155
+###begin article-title 156
+###xml 122 127 <span type="species:ncbi:4932">yeast</span>
+CADLIVE for constructing a large-scale biochemical network based on a simulation-directed notation and its application to yeast cell cycle
+###end article-title 156
+###begin article-title 157
+###xml 56 63 56 63 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 56 63 <span type="species:ncbi:562">E. coli</span>
+A chaperone network controls the heat shock response in E. coli
+###end article-title 157
+###begin article-title 158
+CADLIVE dynamic simulator: Direct link of biochemical networks to dynamic models
+###end article-title 158
+###begin article-title 159
+Motifs, stability, and control
+###end article-title 159
+###begin article-title 160
+###xml 26 29 26 29 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">lac</italic>
+Mathematical model of the lac operon: Inducer exclusion, catabolite repression, and diauxic growth on glucose and lactose
+###end article-title 160
+###begin article-title 161
+Global control of gene expression in bacteria
+###end article-title 161
+###begin article-title 162
+Mechanism and control of transcription initiation in prokaryotes
+###end article-title 162
+###begin article-title 163
+###xml 56 72 56 72 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 103 105 99 101 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">70</sup>
+###xml 115 117 107 109 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">38</sup>
+###xml 56 72 <span type="species:ncbi:562">Escherichia coli</span>
+Regulation of RNA polymerase sigma subunit synthesis in Escherichia coli: Intracellular levels of sigma70 and sigma38
+###end article-title 163
+###begin article-title 164
+###xml 0 16 0 16 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 40 42 36 38 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">70</sup>
+###xml 0 16 <span type="species:ncbi:562">Escherichia coli</span>
+Escherichia coli RNA polymerase (E sigma70), promoter, and the kinetics of the steps of transcription initiation
+###end article-title 164
+###begin article-title 165
+###xml 28 44 28 44 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 28 44 <span type="species:ncbi:562">Escherichia coli</span>
+Nonspecific interactions of Escherichia coli RNA polymerase with native and denatured DNA: differences in the binding behavior of core and holoenzyme
+###end article-title 165
+###begin article-title 166
+Kinetics of molecular chaperone action
+###end article-title 166
+###begin article-title 167
+Modulation of chemical composition and other parameters of the cell by growth rate
+###end article-title 167
+

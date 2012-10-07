@@ -1,0 +1,379 @@
+###begin article-title 0
+Contact-based sequence alignment
+###end article-title 0
+###begin p 1
+###xml 93 109 93 109 <email xmlns:xlink="http://www.w3.org/1999/xlink">jkleinj@cs.vu.nl</email>
+To whom correspondence should be addressed. Tel: +31 20 4447783; Fax: +31 20 4447653; Email: jkleinj@cs.vu.nl
+###end p 1
+###begin p 2
+###xml 1146 1156 1146 1156 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+This paper introduces the novel method of contact-based protein sequence alignment, where structural information in the form of contact mutation probabilities is incorporated into an alignment routine using contact-mutation matrices (CAO: Contact Accepted mutatiOn). The contact-based alignment routine optimizes the score of matched contacts, which involves four (two per contact) instead of two residues per match in pairwise alignments. The first contact refers to a real side-chain contact in a template sequence with known structure, and the second contact is the equivalent putative contact of a homologous query sequence with unknown structure. An algorithm has been devised to perform a pairwise sequence alignment based on contact information. The contact scores were combined with PAM-type (Point Accepted Mutation) substitution scores after parameterization of gap penalties and score weights by means of a genetic algorithm. We show that owing to the structural information contained in the CAO matrices, significantly improved alignments of distantly related sequences can be obtained. This has allowed us to annotate eight putative Drosophila IGF sequences. Contact-based sequence alignment should therefore prove useful in comparative modelling and fold recognition.
+###end p 2
+###begin title 3
+INTRODUCTION
+###end title 3
+###begin p 4
+###xml 403 404 403 404 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c1">1</xref>
+###xml 560 561 560 561 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c2">2</xref>
+###xml 915 916 915 916 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c3">3</xref>
+###xml 1017 1018 1017 1018 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c4">4</xref>
+Protein sequence alignments reveal information about the relation between homologous sequences. Closely related sequences yield mostly unambiguous alignments, but distantly related sequences with sequence identities between 15 and 30% (the so-called twilight zone) pose a difficult problem to sequence alignment routines, because the signal of similarity is heavily disturbed by 'noise' from mutations (1). Protein structure alignments serve as standard of truth for judging evolutionary relatedness, since structures are much better conserved than sequences (2). Although the structure of most sequences is unknown, it can be inferred in many cases by comparative modelling and fold recognition. Comparative modelling delivers useful models that can attain a quality comparable to experimentally derived structures. However, the quality is crucially dependent on the accuracy of the underlying sequence alignment (3), which is exponentially decreasing with increasing evolutionary distance of the related sequences (4).
+###end p 4
+###begin p 5
+###xml 36 37 36 37 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c5">5</xref>
+###xml 38 40 38 40 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c17">17</xref>
+###xml 195 197 195 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c18">18</xref>
+###xml 729 731 729 731 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c19">19</xref>
+###xml 1245 1255 1245 1255 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+###xml 1431 1438 1431 1438 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo</italic>
+###xml 1293 1298 <span type="species:ncbi:9606">human</span>
+In conventional sequence alignment (5-17), structural information available from the template is ignored, because alignment programs use PAM-type (Point Accepted Mutation) substitution matrices (18), which incorporate only sequence information. For the purpose of improving sequence alignment accuracy, we introduce here an alignment method that uses structural information from side-chain contacts. Contacts describe constraints between residues and particularly long-range contacts can help defining the relative arrangement of sequence elements. Alignment scores are provided by the CAO substitution matrices (Contact Accepted mutatiOn), which are derived from an evolutionary Markov model of side-chain contact substitution (19). The CAO matrices describe the mutation probability of side-chain contacts within a protein and therefore they combine sequence and structure information in a single scoring scheme. CAO scores often reflect evolutionary relatedness better than PAM scores. We introduce a contact-based sequence alignment algorithm, which transfers information from a template protein structure to the alignment process by means of CAO scores. The predictive power of the method is illustrated by the annotation of eight putative Drosophila IGF sequences through alignment to a human IGF-I sequence. The annotation is supported by a comparative model based on the contact-based alignment and independently generated de novo structural models.
+###end p 5
+###begin title 6
+MATERIALS AND METHODS
+###end title 6
+###begin p 7
+Programs were written in the 'ANSI C' programming language and compiled with the GNU or Intel compiler on Linux 2.4.
+###end p 7
+###begin title 8
+The CAO contact matrix
+###end title 8
+###begin p 9
+###xml 96 98 96 98 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c19">19</xref>
+The CAO substitution matrix is based on a Markov model of protein side-chain contact evolution (19). CAO scores are an intermediate between the purely sequence-based PAM scores and the purely structure-based 'Root Mean Square Deviation' (RMSD) values. The CAO matrix comprises 400 x 400 contact substitution scores, where rows and columns consist of the 20 x 20 possible combinations of residue contacts, and each matrix cell contains a score for the evolutionary transition (mutation) from a contact denoted by the row axis to a contact denoted by the column axis. Thus, knowing the side-chain contacts within a template structure, an alignment of the template sequence with a query sequence can be scored by summing up the CAO substitution matrix values of all contacts.
+###end p 9
+###begin title 10
+The contact-based alignment algorithm
+###end title 10
+###begin p 11
+###xml 235 237 235 237 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c19">19</xref>
+Structural information of the template is passed to the alignment program in the form of a side-chain contact map. A contact is defined if the distance between two side-chain spheres is smaller than the diameter of a solvent molecule (19), which is 2.8 A for water. A sequence alignment method using the CAO matrix considers contact pairs consisting of four residues: two residues that are known to contact in the template sequence are aligned to two contact residues of the query sequence. For example, if the template residues A and B are in contact (A_B), and aligned to query residues X and Y, the CAO score of A_B:X_Y can be assigned ('_' indicates a contact, ':' indicates an alignment).
+###end p 11
+###begin p 12
+Needleman-Wunsch-type dynamic programming is not suited for using CAO contact scores directly, because the alignment of the second matched pair (B:Y) needs to be known to correctly score the first matched pair (A:X) and vice versa. This violates the independence assumption, i.e. the prerequisite that the score of each matrix cell should be independent of any other cell.
+###end p 12
+###begin p 13
+###xml 608 609 608 609 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f1">1</xref>
+###xml 724 725 724 725 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f2">2</xref>
+Therefore, we devised an alignment algorithm that incorporates CAO contact scores by pre-processing into a dynamic programming (DP) matrix, such that DP can be performed on this matrix after pre-processing. The algorithm works as follows: the structure of the query sequence (containing residues X and Y) is unknown and therefore the position of the putative homologous contact X_Y in the query is unknown. Thus, the query has to be probed for potential positions of this contact by testing all possible realizations on the query sequence, assuming that the query residues are in contact as well (X_Y) (Fig. 1). When this scheme is applied to a DP matrix, all contacts of the template are slid over the query sequence (Fig. 2). Each possible (and hypothetical) realization of a contact is probed with CAO scores: likely contact mutations yield positive scores, unlikely contact mutations yield negative scores. At each position of the sliding contact, the CAO score of the contact match is added to each of the two DP matrix cells involved. Most residues form multiple contacts, and their scores are summed up in the matrix. After scoring all contacts (pre-processing), the optimal alignment is found by forward score addition and back-tracing as in the standard DP alignment algorithms. Routines for local and global alignment have been implemented. To compensate for potentially missing local contact information in the template, the DP matrix is complemented with PAM-type substitution matrix scores.
+###end p 13
+###begin p 14
+The algorithm can be summarized as follows: (i) Slide each contact of the template over the query sequence and, at each position, add the (weighted) CAO score of the four involved residues to the two corresponding matrix cells. (ii) Fill the alignment matrix with PAM-type substitution scores. (iii) Find the optimal path through the matrix by forward score addition and back-tracing.
+###end p 14
+###begin p 15
+A complication is the use of float values in the CAO matrix, which can, without precaution, lead to rounding errors and failure of the DP routine during the traceback phase. This has been solved by incorporating a small allowance for score deviations caused by rounding errors.
+###end p 15
+###begin title 16
+Benchmarking
+###end title 16
+###begin p 17
+###xml 73 75 73 75 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c20">20</xref>
+###xml 775 777 775 777 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c16">16</xref>
+###xml 710 716 <span type="species:ncbi:13443">Coffee</span>
+###xml 782 788 <span type="species:ncbi:13443">Coffee</span>
+The contact-based alignment was benchmarked using the Homstrad database (20). Only families containing two single-chain sequences were considered (624 alignments in total), since multiple alignments could change the pairwise relationships: the result of aligning two sequences in an optimal pairwise alignment or in a multiple alignment is not necessarily identical. Of the 5304 PDB structures used for the design of the CAO matrices, 355 (6.7%) were contained in the Homstrad benchmark set. The fraction of identical alignment positions when comparing the CAO alignment with the reference Homstrad alignments served as quality measure (or fitness function) and was reported as 'fraction correct pairs'. The T-Coffee alignment program (version 1.37) was used for comparison (16). T-Coffee is invariably the top performing algorithm in recent multiple sequence alignment benchmarks.
+###end p 17
+###begin title 18
+Parameterization
+###end title 18
+###begin p 19
+###xml 67 69 67 69 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c21">21</xref>
+###xml 82 84 82 84 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c18">18</xref>
+###xml 211 212 211 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 234 235 234 235 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w</italic>
+###xml 287 288 287 288 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 315 316 315 316 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+To scale the CAO scores relative to PAM-type scores from Blosum62 (21) or PAM120 (18), four parameters were optimized by running the CAO alignment algorithm using a genetic algorithm (GA): a CAO matrix constant c, the relative weight w of CAO versus PAM-type scores, gap-opening penalty p and gap extension penalty q. Thus, CAO and PAM scores are combined to
+###end p 19
+###begin p 20
+###xml 0 1 0 1 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 1 4 1 4 <sub xmlns:xlink="http://www.w3.org/1999/xlink">CAO</sub>
+###xml 12 13 12 13 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 13 16 13 16 <sub xmlns:xlink="http://www.w3.org/1999/xlink">PAM</sub>
+###xml 24 26 24 26 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ws</italic>
+###xml 26 29 26 29 <sub xmlns:xlink="http://www.w3.org/1999/xlink">CAO</sub>
+###xml 41 42 41 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 47 48 47 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 48 51 48 51 <sub xmlns:xlink="http://www.w3.org/1999/xlink">CAO</sub>
+###xml 59 60 59 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink">s</italic>
+###xml 60 63 60 63 <sub xmlns:xlink="http://www.w3.org/1999/xlink">PAM</sub>
+###xml 71 73 71 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink">ws</italic>
+###xml 73 76 73 76 <sub xmlns:xlink="http://www.w3.org/1999/xlink">CAO</sub>
+###xml 88 89 88 89 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+sCAO(i,k) = sPAM(i,k) + wsCAO(i,j,k,l) + c and sCAO(j,l) = sPAM(j,l) + wsCAO(i,j,k,l) + c
+###end p 20
+###begin p 21
+###xml 20 21 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 22 23 22 23 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 551 552 551 552 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+###xml 584 585 584 585 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w</italic>
+###xml 623 624 623 624 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 662 663 662 663 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+###xml 1071 1072 1071 1072 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkh566tb1">1</xref>
+###xml 321 326 <span type="species:ncbi:9606">child</span>
+while gap penalties p,q influence the final path through the matrix. The GA was performed with a population size of 100 individuals (genomes) over eight generations, where the 20 fittest individuals were selected for mating. Mating was performed on randomly chosen parent pairings (of the 20 fittest individuals) and the child inherited parameters from either parent at random. An individual's genome was composed of four parameter values (genes). The starting population was random with target ranges (step width in parentheses): CAO matrix constant c [0-0.9 (0.1)], relative weight w [0-0.45 (0.05)], gap-opening penalty p [5-14 (1)] and gap-extension penalty q [0-4.5 (0.5)]. Each GA run reached convergence within eight generations and was repeated three times. To prove the optimized parameters' independence of the particular sequence set, the GA parameterization was additionally jack-knifed by splitting the database into two parts (first jack-knifing) and five parts (second jack-knifing). The variation of the parameters is given as standard deviation in Table 1.
+###end p 21
+###begin title 22
+###xml 0 10 0 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+Drosophila IGFs
+###end title 22
+###begin p 23
+###xml 0 10 0 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+###xml 172 202 172 202 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C\w{11,14}C\w{4,}C\w{12,15}CC/</italic>
+###xml 340 342 340 342 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c22">22</xref>
+###xml 365 367 365 367 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c23">23</xref>
+###xml 394 395 394 395 <italic xmlns:xlink="http://www.w3.org/1999/xlink">E</italic>
+###xml 980 982 980 982 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c24">24</xref>
+###xml 1088 1090 1088 1090 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c25">25</xref>
+###xml 1097 1104 1097 1104 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo</italic>
+###xml 1206 1208 1206 1208 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c26">26</xref>
+Drosophila protein sequences were downloaded from the Ensembl site (). The first stage of the identification was achieved by pattern matching using the regular expression /C\w{11,14}C\w{4,}C\w{12,15}CC/ that flexibly matches the canonical inter-chain disulfide bridges of insulin-like proteins. In the second stage, the programs Psi_Blast (22) and Quest were used (23) with relaxed parameters (E-value < 10), since standard sequence searching methods failed to detect the (low) sequence similarity. The protein access codes of the identified sequences are AAF47991 (DIGF-1), AAF47993 (DIGF-2), AAF48005 (DIGF-3), AAF48006 (DIGF-4), AAF48007 (DIGF-5), AAF48078 (DIGF-6), AAF50020 (DIGF-7) and AAF51015 (DIGF-8). Most of the DIGFs are surely expressed as the cDNAs of all but DIGF-3 and DIGF-7 are known. Sequence alignments were produced using the contact-based sequence alignment algorithm with a CAO weight of 0.2. Comparative modelling was performed using the DeepView program (24). The DIGF-3 query sequence was modelled onto the crystal structure of hIGF-I (PDB databank entry 1GZR) (25). Ten de novo structural models for the DIGF-3 sequence were predicted by the ROBETTA structure prediction server (26).
+###end p 23
+###begin title 24
+RESULTS
+###end title 24
+###begin title 25
+Benchmarking
+###end title 25
+###begin p 26
+###xml 159 161 159 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c20">20</xref>
+###xml 452 453 452 453 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkh566tb1">1</xref>
+###xml 495 496 495 496 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w</italic>
+###xml 1073 1074 1073 1074 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f3">3</xref>
+The improvement of the alignment quality in terms of structurally correct sequence relation was assessed using pairwise alignments from the Homstrad database (20) as standard of truth. The agreement between the contact-based alignments with the Homstrad alignments was calculated as the fraction of identical alignment positions, given as 'fraction correct pairs'. Optimized parameters resulting from GA runs contact-based alignment are shown in Table 1. Each CAO score receives a weight factor w of 0.1 (in combination with Blosum62) to 0.2 (in combination with PAM120). Thus, CAO scores are one-tenth to one-fifth as important as PAM scores, but taking into account that each residue has about seven contacts, the overall contribution per residue is similar. The Blosum62 matrix performs better (81.8%) than the PAM120 matrix (80.5%). It is reasonable to use the CAO matrix with positive scores in combination with the Blosum62 matrix. The difference to the 'fraction correct pairs' from Needleman-Wunsch alignment is plotted as a function of sequence identity in Figure 3. Alignment quality is improved in the region of low sequence identity.
+###end p 26
+###begin p 27
+###xml 67 69 67 69 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c16">16</xref>
+###xml 395 396 395 396 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="table" rid="gkh566tb2">2</xref>
+###xml 59 65 <span type="species:ncbi:13443">Coffee</span>
+###xml 272 278 <span type="species:ncbi:13443">Coffee</span>
+###xml 574 580 <span type="species:ncbi:13443">Coffee</span>
+###xml 761 767 <span type="species:ncbi:13443">Coffee</span>
+###xml 882 888 <span type="species:ncbi:13443">Coffee</span>
+We compared our method to the multiple alignment program T-Coffee (16), which also yielded significant improvements over Needleman-Wunsch alignment, although for a different reason. The contact-based alignment routine adds structural information to the alignment, while T-Coffee combines local and global sequence information to optimize the alignment. Benchmark results are summarized in Table 2. The contact-based program performs well on the benchmark set and improves 64% of the sequences when compared to Needleman-Wunsch alignment, and with 16% more alignments than T-Coffee. The computational speed of the contact-based alignment is 1.6-fold slower than Needleman-Wunsch alignment, measured for a benchmark run over 624 sequences, but twice as fast as T-Coffee on the same sequence set. It is interesting to analyse the correlation between the contact-based alignments and T-Coffee alignments. The change in alignment quality of both methods was monitored by counting the number of correlated changes: 276 alignments (43%) were improved, 76 (12%) were worsened and 78 (12%) were unchanged by both methods. About one-third of all alignments [203 (33%)] showed no correlation. Thus, a combination of the two methods should further improve the quality of alignments with low sequence identity.
+###end p 27
+###begin p 28
+###xml 73 74 73 74 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f4">4</xref>
+###xml 208 232 205 229 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Flavobacterium heparinum</italic>
+###xml 269 293 266 290 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Streptococcus pneumoniae</italic>
+###xml 208 232 <span type="species:ncbi:984">Flavobacterium heparinum</span>
+###xml 269 293 <span type="species:ncbi:1313">Streptococcus pneumoniae</span>
+###xml 440 446 <span type="species:ncbi:13443">Coffee</span>
+An example for the improvement by contact information is shown in Figure 4. The C-terminal domain of the protein chondroitinase (Homstrad family 'Lyase_8_C') forms a beta-sandwich, containing nine strands in Flavobacterium heparinum (top sequence) and eight strands in Streptococcus pneumoniae. Repetitive secondary structure elements often exhibit a spurious sequence similarity, resulting in register-shifted alignments as shown in the T-Coffee example. In contrast, the contact-based alignment keeps the alignment in register except for the C-terminal short strand, and thus dramatically improves the alignment. The predominant 1 --> 3 side-chain contacts in beta-sheets each correlate four residues and register shifts are less likely to yield high scores.
+###end p 28
+###begin title 29
+Evaluation of contacts
+###end title 29
+###begin p 30
+###xml 550 551 550 551 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f5">5</xref>
+###xml 736 737 736 737 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f5">5</xref>
+###xml 828 829 828 829 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f5">5</xref>
+###xml 934 935 934 935 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c2">2</xref>
+###xml 1014 1015 1014 1015 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f6">6</xref>
+###xml 1681 1682 1681 1682 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f6">6</xref>
+By sliding contacts over the query sequence, we implicitly make the assumption that the distance between the contacting residues has been conserved. This assumption keeps the contact-based alignment algorithm computationally efficient and it holds for the majority of contacts, but obviously not for locations with insertion/deletion (indel) events, which disrupt the original local contact pattern. Contacts with changed residue distance add noise to the DP matrix by scoring non-homologous contact pairs, in most cases with negative scores. Figure 5A,B illustrates the conservation of sequence and structure information. Whereas the fraction of correctly aligned residues decreases toward zero with decreasing sequence identity (Fig. 5A), the fraction of conserved contacts (including the contact length) approaches 30% (Fig. 5B). This is an illustration of the commonly known fact that 'structure is more conserved than sequence' (2), and it supports the above approximation of conserved contact length. Figure 6A shows the distribution of contact distances averaged over the benchmark set of proteins from the Homstrad database. Many of the contacts are short ranged (about 24%), within a distance of 1-5 residues. The highest peaks (distances 1 and 3) originate from contacts within helices. Strands account for most of the contacts at a distance of two residues. The long-range contacts are quite evenly spread out over a large range of distances. Long-range contacts can be important in defining the correct relative arrangement of distant sequence elements, which is hard to achieve with classical sequence alignment. The distribution of contact numbers is given in Figure 6B. Most residues form about seven contacts, but the distribution is quite broad, leading to considerably different contributions of residues to the DP matrix.
+###end p 30
+###begin p 31
+###xml 124 125 124 125 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f7">7</xref>
+###xml 332 333 332 333 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f6">6</xref>
+###xml 462 463 462 463 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f7">7</xref>
+In this context, it is instructive to plot the dependence of contact conservation upon contact distance, as given in Figure 7A. Surprisingly, the contact conservation is nearly invariant to the contact distance, with the exception of short-ranged helical contacts, which give rise to the peaks at distances 1 and 3 (compare to Fig. 6). However, the level of conservation is very dependent upon the number of contacts that each residue forms. The curve in Figure 7A reveals a good level of conservation for residues with 1-8 contacts, and a steep decrease in conservation at higher contact numbers. A plausible explanation is that single contacts can be more easily replaced without losing essential interactions, because each single contact is less important.
+###end p 31
+###begin title 32
+###xml 0 10 0 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+Drosophila IGFs
+###end title 32
+###begin p 33
+###xml 87 97 87 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+###xml 331 333 331 333 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c27">27</xref>
+###xml 722 724 722 724 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c28">28</xref>
+###xml 740 742 740 742 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c29">29</xref>
+###xml 770 781 770 781 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Bombyx mori</italic>
+###xml 783 785 783 785 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c30">30</xref>
+###xml 826 848 826 848 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Caenorhabditis elegans</italic>
+###xml 850 852 850 852 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c31">31</xref>
+###xml 881 891 881 891 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+###xml 893 895 893 895 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c32">32</xref>
+###xml 761 769 <span type="species:ncbi:7091">silkworm</span>
+###xml 770 781 <span type="species:ncbi:7091">Bombyx mori</span>
+###xml 826 848 <span type="species:ncbi:6239">Caenorhabditis elegans</span>
+###xml 871 880 <span type="species:ncbi:7227">fruit fly</span>
+Contact-based sequence alignment proved instrumental in our annotation of insulin-like Drosophila genome sequences. Insulin-like growth factors (IGFs) and insulin are hormones belonging to the insulin protein family. IGFs are essential growth factors in development, whereas insulin acts as a regulator of the blood glucose level (27). The main structural difference between IGF and insulin is the post-translational tryptic cleavage of the C-peptide between A- and B-chain in insulin, while IGF remains a single-chain protein due to the lack of tryptic cleavage sites. The insulin protein family occurs predominantly in vertebrates, although insulin-like proteins are known in lower organisms, for example molluscan MIP (28), locust LIRP (29), bombyxin in the silkworm Bombyx mori (30), insulin-like peptides in the nematode Caenorhabditis elegans (31) and DILPs in the fruit fly Drosophila (32). The reported DILP proteins possess tryptic cleavage sites in the C-peptide and therefore they are considered as insulin-type proteins.
+###end p 33
+###begin p 34
+###xml 96 106 96 106 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+###xml 108 110 108 110 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c33">33</xref>
+###xml 211 212 211 212 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f8">8</xref>
+###xml 401 406 <span type="species:ncbi:9606">human</span>
+We report here the identification of eight putative IGF-type sequences (DIGFs) in the genome of Drosophila (33) that have no tryptic cleavage sites. A multiple alignment of the DIGF sequences is shown in Figure 8. The DIGFs exhibit a cysteine pattern that resembles closely the characteristic pattern of the insulin family. However, an excess amount of cysteines and the low sequence identity between human IGF (hIGF-I) and DIGFs render the matching of cysteines ambiguous when using sequence-only alignment.
+###end p 34
+###begin p 35
+###xml 118 119 118 119 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f9">9</xref>
+###xml 348 349 348 349 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f9">9</xref>
+###xml 397 399 397 399 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A7</sup>
+###xml 401 403 401 403 <sup xmlns:xlink="http://www.w3.org/1999/xlink">B7</sup>
+###xml 409 412 409 412 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A20</sup>
+###xml 414 417 414 417 <sup xmlns:xlink="http://www.w3.org/1999/xlink">B19</sup>
+###xml 484 486 484 486 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A6</sup>
+###xml 488 491 488 491 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A11</sup>
+Contact-based sequence alignment between the structure of hIGF-I and DIGFs yields an overall consistent picture (Fig. 9A). The multiple alignment between the hIGF-I sequence and some DIGFs was derived from pairwise contact-based alignments, and it illustrates the corresponding cysteine patterns (filled boxes); the connectivity is shown in Figure 9B. The canonical inter-chain disulfide bridges CA7-CB7 and CA20-CB19 are conserved in DIGFs, but not the intra-chain disulfide bridge CA6-CA11.
+###end p 35
+###begin p 36
+###xml 113 114 113 114 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f9">9</xref>
+###xml 153 155 153 155 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c25">25</xref>
+###xml 215 218 215 218 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A19</sup>
+###xml 224 227 224 227 <sup xmlns:xlink="http://www.w3.org/1999/xlink">B24</sup>
+###xml 330 333 330 333 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A19</sup>
+###xml 335 338 335 338 <sup xmlns:xlink="http://www.w3.org/1999/xlink">B19</sup>
+###xml 344 347 344 347 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A20</sup>
+###xml 349 352 349 352 <sup xmlns:xlink="http://www.w3.org/1999/xlink">B24</sup>
+###xml 400 410 400 410 <italic xmlns:xlink="http://www.w3.org/1999/xlink">C. elegans</italic>
+###xml 412 414 412 414 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c31">31</xref>
+###xml 561 562 561 562 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f9">9</xref>
+###xml 400 410 <span type="species:ncbi:6239">C. elegans</span>
+We have generated a structural model of DIGF by means of comparative modelling, based on the alignment in Figure 9A and the crystal structure of hIGF-I (25). The model shows that the spatial proximity of cysteines CA19 and CB24 allows for the formation of an additional inter-chain disulfide bridge. A slightly different pairing CA19-CB19 and CA20-CB24 has been proposed for insulin-like proteins of C. elegans (31). Both bonding patterns seem to be viable in principle when judged on the basis of our comparative model; however, the pattern proposed in Figure 9B appears more favourable.
+###end p 36
+###begin p 37
+###xml 172 179 172 179 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo</italic>
+###xml 223 225 223 225 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c26">26</xref>
+###xml 372 374 372 374 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f10">10</xref>
+To further investigate our hypothesis about the insulin-like nature of the DIGFs, we submitted the DIGF-3 sequence to the ROBETTA structure prediction server that produces de novo structural models for submitted sequences (26). Analysis of the 10 predicted structures reveals predominant topological features of A- and B-chain. The superposition of a selected model (Fig. 10, yellow) with the hIGF-I chains (blue) illustrates the close resemblance. The B-chain is predicted to be alpha-helical in agreement with insulin-like B-chains. The A-chain tends to adopt the helix-coil-helix motif that is typical for the A-chain of insulin-like proteins.
+###end p 37
+###begin title 38
+CONCLUSION
+###end title 38
+###begin p 39
+Contact-based sequence alignment closes a gap between pure sequence and pure structure alignments. Structural information can be used to improve alignments of homologous sequences, even if the structure of only one sequence is known. The described contact-based alignment algorithm is fast and produces improved alignments when compared to Needleman-Wunsch alignments.
+###end p 39
+###begin p 40
+The use of side-chain contact information in a sequence alignment routine introduces information about structural constraints between residues, which is ignored in classical PAM-type alignments, where the score of each aligned residue pair is independent of any other residue match. Contrastingly, in CAO contact-based alignment, the score of a residue pair match is dependent on the composition of a second match, because a contact consists of two (correlated) residues and the alignment of two contacts includes four residues. It proved advantageous to use CAO and PAM scores together, although the combination of two different scoring matrices (PAM and CAO) is non-trivial, in particular because the number of added CAO scores to a cell depends on the number of contacts the respective residue is involved in. This problem was addressed by using a GA.
+###end p 40
+###begin p 41
+###xml 471 479 465 473 <italic xmlns:xlink="http://www.w3.org/1999/xlink">a priori</italic>
+###xml 597 607 591 601 <italic xmlns:xlink="http://www.w3.org/1999/xlink">Drosophila</italic>
+###xml 834 841 828 835 <italic xmlns:xlink="http://www.w3.org/1999/xlink">de novo</italic>
+Sequence alignment often serves as a first step in comparative modelling projects. Ambiguous regions in the resulting alignment are then corrected at a later stage according to the evidence from structural or functional investigations. The flow of information is typically in the order sequence --> structure --> function. In contact-based alignment, the flow of information is partially reversed to sequence <-- structure, because structural information is incorporated a priori. The relevance of this method is illustrated here by its application in annotating eight putative IGF sequences from Drosophila. The structural information from the template hIGF-I is essential for the correct alignment of canonical cysteines and thus assignment of the A- and B-chain, from which a comparative model was derived. Independently generated de novo ROBETTA models support the comparative model.
+###end p 41
+###begin p 42
+###xml 1102 1104 1102 1104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c34">34</xref>
+###xml 1105 1107 1105 1107 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="bibr" rid="gkh566c38">38</xref>
+Alignment routines operate with the information that is passed to them in the form of substitution scores and gap penalties. This fact has several implications: first, the scoring scheme has to match a variety of biological (evolutionary) processes; second, more information from distinct sources should improve alignments; and third, different scoring matrices can be combined but the scoring scheme requires careful parameterization. The alignment routine presented here demonstrates how, in principle, biological or physico-chemical information about sequence, structure and function can be summed up by pre-processing in a single DP matrix. Particularly interesting is the fact that long-range correlations between residues can be included. Here we have used contact information, but the scheme can be extended to include other classes of information such as phylogeny, motifs, solvation, fold, function and NMR constraints. One can envision a set of generic properties that characterize the specific features of a protein family. Similar approaches exist for fold recognition and threading tools (34-38), but in terms of sequence alignment, a systematic analysis remains to be performed.
+###end p 42
+###begin p 43
+Sequence similarity is a very good indicator for evolutionary relationship, because the enormous dimension of sequence space renders chance similarity highly improbable. Improving the alignment quality of distant sequences therefore allows for a better estimation of the common ancestry of proteins. Moreover, by finding appropriate features that can provide essential information to correct alignments, we might be able to learn more about the features that are important during the course of protein evolution.
+###end p 43
+###begin title 44
+Availability
+###end title 44
+###begin p 45
+The contact-based alignment program 'ALICAO', the program 'GETCONT' to compute contact maps from coordinate files (Protein Database format) and the CAO matrices are available from our website at .
+###end p 45
+###begin title 46
+Figures and Tables
+###end title 46
+###begin p 47
+###xml 72 73 72 73 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 167 168 167 168 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+ Principle of contact information transfer from structure to sequence. (A) Scheme of template protein structure with contact between side-chains of residues F and I. (B) The same contact is marked on the template sequence (EFGem leaderHIK) by the solid bracket between F and I. Alignment of the homologous query sequence (DYGem leaderKIR) implies structural equivalence of the aligned residue pairs. Therefore, a contact can be tentatively assumed to exist in the query between D and K (dashed bracket). The CAO matrix yields a score for the contact match F_I:D_K. The putative contact (dashed bracket) is probed at all possible positions of the query sequence, which is illustrated here by sliding the query sequence along the template sequence as indicated by the arrows.
+###end p 47
+###begin p 48
+###xml 122 123 122 123 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 234 235 234 235 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+###xml 477 478 477 478 <bold xmlns:xlink="http://www.w3.org/1999/xlink">C</bold>
+###xml 652 653 652 653 <bold xmlns:xlink="http://www.w3.org/1999/xlink">D</bold>
+ Illustration of the contact-based alignment by dynamic programming. Newly assigned scores are highlighted in bold font. (A) The template sequence EYR contains three contacts: E_Y (1), E_R (2) and Y_R (3). The query sequence is EFK. (B) Contact (1) is slid over the query sequence, realising positions (1a) and (1b). In position (1a), the CAO score for E_Y:E_F yields score 0.15 for the two matrix cells EE and YF on the main diagonal. Position (1b) yields -0.09 for E_Y:F_K. (C) Contact (2) has only one possible realization in this example. The score of E_R:E_K is 0.37 as can be seen in cell RK, whereas the score of cell EE is 0.37 + 0.15 = 0.52. (D) Contact (3) is comparable to contact (1), with scores -0.18 for Y_R:E_F and -0.07 for Y_R:F_K.
+###end p 48
+###begin p 49
+ Benchmark of alignment routines. Difference Delta between the 'fraction correct pairs' as produced by contact-based alignment and by Needleman-Wunsch alignment. Improvement of alignment quality is apparent at low sequence identity, where contacts add valuable information to the sequence alignment.
+###end p 49
+###begin p 50
+###xml 368 374 <span type="species:ncbi:13443">Coffee</span>
+ Sequence alignments of the C-terminal domain of the protein chondroitinase (Homstrad family 'Lyase_8_C'). Numbers in parentheses show the 'fraction correct pairs'. The top alignment represents the reference alignment derived from structural super-positioning. Secondary structure elements of the beta-sheet sandwich structure are indicated by horizontal lines. The T-Coffee alignment reveals a register shift in the matched secondary structure elements, which is prevented in the contact-based alignment except for the short C-terminal strand of the bottom sequence.
+###end p 50
+###begin p 51
+###xml 57 58 57 58 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 453 454 453 454 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+ Comparison between sequence and structure information. (A) Fraction of correctly aligned residue pairs as a function of sequence identity. Homstrad families containing two sequences (624 families) were aligned by Needleman-Wunsch dynamic programming using the Blosum62 matrix and gap penalties 14,1 (opening and extension) and compared to the reference Homstrad alignments. Alignment quality decreases exponentially with decreasing sequence identity. (B) The same set of families as in panel (A) was used to compare the contacts within homologous protein structures. A contact is conserved when it is found at the same relative position in both structures and consequently at aligned positions in the reference sequence alignment (which is derived from structural super-positioning) as well. Even at very low sequence identity (10-20%), about 30% of contacts are conserved.
+###end p 51
+###begin p 52
+###xml 63 64 63 64 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 473 474 469 470 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+ Average distribution of contact distance and contact number. (A) The contact distance is defined as the difference of residue numbers between two contacting residues. The distribution is dominated by helices, whose 1 --> 2 (distance = 1) and 1 --> 4 (distance = 3) side-chain contacts are most frequent. Although most contacts are short-ranged, long-range contacts are generally present and provide valuable information about the packing of secondary structure elements. (B) The contact number is defined as the number of contacts a single residue forms with other residues.
+###end p 52
+###begin p 53
+###xml 24 25 24 25 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 286 287 286 287 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+ Contact conservation. (A) Fraction of conserved contacts as a function of contact distance. Contact conservation is marginally influenced by the contact distance. The short-range pattern originates from intra-helical contacts, which exhibit a better conservation than other contacts. (B) Fraction of conserved contacts as a function of contact number. Conservation is constant from 1 to 8 contacts per residue, after which it decreases rapidly. Residues forming many contacts seem to accept mutations more than those with few contacts.
+###end p 53
+###begin p 54
+ Multiple sequence alignment of putative DIGFs. Positions with conserved cysteines are indicated with a star.
+###end p 54
+###begin p 55
+###xml 39 40 39 40 <bold xmlns:xlink="http://www.w3.org/1999/xlink">A</bold>
+###xml 391 392 391 392 <bold xmlns:xlink="http://www.w3.org/1999/xlink">B</bold>
+###xml 577 579 577 579 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A7</sup>
+###xml 581 583 581 583 <sup xmlns:xlink="http://www.w3.org/1999/xlink">B7</sup>
+###xml 589 592 589 592 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A20</sup>
+###xml 594 597 594 597 <sup xmlns:xlink="http://www.w3.org/1999/xlink">B19</sup>
+###xml 665 667 665 667 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A6</sup>
+###xml 669 672 669 672 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A11</sup>
+###xml 761 764 761 764 <sup xmlns:xlink="http://www.w3.org/1999/xlink">A19</sup>
+###xml 766 769 766 769 <sup xmlns:xlink="http://www.w3.org/1999/xlink">B24</sup>
+ Primary structure of putative DIGFs. (A) Multiple sequence alignment of the hIGF-I sequence with DIGFs. The alignment was constructed from pairwise contact-based alignments using the crystal structure of hIGF-I as template (25). Numbering is according to the hIGF-I sequence. The N-terminal residues 'GP' (B-chain) and residues 'RRAP' (36-39, C-peptide) are not resolved in the structure. (B) Schematic illustration of chain structure and disulfide bridges in IGFs. The C-peptide connects the C-terminus of the B-chain with the N-terminus of the A-chain. Inter-chain bridges CA7-CB7 and CA20-CB19 are present in hIGF-I and DIGFs. The intra-chain disulfide bridge CA6-CA11 is absent in DIGFs (dotted line). However, an alternative inter-chain disulfide bridge CA19-CB24 might be formed in DIGFs (dashed line).
+###end p 55
+###begin p 56
+###xml 417 418 413 414 <xref xmlns:xlink="http://www.w3.org/1999/xlink" ref-type="fig" rid="gkh566f9">9</xref>
+###xml 238 243 <span type="species:ncbi:9796">horse</span>
+ Superpositioning of chain structures from a predicted ROBETTA model for DIGF-3 (yellow) and the hIGF-I crystal structure (blue). DIGF-3 shows the typical features of vertebrate IGFs: A mainly alpha-helical B-chain and an A-chain with a 'horse shoe' shaped helix-loop-helix motif. N- and C-termini are denoted; N22' signifies that the residue is positioned in a gapped region of IGF-I in the sequence alignment (Fig. 9A).
+###end p 56
+###begin title 57
+GA-optimized parameters and total scores of parameterization runs over 624 pairwise alignments of the Homstrad database for the contact-based alignment routine (CB) and Needleman-Wunsch dynamic programming (NW)
+###end title 57
+###begin p 58
+Alignments were performed using CAO (C) and Blosum62 (B) or PAM120 (P) matrices.
+###end p 58
+###begin p 59
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">a</sup>
+aSubstitution matrices; B: Blosum62, C: CAO120, P: PAM120.
+###end p 59
+###begin p 60
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">b</sup>
+###xml 23 24 23 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink">p</italic>
+###xml 53 54 53 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink">q</italic>
+bGap opening parameter p and gap extension parameter q.
+###end p 60
+###begin p 61
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">c</sup>
+###xml 17 18 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">w</italic>
+cRelative weight w of CAO versus Blosum62 or PAM120 scores.
+###end p 61
+###begin p 62
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">d</sup>
+###xml 17 18 17 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink">c</italic>
+dMatrix constant c for CAO scores.
+###end p 62
+###begin p 63
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">e</sup>
+eMaximal sum of 'fraction correct pairs' scores over the benchmark set.
+###end p 63
+###begin p 64
+###xml 0 1 0 1 <sup xmlns:xlink="http://www.w3.org/1999/xlink">f</sup>
+fAverage of 'fraction correct pairs' scores.
+###end p 64
+###begin title 65
+###xml 71 77 <span type="species:ncbi:13443">Coffee</span>
+Benchmark of alignment routines: Needleman-Wunsch, contact-based and T-Coffee
+###end title 65
+###begin p 66
+Numbers are given for 624 pairwise alignments of the Homstrad database. Performance comparison is made against Needleman-Wunsch alignments.
+###end p 66
+###begin title 67
+ACKNOWLEDGEMENTS
+###end title 67
+###begin p 68
+The authors thank Dr G. Dodson, Dr A. Gould and Dr I. Robinson for stimulating discussions and help. We thank Dr F. Fraternali and V. Simossis for advice.
+###end p 68
+###begin title 69
+REFERENCES
+###end title 69
+

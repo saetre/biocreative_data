@@ -1,0 +1,868 @@
+###begin article-title 0
+Predicting Shine-Dalgarno Sequence Locations Exposes Genome Annotation Errors
+###end article-title 0
+###begin p 1
+In prokaryotes, Shine-Dalgarno (SD) sequences, nucleotides upstream from start codons on messenger RNAs (mRNAs) that are complementary to ribosomal RNA (rRNA), facilitate the initiation of protein synthesis. The location of SD sequences relative to start codons and the stability of the hybridization between the mRNA and the rRNA correlate with the rate of synthesis. Thus, accurate characterization of SD sequences enhances our understanding of how an organism's transcriptome relates to its cellular proteome. We implemented the Individual Nearest Neighbor Hydrogen Bond model for oligo-oligo hybridization and created a new metric, relative spacing (RS), to identify both the location and the hybridization potential of SD sequences by simulating the binding between mRNAs and single-stranded 16S rRNA 3' tails. In 18 prokaryote genomes, we identified 2,420 genes out of 58,550 where the strongest binding in the translation initiation region included the start codon, deviating from the expected location for the SD sequence of five to ten bases upstream. We designated these as RS+1 genes. Additional analysis uncovered an unusual bias of the start codon in that the majority of the RS+1 genes used GUG, not AUG. Furthermore, of the 624 RS+1 genes whose SD sequence was associated with a free energy release of less than -8.4 kcal/mol (strong RS+1 genes), 384 were within 12 nucleotides upstream of in-frame initiation codons. The most likely explanation for the unexpected location of the SD sequence for these 384 genes is mis-annotation of the start codon. In this way, the new RS metric provides an improved method for gene sequence annotation. The remaining strong RS+1 genes appear to have their SD sequences in an unexpected location that includes the start codon. Thus, our RS metric provides a new way to explore the role of rRNA-mRNA nucleotide hybridization in translation initiation.
+###end p 1
+###begin title 2
+Synopsis
+###end title 2
+###begin p 3
+More than 30 years ago researchers first discovered a sequence of messenger RNA (mRNA) nucleotides in bacteria that ribosomes recognize as a signal for where to begin protein synthesis. Today, genome annotation software takes advantage of this finding and uses it to help identify the location of start codons. Because these sequences, now referred to as Shine-Dalgarno (SD) sequences, are always upstream from start codons, annotation programs look for them in the region 5' to these candidate sites. In a comprehensive analysis of 18 bacterial genomes, the authors show that when looking for SD sequences, it sometimes pays off to analyze unlikely locations. By examining the region that immediately surrounds the start codon for SD sequences, the authors identify many mis-annotated genes and in so doing offer a method to help check for these in future annotation projects.
+###end p 3
+###begin title 4
+Introduction
+###end title 4
+###begin p 5
+###xml 28 29 28 29 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b001">1</xref>
+###xml 55 71 55 71 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 871 872 871 872 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b002">2</xref>
+###xml 943 944 943 944 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b003">3</xref>
+###xml 964 965 964 965 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b004">4</xref>
+###xml 55 71 <span type="species:ncbi:562">Escherichia coli</span>
+In 1974 Shine and Dalgarno [1] sequenced the 3' end of Escherichia coli's 16S ribosomal RNA (rRNA) and observed that part of the sequence, 5'-ACCUCC-3', was complementary to a motif, 5'-GGAGGU-3', located 5' of the initiation codons in several messenger RNAs (mRNAs). They combined this observation with previously published experimental evidence and suggested that complementarity between the 3' tail of the 16S rRNA and the region 5' of the start codon on the mRNA was sufficient to create a stable, double-stranded structure that could position the ribosome correctly on the mRNA during translation initiation. The motif on the mRNAs, 5'-GGAGGU-3', and variations on it that are also complementary to parts of the 3' 16S rRNA tail, have since been referred to as the Shine-Dalgarno (SD) sequence. Shine and Dalgarno's theory was bolstered by Steitz and Jakes in 1975 [2] and eventually experimentally verified, in 1987, by Hui and de Boer [3] and Jacob et al. [4].
+###end p 5
+###begin p 6
+Since Shine and Dalgarno's publication, two different approaches have been used to identify and position SD sequences in prokaryotes: sequence similarity and free energy calculations.
+###end p 6
+###begin p 7
+###xml 160 161 160 161 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b005">5</xref>
+###xml 236 237 236 237 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b006">6</xref>
+###xml 773 774 773 774 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b007">7</xref>
+###xml 775 777 775 777 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b010">10</xref>
+Methods based on sequence similarity include searching upstream from start codons for sub-strings of the SD sequences that are at least three nucleotides long [5]. Identification errors can arise from this approach for several reasons [6]. A threshold of similarity does not exist that can clearly delineate actual SD sequences from spurious sites with a significant, but low, degree of similarity to the SD sequence. The lack of certainty has led to a number of observations in which gene sequences appear to partition themselves into two categories: those with obvious SD sequences and those without. The inability of sequence techniques to pinpoint the exact location of the SD sequence poses a problem because its location is believed to affect translation initiation [7-10].
+###end p 7
+###begin p 8
+###xml 395 396 395 396 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b003">3</xref>
+###xml 397 398 397 398 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b004">4</xref>
+###xml 703 705 703 705 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b011">11</xref>
+###xml 834 835 830 831 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 846 848 836 838 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b012">12</xref>
+###xml 849 851 839 841 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b014">14</xref>
+###xml 970 971 956 957 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1088 1089 1068 1069 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b005">5</xref>
+###xml 1090 1091 1070 1071 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b006">6</xref>
+###xml 1092 1094 1072 1074 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b015">15</xref>
+###xml 1095 1097 1075 1077 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b016">16</xref>
+###xml 1161 1162 1137 1138 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1387 1388 1353 1354 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+The second approach, using free energy calculations, is based on thermodynamic considerations of the proposed mechanism of 30S binding to the mRNA and overcomes the limitations of sequence analysis. Watson-Crick hybridization occurs between the 3'-terminal, single-stranded nucleotides of the 16S rRNA (the rRNA tail) and the SD sequence in the mRNA and has a significant effect on translation [3,4]. The formation of hydrogen bonds between aligned, complementary nucleotides is the basis of Watson-Crick hybridization and results in a more stable, double-stranded structure with lower free energy than the participating single-stranded sequences. One long-standing implementation of this model, Mfold [11], quantifies the degree of hybridization and the stability of RNA secondary structure by calculating the change in energy (DeltaG degrees) [12-14]. This method for estimating free energy has been adapted to identify SD sequences by repeatedly calculating the DeltaG degrees values for progressive alignments of the rRNA tail with the mRNA in the region upstream of the start codon [5,6,15,16]. All of these studies have observed a trough of negative DeltaG degrees upstream of the start codon whose location is largely coincident with the SD consensus sequence. This second approach can both identify the SD sequence and pinpoint its exact location as that having the minimal DeltaG degrees value. However, the exact location of the SD sequence is dependent on the nucleotide indexing scheme of the algorithm, i.e., on which nucleotide is designated as the "0" position.
+###end p 8
+###begin p 9
+###xml 151 167 151 167 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">relative spacing</italic>
+To normalize indexing and to further extend free energy analysis through the start codon and into the coding region of genes, we created a new metric, relative spacing (RS). This metric localizes binding across the entire translation initiation region (TIR), relative to the rRNA tail, enabling us to characterize binding that involves the start codon as well as sequences downstream. RS is also independent of the length of the rRNA tail, and this property allows for comparison of binding locations between species.
+###end p 9
+###begin p 10
+###xml 111 121 111 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">leaderless</italic>
+###xml 129 131 129 131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b017">17</xref>
+###xml 132 134 132 134 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b022">22</xref>
+###xml 321 323 321 323 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b023">23</xref>
+###xml 346 348 346 348 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b024">24</xref>
+###xml 516 518 516 518 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b022">22</xref>
+###xml 519 521 519 521 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b023">23</xref>
+###xml 522 524 522 524 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b025">25</xref>
+By examining sequences downstream from start codons, we could explore mRNAs that lack any upstream region, the leaderless mRNAs [17-22]. The lack of any 5' untranslated leader in the mRNAs has prompted searches for other sequence motifs that could interact with the 16S rRNA. One of these, the downstream box hypothesis [23], has been disproved [24]. Thus, there is a continued search for an explanation for the highly conserved sequences 3' of the initiation codon that have been observed in many leaderless mRNAs [22,23,25].
+###end p 10
+###begin p 11
+###xml 77 78 73 74 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+In this study we use the RS metric to identify the positions of minimal DeltaG degrees troughs for genes of 18 species of prokaryotes as a test of its usefulness as a means to improve existing annotation tools, i.e., by identifying SD sequences. We observe 2,420 genes where the strongest binding in the entire TIR takes place one nucleotide downstream from the start codon, at RS+1. Of these, 624 genes have unusually strong binding (less than -8.4 kcal/mol). We then determine if these 624 genes were mis-annotated and conclude that 384 are.
+###end p 11
+###begin title 12
+Results
+###end title 12
+###begin p 13
+###xml 17 18 13 14 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 90 98 80 88 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g001">Figure 1</xref>
+###xml 134 135 120 121 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 257 258 237 238 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b007">7</xref>
+###xml 259 260 239 240 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b008">8</xref>
+###xml 340 342 320 322 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b015">15</xref>
+###xml 343 345 323 325 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b026">26</xref>
+###xml 376 378 356 358 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b027">27</xref>
+###xml 390 391 366 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 578 586 548 556 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g002">Figure 2</xref>
+###xml 673 674 639 640 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 883 884 839 840 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 911 920 861 870 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">+1 genes,</italic>
+###xml 945 946 891 892 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 973 988 913 928 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">strong +1 genes</italic>
+###xml 1086 1101 1026 1041 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">upstream genes,</italic>
+###xml 1117 1133 1057 1073 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">downstream genes</italic>
+###xml 1365 1366 1301 1302 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+The average DeltaG degrees value at each position of the TIR for each species is shown in Figure 1, aligned according to RS. The DeltaG degrees troughs upstream from RS 0 are consistent with previous experimental studies on the location of the SD sequence [7,8], as well as with computational studies either simulating free energy changes [15,26] or using information theory [27]. The DeltaG degrees trough immediately after the first base in the initiation codon, at RS+1, is unexpected, but present in a significant portion of genes in all species examined. The histograms of Figure 2 show the distributions of RS positions of the strongest SD-like sequences (where DeltaG degrees < -3.4535, see the Materials and Methods section for more details) in each TIR for all genes within a species. For all genes that contain an SD-like sequence, we will call genes where the lowest DeltaG degrees value is at RS+1, +1 genes, and +1 genes where DeltaG degrees < - 8.4 kcal/mol, strong +1 genes. Genes where the strongest SD-like sequence is between RS-20 and RS-1, inclusive, are designated upstream genes, and similarly, downstream genes are genes where the strongest SD-like sequence is between RS+1 and RS+20, keeping in mind that these designations do not imply that other SD-like sequences do not exist in the TIR, but only that they do not bind with as low a DeltaG degrees value to the rRNA. If a trough of minimal free energy can be definitive of the SD sequence, a site whose location is presumed to be upstream from the coding region, the +1 genes are unexpected in that they exist within, not upstream from, the coding region. Our study focuses on the characterization of the sequence interactions that give rise to strong +1 genes and on possible explanations for their presence; we have reserved the downstream genes for future analysis.
+###end p 13
+###begin p 14
+We thought of four hypotheses to explain the unexpected RS+1 result. 1) The +1 site is an artifact of our model or implementation. 2) The +1 trough could result from known sequence bias around the start codon, assuming the start codon annotation is correct. 3) The start codon annotation could be incorrect: the presence of in-frame start codons downstream of the annotated start codons would be consistent with this interpretation. 4) If there were sequence errors in the start codon, they could potentially change the free energy calculation for alignments in which the three nucleotides of the start codon participated. All four of these hypotheses were examined.
+###end p 14
+###begin p 15
+###xml 494 496 494 496 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b011">11</xref>
+###xml 497 499 497 499 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b014">14</xref>
+###xml 500 502 500 502 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b028">28</xref>
+###xml 537 538 537 538 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b006">6</xref>
+###xml 539 540 539 540 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b009">9</xref>
+###xml 541 543 541 543 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b015">15</xref>
+###xml 544 546 544 546 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b016">16</xref>
+###xml 547 549 547 549 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b026">26</xref>
+###xml 550 552 550 552 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b029">29</xref>
+###xml 653 655 653 655 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b014">14</xref>
+###xml 821 823 821 823 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b030">30</xref>
+###xml 965 966 965 966 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b007">7</xref>
+###xml 967 968 967 968 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b008">8</xref>
+###xml 997 999 997 999 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b015">15</xref>
+###xml 1000 1002 1000 1002 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b031">31</xref>
+###xml 1003 1005 1003 1005 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b033">33</xref>
+###xml 1083 1085 1083 1085 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b034">34</xref>
+###xml 1123 1131 1123 1131 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g001">Figure 1</xref>
+We were quickly able to dispose of our first hypothesis. The +1 site is not an artifact of the individual nearest neighbor-hydrogen bond (INN-HB) model or its implementation. Both the individual nearest neighbor (INN) and the INN-HB RNA secondary structure models are based on thermodynamics and use experimentally derived parameters. Implementations of INN models using dynamic programming have a well-established history of accurately predicting secondary structures for short RNA sequences [11,14,28,] and SD sequence identification [6,9,15,16,26,29]. The more recent INN-HB model improves secondary structure predictions in newer versions of Mfold [14]. While this study is the first use of the INN-HB model for SD sequence detection, it is not the first example of its use for oligo-oligo hybridization predictions [30]. With the exception of the +1 site, the results that our implementation of the INN-HB model generate are consistent with both experimental [7,8] and computational studies [15,31-33] of SD and coding sequences. Furthermore, analysis performed with RNAhybrid [34] is consistent with our results (see Figure 1). Based on this evidence, it is clear that the +1 site is not an artifact of the model we are using or of its implementation.
+###end p 15
+###begin p 16
+###xml 298 305 298 305 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t001">Table 1</xref>
+###xml 335 342 335 342 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 398 400 398 400 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b035">35</xref>
+###xml 401 403 401 403 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b037">37</xref>
+###xml 444 446 444 446 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b038">38</xref>
+###xml 447 449 447 449 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b039">39</xref>
+###xml 545 553 545 553 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g003">Figure 3</xref>
+###xml 555 560 555 560 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">radC,</italic>
+###xml 596 604 596 604 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g004">Figure 4</xref>
+###xml 628 635 628 635 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 774 782 774 782 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli,</italic>
+###xml 927 928 923 924 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 998 999 984 985 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1059 1060 1035 1036 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1114 1121 1084 1091 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 335 342 <span type="species:ncbi:562">E. coli</span>
+###xml 628 635 <span type="species:ncbi:562">E. coli</span>
+###xml 774 781 <span type="species:ncbi:562">E. coli</span>
+###xml 1114 1121 <span type="species:ncbi:562">E. coli</span>
+###xml 1240 1247 <span type="species:ncbi:562">E. coli</span>
+The second hypothesis assumes that the significant negative free energy value at RS+1 results primarily from nucleotide biases in the first two codons of the coding region. Obviously there is extreme codon bias in the start codon for all genes and, therefore, for all species examined, as shown in Table 1. Studies of TIR sequences in E. coli have shown considerable bias in the second codon, too [35-37]. To examine this bias, sequence logos [38,39] () were created for the region of mRNA that would be aligned with the rRNA tail for RS+1 (see Figure 3, radC, for an example of this alignment). Figure 4 is a sequence logo for E. coli genes that includes the first two codons. This logo was representative of the sequence logos for all 18 organisms (unpublished data). For E. coli, the sequence logo gives two options for relatively abundant sequences that could bind to the rRNA tail: AUGA and GUGA. AUGA has a positive DeltaG degrees value of 0.21 kcal/mol and cannot explain the trough of DeltaG degrees. The alternate sequence, GUGA, has a negative DeltaG degrees value of -1.88 kcal/mol. However, if all 570 E. coli genes whose start codons are GUG had this value, the total would be too small to cause the average value of the 4,254 E. coli genes to be -0.79 kcal/mol. Using the same approach with the sequence logos for the remaining 17 organisms, sequence bias of the first two codons also failed to explain the average negative free energy trough associated with the RS+1 alignment.
+###end p 16
+###begin p 17
+###xml 298 305 298 305 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t002">Table 2</xref>
+The third hypothesis assumes incorrect sequence annotation for the start codon in the strong +1 genes. To eliminate the possibility that a bias in a particular sequence annotation program caused the RS+1 site, we verified that the genomes in our study had been annotated using different tools (see Table 2). GLIMMER was used for half of the genomes, and the remaining genomes were annotated with GeneMark, FrameD, ORPHEUS, and GeneLook. Thus, if the RS +1 site can be explained as sequence annotation errors, these errors are being made by a variety of software packages.
+###end p 17
+###begin p 18
+###xml 366 373 366 373 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t003">Table 3</xref>
+###xml 577 584 577 584 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t003">Table 3</xref>
+###xml 1005 1012 1005 1012 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 1195 1197 1195 1197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b040">40</xref>
+###xml 1392 1394 1392 1394 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b041">41</xref>
+###xml 1397 1404 1397 1404 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 1407 1411 1407 1411 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">radC</italic>
+###xml 1516 1520 1516 1520 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">radC</italic>
+###xml 1569 1577 1569 1577 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g003">Figure 3</xref>
+###xml 1005 1012 <span type="species:ncbi:562">E. coli</span>
+###xml 1397 1404 <span type="species:ncbi:562">E. coli</span>
+One way to detect sequence annotation errors as the cause of the RS+1 site is to look for in-frame start codons downstream from the start codons annotated in GenBank. To investigate this potential explanation for strong +1 genes, 12-nucleotide-long sequences downstream from the annotated start codon were scanned for in-frame start codons. The results are shown in Table 3. The rationale for scanning 12 nucleotides downstream came from the observation that, in the majority of genes, the SD sequence is located within 10 nucleotides upstream from the start codon. As seen in Table 3, only a small percentage of the TIRs of upstream genes have in-frame start codons downstream from the annotated start site. In contrast, the majority of strong +1 genes have downstream, in-frame start codons that could serve as the actual start codons. This finding is consistent with the interpretation that at least a subset of strong +1 genes actually have errors in start codon annotation. All 28 strong +1 genes in E. coli contain a disagreement between the GenBank annotated start codons and the EcoGene database annotation, a database employing hand-curated annotation that is presumably more accurate [40]. These disagreements in annotation are probably the result of Blattner et al. selecting the start codon that will allow the open reading frame (ORF) to be extended as far upstream as possible [41]. E. coli's radC gene provides a useful example: assuming the GenBank annotation to be correct, the RS metric identifies radC as a strong +1 gene. However, as can be seen in Figure 3, the initiation region sequence has an in-frame GUG six bases downstream from the annotated start codon. If the downstream GUG codon were the true start codon, then the gene would not be a strong +1 gene but would have its trough of minimal free energy in the regular, upstream SD position. Future experiments could differentiate these alternatives by examining the amino acid sequence of the gene's protein.
+###end p 18
+###begin p 19
+###xml 194 201 194 201 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t003">Table 3</xref>
+###xml 206 214 206 214 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli,</italic>
+###xml 659 667 659 667 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli,</italic>
+###xml 206 213 <span type="species:ncbi:562">E. coli</span>
+###xml 659 666 <span type="species:ncbi:562">E. coli</span>
+Another type of annotation error may explain the strong +1 genes that remain after accounting for those whose start codons are incorrectly located, the number of which, by species, are shown in Table 3. In E. coli, there are five strong +1 genes in which mis-annotation of their start codon position does not serve as an explanation of the unexpected position of their minimal free energy trough. In the GenBank database, all of these five genes are tagged as "hypothetical" or "putative," indicating that the assumption that they encode a polypeptide has not been verified. It is possible that they do not encode proteins. Therefore, at least in the case of E. coli, a strong case can be made for mis-annotation causing the RS+1 designation of these genes.
+###end p 19
+###begin p 20
+###xml 168 175 168 175 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t001">Table 1</xref>
+###xml 1075 1076 1071 1072 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1295 1296 1281 1282 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 1682 1689 1662 1669 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t004">Table 4</xref>
+The fourth hypothesis proposes that sequence errors might account for the presence of a minimal free energy trough at the RS+1 alignment. To examine this idea further, Table 1 summarizes the frequencies of the three start codons in genes with minimal free energy troughs in the expected, upstream alignment (the upstream genes) versus strong +1 genes. It is immediately apparent that there is a significant bias in strong +1 genes toward the use of GUG start codons. One possible reason strong +1 genes preferentially utilize GUG as the start codon is that sequencing errors may have occurred, and that in actuality at least a portion of these genes used AUG as their start codons. The RS+1 trough would then, presumably, result from these sequencing errors. To test this hypothesis, GUG start codons in strong +1 genes were changed to AUG start codons, and AUG start codons in all other genes were changed to GUG. Free energy values were calculated for these new sequences, and RS values were determined for each gene. For strong +1 genes, the RS values for the lowest DeltaG degrees values were uniformly distributed (unpublished data). In the case of the remaining genes, the changes resulted in many more of the initiation regions having their most stable binding at RS+1. However, the DeltaG degrees value at RS+1 in these modified start codon sequences was only marginally stronger than the free energy trough still present at the upstream SD site. The small difference in energy values between the upstream SD site and the RS+1 site contrasts with that seen using the actual sequences of RS+1 genes. In those cases, the difference in energy values is quite large, as seen in Table 4.
+###end p 20
+###begin p 21
+###xml 0 7 0 7 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t005">Table 5</xref>
+Table 5 summarizes our results. It lists the total number of genes examined in each species, the number of upstream, downstream, +1, and strong +1 genes identified, as well as the number of strong +1 genes that do not appear to be artifacts of mis-annotation.
+###end p 21
+###begin title 22
+Discussion
+###end title 22
+###begin p 23
+###xml 99 100 99 100 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b005">5</xref>
+###xml 101 102 101 102 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b006">6</xref>
+###xml 103 104 103 104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b009">9</xref>
+###xml 105 107 105 107 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b015">15</xref>
+###xml 108 110 108 110 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b016">16</xref>
+###xml 111 113 111 113 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b026">26</xref>
+There is a long history of investigating SD sequences using approaches grounded in thermodynamics [5,6,9,15,16,26]. As newer models are proposed and more accurate parameter values published, these methods have improved over the years. Here we present a new method that uses these previous approaches as a point of departure and that, through both major and minor changes, enhances our ability to characterize SD sequences accurately.
+###end p 23
+###begin p 24
+Three major differences separate our method from prior methods. The primary difference is that we are examining both upstream and downstream sequences. Investigating downstream sequences allowed us to observe the large number of hybridization sites that include the start codon. The second main difference is our use of RS as a means to compare hybridization locations among species. The third difference is our use of the INN-HB model instead of the INN model.
+###end p 24
+###begin p 25
+###xml 631 633 631 633 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b015">15</xref>
+###xml 761 762 761 762 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b009">9</xref>
+###xml 904 906 904 906 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b026">26</xref>
+There are also many minor differences between our method and its predecessors. The most common are discrepancies in rRNA tail selection. We defined the 16S rRNA tails based on proposed secondary structures and conserved single-stranded 16S rRNA motifs. The sequences we used are the maximum number of single-stranded nucleotides available for hybridization based on accepted models of rRNA secondary structure. Osada et al. used the last 20 nucleotides of the 16S rRNA sequence without consideration of secondary structure models and the intramolecular helix formation that a significant portion of their 5' bases are involved in [15]. On the other hand, Ma et al. enforce a 12-nucleotide limit on the length of the rRNA tails and truncate any that are longer [9]. Sakai et al. base their anti-SD motifs on the most frequent 7-mer found within 40 bases upstream of the start codon on the mRNA sequences [26], without reference to rRNA sequences.
+###end p 25
+###begin p 26
+###xml 84 91 84 91 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t006">Table 6</xref>
+###xml 375 376 371 372 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 422 435 412 425 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Synechocystis</italic>
+###xml 437 439 427 429 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b026">26</xref>
+###xml 480 488 470 478 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g005">Figure 5</xref>
+###xml 493 500 483 490 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t006">Table 6</xref>
+###xml 544 545 534 535 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b006">6</xref>
+###xml 694 695 680 681 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+As a result of these differences, our method improves SD sequence characterization. Table 6 shows the effect of using the INN-HB model in lieu of the INN model, used in Ma et al., as well as allowing for flexible tail lengths. For each organism common to both studies, we were able to identify more upstream SD sequences. Sakai et al. were unable to observe an upstream DeltaG degrees trough indicative of SD sequences in Synechocystis [26]. Our method reveals the SD trough (see Figure 5 and Table 6). Comparison with Schurr et al.'s results [6] shows benefits to using the INN-HB model in conjunction with RS and examining downstream sequences. Of the 38 genes they identified as having DeltaG degrees >/= 0 kcal/mol, and thus no discernible binding site for the rRNA tail, we were able to identify eight as +1 genes, and two as having stronger than average SD sequences between five and ten bases upstream from the start codons. Of the eight +1 genes, two had in-frame start codons within 12 bases downstream from the annotated start codon. The remaining 28 genes were able to bind to the rRNA tail farther downstream from the annotated start codon. These results show the benefit of our approach by providing more resolution of the TIR in genes that have unusual nucleotide sequences relative to previous methods.
+###end p 26
+###begin p 27
+###xml 71 78 71 78 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t005">Table 5</xref>
+###xml 241 249 241 249 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli,</italic>
+###xml 241 248 <span type="species:ncbi:562">E. coli</span>
+Our method is also useful for detecting errors in sequence annotation. Table 5 shows that most of the strong +1 genes are probably mis-annotated. Only a few strong +1 genes remain that do not fit this explanation. Of the five that remain in E. coli, none are experimentally verified, and they have no assigned function, making it likely that they are not true genes, but only vestigial ORFs.
+###end p 27
+###begin p 28
+###xml 166 175 166 175 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">B. longum</named-content>
+###xml 193 198 193 198 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rnpA,</italic>
+###xml 318 327 318 327 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CTC02285,</italic>
+###xml 348 366 348 366 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Clostridium tetani</named-content>
+###xml 476 500 476 500 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bradyrhizobium japonicum</named-content>
+###xml 559 564 559 564 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">polE,</italic>
+###xml 613 623 613 623 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cycK, nah,</italic>
+###xml 166 175 <span type="species:ncbi:216816">B. longum</span>
+###xml 348 366 <span type="species:ncbi:1513">Clostridium tetani</span>
+###xml 476 500 <span type="species:ncbi:375">Bradyrhizobium japonicum</span>
+That said, it is harder to understand the strong +1 genes that do not appear to be the result of annotation errors in the 17 other organisms we studied. For example, B. longum's strong +1 gene rnpA, a ribonuclease P protein component, does not contain an in-frame start codon downstream from the annotated start site. CTC02285, a strong +1 gene in Clostridium tetani that codes for protein translation initiation factor 3 (IF3), is also without a downstream initiation codon. Bradyrhizobium japonicum has many strong +1 genes without downstream start codons: polE, which codes for the polymerase epsilon subunit, cycK, nah, and 52 others. Thus, while a large percentage of the strong +1 genes appears to be the result of sequence annotation errors, there remains a significant number that require an alternative explanation.
+###end p 28
+###begin p 29
+###xml 324 326 324 326 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b042">42</xref>
+###xml 492 494 492 494 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b018">18</xref>
+###xml 552 559 552 559 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t001">Table 1</xref>
+Two possible explanations for strong +1 genes that do not seem to be artifacts of annotation errors are: 1) the +1 site could stimulate translation initiation on leaderless genes, and 2) the binding site at RS+1 could be used as a translational standby site, i.e., sequences that hold the 16S rRNA close to the SD sequence [42]. In the former case, it is highly unlikely that the unexplained strong +1 genes in our study are leaderless because leaderless translation favors AUG start codons [18], in contrast to the strong +1 genes that favor GUG (see Table 1). In the latter case, it is unlikely that the +1 site functions as a translational standby site, because its location is too close to where the SD sequence should be; and for strong +1 genes, there does not appear to be an SD sequence.
+###end p 29
+###begin p 30
+###xml 132 140 132 140 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t005">Tables 5</xref>
+###xml 145 146 145 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t006">6</xref>
+###xml 276 283 276 283 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 384 390 384 390 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Nostoc</italic>
+###xml 395 409 395 409 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Synechocystis,</italic>
+###xml 700 702 700 702 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b043">43</xref>
+###xml 775 782 775 782 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 847 849 847 849 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b044">44</xref>
+###xml 1168 1175 1168 1175 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 1181 1185 1181 1185 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpsA</italic>
+###xml 1187 1189 1187 1189 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b044">44</xref>
+###xml 1428 1435 1428 1435 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 1579 1581 1579 1581 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b045">45</xref>
+###xml 276 283 <span type="species:ncbi:562">E. coli</span>
+###xml 775 782 <span type="species:ncbi:562">E. coli</span>
+###xml 1168 1175 <span type="species:ncbi:562">E. coli</span>
+###xml 1428 1435 <span type="species:ncbi:562">E. coli</span>
+Both ours and previous studies have also shown that many bacterial genes lack SD sequences upstream from proposed start codons (see Tables 5 and 6), suggesting the possibility of alternative mechanisms for recruiting ribosomes. Using Ma et al.'s criteria, only 68.1% genes in E. coli with more than 100 amino acids contained upstream SD sequences. The two cyanobacteria in our study, Nostoc and Synechocystis, both have relatively small percentages of upstream SD sequences. These two organisms are believed to be closely related to the free living predecessor of chloroplasts, which are thought to use SD sequences as well as alternative mechanisms to recruit ribosomes for translation (see Zerges [43] for a review). Furthermore, there is at least one example of a gene in E. coli that is efficiently translated without a canonical SD sequence [44], implying that these alternative mechanisms may exist in a variety of bacteria. One possible mechanism could be stem-loop structures within the TIR that form an SD-like sequence between loops. Boni et al. have shown that a disjointed SD sequence brought together by secondary structures is likely to function for the E. coli gene rpsA [44]. It is also possible that there are viable substitutes for SD sequences. By generating a library of upstream sequences without canonical SD sequences and a low percentage of guanine bases, Kolev et al. were able to identify sequences in E. coli that would not bind to the 16S rRNA tail, but which increased the efficiency of translation initiation beyond that of a consensus SD sequence [45].
+###end p 30
+###begin p 31
+We emphasize that our method is not for detecting start codons de novo, but for improving annotation accuracy once a candidate start codon is proposed by some other means. Our data suggests that we can identify unlikely start sites by examining the surrounding nucleotides, both upstream and downstream, and by using RS to characterize SD sequences. If the strongest binding between the TIR and the rRNA tail includes the candidate start codon, the true start codon may be in-frame and within 12 nucleotides downstream.
+###end p 31
+###begin title 32
+Conclusions
+###end title 32
+###begin p 33
+We have built on existing methods for characterizing SD sequences by developing software that utilizes the most recent nucleotide hybridization model, INN-HB, examining sequences that are both upstream and downstream from the start codon, and using RS to indicate position. Our method has allowed us to identify both a larger percentage of SD sequences than previous methods and many potential annotation errors. Our method could be used to enhance genome annotation quality by accurately locating SD sequences with respect to proposed start codons. SD sequences that contain these start codons could indicate that a more likely start position is within 12 nucleotides downstream.
+###end p 33
+###begin title 34
+Materials and Methods
+###end title 34
+###begin title 35
+Genome sequences.
+###end title 35
+###begin p 36
+###xml 120 127 120 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t007">Table 7</xref>
+All genome sequences were downloaded from the National Center for Biotechnology Information (NCBI) GenBank database (). Table 7 contains the names of the species whose sequences were analyzed, their RefSeq version numbers, the number of genes selected from each genome, their predicted 16S rRNA secondary structure, and the sequence of the rRNA tail used for the analysis.
+###end p 36
+###begin title 37
+Selecting criteria for gene sequences.
+###end title 37
+###begin p 38
+For all genomes, all gene sequences with gene= or locus_tag= tags were included in our dataset, except those that also included a transposon= or pseudo tag.
+###end p 38
+###begin p 39
+###xml 685 687 685 687 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b023">23</xref>
+###xml 703 705 703 705 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b024">24</xref>
+###xml 833 835 833 835 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b022">22</xref>
+###xml 836 838 836 838 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b023">23</xref>
+###xml 839 841 839 841 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b025">25</xref>
+###xml 948 949 948 949 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b006">6</xref>
+###xml 950 951 950 951 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b009">9</xref>
+###xml 952 954 952 954 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b015">15</xref>
+###xml 955 957 955 957 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b016">16</xref>
+We defined the TIR as 35 bases upstream and 35 bases downstream of the first base in the start codon. To this sequence, we added a number of additional nucleotides equivalent to the number of nucleotides in the species rRNA tail to the downstream sequence. For example, TIR sequences in a species whose rRNA tail length was 13 nucleotides would be 83 bases long (35 nucleotides upstream + 35 nucleotides downstream + 13 more downstream). Several observations determined this sequence window. In the majority of cases examined, SD sequences were within 10 nucleotides of the start codon. Although the hypothesis that a downstream box interacted with rRNA during translation initiation [23] was rejected [24], evidence from leaderless mRNAs suggests that sequences downstream and within 20 nucleotides of the start codon are involved [22,23,25]. Other studies that have analyzed initiation regions of mRNA sequences for negative free energy troughs [6,9,15,16] have not examined bases downstream of the annotated start codon: downstream sequence analysis allowed for start codon annotation error detection.
+###end p 39
+###begin title 40
+Determining the 3' rRNA tails for the 16S rRNAs.
+###end title 40
+###begin p 41
+###xml 125 127 125 127 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b046">46</xref>
+To determine the 3' tails for the 16S rRNAs, we downloaded predicted secondary structures from The Comparative RNA Web Site [46] (). We defined the 3' tail as the single-stranded terminal 3' nucleotides, and then, to verify consistency, compared these sequences with all annotated copies of the 16S rRNA in the genome.
+###end p 41
+###begin p 42
+If no secondary structure was available for an organism, we attempted to define the 3' tail from the genome sequence alone. First, we let the 3' end of the sequence define the 3' end of the tail. We then looked in the 5' direction for the first instance of the three letter motif, 5'-GAT-3', because this motif was found consistently on the 5' end of the tails of 16S rRNAs with predicted structures. The location of this motif was then used to define the 5' end of the 3' tail.
+###end p 42
+###begin p 43
+When there was a conflict between the genome sequence and the secondary structure or between multiple sequences within a single genome, we chose the tail found in the secondary structure or, if there was no predicted secondary structure, the majority of the 16S rRNA genes.
+###end p 43
+###begin p 44
+###xml 59 66 59 66 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t007">Table 7</xref>
+Tails for all 18 organisms used in our study are listed in Table 7.
+###end p 44
+###begin title 45
+Quantifying the helix formation between the 3' 16S rRNA tail and the mRNA initiation region with free_scan.
+###end title 45
+###begin p 46
+###xml 81 82 77 78 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 290 291 276 277 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 455 456 431 432 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 572 573 542 543 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b006">6</xref>
+###xml 574 575 544 545 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b009">9</xref>
+###xml 576 578 546 548 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b015">15</xref>
+###xml 579 581 549 551 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b016">16</xref>
+###xml 582 584 552 554 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b047">47</xref>
+###xml 585 587 555 557 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b049">49</xref>
+###xml 643 645 613 615 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b029">29</xref>
+For each gene in each organism, we predicted the change in the free energy, DeltaG degrees, required to bring the two strands of nucleotides together and to form a double helix structure using free_scan, a program we wrote. In the absence of catalytic enzymes, chemical reactions with DeltaG degrees values greater than zero require additional energy from an external source and are unlikely to occur spontaneously. On the other hand, reactions with DeltaG degrees values less than zero are likely to take place. This method has been used in many studies of SD sequences [6,9,15,16,47-49], as well as in the genome annotation program GLIMMER [29].
+###end p 46
+###begin p 47
+###xml 18 19 14 15 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 262 263 248 249 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 296 298 276 278 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b013">13</xref>
+To calculate DeltaG degrees at each position, free_scan begins by pairing the 5' end of the TIR with the 3' end of the rRNA tail and then pairs the mRNA and the rRNA in the 3' direction of the TIR and the 5' direction of the rRNA tail. free_scan calculates DeltaG degrees using the INN-HB model [13], extended to allow for symmetrical internal loops (loops that contain an equal number of bases in both RNA strands): 
+###end p 47
+###begin p 48
+###xml 22 23 18 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 23 27 19 23 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">init</sub>
+###xml 131 132 117 118 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 242 243 222 223 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">j</sub>
+###xml 241 243 221 223 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">n<sub>j</sub></italic>
+###xml 288 289 268 269 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 289 296 269 276 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">term&#8722;AU</sub>
+###xml 342 343 318 319 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 343 351 319 327 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"> term&#8722;AU</sub>
+###xml 432 433 398 399 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 433 436 399 402 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">sym</sub>
+###xml 490 491 450 451 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</sub>
+###xml 490 491 450 451 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"><sub>k</sub></italic>
+###xml 512 513 472 473 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">k</italic>
+###xml 620 622 580 582 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b013">13</xref>
+###xml 661 663 621 623 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b014">14</xref>
+###xml 705 707 665 667 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b050">50</xref>
+###xml 848 849 804 805 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+In this formula, DeltaGinit degrees is the amount of free energy required to initiate a helix between the two strands of RNA; DeltaG degrees (NN) is the free energy released by the hybridization of a particular nearest neighbor doublet, and nj is its number of occurrences in the duplex. mterm-AU is the number of terminal AU pairs, and DeltaG term-AU degrees is the free energy penalty for having a terminal AU pair. Finally, DeltaGsym degrees is the penalty for internal symmetry and Loopk the penalty for the kth internal loop. free_scan's hybridization parameter values for Watson-Crick binding are from Xia et al. [13], G/U mismatches from Mathews et al. [14], and loop penalties from Jaeger et al. [50]. free_scan uses a dynamic programming algorithm to determine the optimal number, location, and length of internal loops that minimize DeltaG degrees. Bulges, where one of the two strands of RNA has intervening nucleotides between bases that bond with the other strand, as well as secondary structures involving only one of the two strands of RNA, are ignored due to uncertainty about how much space is available within the 30S ribosomal complex to accommodate these structures, as well as the limitations they put on our ability to calculate RS. Dangling 5' or 3' ends are not considered because of ambiguities about what constitutes a dangling end on the mRNA sequences and on the 5' end of the 16S rRNA tail.
+###end p 48
+###begin p 49
+###xml 198 206 198 206 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g006">Figure 6</xref>
+###xml 326 327 322 323 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 418 419 404 405 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+After the free energy value for the first alignment in the mRNA is calculated, free_scan shifts the rRNA tail downstream one base, and the second alignment is examined. This process, illustrated in Figure 6, was carried out for 71 alignments in the mRNA. We selected the initiation regions from each gene to allow for 35 DeltaG degrees values to be computed before the start codon, one at the start codon, and 35 DeltaG degrees values after.
+###end p 49
+###begin p 50
+###xml 37 39 37 39 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b013">13</xref>
+###xml 61 62 57 58 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 118 120 108 110 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b028">28</xref>
+###xml 121 123 111 113 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b051">51</xref>
+###xml 124 126 114 116 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b054">54</xref>
+###xml 432 434 422 424 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b013">13</xref>
+Xia et al. created the INN-HB model [13] to improve the DeltaG degrees estimates obtained using the prior INN models [28,51-54]. This improvement is obtained by adding a term to correctly count the number of hydrogen bonds that form in the terminal doublets in helices. The INN, in contrast, overestimates the stability of helices with terminal AU base pairs and underestimates the stability of helices with terminal GC base pairs [13].
+###end p 50
+###begin p 51
+###xml 80 82 80 82 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b034">34</xref>
+###xml 113 114 109 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 151 159 141 149 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g001">Figure 1</xref>
+###xml 217 219 207 209 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b013">13</xref>
+###xml 241 243 231 233 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b014">14</xref>
+###xml 272 273 258 259 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 273 277 259 263 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">init</sub>
+###xml 289 290 269 270 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">m</italic>
+###xml 290 297 270 277 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">term&#8722;AU</sub>
+###xml 302 303 278 279 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 303 310 279 286 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">term&#8722;AU</sub>
+###xml 932 940 902 910 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g001">Figure 1</xref>
+To verify the accuracy of free_scan, we ran our analysis again using RNAhybrid [34] and plotted the average DeltaG degrees value for each RS position (Figure 1). RNAhybrid uses free energy parameters from Xia et al. [13] and Mathews et al. [14], but does not include DeltaGinit degrees or mterm-AUDeltaGterm-AU degrees. We set the energy cutoff to -4.075225 kcal/mol and subtracted this value from RNAhybrid's output to compensate for its lack of initiation penalty. We also turned off bulges and loops because these structures, when asymmetrical, are the alignment equivalent of inserting gaps, making it impossible to calculate RS. By forcing RNAhybrid to exclude internal loops, we prevented it from correctly identifying many SD sequences that contain symmetrical loops. This factor, combined with the lack of penalties for terminal A/U pairs, explains the bulk of the differences between the output of RNAhybrid and free_scan. Figure 1 demonstrates that both programs show distinct binding at RS +1 in all 18 genomes. Thus, the RS +1 site is not an artifact of our particular INN-HB implementation.
+###end p 51
+###begin p 52
+We did not compare our results to RNAcofold because it uses a linker sequence to join the two sequences into a single strand of RNA prior to folding, and allows for intramolecular folding. These two conditions could cause potential binding sites to be overlooked. If the mRNA sequence being examined for binding sites formed a stem-loop structure with an SD sequence in the loop, then it would not be detected because of computational limitations in identifying pseudo-knot secondary structures.
+###end p 52
+###begin p 53
+###xml 383 384 383 384 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b009">9</xref>
+###xml 406 407 402 403 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+To determine the effect of using the INN-HB model on the detection of SD regions, we did the following computational experiment. By limiting the TIR to the 20 bases preceding the initiation codon and excluding all genes with fewer than 100 codons, we compared the number of SD sequences the INN-HB model was able to identify with previously published results that use the INN model [9]. The threshold DeltaG degrees that Ma et al. used to define an SD sequence was -4.4 kcal/mol, which is the value predicted by the INN for the hybridization between three core SD sequences and the 16S rRNA tail: 
+###end p 53
+###begin p 54
+###xml 76 77 72 73 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 495 496 481 482 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 649 650 625 626 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 865 866 831 832 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 866 870 832 836 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">init</sub>
+###xml 915 916 871 872 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 916 920 872 876 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">init</sub>
+###xml 962 969 912 919 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="pcbi-0020057-t006">Table 6</xref>
+The INN-HB, however, does not assign all three hybridizations the same DeltaG degrees value because the first two have 11 hydrogen bonds each, while the third only has 10 hydrogen bonds. The INN does not take this difference into account because all three hybridizations consist of one GG/CC doublet and two AG/UC doublets. With the updated parameters for both the doublets as well as the helix initiation penalty, combined with a penalty for terminal A/U pairings, the INN-HB predicts the DeltaG degrees value -3.61 kcal/mol for the first two helices and -3.14 kcal/mol for the third helix. Thus, we defined our SD threshold to be the average DeltaG degrees for all three helices: -3.4535. It is worth noting that the bulk of the difference between the thresholds calculated by the INN and the INN-HB is a result of their distinct helix initiation penalties (DeltaGinit = 3.4 degrees kcal/mol for the INN and DeltaGinit = 4.08 degrees kcal/mol for the INN-HB). Table 6 summarizes the comparison between the two models. Since we used an equivalent threshold to define sufficient binding for an SD sequence, we can conclude that INN-HB model is responsible for the increase in the number of SD sequences identified.
+###end p 54
+###begin p 55
+Our programs, free_scan and free_align are available at Source Forge: .
+###end p 55
+###begin title 56
+Locating the SD sequence and determining SD RS.
+###end title 56
+###begin p 57
+###xml 62 63 58 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 127 128 113 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 261 262 241 242 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b009">9</xref>
+We located the SD sequence by the position of the lowest DeltaG degrees value calculated within the initiation region. If DeltaG degrees > -3.4535 kcal/mol, then the gene was assumed not to have an SD sequence. This threshold is based on the work of Ma et al. [9] (see above).
+###end p 57
+###begin p 58
+###xml 196 197 196 197 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b007">7</xref>
+###xml 439 447 439 447 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="pcbi-0020057-g003">Figure 3</xref>
+###xml 475 482 475 482 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 475 482 <span type="species:ncbi:562">E. coli</span>
+The SD's RS is the position of the 5' A in the rRNA sequence 5'-ACCUCC-3', relative to the first base in the start codon. This 5' A is the same base Chen et al. used to determine aligned spacing [7], which is another metric used to compare the locations of SD sequences. If the SD is upstream from the start codon, its RS is negative, while if it is downstream, its RS is positive. If the two are opposite one another, its RS is zero. See Figure 3 for RS examples taken from E. coli.
+###end p 58
+###begin title 59
+Defining strong binding.
+###end title 59
+###begin p 60
+###xml 97 98 93 94 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 149 150 133 134 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+We defined strong binding as any binding between the mRNA and the 3' 16S rRNA tail that has DeltaG degrees </= -8.4 kcal/mol. This value is the DeltaG degrees obtained from the optimal base-pairing between the rRNA and the original Shine-Dalgarno sequence, 5'-GGAGGU-3'.
+###end p 60
+###begin title 61
+Supporting Information
+###end title 61
+###begin title 62
+Accession Numbers
+###end title 62
+###begin p 63
+###xml 139 143 139 143 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">radC</italic>
+###xml 154 158 154 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rnpA</italic>
+###xml 170 178 170 178 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">CTC02285</italic>
+###xml 190 194 190 194 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">polE</italic>
+###xml 206 210 206 210 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cycK</italic>
+###xml 222 225 222 225 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">nah</italic>
+###xml 237 241 237 241 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">rpsA</italic>
+###xml 252 256 252 256 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wecF</italic>
+###xml 268 272 268 272 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">argD</italic>
+###xml 287 291 287 291 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hcaF</italic>
+Accession numbers from the National Center for Biotechnology Information (NCBI) GenBank database () for genes mentioned in this paper are: radC (948968); rnpA (1023245); CTC02285 (1060453); polE (1051409); cycK (1053038); nah (1053188); rpsA (945536); wecF (2847677); argD (947864); and hcaF (946997).
+###end p 63
+###begin p 64
+The authors would like to thank Eric Miller and Errol Strain for critical feedback and advice, and Bibiana Obler for editing.
+###end p 64
+###begin title 65
+Abbreviations
+###end title 65
+###begin p 66
+individual nearest neighbor
+###end p 66
+###begin p 67
+individual nearest neighbor hydrogen bond
+###end p 67
+###begin p 68
+messenger RNA
+###end p 68
+###begin p 69
+ribosomal RNA
+###end p 69
+###begin p 70
+relative spacing
+###end p 70
+###begin p 71
+Shine-Dalgarno
+###end p 71
+###begin p 72
+translation initiation region
+###end p 72
+###begin title 73
+References
+###end title 73
+###begin article-title 74
+###xml 28 44 28 44 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 28 44 <span type="species:ncbi:562">Escherichia coli</span>
+The 3'-terminal sequence of Escherichia coli 16S ribosomal RNA: Complementarity to nonsense triplets and ribosome binding sites
+###end article-title 74
+###begin article-title 75
+###xml 159 175 159 175 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 159 175 <span type="species:ncbi:562">Escherichia coli</span>
+How ribosomes select initiator regions in mRNA: Base pair formation between the 3' terminus of 16S rRNA and the mRNA during initiation of protein synthesis in Escherichia coli
+###end article-title 75
+###begin article-title 76
+###xml 122 138 122 138 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 122 138 <span type="species:ncbi:562">Escherichia coli</span>
+Specialized ribosome system: Preferential translation of a single mRNA species by a subpopulation of mutated ribosomes in Escherichia coli
+###end article-title 76
+###begin article-title 77
+###xml 65 81 65 81 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 65 81 <span type="species:ncbi:562">Escherichia coli</span>
+A single base change in the Shine-Dalgarno region of 16S rRNA of Escherichia coli affects translation of many proteins
+###end article-title 77
+###begin article-title 78
+###xml 54 61 54 61 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 54 61 <span type="species:ncbi:562">E. coli</span>
+Characterization of translational initiation sites in E. coli
+###end article-title 78
+###begin article-title 79
+###xml 39 46 39 46 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 39 46 <span type="species:ncbi:562">E. coli</span>
+Identification and characterization of E. coli ribosomal binding sites by free energy computation
+###end article-title 79
+###begin article-title 80
+###xml 121 137 121 137 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 121 137 <span type="species:ncbi:562">Escherichia coli</span>
+Determination of the optimal aligned spacing between the Shine-Dalgarno sequence and the translation initiation codon in Escherichia coli mRNAs
+###end article-title 80
+###begin article-title 81
+###xml 26 42 26 42 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 26 42 <span type="species:ncbi:562">Escherichia coli</span>
+Translation initiation in Escherichia coli: Sequences within the ribosome-binding site
+###end article-title 81
+###begin article-title 82
+Correlations between Shine-Dalgarno sequences and gene features such as predicted expression levels and operon structures
+###end article-title 82
+###begin article-title 83
+Initiation of translation in prokaryotes and eukaryotes
+###end article-title 83
+###begin article-title 84
+Optimal computer folding of large RNA sequences using thermodynamics and auxiliary information
+###end article-title 84
+###begin article-title 85
+A unified view of polymer, dumbbell, and oligonucleotide DNA nearest-neighbor thermodynamics
+###end article-title 85
+###begin article-title 86
+Thermodynamic parameters for an expanded nearest-neighbor model for formation of RNA duplexes with Watson-Crick base pairs
+###end article-title 86
+###begin article-title 87
+Expanded sequence dependence of thermodynamic parameters improves prediction of RNA secondary structure
+###end article-title 87
+###begin article-title 88
+Analysis of base-pairing potentials between 16S rRNA and 5' UTR for translation initiation in various prokaryotes
+###end article-title 88
+###begin article-title 89
+Hierarchy of sequence-dependent features associated with prokaryotic translation
+###end article-title 89
+###begin article-title 90
+###xml 15 18 15 18 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">vph</italic>
+###xml 22 43 22 43 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Streptomyces lividans</named-content>
+###xml 48 64 48 64 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 22 43 <span type="species:ncbi:1916">Streptomyces lividans</span>
+###xml 48 64 <span type="species:ncbi:562">Escherichia coli</span>
+Translation of vph in Streptomyces lividans and Escherichia coli after removal of the 5' untranslated leader
+###end article-title 90
+###begin article-title 91
+###xml 116 132 116 132 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 116 132 <span type="species:ncbi:562">Escherichia coli</span>
+An AUG initiation codon, not codon-anticodon complementarity, is required for the translation of unleadered mRNA in Escherichia coli
+###end article-title 91
+###begin article-title 92
+###xml 91 107 91 107 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 91 107 <span type="species:ncbi:562">Escherichia coli</span>
+A downstream CA repeat sequence increases translation from leadered and unleadered mRNA in Escherichia coli
+###end article-title 92
+###begin article-title 93
+Leaderless mRNAs in bacteria: Surprises in ribosomal recruitment and translational control
+###end article-title 93
+###begin article-title 94
+###xml 78 94 78 94 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 98 99 98 99 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">c</italic>
+###xml 78 94 <span type="species:ncbi:562">Escherichia coli</span>
+The initiation codon affects ribosome binding and translational efficiency in Escherichia coli of cI mRNA with or without the 5' untranslated leader
+###end article-title 94
+###begin article-title 95
+###xml 30 46 30 46 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Caulobacter dnaX</italic>
+Translation of the leaderless Caulobacter dnaX mRNA
+###end article-title 95
+###begin article-title 96
+###xml 33 40 33 40 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 33 40 <span type="species:ncbi:562">E. coli</span>
+The initiation of translation in E. coli: Apparent base pairing between the 16srRNA and downstream sequences of the mRNA
+###end article-title 96
+###begin article-title 97
+Enhancement of translation by the downstream box does not involve base pairing of mRNA with the penultimate stem sequence of 16S rRNA
+###end article-title 97
+###begin article-title 98
+###xml 154 158 154 158 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">glnS</italic>
+Codon choice and potential complementarity between mRNA downstream of the initiation codon and bases 1471-1480 in 16S ribosomal RNA affects expression of glnS
+###end article-title 98
+###begin article-title 99
+Correlation between Shine-Dalgarno sequence conservation and codon usage of bacterial genes
+###end article-title 99
+###begin article-title 100
+###xml 11 27 11 27 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 11 27 <span type="species:ncbi:562">Escherichia coli</span>
+Anatomy of Escherichia coli ribosome binding sites
+###end article-title 100
+###begin article-title 101
+Improved free-energy parameters for predictions of RNA duplex stability
+###end article-title 101
+###begin article-title 102
+Improved microbial gene identification with GLIMMER
+###end article-title 102
+###begin article-title 103
+Efficient computation of optimal oligo-RNA binding
+###end article-title 103
+###begin article-title 104
+Translation framing code and frame-monitoring mechanism as suggested by the analysis of mRNA and 16S rRNA nucleotide sequences
+###end article-title 104
+###begin article-title 105
+Recognition of correct reading frame by the ribosome
+###end article-title 105
+###begin article-title 106
+Third codon g+c periodicity as a possible signal for an internal selective constraint
+###end article-title 106
+###begin article-title 107
+Fast and effective prediction of microRNA/target duplexes
+###end article-title 107
+###begin article-title 108
+###xml 107 123 107 123 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 107 123 <span type="species:ncbi:562">Escherichia coli</span>
+Codon bias at the 3'- side of the initiation codon is correlated with translation initiation efficiency in Escherichia coli
+###end article-title 108
+###begin article-title 109
+Cooperative effects by the initiation codon and its flanking regions on translation initiation
+###end article-title 109
+###begin article-title 110
+Influences on translation and early elongation by the messenger RNA region flanking the initiation codon at the 3' side
+###end article-title 110
+###begin article-title 111
+Sequence logos: A new way to display consensus
+###end article-title 111
+###begin article-title 112
+Weblogo: A sequence logo generator
+###end article-title 112
+###begin article-title 113
+###xml 40 56 40 56 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 40 61 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+EcoGene: A genome sequence database for Escherichia coli K-12
+###end article-title 113
+###begin article-title 114
+###xml 32 48 32 48 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 32 53 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+The complete genome sequence of Escherichia coli K-12
+###end article-title 114
+###begin article-title 115
+Translational standby sites: How ribosomes may deal with the rapid folding kinetics of mRNA
+###end article-title 115
+###begin article-title 116
+Translation in chloroplasts
+###end article-title 116
+###begin article-title 117
+Non-canonical mechanism for translational control in bacteria: Synthesis of ribosomal protein S1
+###end article-title 117
+###begin article-title 118
+Non-Shine-Dalgarno initiators of translation selected from combinatorial DNA libraries
+###end article-title 118
+###begin article-title 119
+The comparative RNA web (CRW) site: An online database of comparative sequence and structure information for ribosomal, intron, and other RNAs
+###end article-title 119
+###begin article-title 120
+###xml 135 151 135 151 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Escherichia coli</named-content>
+###xml 135 151 <span type="species:ncbi:562">Escherichia coli</span>
+An additional ribosome-binding site on mRNA of highly expressed genes and a bifunctional site on the colicin fragment of 16S rRNA from Escherichia coli: Important determinants of the efficiency of translation-initiation
+###end article-title 120
+###begin article-title 121
+Genetic analysis of Shine-Dalgarno interaction: Selection of alternative functional mRNA-rRNA combinations
+###end article-title 121
+###begin article-title 122
+Extensive complementarity of the Shine-Dalgarno region and the 3'-end of 16S rRNA is inefficient for translation in vivo
+###end article-title 122
+###begin article-title 123
+Improved predictions of secondary structures for RNA
+###end article-title 123
+###begin article-title 124
+A new approach to the study of sequence-dependent properties of polynucelotides
+###end article-title 124
+###begin article-title 125
+Derivation of nearest-neighbor properties from data on nucleic acid oligomers. I. Simple sets of independent sequences and the influence of absent nearest neighbors
+###end article-title 125
+###begin article-title 126
+Derivation of nearest-neighbor properties from data on nucleic acid oligomers. II. Thermodynamic parameters of DNA-RNA hybrids and DNA duplexes
+###end article-title 126
+###begin article-title 127
+Stability of ribonucleic acid double-stranded helices
+###end article-title 127
+###begin article-title 128
+###xml 55 71 55 71 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Aquifex aeolicus</named-content>
+###xml 55 71 <span type="species:ncbi:63363">Aquifex aeolicus</span>
+The complete genome of the hyperthermophilic bacterium Aquifex aeolicus
+###end article-title 128
+###begin article-title 129
+###xml 65 89 65 89 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bradyrhizobium japonicum</named-content>
+###xml 65 89 <span type="species:ncbi:375">Bradyrhizobium japonicum</span>
+Complete genomic sequence of nitrogen-fixing symbiotic bacterium Bradyrhizobium japonicum USDA110
+###end article-title 129
+###begin article-title 130
+###xml 23 45 23 45 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bifidobacterium longum</named-content>
+###xml 23 45 <span type="species:ncbi:216816">Bifidobacterium longum</span>
+###xml 77 82 <span type="species:ncbi:9606">human</span>
+The genome sequence of Bifidobacterium longum reflects its adaptation to the human gastrointestinal tract
+###end article-title 130
+###begin article-title 131
+###xml 60 77 60 77 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Bacillus subtilis</named-content>
+###xml 60 77 <span type="species:ncbi:1423">Bacillus subtilis</span>
+The complete genome sequence of the Gram-positive bacterium Bacillus subtilis
+###end article-title 131
+###begin article-title 132
+###xml 23 41 23 41 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Clostridium tetani</named-content>
+###xml 23 41 <span type="species:ncbi:1513">Clostridium tetani</span>
+The genome sequence of Clostridium tetani, the causative agent of tetanus disease
+###end article-title 132
+###begin article-title 133
+###xml 47 69 47 69 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Haemophilus influenzae</named-content>
+###xml 47 72 <span type="species:ncbi:71421">Haemophilus influenzae Rd</span>
+Whole-genome random sequencing and assembly of Haemophilus influenzae Rd
+###end article-title 133
+###begin article-title 134
+###xml 58 81 58 81 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Lactobacillus johnsonii</named-content>
+###xml 58 89 <span type="species:ncbi:257314">Lactobacillus johnsonii NCC 533</span>
+The genome sequence of the probiotic intestinal bacterium Lactobacillus johnsonii NCC 533
+###end article-title 134
+###begin article-title 135
+###xml 72 80 72 80 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Anabaena</named-content>
+Complete genomic sequence of filamentous nitrogen-fixing cyanobacterium Anabaena sp. strain PCC 7120
+###end article-title 135
+###begin article-title 136
+###xml 33 53 33 53 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Staphylococus aureus</named-content>
+###xml 33 53 <span type="species:ncbi:1280">Staphylococus aureus</span>
+Complete genomes of two clinical Staphylococus aureus strains: Evidence for the rapid evolution of virulence and drug resistance
+###end article-title 136
+###begin article-title 137
+###xml 59 81 59 81 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Sinorhizobium meliloti</named-content>
+###xml 59 93 <span type="species:ncbi:266834">Sinorhizobium meliloti strain 1021</span>
+Analysis of the chromosome sequence of the legume symbiont Sinorhizobium meliloti strain 1021
+###end article-title 137
+###begin article-title 138
+###xml 19 47 19 47 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Symbiobacterium thermophilum</named-content>
+###xml 19 47 <span type="species:ncbi:2734">Symbiobacterium thermophilum</span>
+Genome sequence of Symbiobacterium thermophilum, an uncultivable bacterium that depends on microbial commensalism
+###end article-title 138
+###begin article-title 139
+###xml 66 79 66 79 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Synechocystis</named-content>
+###xml 66 82 <span type="species:ncbi:1143">Synechocystis sp</span>
+Sequence analysis of the genome of the unicellular cyanobacterium Synechocystis sp. strain PCC6803. II. Sequence determination of the entire genome and assignment of potential protein-coding regions
+###end article-title 139
+###begin article-title 140
+###xml 88 107 88 107 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Thermotoga maritima</named-content>
+###xml 88 107 <span type="species:ncbi:2336">Thermotoga maritima</span>
+Evidence for lateral gene transfer between archaea and bacteria from genome sequence of Thermotoga maritima
+###end article-title 140
+###begin article-title 141
+###xml 27 43 27 43 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">T. tengcongensis</named-content>
+###xml 27 43 <span type="species:ncbi:119072">T. tengcongensis</span>
+A complete sequence of the T. tengcongensis genome
+###end article-title 141
+###begin article-title 142
+###xml 47 67 47 67 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Thermus thermophilus</named-content>
+###xml 47 67 <span type="species:ncbi:274">Thermus thermophilus</span>
+The genome sequence of the extreme thermophile Thermus thermophilus
+###end article-title 142
+###begin article-title 143
+###xml 33 44 33 44 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Xanthomonas</italic>
+Comparison of the genomes of two Xanthomonas pathogens with differing host specificities
+###end article-title 143
+###begin article-title 144
+###xml 19 34 19 34 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">Yersinia pestis</named-content>
+###xml 19 38 <span type="species:ncbi:187410">Yersinia pestis KIM</span>
+Genome sequence of Yersinia pestis KIM
+###end article-title 144
+###begin title 145
+Figures and Tables
+###end title 145
+###begin title 146
+###xml 13 14 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+Average DeltaG degrees Values in the TIRs for 18 Organisms
+###end title 146
+###begin p 147
+###xml 64 65 60 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 114 115 104 105 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 276 277 262 263 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 359 360 335 336 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 671 673 641 643 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b034">34</xref>
+For all 18 genomes in our study, we calculated the average DeltaG degrees value for each RS position. Zero on the x-axis corresponds to the 5' A residue in the rRNA sequence 5'-ACCUCC-3' being positioned over the first base in the initiation codon. The dramatic drops in DeltaG degrees prior to RS 0 show the presence of SD sequences. The sudden drop in DeltaG degrees immediately after the first base in the initiation codon (at RS+1) shows that there is a significant binding potential between the 16S rRNA and the mRNA close to the initiation codon, an unexpected location. (A) was drawn from data generated by free_scan and (B) is from data generated from RNAhybrid [34]. Differences between the two graphs are discussed in the text.
+###end p 147
+###begin title 148
+###xml 62 63 58 59 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+Normalized Histogram Plots Showing the RS for the Lowest DeltaG degrees Values in the TIRs
+###end title 148
+###begin p 149
+###xml 4 5 4 5 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">x</italic>
+###xml 285 286 285 286 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">y</italic>
+###xml 351 352 347 348 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+The x-axis shows the RS, or distance between the 5' A residue in the rRNA sequence 5'-ACCUCC-3' from the 3' tail and the first base in the start codon. Negative numbers indicate that the 5' A is upstream from the start codon, while positive numbers indicate that it is downstream. The y-axis is the fraction of genes in a genome where the lowest DeltaG degrees value is at a particular RS.
+###end p 149
+###begin title 150
+###xml 14 21 14 21 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 14 21 <span type="species:ncbi:562">E. coli</span>
+Examples from E. coli Showing How RS Is Calculated
+###end title 150
+###begin p 151
+###xml 587 591 587 591 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wecF</italic>
+###xml 596 600 596 600 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">argD</italic>
+###xml 683 687 683 687 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">wecF</italic>
+###xml 702 706 702 706 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">argD</italic>
+###xml 718 723 718 723 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">radC'</italic>
+The complementary bases, plus G/U mismatches, that are predicted to bind together are capitalized. The predicted SD sequence consists of the capitalized letters in the mRNA. The location of the start codon is indicated with the hat character,  , and the location of the 5' A residue in the rRNA sequence 5'-ACCUCC-3' is indicated with a v. The RS is the distance between the 5' A and the first base in the start codon. If the SD is upstream from the start codon, then the RS is given as a negative number. If the SD is downstream, it is given as a positive number. Both SD sequences for wecF and argD come before the start codons (in these cases, the start codon is AUG). The RS for wecF is -4 and for argD it is -10. radC's SD sequence includes the start codon, GUG, and the RS is +1.
+###end p 151
+###begin title 152
+###xml 20 27 20 27 <named-content xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" content-type="genus-species">E. coli</named-content>
+###xml 20 27 <span type="species:ncbi:562">E. coli</span>
+A Sequence Logo for E. coli
+###end title 152
+###begin p 153
+mRNA bases between positions -7 to 5 would need to bind to the rRNA tail for RS+1. For each position, the sequence logo displays amount of information content and the frequency of nucleotides. Positions that have no information content are blank, whereas those with information content contain a stack of nucleotide characters. The size of the nucleotide character in the stack is proportional to its frequency at that position.
+###end p 153
+###begin title 154
+###xml 13 14 9 10 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 45 58 35 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Synechocystis</italic>
+Average DeltaG degrees Values in the TIR for Synechocystis
+###end title 154
+###begin p 155
+The trough prior to RS 0 clearly shows the presence of an SD motif in many genes.
+###end p 155
+###begin title 156
+###xml 24 25 20 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+An Overview of How DeltaG degrees Values Are Calculated in Each TIR
+###end title 156
+###begin p 157
+###xml 286 288 286 288 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="pcbi-0020057-b013">13</xref>
+###xml 310 311 306 307 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">G</italic>
+###xml 311 315 307 311 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">init</sub>
+###xml 369 377 359 367 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli'</italic>
+###xml 384 389 374 379 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hcaF,</italic>
+###xml 369 376 <span type="species:ncbi:562">E. coli</span>
+For each base in each initiation region, we simulated the change in free energy required for the 3' 16S rRNA tail to hybridize with the mRNA. A minimum of two consecutive bases need to pair, and for the binding to occur spontaneously require a change more negative than -4.08 kcal/mol [13], the value for DeltaGinit degrees, In this example, the initiation region from E. coli's gene hcaF, alignment 1 is set to zero because the change in free energy required to bring together a single complementary double is not favorable. Alignment 2 and 71 are set to zero because there are no complementary doublets. Alignment 6 is set to -16.5 because it requires -16.5 kcal/mol less than -4.08 kcal/mol to hybridize.
+###end p 157
+###begin p 158
+Usage Statistics for the Three Most Common Initiation Codons: AUG, GUG, and UUG
+###end p 158
+###begin p 159
+A Summary of the Annotation Programs Used for the Genomes in This Study
+###end p 159
+###begin p 160
+Downstream Start Codons
+###end p 160
+###begin p 161
+Binding at the Start Codon for Strong +1 Genes Compared with Upstream Binding
+###end p 161
+###begin p 162
+A Summary of Predicted rRNA-mRNA Binding
+###end p 162
+###begin p 163
+Model Comparisons
+###end p 163
+###begin p 164
+A Summary of the Data and Its Sources Used in This Study
+###end p 164
+###begin p 165
+###xml 0 21 0 21 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Author contributions.</bold>
+Author contributions. JS, AS, MV, and DB conceived and designed the experiments. JS performed the experiments. JS, AS, and DB analyzed the data. JS and AS wrote the paper.
+###end p 165
+###begin p 166
+###xml 0 8 0 8 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Funding.</bold>
+Funding. The authors received no specific funding for this study.
+###end p 166
+###begin p 167
+###xml 0 20 0 20 <bold xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Competing interests.</bold>
+Competing interests. The authors have declared that no competing interests exist.
+###end p 167
+###begin p 168
+A previous version of this article appeared as an Early Online Release on April 10, 2006 (DOI: ).
+###end p 168
+

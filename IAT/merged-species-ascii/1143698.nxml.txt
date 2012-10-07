@@ -1,0 +1,569 @@
+###begin article-title 0
+###xml 35 51 35 51 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 35 51 <span type="species:ncbi:562">Escherichia coli</span>
+Predicting non-coding RNA genes in Escherichia coli with boosted genetic programming
+###end article-title 0
+###begin p 1
+The authors wish it to be known that, in their opinion, the first two authors should be regarded as joint First Authors
+###end p 1
+###begin p 2
+###xml 606 642 606 642 <email xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">journals.permissions@oupjournals.org</email>
+The online version of this article has been published under an open access model. Users are entitled to use, reproduce, disseminate, or display the open access version of this article for non-commercial purposes provided that: the original authorship is properly and fully attributed; the Journal and Oxford University Press are attributed as the original place of publication with the correct citation details given; if an article is subsequently reproduced or disseminated not in its entirety but only in part or as a derivative work this must be clearly indicated. For commercial re-use, please contact journals.permissions@oupjournals.org
+###end p 2
+###begin p 3
+###xml 69 85 69 85 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 87 93 87 93 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 850 856 850 856 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 69 85 <span type="species:ncbi:562">Escherichia coli</span>
+###xml 87 93 <span type="species:ncbi:562">E.coli</span>
+###xml 850 856 <span type="species:ncbi:562">E.coli</span>
+Several methods exist for predicting non-coding RNA (ncRNA) genes in Escherichia coli (E.coli). In addition to about sixty known ncRNA genes excluding tRNAs and rRNAs, various methods have predicted more than thousand ncRNA genes, but only 95 of these candidates were confirmed by more than one study. Here, we introduce a new method that uses automatic discovery of sequence patterns to predict ncRNA genes. The method predicts 135 novel candidates. In addition, the method predicts 152 genes that overlap with predictions in the literature. We test sixteen predictions experimentally, and show that twelve of these are actual ncRNA transcripts. Six of the twelve verified candidates were novel predictions. The relatively high confirmation rate indicates that many of the untested novel predictions are also ncRNAs, and we therefore speculate that E.coli contains more ncRNA genes than previously estimated.
+###end p 3
+###begin title 4
+INTRODUCTION
+###end title 4
+###begin p 5
+###xml 373 374 373 374 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b1">1</xref>
+###xml 375 376 375 376 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b5">5</xref>
+Non-coding RNAs (ncRNA) are transcripts, whose function lies in the RNA sequence itself and not as information carriers for protein synthesis. Although long believed to be a minor gene class, recent discoveries have revealed that ncRNA genes are far more prevalent than previously believed and that they have other important roles beyond protein synthesis (rRNA and tRNA) (1-5).
+###end p 5
+###begin p 6
+###xml 3 19 3 19 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 182 183 182 183 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b6">6</xref>
+###xml 238 239 238 239 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+###xml 325 326 325 326 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8">8</xref>
+###xml 3 19 <span type="species:ncbi:562">Escherichia coli</span>
+In Escherichia coli, the number of experimentally verified small RNA (sRNA) genes (ncRNA genes excluding rRNA and tRNA) has increased rapidly. Only 10 sRNA genes were known in 1999 (6), whereas a recent survey listed 55 known sRNA genes (7). Subsequent RNA cloning experiments increased the number of known sRNA genes to 62 (8).
+###end p 6
+###begin p 7
+###xml 107 108 107 108 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9">9</xref>
+###xml 109 111 109 111 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b14">14</xref>
+###xml 144 146 144 146 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b14">14</xref>
+###xml 258 259 258 259 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9">9</xref>
+###xml 260 262 260 262 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10">10</xref>
+###xml 279 281 279 281 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b11">11</xref>
+###xml 340 341 340 341 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9">9</xref>
+###xml 342 344 342 344 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b13">13</xref>
+###xml 457 459 457 459 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+###xml 583 584 571 572 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+Most of these sRNA genes were identified in six studies describing systematic searches for new sRNA genes (9-14). All but one of these studies (14) used computational methods to predict sRNA genes. The computational methods ranged from analysis of sequence (9,10) and structure (11) conservation; to promoter and terminator identification (9,13); and machine learning based on sequence composition, known ncRNA motifs and RNA secondary structure stability (12). Together, these six studies have predicted approximately1000 non-redundant sRNA candidates that are yet to be confirmed (7). Note, however, that only 95 candidates were predicted by more than one study.
+###end p 7
+###begin p 8
+###xml 98 104 98 104 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 330 332 330 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+###xml 472 474 472 474 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+###xml 98 104 <span type="species:ncbi:562">E.coli</span>
+We describe a method that uses automatic discovery of sequence patterns to predict ncRNA genes in E.coli's intergenic regions. The main strengths of the method as compared to other methods are that (i) it uses the DNA sequence directly as input, which helps to reduce any potential bias from input feature selection and encoding (12); (ii) it works well with a much larger number of intergenic sequences (negative examples) than known ncRNA sequences (positive examples) (12); (iii) it is very robust when it comes to noise in the training data, as for instance intergenic regions that actually are ncRNAs; and (iv) it does not rely on sequence conservation to predict ncRNA genes.
+###end p 8
+###begin p 9
+The method predicts several hundred intergenic regions to contain ncRNA genes, and over half of these overlap with previous predictions. We test the 10 top-scoring candidates and verify 9 of these by northern analysis. In addition, we test six candidates of varying prediction confidence; three of these are confirmed by northern analysis. Only 6 of these 12 new ncRNA genes have been predicted by previous methods.
+###end p 9
+###begin p 10
+###xml 55 61 55 61 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 113 115 113 115 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b15">15</xref>
+###xml 55 61 <span type="species:ncbi:562">E.coli</span>
+Our results indicate that the number of ncRNA genes in E.coli is larger than what has previously been estimated (15). This is because the estimates of Zhang and colleagues were partly based on the number of ncRNA genes predicted by more than one method, which, until now, was 95. We have extended this list by 44%, which is a significant increase. In addition, we have shown that our method detects ncRNA genes that have not been predicted by other methods.
+###end p 10
+###begin title 11
+MATERIALS AND METHODS
+###end title 11
+###begin title 12
+Sequence data
+###end title 12
+###begin p 13
+###xml 18 24 18 24 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 47 49 47 49 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b16">16</xref>
+###xml 165 166 165 166 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9">9</xref>
+###xml 167 169 167 169 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b11">11</xref>
+###xml 377 379 377 379 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b17">17</xref>
+###xml 18 29 <span type="species:ncbi:83333">E.coli K-12</span>
+We downloaded the E.coli K-12 genome sequence (16) (U00096.1) and its annotations (release 73) from EMBL's FTP server (). Based on annotations and previous studies (9-11), we collected a set of 154 experimentally verified ncRNA sequences. These sequences consisted of 86 tRNAs, 22 rRNAs and 46 other sRNA genes. Note that one of these sRNAs was the strain-dependent uptR gene (17). The list of ncRNA sequences is given in the Supplementary Material.
+###end p 13
+###begin p 14
+Based on the positions of known ncRNA genes and protein coding sequences (CDS), we constructed a set of intergenic sequences (INT) by removing all parts of the genome containing ncRNAs and CDSs, along with 100 nt on each side. This resulted in 942 subsequences totaling 144 520 nt, which increased to 1884 sequences of 289 040 nt when we added the complement of each sequence.
+###end p 14
+###begin p 15
+Each ncRNA and INT sequence was then divided into 50 nt sequence windows with 25 nt overlap. If the final window in a sequence had <50 nt, we adjusted the overlap so that the final window also had 50 nt. For example, 90 nt sequences were divided into three 50 nt sequence windows consisting of nucleotides 1-50, 26-75 and 41-90. The 50 nt window size was chosen because the smallest ncRNA in our dataset was 53 nt (dicF). This procedure gave 1795 ncRNA sequence windows and 10 663 INT sequence windows; removing duplicates in the form of identical sequences reduced the number of ncRNA and INT sequence windows to 840 and 10 572. Of the 840 unique ncRNA sequence windows, 53% were from rRNAs, 30% from sRNAs and 17% from tRNAs.
+###end p 15
+###begin title 16
+Algorithms
+###end title 16
+###begin p 17
+###xml 50 53 50 53 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Reg</sub>
+###xml 257 259 257 259 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b18">18</xref>
+###xml 260 262 260 262 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b19">19</xref>
+###xml 382 384 381 383 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b18">18</xref>
+We use a machine learning algorithm called GPboostReg to create classifiers that predict whether or not a sequence is an ncRNA gene. The algorithm has previously been used to predict the efficacy of short oligonucleotides in RNAi and antisense experiments (18,19). In the following, we will only give a basic description of the algorithm; interested readers should consult Saetrom (18) and the references therein for a complete description.
+###end p 17
+###begin p 18
+###xml 7 10 7 10 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Reg</sub>
+###xml 325 328 325 328 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Reg</sub>
+GPboostReg takes as input a set of positive and negative sequences and creates a classifier that predicts whether or not an unknown sequence belongs to the positive set. Here, the positive and negative sequences are the ncRNA and INT sequence windows described in the previous section. Thus, the classifier created by GPboostReg can predict whether or not a given sequence comes from an ncRNA.
+###end p 18
+###begin p 19
+###xml 34 37 34 37 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Reg</sub>
+###xml 73 75 73 75 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b20">20</xref>
+###xml 102 104 102 104 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b21">21</xref>
+To create the classifiers, GPboostReg combines genetic programming (GP) (20) and boosting algorithms (21). GP uses simulated evolution in a population of candidate solutions to solve problems, and here, each individual in the population is an expression in a formal query language (whitepaper available on request). GP evaluates how well each candidate solution separates between the positive and negative sequences and uses this fitness information to guide the simulated evolution. That is, our GP solution iteratively (i) selects candidate solutions based on fitness such that more fit solutions have a higher chance of being selected; (ii) introduces random changes in the selected solutions by exchanging subparts of two candidate solutions (crossover) or randomly changing a subpart of a candidate solution (mutation); and (iii) updates the solution population by replacing the old population with the randomly changed candidate solutions. We repeat this process a fixed number of iterations and choose, as the final solution of the GP run, the candidate solution that gave the best performance on the training set.
+###end p 19
+###begin p 20
+###xml 1163 1166 1163 1166 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Reg</sub>
+###xml 1194 1196 1194 1196 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b22">22</xref>
+The classifiers created by our GP algorithm are sequence patterns that can only give binary answers. That is, given a sequence, each pattern answers either 'yes' (1) or 'no' (-1), as to whether the pattern matches parts of the sequence or not. To improve the confidence of our predictions, we combine the GP algorithm with a boosting algorithm. Boosting algorithms join several classifiers into a final weighted average of the individual classifiers such that the performance of the final classifier is increased compared to each of the single classifiers. To do this, the boosting algorithm guides each GP run's search for good solutions by adjusting the relative importance of each sequence in the training set. Then the boosting algorithm assigns a weight to the best expression from the GP run. This weight is based on the expression's performance in the corresponding training set and is assigned such that the output of the final classifier ranges from -1 to 1. As a result, the classifiers created by our algorithm are the weighted average of several different sequence patterns. We will occasionally refer to these classifiers as models. Note that GPboostReg uses regularized boosting (22) to handle noise in the training set.
+###end p 20
+###begin p 21
+###xml 233 235 233 235 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b23">23</xref>
+To reduce the time needed to evaluate each individual expression in the GP population, we use a special purpose search processor designed to provide orders of magnitude higher performance than comparable regular expression matchers (23). The increased performance becomes important when the datasets are large, or when many expressions must be evaluated, for instance, in cross-validation experiments or when GP is used as the base learner in a boosting algorithm.
+###end p 21
+###begin title 22
+Quality measures
+###end title 22
+###begin p 23
+###xml 142 144 142 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TP</italic>
+###xml 164 166 164 166 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">FP</italic>
+###xml 185 187 185 187 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">TN</italic>
+###xml 210 212 210 212 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">FN</italic>
+###xml 451 453 451 453 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b24">24</xref>
+###xml 497 498 497 498 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">M</italic>
+###xml 500 510 500 510 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e1">Equation 1</xref>
+###xml 533 535 533 535 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">FP</italic>
+###xml 535 536 535 536 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">p</sub>
+###xml 538 548 538 548 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e2">Equation 2</xref>
+###xml 566 568 566 568 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Se</italic>
+###xml 570 580 570 580 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="disp-formula" rid="e3">Equation 3</xref>
+When a model is evaluated on a positive and negative set of sequences, four statistics (counts) can be defined: the number of true positives (TP), false positives (FP), true negatives (TN) and false negatives (FN). These represent the positive hits in the positive set, positive hits in the negative set, negative hits in the negative set and negative hits in the positive set, respectively. Several quality measures can be defined from these counts (24). This study uses the Matthews correlation M (Equation 1), false positive rate FPp (Equation 2) and sensitivity Se (Equation 3):
+###end p 23
+###begin title 24
+Strain and growth conditions
+###end title 24
+###begin p 25
+###xml 0 16 0 16 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 404 406 392 394 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b25">25</xref>
+###xml 553 556 541 544 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 578 581 566 569 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 616 619 604 607 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 656 659 644 647 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">600</sub>
+###xml 0 21 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+Escherichia coli K-12 strain MG1655 cells (from overnight cultures were diluted 1/50 in Luria-Bertani (LB) medium and subsequently grown at 37degreesC) were grown in LB broth and used for inoculation of liquid cultures. Cells were grown in 100-ml batch cultures in 500-ml Erlenmeyer flasks at 37degreesC with aeration by rotary shaking (250 r.p.m.). The culture media used was LB as described elsewhere (25). Growth was monitored at 600 nm on a Shimadzu UV-1601 UV-visible spectrophotometer. Cells were harvested in four different growth phases: lag (OD600 < 0.2), log (0.2 < OD600 < 1.0), early stationary (1.0 < OD600 < 2.0) and late stationary phase (OD600 > 2.0).
+###end p 25
+###begin title 26
+RNA isolation
+###end title 26
+###begin p 27
+###xml 165 166 165 166 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">6</sup>
+###xml 357 358 356 357 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">g</italic>
+Total RNA was isolated from the cells using a procedure based on trizol reagent combined with RNeasy microcolumns (Qiagen). One milliliter of trizol was added per 106 cells and stored at room temperature for 5 min; 0.2 mul chloroform was added per ml of trizol and the sample was shaken for 15 s. The sample rested before centrifugation for 15 min at 12000 g and 4degreesC. The aqueous phase was slowly added 1:1 to 70% EtOH to avoid precipitation. The sample was further loaded to the RNeasy column and washed and DNase treated according to the RNeasy protocol (Qiagen). Isolated RNA was resuspended in RNase-free water and quantitated using Eppendorf BioPhotometer.
+###end p 27
+###begin title 28
+Oligonucleotides
+###end title 28
+###begin p 29
+The complete list of oligonucleotides used to generate probes for northern analysis and primer extension experiments is provided as Supplementary Material.
+###end p 29
+###begin title 30
+Northern analysis
+###end title 30
+###begin p 31
+###xml 274 282 255 263 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">in vitro</italic>
+RNA samples (approximately10 mug) were denatured for 10 min at 60degreesC in a buffer containing 95% formamide, separated on urea-polyacrylamide (8%) gels, and transferred to nylon membranes by electroblotting. Radiolabeled strand-specific RNA probes were synthesized using in vitro transcription according to MAXIscripttrade mark (Ambion). Hybridization signals were visualized on Typhoon 9410 (Amersham).
+###end p 31
+###begin title 32
+Primer extension assay
+###end title 32
+###begin p 33
+###xml 186 188 169 171 <sup xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">32</sup>
+###xml 44 47 <span type="species:ncbi:11866?0.5863095238095238|species:ncbi:12321?0.21726190476190477">AMV</span>
+Primer extension assay was carried out with AMV reverse transcriptase (Promega), on approximately10 mug total RNA and 5' end-labeled primers. The primers were end-labeled by using [gamma32-P]ATP and polynucleotide kinase. Products of the extension reactions were separated on 8% polyacrylamide sequencing gels alongside sequencing reactions performed on the corresponding PCR products from the intergenic regions. Sequencing reactions were carried out with a Thermo Sequenase Radiolabeled Terminator Cycle Sequencing Kit (USB, Amersham).
+###end p 33
+###begin title 34
+RESULTS
+###end title 34
+###begin title 35
+ncRNA gene predictions
+###end title 35
+###begin p 36
+###xml 96 98 96 98 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b26">26</xref>
+###xml 99 101 99 101 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b27">27</xref>
+###xml 445 448 445 448 <sub xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Reg</sub>
+We used a variant of 10-fold cross-validation to train and test our machine learning algorithm (26,27). More specifically, we randomly divided the sets of ncRNA and INT sequence windows into 10 non-overlapping subsets. Then, we iteratively trained classifiers on 8 of the subsets and tested the classifiers on the remaining 2 subsets. We used one of these test subsets to estimate the optimal value of the regularization parameter in the GPboostReg algorithm and the other test subset as a completely independent test set. We ran this training and testing procedure for 10 iterations such that all the 10 subsets had been used as the independent test set.
+###end p 36
+###begin p 37
+To estimate the optimal regularization value, we tried several different values and used the one with the highest average correlation in the 10 'parameter estimation' test subsets. These optimal models had an average correlation of 0.58 on the complete test set, and predicted on average 22 false positive sequence windows in the test subsets. This resulted in an average false positive rate of 2.1%. The models' average sensitivity was 54%. The following sections will examine the predictions in the original ncRNA set, the true positives and false negatives, and the potential new ncRNA genes, the false positives.
+###end p 37
+###begin title 38
+The algorithm identifies nearly 80% of the sRNAs in the database
+###end title 38
+###begin p 39
+As we used two subsets to test the classifiers, there was some overlap between each of the test sets (each unique sequence was present in two different test sets for two different models). The test set consisted of 840 unique sequences for a total of 1680 sequences: 913 of these were predicted as true positives and 767 were false negatives. When duplicates were removed from these sets, 564 of 840 were positive predictions and 491 of 840 were negative predictions. In other words, 215 sequences were predicted as being both positive and negative. This means that 42% of the sequences were strongly predicted by two models, and 26% were weakly predicted by a single model.
+###end p 39
+###begin p 40
+###xml 179 184 179 184 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 187 189 187 189 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10">10</xref>
+###xml 201 206 201 206 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 209 211 209 211 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b11">11</xref>
+###xml 337 342 337 342 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 344 346 344 346 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10">10</xref>
+###xml 360 365 360 365 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 368 369 368 369 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9">9</xref>
+Two of 46 sRNA sequences were completely matched by the models and 10 were completely missed. The complete matches were the partially overlapping rydB and tpe7 found by Wassarman et al. (10) and Rivas et al. (11), and the misses were micF, oxyS, rybB, ryeE, ryhA, spf, sraB and sraE, and the overlapping ryhB and sraI found by Wassarman et al.(10) and Argaman et al. (9).
+###end p 40
+###begin title 41
+306 potential new ncRNA genes of which 152 confirm previous predictions
+###end title 41
+###begin p 42
+The models predicted a total of 438 false positive sequence windows; 57 of these were predicted by two models. Several of the predicted sequence windows overlapped or were located next to each other. When these were joined and treated as one continuous sequence, a total of 306 sequences remained.
+###end p 42
+###begin p 43
+###xml 124 125 124 125 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+###xml 338 340 338 340 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+A cross-reference of the 306 candidate ncRNA sequences with the list of predicted but unconfirmed ncRNA genes presented in (7) identified that 171 of the sequences overlapped with previous predictions; 152 of these were predicted to be on the same strand. Most of the predictions overlapped with the predictions of Carter and colleagues (12). This was expected, not only because their predictions were the most abundant in our INT set, but also because they base their predictions on the common sequence characteristics of ncRNAs, which is also the essence of our method.
+###end p 43
+###begin p 44
+###xml 202 207 202 207 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 210 212 210 212 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b11">11</xref>
+###xml 222 227 222 227 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 230 232 230 232 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+###xml 240 245 240 245 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 248 250 248 250 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b13">13</xref>
+###xml 263 268 263 268 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 271 273 271 273 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b14">14</xref>
+Accounting for the number of predictions made by other methods that were significantly represented (>10 sequences) in our INT set, our predictions support 35, 51, 28 and 41% of the predictions of Rivas et al. (11), Carter et al. (12), Chen et al. (13) and Tjaden et al. (14). Thus, there is relatively good correspondence between our predictions and the predictions of these four methods.
+###end p 44
+###begin p 45
+###xml 620 621 620 621 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+###xml 752 753 752 753 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+Our results confirm several previous predictions that were not supported by other methods. In total, the intergenic regions in our dataset contained 288 sequences that have been predicted by only one previous method to be part of an ncRNA gene. Our predictions overlapped 123 of these 288 sequences. Excluding the predictions that were unique to the Carter algorithm, our predictions supported 42 of the remaining 166 sequences. Thus, although our predictions increased the list of candidates that are unique to a single study by 15%, we increased the list of candidates predicted by more than one study from 95 to 218 (7). Even when excluding the Carter specific sequences, we increased the list of candidates predicted by more than one study by 44% (7). This is a significant increase.
+###end p 45
+###begin p 46
+###xml 0 7 0 7 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl1">Table 1</xref>
+Table 1 shows the 10 highest scoring intergenic sequence windows (the complete list of predictions are available as Supplementary Material). The table is sorted according to the model output for the highest predicted window in the sequence.
+###end p 46
+###begin p 47
+###xml 61 67 61 67 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 90 97 90 97 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+###xml 379 385 379 385 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 421 423 421 423 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b28">28</xref>
+###xml 426 432 426 432 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 480 481 480 481 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+###xml 482 483 482 483 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8">8</xref>
+###xml 61 67 <span type="species:ncbi:562">E.coli</span>
+###xml 379 385 <span type="species:ncbi:562">E.coli</span>
+###xml 426 437 <span type="species:ncbi:83333">E.coli K-12</span>
+After we started our experiments, several new ncRNA genes in E.coli have been identified. Table 2 lists the ncRNA genes that were not included as known ncRNAs in our training set, but that were included with at least 50 nt in our set of intergenic sequences. That is, they were falsely included as negative sequences in the training set. The genes were mainly collected from the E.coli genome project's () ASAP database (28) (E.coli K-12 Strain MG1655 version m54) and from Refs (7,8).
+###end p 47
+###begin p 48
+###xml 13 20 13 20 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+###xml 209 211 209 211 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+Although, as Table 2 shows, our method only predicts 2 of the 10 genes to be on the correct strand, the performance is not poorer than that of other methods. For instance, the method of Carter and colleagues (12), which is comparable to our method, predicts only one gene (SroG) correctly. Thus, these genes may be too different to be predictable without combining several of the available methods.
+###end p 48
+###begin p 49
+###xml 103 108 103 108 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 111 112 111 112 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8">8</xref>
+###xml 115 122 115 122 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl3">Table 3</xref>
+We also cross-referenced our predictions with the unconfirmed transcripts in the cDNA library of Vogel et al. (8). Table 3 lists the transcripts that were included with at least 50 nt in our set of intergenic sequences. As the table shows, we predict 5 of the 7 transcripts to be ncRNA genes with the correct orientation. Again, our predictions are comparable to or slightly better than other methods.
+###end p 49
+###begin p 50
+###xml 16 21 16 21 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">et al</italic>
+###xml 24 26 24 26 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b29">29</xref>
+###xml 315 317 315 317 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b29">29</xref>
+###xml 318 320 318 320 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b31">31</xref>
+Finally, Kawano et al. (29) describes several new ncRNA genes. Not all these new ncRNAs were present in our dataset; of the three genes that were present, our predictions match one (RyfB). The other two genes (SokE and SokX), like rdlA, rdlB, rdlC and rdlD, may be involved in anti-sense regulation of hok and ldr (29-31). As these ncRNAs' function is closely linked to their targets' sequences, they may not share many sequence characteristics with other ncRNAs. This can explain why our method has problems predicting these hok/ldr-related ncRNAs.
+###end p 50
+###begin title 51
+ncRNA gene validations
+###end title 51
+###begin p 52
+###xml 128 135 128 135 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl1">Table 1</xref>
+###xml 215 222 215 222 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl4">Table 4</xref>
+To test our predictions, we selected 16 predictions for experimental validation. These included all the top 10 predictions from Table 1 and 6 additional predictions with varying prediction confidence (summarized in Table 4). We chose the 6 additional predictions to have both high and low prediction confidence, and to be a mix of previously predicted and novel candidates. These 6 additions represented a more varying spectrum of predictions than did the top 10 predictions.
+###end p 52
+###begin p 53
+###xml 0 8 0 8 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig1">Figure 1</xref>
+###xml 138 144 138 144 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 362 368 362 368 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 370 371 370 371 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8">8</xref>
+###xml 372 374 372 374 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10">10</xref>
+###xml 446 454 446 454 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig1">Figure 1</xref>
+###xml 642 643 642 643 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b2">2</xref>
+###xml 644 645 644 645 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8">8</xref>
+###xml 646 648 646 648 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b10">10</xref>
+###xml 1020 1027 1020 1027 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl5">Table 5</xref>
+###xml 138 144 <span type="species:ncbi:562">E.coli</span>
+###xml 362 368 <span type="species:ncbi:562">E.coli</span>
+Figure 1 shows the results of northern hybridization with strand-specific probes from 12 of the 16 predictions against total RNA from the E.coli lag, log, and early and late stationary phases (see Materials and Methods). Most of the 12 confirmed transcripts were differentially expressed in the four phases, which is in agreement with previously known ncRNAs in E.coli (8-10). We did not detect transcripts from the four predictions not shown in Figure 1 (data not shown). The absence of detectable transcripts do, however, not imply that the predictions are wrong as some ncRNAs are only expressed under certain conditions [see for example (2,8,10)]. We also tried to map the 5' start of 4 of the 12 verified transcripts (I001, I002, I004 and I014, chosen because these were a mix of high and low confidence, and previous and novel predictions). We identified potential 5' start sites for all four transcripts (see Supplementary Material). Based on these results, we estimated the size of three of the transcripts; see Table 5 for additional information.
+###end p 53
+###begin p 54
+###xml 3 11 3 11 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig1">Figure 1</xref>
+###xml 668 674 668 674 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 703 705 703 705 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b32">32</xref>
+###xml 818 819 818 819 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9">9</xref>
+###xml 668 674 <span type="species:ncbi:562">E.coli</span>
+As Figure 1 shows, we detected more than one band for six of the predictions. These instances of multiple bands were either (i) a large sequence with one or two additional smaller sequences (I002, I003 and I006); (ii) two large sequences (I014); or (iii) two small sequences (I007 and I044). One possible explanation is that the multiple bands are processed or degraded forms of a single transcript. This may be the case for I002 and I014, as we saw only one 5' start point for each region in the primer extension. These transcripts could be specifically processed by catalytically active enzymes, or unspecifically processed by ribonucleases. Several known ncRNAs in E.coli are specifically processed (32), and our results are similar to previously predicted and verified ncRNAs thought to be specifically processed (9).
+###end p 54
+###begin p 55
+It is possible that some of the larger transcripts detected could be processed 5' or 3' ends of neighboring mRNAs; e.g. I002 overlaps the 5' CDS of lysC by 6 nt. The neighboring genes that the other large transcripts can and do overlap with (we did not establish the 5' ends of I003 and I006, but I014 overlaps 4 nt in the 5' CDS of efp) are on the opposite strand of the verified transcripts. Thus, it is possible that these transcripts can regulate their neighboring genes through an anti-sense mechanism.
+###end p 55
+###begin p 56
+###xml 335 337 335 337 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b33">33</xref>
+###xml 381 387 381 387 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 425 426 425 426 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E</italic>
+###xml 381 387 <span type="species:ncbi:562">E.coli</span>
+Because the transcripts we have tested have not previously been detected, these transcripts may be unstable or of low abundance and therefore difficult to detect. Such instability may also explain some of the multiple bands. Another possible explanation could be that the strand-specific probes bind to other transcripts, but a Blast (33) search of the probes against the complete E.coli genome did not give any matches with E-values below 0.1, except for the intended target sites. Thus, it is unlikely that the multiple bands in the northern blots are caused by the probes hybridizing to other complementary transcripts.
+###end p 56
+###begin title 57
+Excluding tRNAs and rRNAs improves specificity
+###end title 57
+###begin p 58
+###xml 308 310 308 310 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b18">18</xref>
+Our initial database of ncRNA genes was slightly biased towards rRNA and tRNA genes. As our main focus was to identify other small RNA genes, we did a separate analysis where we trained classifiers exclusively on the sRNA sequences. In this analysis, we used the query language and methodology from Saetrom (18), i.e. a classifier was the average of 10 GPboost runs instead of a single run as in our previous experiments.
+###end p 58
+###begin p 59
+Using this approach, we predicted 135 of 255 sRNA sequence windows, which included sequence windows from all but the micF and sraE genes. In addition, the approach identified 140 potential ncRNAs, 69 of which were novel.
+###end p 59
+###begin p 60
+###xml 102 109 102 109 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+###xml 237 244 237 244 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl3">Table 3</xref>
+A cross-reference of the potential ncRNAs identified by this method with the list of known genes (see Table 2) showed that it had correctly identified the rygC, SroG and rdlD genes. On the other hand, only Contig_496 of the sequences in Table 3 was correctly identified; two other predictions overlapped Contig_440 and Contig_286, but these were on the opposite strand.
+###end p 60
+###begin p 61
+###xml 83 85 83 85 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b18">18</xref>
+###xml 890 897 890 897 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl3">Table 3</xref>
+As a comparison, we ran an experiment where we again used the approach of Saetrom (18), but also included the tRNAs and rRNAs. We now identified all the ncRNAs in the training set except spf, sraB, sraD and micF, and predicted 401 potential ncRNAs; 168 of these were novel. Although this approach identified slightly fewer of the sRNA genes in the training set compared to the classifiers that were trained only on the sRNA sequences, it identified all the tRNAs and rRNAs; the sRNA-based classifiers only identified 15 of 22 rRNAs and 21 of 86 tRNAs. Thus, as expected, when the rRNAs and tRNAs are excluded from the training set, the resulting classifiers become more specific. In accordance with this, the classifiers trained on the complete ncRNA set identified four of the known ncRNAs in our set of intergenic sequences (rdlA, rygC, SroG and rdlD), and seven of the nine contigs from Table 3 (Contig_440 and Contig_286 were identified on the wrong strand).
+###end p 61
+###begin title 62
+DISCUSSION
+###end title 62
+###begin p 63
+###xml 108 114 108 114 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 302 308 302 308 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 310 311 310 311 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8">8</xref>
+###xml 312 314 312 314 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b14">14</xref>
+###xml 413 414 401 402 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b7">7</xref>
+###xml 108 114 <span type="species:ncbi:562">E.coli</span>
+###xml 302 308 <span type="species:ncbi:562">E.coli</span>
+We have described a novel method for finding non-coding RNA genes and proved its applicability by analyzing E.coli intergenic regions, and testing and experimentally confirming 9 of the top 10 scoring predictions and 3 other predictions with lower score. Several groups have searched for new ncRNAs in E.coli (8-14), which have resulted in a list of about approximately1000 non-redundant and untested candidates (7). Our predictions mostly confirm the predictions of the other methods, but we also predict several new ncRNA genes, and, as our experimental verifications show, at least six of these new predictions are genuine ncRNAs: 12 of the 16 tested candidates, including 6 novel predictions, were verified. It would therefore be surprising if none of the other candidates are ncRNAs.
+###end p 63
+###begin p 64
+Northern analysis and primer extension showed that our method could not completely identify the true transcript of the verified predictions. That is, the algorithm either only predicted a portion of the transcript or misplaced its start and stop site. There are three main reasons for these errors. First, our data set consisted of 50 nt sequence windows with 25 nt overlap. Consequently, we could only predict the correct start and stop site if these regions aligned with any of the sequence windows in our data set. Here, we would expect that only 1 of 25 start sites would align by chance. Second, our algorithm did not recognize all the sequence windows of the known ncRNAs in the training set. We would therefore be surprised if it correctly predicted the complete sequence of any new transcripts. Third, our algorithm is biased in the sense that it will only detect regions that are similar to regions in the known ncRNAs. Thus, the algorithm would have trouble detecting the novel domains in the new transcripts.
+###end p 64
+###begin p 65
+###xml 395 397 395 397 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b34">34</xref>
+###xml 582 583 582 583 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b9">9</xref>
+###xml 584 586 584 586 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b13">13</xref>
+Because of these three shortcomings, we did not expect the algorithm to correctly identify the complete sequence of any new transcripts. Rather, we developed the algorithm as a complementary tool to the existing ncRNA prediction algorithms, which use other features to predict ncRNAs. As an analogy to standard protein coding gene prediction, our algorithm can be considered a content analyzer (34). To get more reliable predictions of complete ncRNAs, we can for example combine our algorithm with algorithms that look for signals such as transcription initiation and termination (9,13). We are currently looking into this.
+###end p 65
+###begin p 66
+###xml 130 137 130 137 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+###xml 1167 1174 1167 1174 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+When comparing our predictions to those of other methods and to the known ncRNAs included in our set of intergenic sequences (see Table 2), we found that some of our predictions were on the opposite strand. In addition, 47 of our predictions overlapped predictions that our algorithm made on the opposite strand (see Supplementary Material). Thus, it appears that the algorithm has problems identifying the correct strand for some transcripts. These results are, however, related to the above discussion on the algorithm's bias: the algorithm will only detect domains that have a similar sequence to those in the known ncRNAs. An ncRNA's function often lies in its secondary structure, however, and in general, several different sequences can fold into the same secondary structure. In particular, for certain sequences both the original and reverse complementary sequence fold into similar secondary structures. Thus, if the reverse complementary of such sequences more closely resembles the known ncRNAs than does the original sequences, our algorithm will predict the reverse complementary sequence to be an ncRNA domain. This is for instance the case for rdlA in Table 2. Our algorithm incorrectly predicted the reverse complementary sequence of rdlA to be an ncRNA, but the secondary structures of the correct sequence mirrors that of the reverse complementary (data not shown).
+###end p 66
+###begin p 67
+###xml 159 165 159 165 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 193 195 193 195 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b15">15</xref>
+###xml 355 361 355 361 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 456 462 456 462 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 464 466 464 466 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b15">15</xref>
+###xml 546 552 546 552 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 159 165 <span type="species:ncbi:562">E.coli</span>
+###xml 355 361 <span type="species:ncbi:562">E.coli</span>
+###xml 456 462 <span type="species:ncbi:562">E.coli</span>
+###xml 546 552 <span type="species:ncbi:562">E.coli</span>
+A recent study uses the sequence conservation of known ncRNA genes and intergenic regions to estimate the number of sRNAs (ncRNAs other than tRNA and rRNA) in E.coli to be between 118 and 260 (15). The authors then argue that because the number of sRNA genes that either have been experimentally verified or predicted by at least two different studies in E.coli were 150 (at that time), their estimates may be an upper limit to the number of sRNA genes in E.coli (15). Following their logic, our results indicate that the number of sRNA genes in E.coli may be closer to their highest estimate than to their lowest. This is because we have significantly extended the list of ncRNAs predicted by more than one method, and because we have shown that our method predicts new ncRNAs that have remained undetected by other methods.
+###end p 67
+###begin p 68
+To summarize, we have shown that our approach for ncRNA prediction is both accurate and complementary to existing methods. That is, it identifies genuine ncRNA genes, some of which have not been predicted by any other methods.
+###end p 68
+###begin title 69
+SUPPLEMENTARY MATERIAL
+###end title 69
+###begin p 70
+Supplementary Material is available at NAR Online.
+###end p 70
+###begin title 71
+Supplementary Material
+###end title 71
+###begin title 72
+[Supplementary Material]
+###end title 72
+###begin p 73
+###xml 58 64 58 64 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E.coli</italic>
+###xml 58 64 <span type="species:ncbi:562">E.coli</span>
+We thank K. Lagesen for providing the initial database of E.coli ncRNA genes, Y. Esbensen for providing the RNA isolation protocol, and H.E. Krokan and M. Bjoras for valuable comments on the manuscript. The work was supported by the Norwegian Research Council, grants 151899/150, 152020/310 and 152001/150, and the bioinformatics platform at the Norwegian University of Science and Technology, Trondheim, Norway. Funding to pay the Open Access publication charges for this article was provided by the Norwegian Research Council.
+###end p 73
+###begin p 74
+###xml 0 30 0 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Conflict of interest statement</italic>
+Conflict of interest statement. None declared.
+###end p 74
+###begin title 75
+REFERENCES
+###end title 75
+###begin article-title 76
+Non-coding RNA genes and the modern RNA world
+###end article-title 76
+###begin article-title 77
+Small RNAs in bacteria: diverse regulators of gene expression in response to environmental changes
+###end article-title 77
+###begin article-title 78
+An expanding universe of noncoding RNAs
+###end article-title 78
+###begin article-title 79
+###xml 61 66 <span type="species:ncbi:9606">human</span>
+Unbiased mapping of transcription factor binding sites along human chromosomes 21 and 22 points to widespread regulation of noncoding RNAs
+###end article-title 79
+###begin article-title 80
+RNA regulation: a new genetics?
+###end article-title 80
+###begin article-title 81
+###xml 14 30 14 30 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 14 30 <span type="species:ncbi:562">Escherichia coli</span>
+Small RNAs in Escherichia coli
+###end article-title 81
+###begin article-title 82
+###xml 40 56 40 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 40 56 <span type="species:ncbi:562">Escherichia coli</span>
+A survey of small RNA-encoding genes in Escherichia coli
+###end article-title 82
+###begin article-title 83
+###xml 11 27 11 27 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 11 27 <span type="species:ncbi:562">Escherichia coli</span>
+RNomics in Escherichia coli detects new sRNA species and indicates parallel transcriptional output in bacteria
+###end article-title 83
+###begin article-title 84
+###xml 60 76 60 76 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 60 76 <span type="species:ncbi:562">Escherichia coli</span>
+Novel small RNA-encoding genes in the intergenic regions of Escherichia coli
+###end article-title 84
+###begin article-title 85
+Identification of novel small RNAs using comparative genomics and microarrays
+###end article-title 85
+###begin article-title 86
+###xml 50 57 50 57 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">E. coli</italic>
+###xml 50 57 <span type="species:ncbi:562">E. coli</span>
+Computational identification of noncoding RNAs in E. coli by comparative genomics
+###end article-title 86
+###begin article-title 87
+A computational approach to identify genes for functional RNAs in genomic sequences
+###end article-title 87
+###begin article-title 88
+###xml 67 83 67 83 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 67 83 <span type="species:ncbi:562">Escherichia coli</span>
+A bioinformatics based approach to discover small RNA genes in the Escherichia coli genome
+###end article-title 88
+###begin article-title 89
+###xml 26 42 26 42 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 26 42 <span type="species:ncbi:562">Escherichia coli</span>
+Transcriptome analysis of Escherichia coli using high-density oligonucleotide probe arrays
+###end article-title 89
+###begin article-title 90
+###xml 44 60 44 60 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 44 60 <span type="species:ncbi:562">Escherichia coli</span>
+Conservation analysis of small RNA genes in Escherichia coli
+###end article-title 90
+###begin article-title 91
+###xml 32 48 32 48 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 32 53 <span type="species:ncbi:83333">Escherichia coli K-12</span>
+The complete genome sequence of Escherichia coli K-12
+###end article-title 91
+###begin article-title 92
+###xml 23 39 23 39 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 23 39 <span type="species:ncbi:562">Escherichia coli</span>
+Oversynthesis of a new Escherichia coli small RNA suppresses export toxicity of DsbA'-PhoA unfoldable periplasmic proteins
+###end article-title 92
+###begin article-title 93
+Predicting the efficacy of short oligonucleotides in antisense and RNAi experiments with boosted genetic programming
+###end article-title 93
+###begin article-title 94
+A comparison of siRNA efficacy predictors
+###end article-title 94
+###begin article-title 95
+An introduction to boosting and leveraging
+###end article-title 95
+###begin article-title 96
+Soft margins for AdaBoost
+###end article-title 96
+###begin article-title 97
+A recursive MISD architecture for pattern matching
+###end article-title 97
+###begin article-title 98
+Assessing the accuracy of prediction algorithms for classification: an overview
+###end article-title 98
+###begin article-title 99
+Cross-validatory choice and assessment of statistical predictions
+###end article-title 99
+###begin article-title 100
+A study of cross-validation and bootstrap for accuracy estimation and model selection
+###end article-title 100
+###begin article-title 101
+ASAP, a systematic annotation package for community analysis of genomes
+###end article-title 101
+###begin article-title 102
+###xml 51 54 51 54 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cis</italic>
+###xml 81 97 81 97 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 81 97 <span type="species:ncbi:562">Escherichia coli</span>
+Detection of 5'- and 3'-UTR-derived small RNAs and cis-encoded antisense RNAs in Escherichia coli
+###end article-title 102
+###begin article-title 103
+###xml 146 149 146 149 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">cis</italic>
+###xml 181 197 181 197 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 181 197 <span type="species:ncbi:562">Escherichia coli</span>
+Molecular characterization of long direct repeat (LDR) sequences expressing a stable mRNA encoding for a 35-amino-acid cell-killing peptide and a cis-encoded small antisense RNA in Escherichia coli
+###end article-title 103
+###begin article-title 104
+###xml 9 12 9 12 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">hok</italic>
+###xml 40 56 40 56 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 40 56 <span type="species:ncbi:562">Escherichia coli</span>
+Multiple hok genes on the chromosome of Escherichia coli
+###end article-title 104
+###begin article-title 105
+###xml 94 110 94 110 <italic xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">Escherichia coli</italic>
+###xml 94 110 <span type="species:ncbi:562">Escherichia coli</span>
+3' Exoribonucleolytic trimming is a common feature of the maturation of small, stable RNAs in Escherichia coli
+###end article-title 105
+###begin article-title 106
+Basic local alignment search tool
+###end article-title 106
+###begin article-title 107
+Current methods of gene prediction, their strengths and weaknesses
+###end article-title 107
+###begin title 108
+Figures and Tables
+###end title 108
+###begin p 109
+Northern hybridizations of selected predictions against total RNA from lag, log, and early and late stationary phases confirm 12 of 16 selected transcripts. The figure shows the complete northern blots after low stringency wash. The boxed bands indicate the bands that were still present after repeated washes of higher stringency, but the resulting blots are excluded because of poor resolution and picture quality. The indicated sizes are only approximate sizes because these are individual blots lined up together; see Supplementary Figure 2 for size estimates based on each individual blot. Note that most blots have a approximately120 nt band that corresponds to 5s rRNA.
+###end p 109
+###begin p 110
+Top ten predictions sorted by prediction confidence
+###end p 110
+###begin p 111
+The given position is the 5' end for predictions in the positive strand, and the 3' end for predictions in the negative strand. The score is the classifier output for the highest scoring sequence window in a sequence.
+###end p 111
+###begin p 112
+Known ncRNA genes included in the set of intergenic sequences
+###end p 112
+###begin p 113
+The overlap is the number of nucleotides from the ncRNA included as an intergenic sequence. The last column lists the strand and the reference to previous predictions overlapping the gene.
+###end p 113
+###begin p 114
+###xml 30 31 30 31 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b8">8</xref>
+Unconfirmed transcripts from (8) included in the set of intergenic sequences
+###end p 114
+###begin p 115
+###xml 4 11 4 11 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl2">Table 2</xref>
+See Table 2 for header explanations.
+###end p 115
+###begin p 116
+Six predictions with varying confidence experimentally tested in the lab
+###end p 116
+###begin p 117
+###xml 4 11 4 11 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="table" rid="tbl1">Table 1</xref>
+See Table 1 for details on the prediction position.
+###end p 117
+###begin p 118
+Transcripts detected by primer extension
+###end p 118
+###begin p 119
+###xml 330 332 330 332 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="bibr" rid="b12">12</xref>
+###xml 417 425 417 425 <xref xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" ref-type="fig" rid="fig1">Figure 1</xref>
+The table lists the transcripts' 5' ends; their orientation; the distance between the 5' ends and the predicted transcripts; the transcripts' estimated size; and the name and orientation of 5' and 3' flanking genes (relative to the + strand). Note that the I004 5' start point overlaps prediction HB_200 of Carter and colleagues (12), but we did not detect any northern signal that corresponded to this 5' start (see Figure 1).
+###end p 119
+
