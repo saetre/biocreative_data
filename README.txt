@@ -12,6 +12,9 @@ git clone git@github.com:saetre/biocreative_data.git
 #In order to be able to sync changes
 git remote add origin git@github.com:saetre/biocreative_data.git
 
+#How to merge (local master) and push changes back to GitHub (origin/master)
+git push origin master
+
 #How to check if the config looks ok
 cat .git/config
 
